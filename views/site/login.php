@@ -10,7 +10,7 @@ use yii\bootstrap5\Html;
 
 $title = (!Yii::$app->settings->get('site.name')
     ? Yii::$app->name : Yii::$app->settings->get('site.name'));
-$this->title =  $title . ' - Log In';
+$this->title = $title . ' - Log In';
 
 ?>
 

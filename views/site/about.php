@@ -23,7 +23,7 @@ if ($withBreadcrumb) {
 
 <div class="site-about" style="max-width: 48rem">
 
-    <div class="d-flex flex-column flex-nowrap" style="gap: .25rem">
+    <div class="d-flex flex-column flex-nowrap">
 
         <div class="d-flex flex-row" style="gap: 1rem">
             <h1><?= Yii::$app->settings->get('site.icon') ?></h1>
@@ -36,9 +36,7 @@ if ($withBreadcrumb) {
         </div>
 
         <div class="d-flex flex-column text-justify" style="gap: 1.5rem">
-            <p>
-                <?= Yii::$app->settings->get('site.description') ?>
-            </p>
+            <?= Yii::$app->settings->get('site.description') ?>
         </div>
 
 
