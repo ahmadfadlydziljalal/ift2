@@ -37,7 +37,7 @@ if ($withBreadcrumb) {
 
         <div class="d-flex flex-column text-justify" style="gap: 1.5rem">
             <p>
-                <?= Yii::$app->settings->get('site.description')?>
+                <?= Yii::$app->settings->get('site.description') ?>
             </p>
         </div>
 
@@ -53,11 +53,11 @@ if ($withBreadcrumb) {
             </div>
 
             <div class="px-3">
-                <?= Html::img(Yii::getAlias('@web') . '/images/undraw_feeling_proud_qne1.svg', [
+                <?php echo Html::img(Yii::getAlias('@web') . '/images/undraw_feeling_proud_qne1.svg', [
                     'class' => 'img-fluid',
                     'style' => [
                         'transform' => 'scaleX(-1)',
-                        'width' => '12rem',
+                        'width' => '8rem',
                         'height' => 'auto'
                     ]
                 ]) ?>
