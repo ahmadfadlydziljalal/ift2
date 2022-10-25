@@ -40,6 +40,9 @@ services:
       - "443:443"
     env_file:
       - .env
+    environment:
+      - ENV=production
+      - TARGET=production
     networks:
       - ${APP_NAME}-network
     volumes:
