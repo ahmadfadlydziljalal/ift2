@@ -1,0 +1,102 @@
+{
+  "name": "dziljalal/tms-starter",
+  "description": "TMS Starter menggunakan Yii2",
+  "keywords": [
+    "yii2",
+    "framework",
+    "tms-starter",
+    "project template"
+  ],
+  "homepage": "http://rayakreasi.xyz/",
+  "type": "project",
+  "license": "BSD-3-Clause",
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.4.0",
+    "yiisoft/yii2": "~2.0.45",
+    "yiisoft/yii2-bootstrap5": "~2.0.2",
+    "yiisoft/yii2-symfonymailer": "~2.0.3",
+    "yiisoft/yii2-jui": "^2.0",
+    "yiisoft/yii2-httpclient": "*",
+    "yiisoft/yii2-mongodb": "~2.1.0",
+    "wbraganca/yii2-dynamicform": "dev-dev-dzil",
+    "pheme/yii2-settings": "*",
+    "schmunk42/yii2-giiant": "@dev",
+    "kartik-v/yii2-widget-select2": "dev-master",
+    "kartik-v/yii2-datecontrol": "@dev",
+    "kartik-v/yii2-widget-datepicker": "dev-master",
+    "kartik-v/yii2-widget-datetimepicker": "dev-master",
+    "kartik-v/yii2-mpdf": "dev-master",
+    "mdmsoft/yii2-admin": "2.x-dev",
+    "mdmsoft/yii2-autonumber": "~1.0",
+    "twbs/bootstrap-icons": "^1.9",
+    "kartik-v/yii2-export": "@dev",
+    "kartik-v/yii2-grid": "@dev",
+    "kartik-v/yii2-bootstrap5-dropdown": "@dev",
+    "kartik-v/yii2-number": "dev-master",
+    "kartik-v/yii2-widget-depdrop": "dev-master"
+  },
+  "require-dev": {
+    "yiisoft/yii2-debug": "~2.1.0",
+    "yiisoft/yii2-gii": "~2.2.0",
+    "yiisoft/yii2-faker": "~2.0.0",
+    "symfony/browser-kit": "^6.0 || >=2.7 <=4.2.4",
+    "phpunit/phpunit": "~9.5.0",
+    "codeception/codeception": "^5.0.0 || ^4.0",
+    "codeception/lib-innerbrowser": "^3.0 || ^1.1",
+    "codeception/module-asserts": "^3.0 || ^1.1",
+    "codeception/module-yii2": "^1.1",
+    "codeception/module-filesystem": "^3.0 || ^1.1",
+    "codeception/verify": "^2.2",
+    "codeception/module-webdriver": "^3.1",
+    "codeception/specify": "~0.4.6"
+  },
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true
+    },
+    "process-timeout": 1800,
+    "fxp-asset": {
+      "enabled": false
+    }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "yii\\composer\\Installer::postInstall"
+    ],
+    "post-create-project-cmd": [
+      "yii\\composer\\Installer::postCreateProject",
+      "yii\\composer\\Installer::postInstall"
+    ]
+  },
+  "extra": {
+    "yii\\composer\\Installer::postCreateProject": {
+      "setPermission": [
+        {
+          "runtime": "0777",
+          "web/assets": "0777",
+          "yii": "0755"
+        }
+      ]
+    },
+    "yii\\composer\\Installer::postInstall": {
+      "generateCookieValidationKey": [
+        "config/web.php"
+      ]
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/ahmadfadlydziljalal/yii2-dynamicform"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/ahmadfadlydziljalal/yii2-admin"
+    },
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ]
+}

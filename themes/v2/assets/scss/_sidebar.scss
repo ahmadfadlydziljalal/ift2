@@ -1,0 +1,52 @@
+@use "vars";
+
+aside {
+
+  &.left-navigation {
+
+    background-color: vars.$white;
+    z-index: 4;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    padding: 62px 0 0;
+
+    transition: all .25s;
+    overflow-y: auto;
+
+    ul {
+      padding: .5em .5em 0;
+
+      li {
+        list-style: none;
+        line-height: 2.5rem;
+        margin-bottom: .25rem;
+
+        &:hover {
+          color:vars.$info
+        ;
+          border-radius: 8px;
+        }
+
+        a {
+          display: block;
+          text-decoration: none;
+          color: vars.$black;
+        }
+
+        &.active {
+          a {
+            &.active {
+              border-radius: 8px;
+              background-color: vars.$primary;
+              color: vars.$white;
+            }
+          }
+        }
+      }
+    }
+
+  }
+
+}

@@ -1,0 +1,26 @@
+@use "sass:meta";
+@use "vars";
+
+body {
+
+  overflow-x: hidden;
+
+  @include meta.load-css("header"); // top navigation
+  main {
+    padding-top: 56px;
+    @include meta.load-css("sidebar"); // left navigation
+    @include meta.load-css("content"); // main content
+  }
+
+  @include meta.load-css("footer"); // footer
+
+}
+
+@include meta.load-css("responsive");
+@include meta.load-css("dark-mode");
+@include meta.load-css("print");
+
+.user-photo-32 {
+  border-radius: 50%;
+  object-fit: cover;
+}

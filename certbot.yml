@@ -1,0 +1,29 @@
+version: "3.7"
+
+# SERVICES
+services:
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    hostname: certbot
+    volumes:
+      - ./etc:/etc/letsencrypt:rw   # SSL Certificate will be store here
+      - ./www:/var/www/html/web:rw  # Shared folder dengan php app untuk bisa di challenge sama certbot
+      - ./logs:/var/log:rw          # Log certbot
+    command: >-
+      certonly
+      --webroot
+      --webroot-path=/var/www/html/web
+      --email ahmadfadlydziljalal@gmail.com
+      --agree-tos
+      --no-eff-email
+      --force-renewal
+      -d ift.dzil.my.id
+    depends_on:
+      - php
+
+# Docker Networks
+networks:
+  ift-network:
+    driver: bridge

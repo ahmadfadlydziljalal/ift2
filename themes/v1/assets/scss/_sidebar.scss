@@ -1,0 +1,65 @@
+@import "vars";
+
+aside {
+
+  z-index: 4;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background: #fff;
+  color: #000;
+  min-width: 250px;
+  max-width: 250px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+  padding-top: 1rem;
+  padding-left: 0;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  transition: all 0.3s;
+  overflow-y: auto;
+
+  .sidebar-nav{
+
+    padding: 0 1em;
+
+    li {
+      list-style: none;
+      text-indent: 1em;
+      line-height: 2.5rem;
+      margin-bottom: .25rem;
+
+      &:hover{
+        color:$info;
+        border-radius: 8px;
+      }
+
+      a {
+        display: block;
+        text-decoration: none;
+        color: $black;
+      }
+
+      &.active {
+        a {
+          &.active{
+            border-radius: 8px;
+            background-color: $primary;
+            color: $white;
+          }
+        }
+      }
+    }
+
+  }
+
+  /* Mainstream tablet */
+  @media (max-width: 767px) {
+    margin-left: -250px;
+    position: fixed;
+    min-height: 100vh;
+    z-index: 1;
+  }
+
+}

@@ -1,0 +1,73 @@
+@import "vars";
+
+.table {
+  margin: 0;
+  width: 99%;
+  border-collapse: collapse;
+  font-size: 11pt;
+
+  th {
+    text-align: left;
+  }
+
+  th, td {
+    padding: 1pt 2pt;
+    border: 1pt solid black;
+  }
+
+  td{
+    letter-spacing: 0.05em;
+    vertical-align: top;
+  }
+
+  thead {
+
+    tr {
+      th {
+        text-align: left;
+      }
+
+      th.text-end {
+        text-align: right;
+      }
+    }
+
+  }
+
+  &.table-detail-view {
+    width: 50%;
+  }
+
+}
+
+.card {
+
+  margin-top: 6pt;
+  padding: 6pt 0;
+
+  .table {
+    th, td {
+      padding: 5pt 0;
+      border: none;
+    }
+
+    &.table-grid-view {
+
+      th, td {
+        padding: 5pt;
+        border: 1pt solid $black;
+      }
+
+      thead {
+        tr {
+          th {
+            text-align: center;
+          }
+        }
+      }
+
+    }
+
+  }
+
+}

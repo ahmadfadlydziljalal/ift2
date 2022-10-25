@@ -1,0 +1,63 @@
+@use "vars";
+
+body.dark{
+
+  background-color: vars.$dark !important;
+  color: vars.$white !important;
+
+  main {
+    aside {
+      &.left-navigation {
+        border-right: none;
+        background: #343a40;
+        box-shadow:  -5px -5px 10px #2f343a,
+        5px 5px 10px #394046;
+
+      }
+    }
+  }
+
+  input.form-control,
+  select.form-control,
+  textarea,
+  table,
+  table th,
+  table td,
+  div.card,
+  aside,
+  nav.card,
+  ul.pagination li.page-item a.page-link,
+  footer {
+    background-color: vars.$dark !important;
+    color: vars.$white !important;
+  }
+
+  div.card{
+    border: 1px solid vars.$white;
+  }
+
+  .dropdown-menu{
+    border: 1px solid vars.$white !important;
+    background-color: vars.$dark !important;
+    color: vars.$white !important;
+  }
+
+  a, i.bi{
+    color: vars.$white !important;
+  }
+
+  .dropdown-item:hover{
+    background-color: vars.$primary !important;
+  }
+
+  ul.pagination li.page-item.active a.page-link {
+    color: #212529 !important;
+    background-color: #fff !important;
+    border-color: transparent;
+  }
+
+  footer{
+    border-top: 0;
+  }
+
+}

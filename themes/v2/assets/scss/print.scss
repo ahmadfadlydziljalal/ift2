@@ -1,0 +1,30 @@
+@import "vars";
+
+@media print {
+  *{
+    font-family: "Arial", serif;
+    font-weight: normal;
+  }
+
+  @page {
+    /* Ukuran kertas */
+    size:
+            21.5cm /*Panjang*/
+            14.0cm; /* Lebar */
+    margin:
+            0.5cm /*Top*/
+            0.5cm /*Right*/
+            0 /*Bottom*/
+            0.25cm; /* Left */
+  }
+
+  body {
+
+    font-size: 11pt;
+    @import "print_table";
+    @import "print_utils";
+
+  }
+
+
+}

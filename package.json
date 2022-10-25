@@ -1,0 +1,30 @@
+{
+  "name": "siprc",
+  "version": "1.0.0",
+  "main": "gulpfile.js",
+  "author": "Dzil <ahmadfadlydziljalal@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^9.7.2",
+    "bin-version-check": "^5.0.0",
+    "browser-sync": "^2.26.7",
+    "browsersync": "0.0.1-security",
+    "cssnano": "^5.1.11",
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-connect-php": "^1.0.3",
+    "gulp-postcss": "9.0.1",
+    "gulp-replace": "^1.0.0",
+    "gulp-sass": "^5.1.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-uglify": "^3.0.2"
+  },
+  "dependencies": {
+    "gulp-cli": "^2.3.0",
+    "gulp-imagemin": "7.1.0",
+    "node-fetch": "^3.2.5",
+    "postcss": "^8.4.14",
+    "sass": "^1.52.3",
+    "sass-migrator": "^1.7.1"
+  }
+}
