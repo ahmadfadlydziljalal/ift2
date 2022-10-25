@@ -49,9 +49,11 @@ if ($items) {
     ]);
 } ?>
 
-<div class="d-flex flex-column align-items-center-center" style="gap: 1rem">
-    <?php
-    echo $string;
-    echo Html::tag('span', "Keterangan: " . (!empty($model->keterangan) ? $model->keterangan : "-"));
-    ?>
+<div class="d-flex flex-column align-items-center-center" style="gap: .5rem">
+    <?php echo $string; ?>
+    <div class="card">
+        <div class="card-body">
+            <?php echo Html::tag('span', "Keterangan: " . (!empty($model->keterangan) ? $model->keterangan : "-")); ?>
+        </div>
+    </div>
 </div>

@@ -5,6 +5,7 @@
 namespace app\models\base;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the base-model class for table "barang_satuan".
@@ -39,14 +40,14 @@ abstract class BarangSatuan extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return [
-            [['vendor_id', 'satuan_id', 'harga_jual'], 'required'],
+        return ArrayHelper::merge(parent::rules(), [
+            [['vendor_id', 'satuan_id'], 'required'],
             [['vendor_id', 'barang_id', 'satuan_id'], 'integer'],
             [['harga_beli', 'harga_jual'], 'number'],
             [['barang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Barang::class, 'targetAttribute' => ['barang_id' => 'id']],
             [['satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['satuan_id' => 'id']],
             [['vendor_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['vendor_id' => 'id']]
-        ];
+        ]);
     }
 
     /**
