@@ -5,6 +5,7 @@
 namespace app\models\base;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 
@@ -21,6 +22,8 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property \app\models\BarangSatuan[] $barangSatuans
  * @property \app\models\CardBelongsType[] $cardBelongsTypes
+ * @property \app\models\CardOwnEquipment[] $cardOwnEquipments
+ * @property \app\models\CardPersonInCharge[] $cardPersonInCharges
  * @property \app\models\FakturDetail[] $fakturDetails
  * @property \app\models\Faktur[] $fakturs
  * @property \app\models\Faktur[] $fakturs0
@@ -59,11 +62,11 @@ abstract class Card extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return [
+        return ArrayHelper::merge(parent::rules(), [
             [['nama', 'kode'], 'required'],
             [['nama'], 'string', 'max' => 255],
             [['kode'], 'string', 'max' => 50]
-        ];
+        ]);
     }
 
     /**
@@ -96,6 +99,22 @@ abstract class Card extends \yii\db\ActiveRecord
     public function getCardBelongsTypes()
     {
         return $this->hasMany(\app\models\CardBelongsType::class, ['card_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCardOwnEquipments()
+    {
+        return $this->hasMany(\app\models\CardOwnEquipment::class, ['card_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCardPersonInCharges()
+    {
+        return $this->hasMany(\app\models\CardPersonInCharge::class, ['card_id' => 'id']);
     }
 
     /**

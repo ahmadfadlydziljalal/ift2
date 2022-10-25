@@ -3,11 +3,13 @@
 namespace app\models;
 
 use app\models\base\Card as BaseCard;
+use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
 /**
  * This is the model class for table "card".
+ * @property CardType[] $cardTypes
  */
 class Card extends BaseCard
 {
@@ -46,5 +48,15 @@ class Card extends BaseCard
     public function getSingkatanNama(): string
     {
         return StringHelper::truncate($this->nama, 18);
+    }
+
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getCardTypes()
+    {
+        return $this->hasMany(CardType::class, ['id' => 'card_type_id'])
+            ->via('cardBelongsTypes');
     }
 }

@@ -57,7 +57,7 @@ class CardSearch extends Card
             'query' => $query,
             'sort' => [
                 'defaultOrder' => [
-                    'id' => SORT_DESC
+                    'nama' => SORT_ASC
                 ]
             ]
         ]);

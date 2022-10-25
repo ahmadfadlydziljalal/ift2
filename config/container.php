@@ -87,7 +87,8 @@ return [
         SerialColumn::class => [
             'contentOptions' => [
                 'style' => [
-                    'text-align' => 'right'
+                    'text-align' => 'right',
+                    'vertical-align' => 'middle'
                 ]
             ],
         ],

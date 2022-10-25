@@ -11,6 +11,7 @@ use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -120,7 +121,7 @@ class CardController extends Controller
 
 
                 Yii::$app->session->setFlash('success', 'Card: ' . $model->nama . ' berhasil ditambahkan.');
-                return $this->redirect(['index']);
+                return $this->redirect(['card/view', 'id' => $model->id]);
             } else {
                 $model->loadDefaultValues();
             }
@@ -192,7 +193,10 @@ class CardController extends Controller
 
                 if ($flag) {
                     $transaction->commit();
-                    Yii::$app->session->setFlash('info', 'Card: ' . $model->nama . ' berhasil dirubah.');
+                    Yii::$app->session->setFlash('info', 'Card: ' . Html::a($model->nama, ['card/view', 'id' => $model->id, [
+                            'class' => 'btn btn-link'
+                        ]]) . ' berhasil dirubah.');
+
                 } else {
                     $transaction->rollBack();
                     Yii::$app->session->setFlash('danger', "Rollback");
