@@ -4,7 +4,9 @@
 
 namespace app\models\base;
 
-use Yii;
+use app\models\active_queries\BarangQuery;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -14,14 +16,17 @@ use yii\helpers\ArrayHelper;
  * @property string $nama
  * @property string $part_number
  * @property string $keterangan
+ * @property string $ift_number
+ * @property string $merk_part_number
+ * @property integer $originalitas_id
  *
  * @property \app\models\BarangSatuan[] $barangSatuans
  * @property \app\models\FakturDetail[] $fakturDetails
+ * @property \app\models\Originalitas $originalitas
  * @property string $aliasModel
  */
-abstract class Barang extends \yii\db\ActiveRecord
+abstract class Barang extends ActiveRecord
 {
-
 
 
     /**
@@ -34,14 +39,26 @@ abstract class Barang extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @return BarangQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new BarangQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['nama'], 'required'],
+            [['nama', 'ift_number', 'originalitas_id'], 'required'],
             [['keterangan'], 'string'],
-            [['nama'], 'string', 'max' => 255],
-            [['part_number'], 'string', 'max' => 32]
+            [['originalitas_id'], 'integer'],
+            [['nama', 'merk_part_number'], 'string', 'max' => 255],
+            [['part_number'], 'string', 'max' => 32],
+            [['ift_number'], 'string', 'max' => 128],
+            [['originalitas_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Originalitas::class, 'targetAttribute' => ['originalitas_id' => 'id']]
         ]);
     }
 
@@ -55,11 +72,14 @@ abstract class Barang extends \yii\db\ActiveRecord
             'nama' => 'Nama',
             'part_number' => 'Part Number',
             'keterangan' => 'Keterangan',
+            'ift_number' => 'Ift Number',
+            'merk_part_number' => 'Merk Part Number',
+            'originalitas_id' => 'Originalitas ID',
         ];
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getBarangSatuans()
     {
@@ -67,22 +87,19 @@ abstract class Barang extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getFakturDetails()
+    public function getFakturDetails(): ActiveQuery
     {
         return $this->hasMany(\app\models\FakturDetail::class, ['barang_id' => 'id']);
     }
 
-
-    
     /**
-     * @inheritdoc
-     * @return \app\models\active_queries\BarangQuery the active query used by this AR class.
+     * @return ActiveQuery
      */
-    public static function find()
+    public function getOriginalitas(): ActiveQuery
     {
-        return new \app\models\active_queries\BarangQuery(get_called_class());
+        return $this->hasOne(\app\models\Originalitas::class, ['id' => 'originalitas_id']);
     }
 
 

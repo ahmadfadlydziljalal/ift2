@@ -1,5 +1,7 @@
 <?php
 
+use kartik\base\BootstrapInterface;
+use kartik\grid\GridViewInterface;
 use yii\bootstrap5\LinkPager as Bs5LinkPager;
 use yii\data\Pagination;
 use yii\grid\ActionColumn;
@@ -108,6 +110,20 @@ return [
                 "{summary}" .
                 '</div>'
             ,
-        ]
+        ],
+        kartik\grid\ExpandRowColumn::class => [
+            'expandIcon' => '<span class="bi bi-chevron-down"></span>',
+            'collapseIcon' => '<span class="bi bi-chevron-up"></span>',
+            //'detailRowCssClass' => '',
+            'detailRowCssClass' => BootstrapInterface::BS_TABLE_INFO,
+            'expandOneOnly' => true,
+            'enableCache' => false,
+            'vAlign' => 'middle',
+            'allowBatchToggle' => false,
+            'value' => function () {
+                return GridViewInterface::ROW_COLLAPSED;
+            },
+            'detailAnimationDuration' => 100
+        ],
     ]
 ];

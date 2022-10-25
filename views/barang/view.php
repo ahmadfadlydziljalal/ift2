@@ -3,6 +3,7 @@
 use mdm\admin\components\Helper;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
+use yii\grid\SerialColumn;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -49,7 +50,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attributes' => [
                     'nama',
                     'part_number',
-                    'keterangan',
+                    'merk_part_number',
+                    'ift_number',
+                    [
+                        'attribute' => 'originalitas_id',
+                        'value' => $model->originalitas->nama
+                    ],
+
                 ],
             ]);
             ?>
@@ -59,47 +66,55 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php
 
-        echo Html::tag('h2', 'Barang Satuan');
-        echo !empty($model->barangSatuans) ?
-            GridView::widget([
-                'dataProvider' => new ArrayDataProvider([
-                    'allModels' => $model->barangSatuans
-                ]),
-                'columns' => [
-                    // [
-                    // 'class'=>'\yii\grid\DataColumn',
-                    // 'attribute'=>'id',
-                    // ],
-                    // [
-                    // 'class'=>'\yii\grid\DataColumn',
-                    // 'attribute'=>'barang_id',
-                    // ],
-                    [
-                            'class' => \yii\grid\SerialColumn::class
-                    ],
-                    [
-                        'class' => '\yii\grid\DataColumn',
-                        'attribute' => 'vendor_id',
-                        'value' => 'vendor.nama'
-                    ],
-                    [
-                        'class' => '\yii\grid\DataColumn',
-                        'attribute' => 'satuan_id',
-                        'value' => 'satuan.nama'
-                    ],
-                    [
-                        'class' => '\yii\grid\DataColumn',
-                        'attribute' => 'harga',
-                        'format' => ['decimal', 2],
-                        'contentOptions' => [
-                            'class' => 'text-end'
-                        ]
-                    ],
-                ]
-            ]) :
-            Html::tag("p", 'Barang Satuan tidak tersedia', [
-                'class' => 'text-warning font-weight-bold p-3'
-            ]);
+    echo Html::tag('h2', 'Barang Satuan');
+    echo !empty($model->barangSatuans) ?
+        GridView::widget([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => $model->barangSatuans
+            ]),
+            'columns' => [
+                // [
+                // 'class'=>'\yii\grid\DataColumn',
+                // 'attribute'=>'id',
+                // ],
+                // [
+                // 'class'=>'\yii\grid\DataColumn',
+                // 'attribute'=>'barang_id',
+                // ],
+                [
+                    'class' => SerialColumn::class
+                ],
+                [
+                    'class' => '\yii\grid\DataColumn',
+                    'attribute' => 'vendor_id',
+                    'value' => 'vendor.nama'
+                ],
+                [
+                    'class' => '\yii\grid\DataColumn',
+                    'attribute' => 'satuan_id',
+                    'value' => 'satuan.nama'
+                ],
+                [
+                    'class' => '\yii\grid\DataColumn',
+                    'attribute' => 'harga_beli',
+                    'format' => ['decimal', 2],
+                    'contentOptions' => [
+                        'class' => 'text-end'
+                    ]
+                ],
+                [
+                    'class' => '\yii\grid\DataColumn',
+                    'attribute' => 'harga_jual',
+                    'format' => ['decimal', 2],
+                    'contentOptions' => [
+                        'class' => 'text-end'
+                    ]
+                ],
+            ]
+        ]) :
+        Html::tag("p", 'Barang Satuan tidak tersedia', [
+            'class' => 'text-warning font-weight-bold p-3'
+        ]);
     } catch (Exception $e) {
         echo $e->getMessage();
     } catch (Throwable $e) {

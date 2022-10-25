@@ -19,8 +19,8 @@ class BarangSearch extends Barang
     public function rules(): array
     {
         return [
-            [['id'], 'integer'],
-            [['nama', 'part_number'], 'safe'],
+            [['id', 'originalitas_id'], 'integer'],
+            [['nama', 'part_number', 'merk_part_number', 'ift_number'], 'safe'],
         ];
     }
 
@@ -45,6 +45,10 @@ class BarangSearch extends Barang
                 'id' => 'b.id',
                 'nama' => 'b.nama',
                 'part_number' => 'b.part_number',
+                'merk_part_number' => 'b.merk_part_number',
+                'ift_number' => 'b.ift_number',
+                'originalitasNama' => 'originalitas.nama',
+                'originalitas_id' => 'b.originalitas_id',
                 'keterangan' => 'b.keterangan',
                 'satuanHarga' => new Expression("
                      JSON_ARRAYAGG(
@@ -62,10 +66,9 @@ class BarangSearch extends Barang
                 /** @var BarangSatuan $model */
                 $model->alias('bs')
                     ->joinWith('satuan', false)
-                    ->joinWith('vendor', false)
-                ;
+                    ->joinWith('vendor', false);
             }], false)
-
+            ->joinWith('originalitas', false)
             ->groupBy('b.id');
 
         $dataProvider = new ActiveDataProvider([
@@ -87,10 +90,14 @@ class BarangSearch extends Barang
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'originalitas_id' => $this->originalitas_id
         ]);
 
-        $query->andFilterWhere(['like', 'b.nama', $this->nama])
-            ->andFilterWhere(['like', 'part_number', $this->part_number]);
+        $query
+            ->andFilterWhere(['like', 'b.nama', $this->nama])
+            ->andFilterWhere(['like', 'b.part_number', $this->part_number])
+            ->andFilterWhere(['like', 'b.merk_part_number', $this->part_number])
+            ->andFilterWhere(['like', 'b.ift_number', $this->part_number]);
 
         return $dataProvider;
     }

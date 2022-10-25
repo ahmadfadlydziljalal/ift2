@@ -12,6 +12,7 @@ class Barang extends BaseBarang
 {
 
     public ?string $satuanHarga = null;
+    public ?string $originalitasNama = null;
 
     public function behaviors()
     {
@@ -29,6 +30,21 @@ class Barang extends BaseBarang
             parent::rules(),
             [
                 # custom validation rules
+            ]
+        );
+    }
+
+    public function attributeLabels()
+    {
+        return ArrayHelper::merge(
+            parent::attributeLabels(), [
+                'id' => 'ID',
+                'nama' => 'Nama',
+                'part_number' => 'Part Number',
+                'keterangan' => 'Keterangan',
+                'ift_number' => 'IFT Number',
+                'merk_part_number' => 'Merk Part Number',
+                'originalitas_id' => 'Originalitas',
             ]
         );
     }

@@ -1,11 +1,6 @@
 <?php
 
-use app\components\helpers\ArrayHelper;
-use kartik\grid\GridView;
-use kartik\grid\SerialColumn;
-use yii\data\ArrayDataProvider;
-use yii\helpers\Html;
-use yii\helpers\Json;
+use app\models\Originalitas;
 
 return [
     [
@@ -17,6 +12,15 @@ return [
     // 'format'=>'text',
     // ],
     [
+        'class' => 'kartik\grid\ExpandRowColumn',
+        'width' => '50px',
+        'detail' => function ($model, $key, $index, $column) {
+            return $this->context->renderPartial('_item', ['model' => $model]);
+        },
+        'headerOptions' => ['class' => 'kartik-sheet-style'],
+        'expandOneOnly' => true
+    ],
+    [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'nama',
         'format' => 'text',
@@ -24,62 +28,25 @@ return [
             'class' => 'text-wrap'
         ]
     ],
+
     [
         'class' => '\yii\grid\DataColumn',
-        'attribute' => 'part_number',
-        'format' => 'raw',
-        'value' => function($model){
-            return
-                Html::tag('span', $model->part_number) . '<br/>'
-                . Html::tag('span', $model->keterangan)
-                ;
-        }
+        'attribute' => 'part_number'
     ],
     [
         'class' => '\yii\grid\DataColumn',
-        'attribute' => 'satuanHarga',
-        'format' => 'raw',
+        'attribute' => 'merk_part_number',
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
+        'attribute' => 'ift_number',
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
+        'attribute' => 'originalitas_id',
+        'filter' => Originalitas::find()->map(),
         'value' => function ($model) {
-
-            /** @var $model \app\models\Barang*/
-            $items = (Json::decode($model->satuanHarga));
-            $string = '';
-            if($items){
-                ArrayHelper::multisort($items,'vendor');
-                $string .= GridView::widget([
-                    'tableOptions' => [
-                        'class' => 'table p-0 m-0'
-                    ],
-                    'dataProvider' => new ArrayDataProvider([
-                        'allModels' => $items,
-                        'pagination' => false
-                    ]),
-                    'layout' => '{items}',
-                    'columns' => [
-                        [
-                            'class' => SerialColumn::class
-                        ],
-                        'vendor',
-                        'satuan',
-                        [
-                            'attribute' => 'harga_beli',
-                            'format' => ['decimal', 2],
-                            'contentOptions' => [
-                                'class' => 'text-end'
-                            ]
-                        ],
-                        [
-                            'attribute' => 'harga_jual',
-                            'format' => ['decimal', 2],
-                            'contentOptions' => [
-                                'class' => 'text-end'
-                            ]
-                        ],
-                    ],
-                ]);
-            }
-            return $string;
-
+            return $model->originalitasNama;
         }
     ],
     [
