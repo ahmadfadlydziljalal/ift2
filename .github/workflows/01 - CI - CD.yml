@@ -49,8 +49,8 @@ jobs:
           target: deploy
           file: "./.docker/php/debian-apache/Dockerfile"
           push: true
-          tags: dziljalal/stm-php:latest
-          cache-from: type=registry,ref=dziljalal/stm-php:latest
+          tags: dziljalal/ift-php:latest
+          cache-from: type=registry,ref=dziljalal/ift-php:latest
           cache-to: type=inline
           
       - name: Remote SSH DigitalOcean

@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'appVersion' => 'v0.0.1',
     'bsVersion' => '5.x',
+    'appVersion' => 'v0.0.1',
     'adminEmail' => getenv('EMAIL_ADMIN'),
     'senderEmail' => getenv('EMAIL_SENDER'),
     'senderName' =>getenv('EMAIL_SENDER_NAME'),
