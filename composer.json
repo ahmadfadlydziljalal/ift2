@@ -18,7 +18,6 @@
     "yiisoft/yii2-symfonymailer": "~2.0.3",
     "yiisoft/yii2-jui": "^2.0",
     "yiisoft/yii2-httpclient": "*",
-    "yiisoft/yii2-mongodb": "~2.1.0",
     "wbraganca/yii2-dynamicform": "dev-dev-dzil",
     "pheme/yii2-settings": "*",
     "schmunk42/yii2-giiant": "@dev",
