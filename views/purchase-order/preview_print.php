@@ -2,6 +2,7 @@
 
 use app\models\PurchaseOrder;
 use app\models\PurchaseOrderDetail;
+use app\models\User;
 use yii\web\View;
 
 /* @var $this View */
@@ -143,7 +144,11 @@ $settings = Yii::$app->settings;
 
                 <td><?= $model->approved_by ?></td>
                 <td><?= $model->acknowledge_by ?></td>
-                <td><?= $model->userKaryawan['nama'] ?></td>
+                <td><?= isset($model->userKaryawan) ?
+                        $model->userKaryawan['nama'] :
+                        User::findOne($model->created_by)->username
+                    ?>
+                </td>
             </tr>
             <tr>
 
