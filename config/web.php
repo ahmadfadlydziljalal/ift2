@@ -21,6 +21,7 @@ $config = [
         'request' => require __DIR__ . '/request.php',
         'session' => require __DIR__ . '/session.php',
         'settings' => require __DIR__ . '/settings.php',
+        'spaces' => require __DIR__ . '/_spaces.php',
         'supportDb' => require __DIR__ . '/support_db.php',
         'user' => require __DIR__ . '/user.php',
         'urlManager' => require __DIR__ . '/url_manager.php',
