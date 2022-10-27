@@ -10,4 +10,7 @@ enum TextLinkEnum: string
     case HAPUS = '<i class="bi bi-trash-fill"></i> Hapus';
     case BUAT_LAGI = '<i class="bi bi-plus-circle"></i> Buat Lagi';
     case LIST = '<i class="bi bi-list-ol"></i> Index';
+    case BUAT_FOLDER = '<i class="bi bi-folder-plus"></i> Buat Folder';
+    case UPLOAD_FILE = '<i class="bi bi-cloud-upload"></i> Upload File';
+    case DOWNLOAD = '<i class="bi bi-cloud-download"></i> Download';
 }
