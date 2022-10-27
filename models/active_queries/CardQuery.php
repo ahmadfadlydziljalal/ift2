@@ -43,6 +43,12 @@ class CardQuery extends ActiveQuery
                 $q->groupBy('card.id');
                 break;
 
+            case Card::GET_ONLY_VENDOR:
+                $q->where([
+                    'card_type.kode' => 'V'
+                ])->groupBy('card.id');
+                break;
+
             case Card::GET_ONLY_TOKO_SAYA:
                 $q->where([
                     'card_type.kode' => 'TS'

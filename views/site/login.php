@@ -15,7 +15,6 @@ $this->title = $title . ' - Log In';
 ?>
 
 <div class="site-login d-flex flex-row gap-5 px-0 px-md-5 px-lg-5 align-items-top">
-
     <div class="login-section" style="min-width: 20rem">
         <h1 class="text-center d-sm-block d-md-none d-lg-none mb-3 mb-md-0 mb-lg-0">
             <?= Yii::$app->settings->get('site.icon') ?>
@@ -56,11 +55,9 @@ $this->title = $title . ' - Log In';
         <?php ActiveForm::end(); ?>
 
     </div>
-
     <div class="about-section d-none d-md-block d-lg-block" style="max-width: 32rem">
         <?= $this->render('about', [
             'withBreadcrumb' => false
         ]) ?>
     </div>
-
 </div>

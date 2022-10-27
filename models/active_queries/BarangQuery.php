@@ -52,7 +52,11 @@ class BarangQuery extends ActiveQuery
     public function map()
     {
         return ArrayHelper::map(parent::orderBy('nama')->all(), 'id', function ($el) {
-            return $el->part_number . ' - ' . $el->nama;
+            return
+                $el->part_number . ' - ' .
+                $el->merk_part_number . ' - ' .
+                $el->nama . ' - ' .
+                $el->ift_number;
         });
     }
 

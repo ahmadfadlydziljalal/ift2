@@ -9,6 +9,7 @@ class m220904_062451_InsertSuperAdminRecord extends Migration
 {
 
     public string $table = '{{user}}';
+
     /**
      * {@inheritdoc}
      */
@@ -18,10 +19,10 @@ class m220904_062451_InsertSuperAdminRecord extends Migration
          * |  1 | Raya     | naPJnMalyVQKoXrM6x4fkYSMOkn4RZwc | $2y$13$6tx5TlsGZk9lPyqTI6VdpOcSkiBlWM.XZ1LH0cpUfieMK95cwUKeO | NULL                 | dzil@tresnamuda.co.id |     10 | 1662272642 | 1662272642 |
 
          * */
-        $this->insert($this->table,[
+        $this->insert($this->table, [
             'id' => 1,
             'username' => 'Raya',
-            'auth_key' => 'VcwkVbdWmExyRps4F-bBycHFQ36VB1JG ',
+            'auth_key' => 'NNMq4uYsWWUeg1qXpF0zQOA9bDgDSmX2',
             'password_hash' => '$2y$13$u2AzxdDIps7DaxfXfAzrUub.yQZj18pykG1Z0TtGIXxonZ0twbxf2',
             'password_reset_token' => NULL,
             'email' => 'dzil@tresnamuda.co.id',
@@ -29,7 +30,6 @@ class m220904_062451_InsertSuperAdminRecord extends Migration
             'created_at' => '1662272642',
             'updated_at' => '1662272642',
         ]);
-
 
 
         return true;
@@ -41,7 +41,7 @@ class m220904_062451_InsertSuperAdminRecord extends Migration
     public function safeDown()
     {
 
-       return $this->delete($this->table,'id=1');
+        return $this->delete($this->table, 'id=1');
     }
 
     /*

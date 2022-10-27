@@ -4,9 +4,7 @@
 
 namespace app\models\base;
 
-use app\models\active_queries\BarangQuery;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -23,10 +21,12 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\BarangSatuan[] $barangSatuans
  * @property \app\models\FakturDetail[] $fakturDetails
  * @property \app\models\Originalitas $originalitas
+ * @property \app\models\PurchaseOrderDetail[] $purchaseOrderDetails
  * @property string $aliasModel
  */
-abstract class Barang extends ActiveRecord
+abstract class Barang extends \yii\db\ActiveRecord
 {
+
 
 
     /**
@@ -35,15 +35,6 @@ abstract class Barang extends ActiveRecord
     public static function tableName()
     {
         return 'barang';
-    }
-
-    /**
-     * @inheritdoc
-     * @return BarangQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new BarangQuery(get_called_class());
     }
 
     /**
@@ -79,7 +70,7 @@ abstract class Barang extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getBarangSatuans()
     {
@@ -87,19 +78,38 @@ abstract class Barang extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
-    public function getFakturDetails(): ActiveQuery
+    public function getFakturDetails()
     {
         return $this->hasMany(\app\models\FakturDetail::class, ['barang_id' => 'id']);
     }
 
     /**
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
-    public function getOriginalitas(): ActiveQuery
+    public function getOriginalitas()
     {
         return $this->hasOne(\app\models\Originalitas::class, ['id' => 'originalitas_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPurchaseOrderDetails()
+    {
+        return $this->hasMany(\app\models\PurchaseOrderDetail::class, ['barang_id' => 'id']);
+    }
+
+
+    
+    /**
+     * @inheritdoc
+     * @return \app\models\active_queries\BarangQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \app\models\active_queries\BarangQuery(get_called_class());
     }
 
 

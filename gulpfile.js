@@ -41,7 +41,7 @@ function styles() {
 // combines and minify js files to main.js
 function scripts() {
     return src(files.jsPath)
-        .pipe(concat('main.js'))
+        // .pipe(concat('main.js'))
         .pipe(uglify())
         .pipe(dest(files.jsBuildPath))
         .pipe(browser.stream());

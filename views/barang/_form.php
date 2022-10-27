@@ -43,41 +43,42 @@ use yii\helpers\Html;
 
         <div class="form-master">
             <div class="row">
-                <div class="col-12 col-lg-6">
+                <div class="col-12 col-lg-7">
                     <?= $form->field($model, 'nama')->textInput([
                         'maxlength' => true,
                         'autofocus' => 'autofocus'
                     ]) ?>
-                </div>
-                <div class="col-12 col-lg-6">
+
                     <?= $form->field($model, 'part_number')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'merk_part_number')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'ift_number')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'originalitas_id', ['inline' => true])->radioList(Originalitas::find()->map()) ?>
+                    <?= $form->field($model, 'keterangan')->textarea([
+                        'rows' => '4'
+                    ]) ?>
                 </div>
-
+                
 
             </div>
         </div>
+        <!--<div class="row">
+            <div class="col-12 col-lg-6">
+
+            </div>
+
+            <div class="col-12 col-lg-6">
+
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-12 col-lg-6">
-                <?= $form->field($model, 'ift_number')->textInput(['maxlength' => true]) ?>
-            </div>
 
-            <div class="col-12 col-lg-6">
-                <?= $form->field($model, 'merk_part_number')->textInput(['maxlength' => true]) ?>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-12 col-lg-6">
-                <?= $form->field($model, 'originalitas_id', ['inline' => true])->radioList(Originalitas::find()->map()) ?>
             </div>
             <div class="col-12 col-lg-6">
-                <?= $form->field($model, 'keterangan')->textarea([
-                    'rows' => '4'
-                ]) ?>
+
             </div>
-        </div>
-
-
+        </div>-->
     </div>
 
     <div class="form-detail">

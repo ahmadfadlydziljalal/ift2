@@ -27,6 +27,7 @@ use yii\behaviors\TimestampBehavior;
  * @property \app\models\FakturDetail[] $fakturDetails
  * @property \app\models\Faktur[] $fakturs
  * @property \app\models\Faktur[] $fakturs0
+ * @property \app\models\PurchaseOrder[] $purchaseOrders
  * @property string $aliasModel
  */
 abstract class Card extends \yii\db\ActiveRecord
@@ -139,6 +140,14 @@ abstract class Card extends \yii\db\ActiveRecord
     public function getFakturs0()
     {
         return $this->hasMany(\app\models\Faktur::class, ['toko_saya_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPurchaseOrders()
+    {
+        return $this->hasMany(\app\models\PurchaseOrder::class, ['vendor_id' => 'id']);
     }
 
 

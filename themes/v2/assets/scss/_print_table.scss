@@ -1,44 +1,51 @@
 @import "vars";
 
-.table {
-  margin: 0;
-  width: 99%;
-  border-collapse: collapse;
-  font-size: 11pt;
+table {
+  page-break-inside: auto;
 
-  th {
-    text-align: left;
-  }
-
-  th, td {
-    padding: 1pt 2pt;
-    border: 1pt solid black;
-  }
-
-  td{
-    letter-spacing: 0.05em;
-    vertical-align: top;
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
   }
 
   thead {
+    display: table-header-group
+  }
 
-    tr {
-      th {
-        text-align: left;
-      }
+  tfoot {
+    display: table-footer-group
+  }
 
-      th.text-end {
-        text-align: right;
-      }
+  &.table {
+
+    margin: 0;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11pt;
+
+    th {
+      text-align: center;
+      font-weight: bold;
+    }
+
+    th, td {
+      padding: 1pt 2pt;
+      border: 1pt solid black;
+    }
+
+    td {
+      letter-spacing: 0.05em;
+      vertical-align: top;
+    }
+
+    &.table-detail-view {
+      width: 50%;
     }
 
   }
 
-  &.table-detail-view {
-    width: 50%;
-  }
-
 }
+
 
 .card {
 
@@ -65,9 +72,6 @@
           }
         }
       }
-
     }
-
   }
-
 }

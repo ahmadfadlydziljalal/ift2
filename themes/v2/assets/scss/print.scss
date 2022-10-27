@@ -1,30 +1,49 @@
 @import "vars";
 
+@media screen {
+  body {
+    display: none !important;
+  }
+}
+
 @media print {
-  *{
+
+  * {
     font-family: "Arial", serif;
     font-weight: normal;
   }
 
   @page {
-    /* Ukuran kertas */
-    size:
-            21.5cm /*Panjang*/
-            14.0cm; /* Lebar */
-    margin:
-            0.5cm /*Top*/
-            0.5cm /*Right*/
-            0 /*Bottom*/
-            0.25cm; /* Left */
+    size: A4;
+    margin: 12pt 24pt 24pt 24pt;
+  }
+
+  @page :first {
+    size: A4;
+    margin: 36pt 24pt 24pt 24pt;
   }
 
   body {
 
     font-size: 11pt;
-    @import "print_table";
-    @import "print_utils";
+    margin: 0;
+    counter-reset: page;
+
+    div#header {
+      //position: fixed;
+      //top: 0;
+      //left: 0;
+      //width: 100%;
+      counter-increment: page;
+    }
+
+    #page-number:after {
+      content: counter(page)
+    }
 
   }
 
-
+  @import "print_table";
+  @import "print_utils";
+  
 }
