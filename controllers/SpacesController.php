@@ -6,7 +6,9 @@ use bilberrry\spaces\Service;
 use Yii;
 use yii\base\DynamicModel;
 use yii\base\InvalidConfigException;
+use yii\filters\VerbFilter;
 use yii\helpers\Json;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\RangeNotSatisfiableHttpException;
 use yii\web\Response;
@@ -26,6 +28,18 @@ use yii\web\Response;
  * */
 class SpacesController extends Controller
 {
+
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['post'],
+                ],
+            ],
+        ];
+    }
 
 
     public function actionIndex($path = null)
@@ -60,11 +74,18 @@ class SpacesController extends Controller
         ]);
     }
 
+    /**
+     * @param $root
+     * @return string
+     */
     public function actionUploadFile($root = null): string
     {
         return $this->render('_form_upload_dokumen_pendukung', ['root' => $root]);
     }
 
+    /**
+     * @return array|string[]|void
+     */
     public function actionHandleUpload()
     {
         if (empty($_FILES['file_data'])) {
@@ -106,21 +127,23 @@ class SpacesController extends Controller
         );
     }
 
-
     /**
      * @param $key
+     * @param $type
      * @return Response
-     * @throws InvalidConfigException
      */
-    public function actionDelete($key, $type)
+    public function actionDelete($key, $type): Response
     {
-
-        $aws = Yii::$app->aws;
         if ($type === 'dir') {
             Yii::$app->aws->deleteDir($key);
         } else {
             Yii::$app->aws->delete($key);
         }
-        return $this->redirect(['spaces/index']);
+
+        return $this->redirect(
+            !empty(Yii::$app->request->referrer) ?
+                Yii::$app->request->referrer :
+                Url::to(['index'])
+        );
     }
 }
