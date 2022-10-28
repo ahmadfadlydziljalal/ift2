@@ -15,12 +15,12 @@
 
   @page {
     size: A4;
-    margin: 12pt 24pt 24pt 24pt;
+    margin: 12pt 12pt 24pt 24pt;
   }
 
   @page :first {
     size: A4;
-    margin: 36pt 24pt 24pt 24pt;
+    margin: 24pt 12pt 24pt 24pt;
   }
 
   body {
@@ -45,5 +45,5 @@
 
   @import "print_table";
   @import "print_utils";
-  
+
 }
