@@ -19,8 +19,8 @@ $brandLabel =
     Html::button('<i class="bi bi-list"></i>', ['role' => 'button', 'type' => 'button', 'id' => 'btn-toggle-sidebar', 'class' => 'btn btn-link text-dark text-decoration-none rounded py-0 px-0 ']) .
     Html::a(
         "<div class='d-flex flex-row align-items-center' style='gap: .5rem'>" .
-                    Yii::$app->settings->get('site.icon') . (!Yii::$app->settings->get('site.name') ? Yii::$app->name : Yii::$app->settings->get('site.name')) .
-             "</div>"
+        Yii::$app->settings->get('site.icon') . (!Yii::$app->settings->get('site.name') ? Yii::$app->name : Yii::$app->settings->get('site.name')) .
+        "</div>"
         , Yii::$app->homeUrl, ['class' => 'text-decoration-none ']) .
     Html::endTag('div');
 ?>
@@ -37,7 +37,7 @@ $brandLabel =
     'togglerContent' => '<span class="bi bi-arrow-down-circle"></span>',
 ]); ?>
 
-    <div class="search-navbar my-4 my-md-0 order-sm-0 order-md-1 order-lg-1 flex-sm-grow-1 flex-md-grow-0 float-md-end">
+    <div class="search-navbar my-4 my-md-0 flex-sm-grow-1 flex-md-grow-0 float-md-end order-sm-0 order-md-0 order-lg-0">
         <?php
         try {
             echo Select2::widget([
@@ -67,10 +67,10 @@ $brandLabel =
 
 <?php
 
-if(!Yii::$app->user->isGuest) :
+if (!Yii::$app->user->isGuest) :
     try {
         echo Nav::widget([
-            'options' => ['class' => 'navbar-nav flex-sm-grow-0 flex-md-grow-1'],
+            'options' => ['class' => 'navbar-nav flex-sm-grow-0 flex-md-grow-1 order-sm-0 order-md-1 order-lg-1'],
             'activateParents' => true,
             'dropdownClass' => Dropdown::class,
             'items' => $topItems
