@@ -16,5 +16,5 @@ return [
     'sessionName' => getenv('SESSION_NAME'),
     'env' => getenv('ENV'),
     'maintainer' => getenv('MAINTAINER'),
-    'awsRootPath' => 'Indoformosa/'
+    'awsRootPath' => 'Indoformosa'
 ];

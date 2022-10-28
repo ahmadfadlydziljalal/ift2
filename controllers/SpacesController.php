@@ -51,12 +51,7 @@ class SpacesController extends Controller
         $model->addRule('nama_folder', 'required');
 
         if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post()) && $model->validate()) {
-
-            $storage = Yii::$app->spaces;
-            $storage->commands()
-                ->put($root . $model->nama_folder . '/', 'body')
-                ->execute();
-
+            Yii::$app->aws->createDir($root . '/' . $model->nama_folder);
             return $this->redirect(['index', 'path' => $root]);
         }
 
