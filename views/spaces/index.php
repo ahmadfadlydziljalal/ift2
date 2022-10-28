@@ -11,9 +11,7 @@ use yii\helpers\Html;
 $this->title = 'Spaces';
 $this->params['breadcrumbs'][] = $this->title;
 
-$root = isset(Yii::$app->request->queryParams['path']) ?
-    Yii::$app->request->queryParams['path'] :
-    Yii::$app->params['awsRootPath'];
+$root = Yii::$app->request->queryParams['path'] ?? Yii::$app->params['awsRootPath'];
 ?>
 
 <div class="spaces-index">
@@ -30,11 +28,11 @@ $root = isset(Yii::$app->request->queryParams['path']) ?
                 </div>
 
                 <?= Html::a(TextLinkEnum::BUAT_FOLDER->value, ['spaces/create-new-folder', 'root' => $root], [
-                    'class' => 'btn btn-primary'
+                    'class' => 'btn btn-success'
                 ]) ?>
 
                 <?= Html::a(TextLinkEnum::UPLOAD_FILE->value, ['spaces/upload-file', 'root' => $root], [
-                    'class' => 'btn btn-primary'
+                    'class' => 'btn btn-success'
                 ]) ?>
             </div>
         </div>

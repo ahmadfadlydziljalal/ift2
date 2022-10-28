@@ -10,7 +10,7 @@ use yii\helpers\Html;
 <div class="card h-100 rounded">
     <div class="card-body">
         <div class="d-flex gap-5 flex-column flex-md-row">
-            <div class="">
+            <div>
                 <?= $model->cardTypeName ?>
                 <p class="card-title">
                     <?= $model->nama ?> <br/> <small class="text-muted"><?= $model->kode ?></small>
@@ -19,7 +19,7 @@ use yii\helpers\Html;
             </div>
 
             <div class="align-self-center align-self-md-center ms-md-auto">
-                <div class="d-flex flex-sm-row flex-md-column flex-lg-column  gap-3">
+                <div class="d-flex flex-sm-row flex-md-column flex-lg-column gap-3">
                     <?= Html::a(TextLinkEnum::VIEW->value, ['card/view', 'id' => $model->id], [
                         'class' => 'text-decoration-none'
                     ]) ?>
