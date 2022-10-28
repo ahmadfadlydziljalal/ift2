@@ -54,7 +54,7 @@ class SpacesController extends Controller
 
             $storage = Yii::$app->spaces;
             $storage->commands()
-                ->put($root . '/' . $model->nama_folder . '/', 'body')
+                ->put($root . $model->nama_folder . '/', 'body')
                 ->execute();
 
             return $this->redirect(['index', 'path' => $root]);
