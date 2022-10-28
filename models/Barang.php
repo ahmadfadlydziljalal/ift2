@@ -20,6 +20,12 @@ class Barang extends BaseBarang
             parent::behaviors(),
             [
                 # custom behaviors
+                [
+                    'class' => 'mdm\autonumber\Behavior',
+                    'attribute' => 'ift_number', // required
+                    'value' => 'IFT-' . '?', // format auto number. '?' will be replaced with generated number
+                    'digit' => 4
+                ],
             ]
         );
     }
@@ -34,7 +40,7 @@ class Barang extends BaseBarang
         );
     }
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return ArrayHelper::merge(
             parent::attributeLabels(), [

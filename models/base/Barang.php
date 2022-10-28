@@ -43,7 +43,7 @@ abstract class Barang extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['nama', 'ift_number', 'originalitas_id'], 'required'],
+            [['nama', 'originalitas_id'], 'required'],
             [['keterangan'], 'string'],
             [['originalitas_id'], 'integer'],
             [['nama', 'merk_part_number'], 'string', 'max' => 255],

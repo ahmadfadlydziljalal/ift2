@@ -51,13 +51,12 @@ use yii\helpers\Html;
 
                     <?= $form->field($model, 'part_number')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'merk_part_number')->textInput(['maxlength' => true]) ?>
-                    <?= $form->field($model, 'ift_number')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'originalitas_id', ['inline' => true])->radioList(Originalitas::find()->map()) ?>
                     <?= $form->field($model, 'keterangan')->textarea([
                         'rows' => '4'
                     ]) ?>
                 </div>
-                
+
 
             </div>
         </div>
