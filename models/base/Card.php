@@ -15,6 +15,7 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $id
  * @property string $nama
  * @property string $kode
+ * @property string $alamat
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $created_by
@@ -64,8 +65,8 @@ abstract class Card extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['nama', 'kode'], 'required'],
-            [['nama'], 'string', 'max' => 255],
+            [['nama', 'kode', 'alamat'], 'required'],
+            [['nama', 'alamat'], 'string', 'max' => 255],
             [['kode'], 'string', 'max' => 50]
         ]);
     }
@@ -83,6 +84,7 @@ abstract class Card extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
+            'alamat' => 'Alamat',
         ];
     }
 

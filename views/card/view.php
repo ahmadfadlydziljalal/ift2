@@ -64,6 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'format' => 'raw',
                             'value' => implode(", ", ArrayHelper::getColumn(ArrayHelper::toArray($model->cardTypes), 'nama'))
                         ],
+                        'alamat:nText'
                     ],
                 ]);
             } catch (Throwable $e) {

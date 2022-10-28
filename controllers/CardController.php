@@ -205,7 +205,7 @@ class CardController extends Controller
             } catch (Exception $e) {
                 Yii::$app->session->setFlash('danger', $e->getMessage());
             }
-            return $this->redirect(['index']);
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [

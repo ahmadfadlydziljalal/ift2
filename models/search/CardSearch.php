@@ -21,7 +21,7 @@ class CardSearch extends Card
     {
         return [
             [['id', 'created_at', 'updated_at'], 'integer'],
-            [['nama', 'kode', 'created_by', 'updated_by',], 'safe'],
+            [['nama', 'kode', 'created_by', 'updated_by'], 'safe'],
         ];
     }
 
@@ -46,6 +46,7 @@ class CardSearch extends Card
                 'id' => 'card.id',
                 'nama' => 'card.nama',
                 'kode' => 'card.kode',
+                'alamat' => 'card.alamat',
                 'cardTypeName' => new Expression("GROUP_CONCAT(card_type.nama)")
             ])
             ->joinWith(['cardBelongsTypes' => function ($cbt) {

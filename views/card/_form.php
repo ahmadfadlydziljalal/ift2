@@ -52,13 +52,14 @@ use yii\helpers\Html;
                 ]]);
             ?>
 
+            <?= $form->field($model, 'alamat')->textarea(['rows' => 4]) ?>
+
             <div class="d-flex mt-3 justify-content-between">
                 <?= Html::a(' Tutup', ['index'], [
                     'class' => 'btn btn-secondary',
                     'type' => 'button'
                 ]) ?>
                 <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
-
             </div>
         </div>
     </div>

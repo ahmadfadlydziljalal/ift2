@@ -22,6 +22,7 @@ return [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'cardTypeName',
     ],
+    'alamat:nText',
     // [
     // 'class'=>'\yii\grid\DataColumn',
     // 'attribute'=>'created_at',
