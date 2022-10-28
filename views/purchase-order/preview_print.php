@@ -5,6 +5,7 @@ use app\models\PurchaseOrderDetail;
 use app\models\User;
 use yii\web\View;
 
+/* @see \app\controllers\PurchaseOrderController::actionPrint() */
 /* @var $this View */
 /* @var $model PurchaseOrder */
 /* @var $openWindowPrint int */
@@ -21,7 +22,8 @@ $settings = Yii::$app->settings;
 
         <div class="mb-1" style=" float: left; width: 45%; padding-right: 2em">
             <div class="border-1" style="min-height: 1.6cm; max-height: 1.6cm; padding: .5em">
-                To: <?= $model->vendor->nama ?>
+                To: <?= $model->vendor->nama ?><br/>
+                <?= $model->vendor->alamat ?>
             </div>
         </div>
 
