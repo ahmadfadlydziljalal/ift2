@@ -13,7 +13,7 @@ use yii\helpers\Html;
             <div class="">
                 <?= $model->cardTypeName ?>
                 <p class="card-title">
-                    <?= $model->nama ?> - <span class="text-muted"><?= $model->kode ?></span>
+                    <?= $model->nama ?> <br/> <small class="text-muted"><?= $model->kode ?></small>
                 </p>
                 <span><?= nl2br($model->alamat) ?></span>
             </div>

@@ -33,8 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'col-sm-12 col-md-12 col-lg-6 mb-3'
             ]
         ]);
-
-
         /* echo GridView::widget([
              'dataProvider' => $dataProvider,
              'filterModel' => $searchModel,
