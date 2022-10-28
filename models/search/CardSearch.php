@@ -70,17 +70,9 @@ class CardSearch extends Card
             // $query->where('0=1');
             return $dataProvider;
         }
-
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
-
-        $query->andFilterWhere(['like', 'nama', $this->nama])
-            ->andFilterWhere(['like', 'kode', $this->kode])
-            ->andFilterWhere(['like', 'created_by', $this->created_by])
-            ->andFilterWhere(['like', 'updated_by', $this->updated_by]);
+        
+        $query->andFilterWhere(['like', 'card.nama', $this->nama])
+            ->andFilterWhere(['like', 'card.kode', $this->kode]);
 
         return $dataProvider;
     }

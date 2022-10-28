@@ -13,4 +13,6 @@ enum TextLinkEnum: string
     case BUAT_FOLDER = '<i class="bi bi-folder-plus"></i> Buat Folder';
     case UPLOAD_FILE = '<i class="bi bi-cloud-upload"></i> Upload File';
     case DOWNLOAD = '<i class="bi bi-cloud-download"></i> Download';
+    case VIEW = '<i class="bi bi-eye-fill"></i> View';
+    case DELETE = '<i class="bi bi-trash-fill"></i> Delete';
 }
