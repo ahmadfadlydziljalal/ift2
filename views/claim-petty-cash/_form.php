@@ -1,10 +1,11 @@
 <?php
 
 use app\models\Card;
+use kartik\date\DatePicker;
 use kartik\datecontrol\DateControl;
+use kartik\form\ActiveForm;
 use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
-use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -12,48 +13,39 @@ use yii\helpers\Html;
 /* @var $modelsDetail app\models\ClaimPettyCashNota */
 /* @var $modelsDetailDetail app\models\ClaimPettyCashNotaDetail */
 /* @var $form yii\bootstrap5\ActiveForm */
+
+$fieldConfig = [
+    'template' => '<div class="mb-3 row"><div class="col-sm-3">{label}</div><div class="col-sm-9">{input}{error}</div> </div>'
+];
+
 ?>
 
 <div class="claim-petty-cash-form">
 
     <?php $form = ActiveForm::begin([
-
         'id' => 'dynamic-form',
-        'layout' => ActiveForm::LAYOUT_HORIZONTAL,
-        'fieldConfig' => [
-            'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
-            'horizontalCssClasses' => [
-                'label' => 'col-sm-4 col-form-label',
-                'offset' => 'offset-sm-4',
-                'wrapper' => 'col-sm-8',
-                'error' => '',
-                'hint' => '',
-            ],
-        ],
-
-        /*'layout' => ActiveForm::LAYOUT_FLOATING,
-        'fieldConfig' => [
-            'options' => [
-                'class' => 'form-floating'
-            ]
-        ]*/
+        'enableClientValidation' => false,
+        'enableAjaxValidation' => false,
+        'errorSummaryCssClass' => 'alert alert-danger'
     ]); ?>
+
+    <?php $form->errorSummary($model) ?>
 
     <div class="d-flex flex-column mt-0" style="gap: 1rem">
         <div class="form-master">
             <div class="row">
                 <div class="col-12 col-lg-7">
-                    <?php echo $form->field($model, 'vendor_id')->widget(Select2::class, [
-                        'data' => Card::find()->map(Card::GET_ONLY_VENDOR),
+                    <?php echo $form->field($model, 'vendor_id', $fieldConfig)->widget(Select2::class, [
+                        'data' => Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR),
                         'options' => [
-                            'prompt' => '= Pilih Kantor / Personal IFT =',
+                            'prompt' => '= Pilih Pejabat Kantor =',
                             'autofocus' => 'autofocus'
                         ],
                     ]) ?>
-                    <?php echo $form->field($model, 'tanggal')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]); ?>
-                    <?php echo $form->field($model, 'remarks')->textarea(['rows' => 5]); ?>
-                    <?php echo $form->field($model, 'approved_by')->textInput(['maxlength' => true]); ?>
-                    <?php echo $form->field($model, 'acknowledge_by')->textInput(['maxlength' => true]); ?>
+                    <?php echo $form->field($model, 'tanggal', $fieldConfig)->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]); ?>
+                    <?php echo $form->field($model, 'remarks', $fieldConfig)->textarea(['rows' => 5]); ?>
+                    <?php echo $form->field($model, 'approved_by', $fieldConfig)->textInput(['maxlength' => true]); ?>
+                    <?php echo $form->field($model, 'acknowledge_by', $fieldConfig)->textInput(['maxlength' => true]); ?>
                 </div>
             </div>
         </div>
@@ -76,10 +68,12 @@ use yii\helpers\Html;
             <div class="container-items">
 
                 <?php foreach ($modelsDetail as $i => $modelDetail): ?>
+
+
                     <div class="card mb-4 item">
 
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
+                        <div class="card-header border-bottom py-0 pe-0">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <?php if (!$modelDetail->isNewRecord) {
                                     echo Html::activeHiddenInput($modelDetail, "[$i]id");
                                 } ?>
@@ -91,14 +85,23 @@ use yii\helpers\Html;
                         </div>
 
                         <div class="card-body">
-                            <?= $form->field($modelDetail, "[$i]nomor", ['options' => ['class' => 'mb-3 row']]); ?>
-                            <?= $form->field($modelDetail, "[$i]vendor_id", ['options' => ['class' => 'mb-3 row']])->widget(Select2::class, [
-                                'data' => Card::find()->map(Card::GET_ONLY_VENDOR),
-                                'options' => [
-                                    'prompt' => '= Pilih Vendor',
-                                    'autofocus' => 'autofocus'
-                                ],
-                            ]) ?>
+                            <?php $form->errorSummary($modelDetail) ?>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-10 col-lg-8">
+                                    <?= $form->field($modelDetail, "[$i]nomor", $fieldConfig); ?>
+                                    <?= $form->field($modelDetail, "[$i]vendor_id", $fieldConfig)->widget(Select2::class, [
+                                        'data' => Card::find()->map(Card::GET_ONLY_VENDOR),
+                                        'options' => [
+                                            'prompt' => '= Pilih Vendor',
+                                            'autofocus' => 'autofocus'
+                                        ],
+                                    ]) ?>
+                                    <?= $form->field($modelDetail, "[$i]tanggal_nota", $fieldConfig)
+                                        ->widget(DatePicker::class);
+                                    ?>
+                                </div>
+                            </div>
+
                         </div>
 
                         <?= $this->render('_form-detail-detail', [
@@ -120,7 +123,7 @@ use yii\helpers\Html;
 
             <div class="d-flex justify-content-between mt-3">
                 <?= Html::a(' Tutup', ['index'], ['class' => 'btn btn-secondary']) ?>
-                <?= Html::submitButton(' Simpan', ['class' => 'btn btn-primary']) ?>
+                <?= Html::submitButton('<i class="bi bi-save"></i> Simpan Claim Petty Cash', ['class' => 'btn btn-primary']) ?>
             </div>
         </div>
 

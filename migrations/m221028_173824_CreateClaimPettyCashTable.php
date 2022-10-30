@@ -43,6 +43,7 @@ class m221028_173824_CreateClaimPettyCashTable extends Migration
             'claim_petty_cash_id' => $this->integer(),
             'nomor' => $this->string(128)->notNull(),
             'vendor_id' => $this->integer()->notNull(),
+            'tanggal_nota' => $this->date()->notNull()
         ]);
 
         $this->createTable('{{%claim_petty_cash_nota_detail}}', [

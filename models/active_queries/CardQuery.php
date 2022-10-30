@@ -29,7 +29,12 @@ class CardQuery extends ActiveQuery
         return parent::one($db);
     }
 
-    public function map(string $mode = Card::GET_ALL)
+    /**
+     * @param string $mode
+     * @return array
+     * @throws NotFoundHttpException
+     */
+    public function map(string $mode = Card::GET_ALL): array
     {
 
         $q = parent::select('card.id as id, card.nama as nama')
@@ -45,27 +50,31 @@ class CardQuery extends ActiveQuery
 
             case Card::GET_ONLY_VENDOR:
                 $q->where([
-                    'card_type.kode' => 'V'
+                    'card_type.kode' => 'vendor'
                 ])->groupBy('card.id');
                 break;
 
             case Card::GET_ONLY_TOKO_SAYA:
                 $q->where([
-                    'card_type.kode' => 'TS'
+                    'card_type.kode' => 'toko-saya'
+                ])->groupBy('card.id');
+                break;
+
+            case Card::GET_ONLY_PEJABAT_KANTOR:
+                $q->where([
+                    'card_type.kode' => 'pejabat-kantor'
                 ])->groupBy('card.id');
                 break;
 
             case Card::GET_APART_FROM_TOKO_SAYA:
                 $q->where([
-                    '!=', 'card_type.kode', 'TS'
+                    '!=', 'card_type.kode', 'toko-saya'
                 ])->groupBy('card.id');
                 break;
 
             default:
                 throw new NotFoundHttpException('Mode Anda tidak didukung');
         endswitch;
-
-
         return ArrayHelper::map($q->all(), 'id', 'nama');
     }
 

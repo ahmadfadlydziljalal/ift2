@@ -45,7 +45,7 @@ abstract class ClaimPettyCashNotaDetail extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::rules(), [
             [['claim_petty_cash_nota_id', 'tipe_pembelian_id', 'barang_id', 'satuan_id'], 'integer'],
-            [['tipe_pembelian_id', 'satuan_id', 'harga'], 'required'],
+            [['tipe_pembelian_id', 'quantity', 'satuan_id', 'harga'], 'required'],
             [['quantity', 'harga'], 'number'],
             [['description'], 'string', 'max' => 255],
             [['barang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Barang::class, 'targetAttribute' => ['barang_id' => 'id']],

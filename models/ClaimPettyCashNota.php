@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\base\ClaimPettyCashNota as BaseClaimPettyCashNota;
+use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -42,5 +43,23 @@ class ClaimPettyCashNota extends BaseClaimPettyCashNota
                 'vendor_id' => 'Vendor',
             ]
         );
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->tanggal_nota =
+            !empty($this->tanggal_nota) ?
+                Yii::$app->formatter->asDate($this->tanggal_nota) :
+                $this->tanggal_nota;
+    }
+
+    public function beforeSave($insert)
+    {
+        $this->tanggal_nota =
+            !empty($this->tanggal_nota) ?
+                Yii::$app->formatter->asDate($this->tanggal_nota, 'php:Y-m-d') :
+                $this->tanggal_nota;
+        return parent::beforeSave($insert);
     }
 }

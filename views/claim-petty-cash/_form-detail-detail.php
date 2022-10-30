@@ -33,15 +33,18 @@ use yii\widgets\MaskedInput;
 
         <thead class="thead-light">
         <tr>
-            <th colspan="8">Nota detail</th>
+            <th colspan="8">
+                <i class="bi bi-arrow-right-short"></i>
+                <i class="bi bi-arrow-right-short"></i> Nota detail
+            </th>
         </tr>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">Tipe pembelian</th>
+
+            <th scope="col">Tipe</th>
             <th scope="col">Barang</th>
             <th scope="col">Description</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Satuan</th>
+            <th scope="col" style="width: 124px">Qty</th>
+            <th scope="col" style="width: 96px">Satuan</th>
             <th scope="col">Harga</th>
             <th scope="col" class="text-center"
                 style="width: 2px"></th>
@@ -50,36 +53,56 @@ use yii\widgets\MaskedInput;
         <tbody class="container-rooms">
         <?php foreach ($modelsDetailDetail as $j => $modelDetailDetail): ?>
             <tr class="room-item">
-                <td class="align-middle" style="width: 2px;">
 
+                <td>
                     <?php if (!$modelDetailDetail->isNewRecord) {
                         echo Html::activeHiddenInput($modelDetailDetail, "[$i][$j]id");
                     } ?>
-
-                    <i class="bi bi-dash"></i>
-                </td>
-
-                <td><?= $form->field($modelDetailDetail, "[$i][$j]tipe_pembelian_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                        ->dropDownList(TipePembelian::find()->map());
+                    <?= $form->field($modelDetailDetail, "[$i][$j]tipe_pembelian_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                        ->dropDownList(TipePembelian::find()->map(), [
+                            'prompt' => '-',
+                            'class' => 'tipe-pembelian'
+                        ]);
                     ?>
                 </td>
-                <td><?= $form->field($modelDetailDetail, "[$i][$j]barang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+
+                <td class="column-barang">
+                    <?= $form->field($modelDetailDetail, "[$i][$j]barang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                         ->widget(Select2::class, [
                             'data' => Barang::find()->map(),
                             'options' => [
-                                'placeholder' => '= Pilih barang ='
+                                'placeholder' => '= Pilih barang =',
+                                'class' => 'barang',
+                            ],
+                            'pluginOptions' => [
+                                'allowClear' => true
                             ]
-                        ]); ?></td>
-                <td><?= $form->field($modelDetailDetail, "[$i][$j]description", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?></td>
-                <td><?= $form->field($modelDetailDetail, "[$i][$j]quantity", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?></td>
-                <td><?= $form->field($modelDetailDetail, "[$i][$j]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->widget(Select2::class, [
+                        ]); ?>
+                </td>
+
+                <td><?= $form->field($modelDetailDetail, "[$i][$j]description", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                        ->textInput([
+                            'class' => 'form-control description'
+                        ]); ?>
+                </td>
+                <td style="width: 12px">
+                    <?= $form->field($modelDetailDetail, "[$i][$j]quantity", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                        ->textInput([
+                            'class' => 'form-control quantity',
+                            'type' => 'number'
+                        ]);
+                    ?>
+                </td>
+                <td>
+                    <?= $form->field($modelDetailDetail, "[$i][$j]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->widget(Select2::class, [
                         'data' => Satuan::find()->map(),
                         'options' => [
-                            'prompt' => '= Pilih Salah Satu =',
+                            'prompt' => ' - ',
                             'class' => 'satuan-id form-control',
 
                         ]
-                    ]); ?></td>
+                    ]); ?>
+                </td>
                 <td><?= $form->field($modelDetailDetail, "[$i][$j]harga", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                         ->widget(MaskedInput::class, [
                             'clientOptions' => [
@@ -92,13 +115,14 @@ use yii\widgets\MaskedInput;
                                 'removeMaskOnSubmit' => true
                             ],
                             'options' => [
-                                'class' => 'form-control harga-barang'
+                                'class' => 'form-control harga'
                             ]
                         ]);
-                    ?></td>
+                    ?>
+                </td>
 
-                <td class="text-center" style="width: 90px;">
-                    <button type="button" class="remove-room btn btn-link text-danger">
+                <td class="text-center" style="width: 2px;">
+                    <button type="button" class="remove-room btn btn-link text-danger px-2">
                         <i class="bi bi-trash"> </i>
                     </button>
                 </td>
@@ -107,7 +131,7 @@ use yii\widgets\MaskedInput;
         </tbody>
         <tfoot>
         <tr>
-            <td></td>
+
             <td colspan="7"><?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah Detail Nota', ['class' => 'add-room btn btn-success',]); ?></td>
         </tr>
         </tfoot>

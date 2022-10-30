@@ -14,6 +14,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $claim_petty_cash_id
  * @property string $nomor
  * @property integer $vendor_id
+ * @property string $tanggal_nota
  *
  * @property \app\models\ClaimPettyCash $claimPettyCash
  * @property \app\models\ClaimPettyCashNotaDetail[] $claimPettyCashNotaDetails
@@ -40,7 +41,8 @@ abstract class ClaimPettyCashNota extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::rules(), [
             [['claim_petty_cash_id', 'vendor_id'], 'integer'],
-            [['nomor', 'vendor_id'], 'required'],
+            [['nomor', 'vendor_id', 'tanggal_nota'], 'required'],
+            [['tanggal_nota'], 'safe'],
             [['nomor'], 'string', 'max' => 128],
             [['claim_petty_cash_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\ClaimPettyCash::class, 'targetAttribute' => ['claim_petty_cash_id' => 'id']],
             [['vendor_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['vendor_id' => 'id']]
@@ -57,6 +59,7 @@ abstract class ClaimPettyCashNota extends \yii\db\ActiveRecord
             'claim_petty_cash_id' => 'Claim Petty Cash ID',
             'nomor' => 'Nomor',
             'vendor_id' => 'Vendor ID',
+            'tanggal_nota' => 'Tanggal Nota',
         ];
     }
 

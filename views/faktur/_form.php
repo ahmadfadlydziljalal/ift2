@@ -3,6 +3,7 @@
 use app\components\helpers\ArrayHelper;
 use app\models\Card;
 use app\models\JenisTransaksi;
+use app\models\Rekening;
 use kartik\datecontrol\DateControl;
 use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
@@ -13,29 +14,6 @@ use yii\helpers\Html;
 /* @var $modelsDetail app\models\FakturDetail */
 /* @var $form yii\bootstrap5\ActiveForm */
 
-$this->registerCss("
- table td.column-barang{
-    width: 316px !important;
-    max-width: 316px !important;
- }
- 
- table td.column-barang .select2-container{
-    width: 300px !important;
-    max-width: 300px !important;
- }
-
- table td.column-vendor{
-    width: 216px !important;
-    max-width: 216px !important;
- }
-
- table td.column-vendor .select2-container{
-    width: 200px !important;
-    max-width: 200px !important;
- }
-  
-  
-");
 ?>
 
     <div class="faktur-form">
@@ -87,8 +65,6 @@ $this->registerCss("
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-
-
                         <div class="col-12 col-lg-3">
                             <?= $form->field($model, 'jenis_transaksi_id', ['inline' => true])->radioList(ArrayHelper::map(
                                 JenisTransaksi::find()->all(),
@@ -98,7 +74,7 @@ $this->registerCss("
                         </div>
 
                         <div class="col-12 col-lg-3">
-                            <?= $form->field($model, 'rekening_id', ['inline' => true])->radioList(\app\models\Rekening::find()->map()) ?>
+                            <?= $form->field($model, 'rekening_id', ['inline' => true])->radioList(Rekening::find()->map()) ?>
                         </div>
                     </div>
                 </div>

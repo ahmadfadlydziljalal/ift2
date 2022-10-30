@@ -1,6 +1,7 @@
 <?php
 
 use kartik\base\BootstrapInterface;
+use kartik\date\DatePicker;
 use kartik\grid\GridViewInterface;
 use yii\bootstrap5\LinkPager as Bs5LinkPager;
 use yii\data\Pagination;
@@ -126,5 +127,16 @@ return [
             },
             'detailAnimationDuration' => 100
         ],
+        DatePicker::class => [
+            'type' => DatePicker::TYPE_COMPONENT_APPEND,
+            'pickerIcon' => '<i class="bi bi-calendar"></i>',
+            'removeIcon' => '<i class="bi bi-x-lg"></i>',
+            'pluginOptions' => [
+                'todayHighlight' => true,
+                'todayBtn' => true,
+                'autoclose' => true,
+                'format' => 'dd-mm-yyyy'
+            ]
+        ]
     ]
 ];

@@ -195,7 +195,7 @@ class ClaimPettyCashController extends Controller
      * @throws NotFoundHttpException
      * @throws InvalidConfigException
      */
-    public function actionUpdate(int $id)
+    public function actionUpdate(int $id): Response|string
     {
         $request = Yii::$app->request;
         $model = $this->findModel($id);
