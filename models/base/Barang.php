@@ -11,6 +11,7 @@ use yii\helpers\ArrayHelper;
  * This is the base-model class for table "barang".
  *
  * @property integer $id
+ * @property integer $tipe_pembelian_id
  * @property string $nama
  * @property string $part_number
  * @property string $keterangan
@@ -24,6 +25,7 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
  * @property \app\models\Originalitas $originalitas
  * @property \app\models\PurchaseOrderDetail[] $purchaseOrderDetails
+ * @property \app\models\TipePembelian $tipePembelian
  * @property string $aliasModel
  */
 abstract class Barang extends \yii\db\ActiveRecord
@@ -45,13 +47,14 @@ abstract class Barang extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['nama', 'originalitas_id'], 'required'],
+            [['tipe_pembelian_id', 'nama', 'originalitas_id'], 'required'],
+            [['tipe_pembelian_id', 'originalitas_id'], 'integer'],
             [['keterangan'], 'string'],
-            [['originalitas_id'], 'integer'],
             [['nama', 'merk_part_number'], 'string', 'max' => 255],
             [['part_number'], 'string', 'max' => 32],
             [['ift_number'], 'string', 'max' => 128],
-            [['originalitas_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Originalitas::class, 'targetAttribute' => ['originalitas_id' => 'id']]
+            [['originalitas_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Originalitas::class, 'targetAttribute' => ['originalitas_id' => 'id']],
+            [['tipe_pembelian_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\TipePembelian::class, 'targetAttribute' => ['tipe_pembelian_id' => 'id']]
         ]);
     }
 
@@ -62,6 +65,7 @@ abstract class Barang extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'tipe_pembelian_id' => 'Tipe Pembelian ID',
             'nama' => 'Nama',
             'part_number' => 'Part Number',
             'keterangan' => 'Keterangan',
@@ -117,6 +121,14 @@ abstract class Barang extends \yii\db\ActiveRecord
     public function getPurchaseOrderDetails()
     {
         return $this->hasMany(\app\models\PurchaseOrderDetail::class, ['barang_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTipePembelian()
+    {
+        return $this->hasOne(\app\models\TipePembelian::class, ['id' => 'tipe_pembelian_id']);
     }
 
 

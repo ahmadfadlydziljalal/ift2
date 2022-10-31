@@ -48,6 +48,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'table table-bordered table-detail-view'
                 ],
                 'attributes' => [
+                    [
+                        'attribute' => 'tipe_pembelian_id',
+                        'value' => $model->tipePembelian->nama
+                    ],
                     'nama',
                     'part_number',
                     'merk_part_number',

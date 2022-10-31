@@ -19,7 +19,7 @@ class BarangSearch extends Barang
     public function rules(): array
     {
         return [
-            [['id', 'originalitas_id'], 'integer'],
+            [['id', 'originalitas_id', 'tipe_pembelian_id'], 'integer'],
             [['nama', 'part_number', 'merk_part_number', 'ift_number'], 'safe'],
         ];
     }
@@ -48,6 +48,8 @@ class BarangSearch extends Barang
                 'merk_part_number' => 'b.merk_part_number',
                 'ift_number' => 'b.ift_number',
                 'originalitasNama' => 'originalitas.nama',
+                'tipePembelianNama' => 'tipe_pembelian.nama',
+                'tipe_pembelian_id' => 'tipe_pembelian_id',
                 'originalitas_id' => 'b.originalitas_id',
                 'keterangan' => 'b.keterangan',
                 'satuanHarga' => new Expression("
@@ -69,6 +71,7 @@ class BarangSearch extends Barang
                     ->joinWith('vendor', false);
             }], false)
             ->joinWith('originalitas', false)
+            ->joinWith('tipePembelian', false)
             ->groupBy('b.id');
 
         $dataProvider = new ActiveDataProvider([
@@ -90,7 +93,8 @@ class BarangSearch extends Barang
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'originalitas_id' => $this->originalitas_id
+            'originalitas_id' => $this->originalitas_id,
+            'tipe_pembelian_id' => $this->tipe_pembelian_id,
         ]);
 
         $query

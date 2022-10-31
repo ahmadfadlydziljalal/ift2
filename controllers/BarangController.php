@@ -86,7 +86,7 @@ class BarangController extends Controller
      * Creates a new Barang model.
      * @return string|Response
      */
-    public function actionCreate()
+    public function actionCreate(): Response|string
     {
         $request = Yii::$app->request;
         $model = new Barang();
@@ -245,7 +245,6 @@ class BarangController extends Controller
     }
 
 
-
     public function actionFindAvailableSatuan()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -266,13 +265,13 @@ class BarangController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         return [
             'data' => BarangSatuan::findOne([
-                'barang_id' =>  (int)Yii::$app->request->post('barangId'),
-                'vendor_id' =>  (int)Yii::$app->request->post('vendorId'),
-                'satuan_id' =>  (int)Yii::$app->request->post('satuanId')
+                'barang_id' => (int)Yii::$app->request->post('barangId'),
+                'vendor_id' => (int)Yii::$app->request->post('vendorId'),
+                'satuan_id' => (int)Yii::$app->request->post('satuanId')
             ]),
-            'barangId' =>  (int)Yii::$app->request->post('barangId'),
-            'vendorId' =>  (int)Yii::$app->request->post('vendorId'),
-            'satuanId' =>  (int)Yii::$app->request->post('satuanId'),
+            'barangId' => (int)Yii::$app->request->post('barangId'),
+            'vendorId' => (int)Yii::$app->request->post('vendorId'),
+            'satuanId' => (int)Yii::$app->request->post('satuanId'),
 
         ];
     }

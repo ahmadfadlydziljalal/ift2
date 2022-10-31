@@ -13,6 +13,7 @@ class Barang extends BaseBarang
 
     public ?string $satuanHarga = null;
     public ?string $originalitasNama = null;
+    public ?string $tipePembelianNama = null;
 
     public function behaviors()
     {
@@ -45,6 +46,7 @@ class Barang extends BaseBarang
         return ArrayHelper::merge(
             parent::attributeLabels(), [
                 'id' => 'ID',
+                'tipe_pembelian_id' => 'Tipe Pembelian',
                 'nama' => 'Nama',
                 'part_number' => 'Part Number',
                 'keterangan' => 'Keterangan',

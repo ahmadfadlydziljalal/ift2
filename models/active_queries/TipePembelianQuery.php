@@ -3,6 +3,7 @@
 namespace app\models\active_queries;
 
 use app\components\helpers\ArrayHelper;
+use app\enums\TipePembelianEnum;
 use app\models\TipePembelian;
 use yii\db\ActiveQuery;
 
@@ -28,9 +29,13 @@ class TipePembelianQuery extends ActiveQuery
         return parent::one($db);
     }
 
-    public function map(): array
+    public function map(bool $isStockAndPeralatanOnly = false): array
     {
-        return ArrayHelper::map(parent::all(), 'id', 'nama');
+        return $isStockAndPeralatanOnly ?
+            ArrayHelper::map(parent::where([
+                'in', 'id', [TipePembelianEnum::STOCK->value, TipePembelianEnum::PERLENGKAPAN->value]
+            ])->all(), 'id', 'nama')
+            : ArrayHelper::map(parent::all(), 'id', 'nama');
     }
 
     /**

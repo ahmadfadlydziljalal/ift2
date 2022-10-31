@@ -3,6 +3,7 @@
 use app\models\Card;
 use app\models\Originalitas;
 use app\models\Satuan;
+use app\models\TipePembelian;
 use kartik\number\NumberControl;
 use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
@@ -44,9 +45,18 @@ use yii\helpers\Html;
         <div class="form-master">
             <div class="row">
                 <div class="col-12 col-lg-7">
+
+                    <?= $form->field($model, 'tipe_pembelian_id')->widget(Select2::class, [
+                        'data' => TipePembelian::find()->map(true),
+                        'pluginOptions' => [
+                            'autofocus' => 'autofocus',
+                            'placeholder' => '= Pilih salah satu ='
+                        ]
+                    ]) ?>
+
                     <?= $form->field($model, 'nama')->textInput([
                         'maxlength' => true,
-                        'autofocus' => 'autofocus'
+
                     ]) ?>
 
                     <?= $form->field($model, 'part_number')->textInput(['maxlength' => true]) ?>

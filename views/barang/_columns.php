@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Originalitas;
+use app\models\TipePembelian;
 
 return [
     [
@@ -19,6 +20,14 @@ return [
         },
         'headerOptions' => ['class' => 'kartik-sheet-style'],
         'expandOneOnly' => true
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
+        'attribute' => 'tipe_pembelian_id',
+        'filter' => TipePembelian::find()->map(true),
+        'value' => function ($model) {
+            return $model->tipePembelianNama;
+        },
     ],
     [
         'class' => '\yii\grid\DataColumn',
