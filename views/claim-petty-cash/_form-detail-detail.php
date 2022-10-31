@@ -41,7 +41,7 @@ use yii\widgets\MaskedInput;
         <tr>
 
             <th scope="col">Tipe</th>
-            <th scope="col">Barang</th>
+            <th scope="col">Barang atau Perlengkapan</th>
             <th scope="col">Description</th>
             <th scope="col" style="width: 124px">Qty</th>
             <th scope="col" style="width: 96px">Satuan</th>
@@ -74,7 +74,7 @@ use yii\widgets\MaskedInput;
                         ->widget(Select2::class, [
                             'data' => Barang::find()->map(),
                             'options' => [
-                                'placeholder' => '= Pilih barang =',
+                                'placeholder' => '= Pilih barang / perlengkapan =',
                                 'class' => 'barang',
                             ],
                             'pluginOptions' => [

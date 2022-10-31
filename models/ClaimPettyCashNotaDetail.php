@@ -35,17 +35,27 @@ class ClaimPettyCashNotaDetail extends BaseClaimPettyCashNotaDetail
             [
                 [['barang_id'], 'required', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
-                    return ($model->tipe_pembelian_id == TipePembelianEnum::STOCK->value);
+                    return
+                        in_array($model->tipe_pembelian_id, [
+                            TipePembelianEnum::STOCK->value,
+                            TipePembelianEnum::PERLENGKAPAN->value
+                        ]);
                 }],
 
                 [['barang_id'], 'compare', 'compareValue' => '', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
-                    return ($model->tipe_pembelian_id != TipePembelianEnum::STOCK->value);
+                    return !in_array($model->tipe_pembelian_id, [
+                        TipePembelianEnum::STOCK->value,
+                        TipePembelianEnum::PERLENGKAPAN->value
+                    ]);
                 }, 'message' => '{attribute} must be should be blank ...!'],
 
                 [['description'], 'required', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
-                    return ($model->tipe_pembelian_id != TipePembelianEnum::STOCK->value);
+                    return !in_array($model->tipe_pembelian_id, [
+                        TipePembelianEnum::STOCK->value,
+                        TipePembelianEnum::PERLENGKAPAN->value
+                    ]);
                 }],
 
             ]
