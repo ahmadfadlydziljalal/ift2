@@ -20,16 +20,16 @@ $fieldConfig = [
 
 ?>
 
-<div class="claim-petty-cash-form">
+    <div class="claim-petty-cash-form">
 
-    <?php $form = ActiveForm::begin([
-        'id' => 'dynamic-form',
-        'enableClientValidation' => false,
-        'enableAjaxValidation' => false,
-        'errorSummaryCssClass' => 'alert alert-danger'
-    ]); ?>
+<?php $form = ActiveForm::begin([
+    'id' => 'dynamic-form',
+    'enableClientValidation' => false,
+    'enableAjaxValidation' => false,
+    'errorSummaryCssClass' => 'alert alert-danger'
+]); ?>
 
-    <?php $form->errorSummary($model) ?>
+<?php $form->errorSummary($model) ?>
 
     <div class="d-flex flex-column mt-0" style="gap: 1rem">
         <div class="form-master">
@@ -129,3 +129,25 @@ $fieldConfig = [
 
         <?php ActiveForm::end(); ?>
     </div>
+
+<?php
+
+$js = <<<JS
+
+$(".dynamicform_wrapper").on("afterInsert", function(e, wrapperItem) {
+   
+     jQuery(wrapperItem).closest('div.card').find('.kv-plugin-loading').remove();
+     $(".dynamicform_inner").on("afterInsert", function(e, innerItem) {
+        jQuery(innerItem).closest('tr').find('.kv-plugin-loading').remove();
+     });
+    
+
+});
+
+$(".dynamicform_inner").on("afterInsert", function(e, innerItem) {
+    jQuery(innerItem).closest('tr').find('.kv-plugin-loading').remove();
+});
+
+JS;
+
+$this->registerJs($js);

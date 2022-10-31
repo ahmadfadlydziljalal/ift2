@@ -49,9 +49,17 @@ class BarangQuery extends ActiveQuery
         return parent::all($db);
     }
 
-    public function map()
+    public function map(int $tipePembelian = 0)
     {
-        return ArrayHelper::map(parent::orderBy('nama')->all(), 'id', function ($el) {
+        $data = parent::orderBy('nama');
+        if ($tipePembelian) {
+            $data->where([
+                'tipe_pembelian_id' => $tipePembelian
+            ]);
+        }
+
+
+        return ArrayHelper::map($data->all(), 'id', function ($el) {
             return
                 $el->part_number . ' - ' .
                 $el->merk_part_number . ' - ' .

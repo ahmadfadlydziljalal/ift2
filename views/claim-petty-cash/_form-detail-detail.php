@@ -3,9 +3,12 @@
 use app\models\Barang;
 use app\models\Satuan;
 use app\models\TipePembelian;
+use kartik\depdrop\DepDrop;
 use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
+use yii\base\InvalidConfigException;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
@@ -54,39 +57,63 @@ use yii\widgets\MaskedInput;
         <?php foreach ($modelsDetailDetail as $j => $modelDetailDetail): ?>
             <tr class="room-item">
 
-                <td>
+                <td class="column-tipe-pembelian">
 
                     <?php if (!$modelDetailDetail->isNewRecord) {
                         echo Html::activeHiddenInput($modelDetailDetail, "[$i][$j]id");
                     } ?>
 
-                    <?= $form->field($modelDetailDetail, "[$i][$j]tipe_pembelian_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                        ->dropDownList(TipePembelian::find()->map(), [
-                            'prompt' => '-',
-                            'class' => 'tipe-pembelian'
-                        ]);
+                    <?php try {
+                        echo $form->field($modelDetailDetail, "[$i][$j]tipePembelian", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                            ->dropDownList(TipePembelian::find()->map(), [
+                                'prompt' => '-',
+                                'class' => 'tipe-pembelian',
+                                'id' => 'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-tipe_pembelian_id'
+                            ]);
+                    } catch (InvalidConfigException $e) {
+                        echo $e->getMessage();
+                    }
                     ?>
 
                 </td>
 
                 <td class="column-barang">
+                    <?php
+                    $data = [];
+
+                    if (Yii::$app->request->isPost || !$modelDetailDetail->isNewRecord) {
+                        if ($modelDetailDetail->barang_id) {
+                            $data = Barang::find()->map($modelDetailDetail->tipePembelian);
+                        }
+                    }
+
+                    ?>
+                    <?php /* @see \app\controllers\ClaimPettyCashController::actionFindBarang() */ ?>
                     <?= $form->field($modelDetailDetail, "[$i][$j]barang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                        ->widget(Select2::class, [
-                            'data' => Barang::find()->map(),
+                        ->widget(DepDrop::class, [
+                            'data' => $data,
                             'options' => [
-                                'placeholder' => '= Pilih barang / perlengkapan =',
-                                'class' => 'barang',
+                                'id' => 'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-barang_id',
+                                'placeholder' => 'Select ...',
+                                'class' => 'form-control barang',
                             ],
+                            'type' => DepDrop::TYPE_SELECT2,
+                            'select2Options' => ['pluginOptions' => ['allowClear' => true]],
                             'pluginOptions' => [
-                                'allowClear' => true
+                                'depends' => ['claim-petty-cash-nota-detail-' . $i . '-' . $j . '-tipe_pembelian_id'],
+                                'placeholder' => 'Select...',
+                                'url' => Url::to(['claim-petty-cash/find-barang'])
                             ]
-                        ]); ?>
+                        ]);
+                    ?>
                 </td>
 
-                <td><?= $form->field($modelDetailDetail, "[$i][$j]description", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                <td class="column-description">
+                    <?= $form->field($modelDetailDetail, "[$i][$j]description", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                         ->textInput([
                             'class' => 'form-control description'
-                        ]); ?>
+                        ]);
+                    ?>
                 </td>
                 <td style="width: 12px">
                     <?= $form->field($modelDetailDetail, "[$i][$j]quantity", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])

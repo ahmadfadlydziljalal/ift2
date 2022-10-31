@@ -68,8 +68,8 @@ use yii\widgets\DetailView;
                 // ],
                 [
                     'class' => '\yii\grid\DataColumn',
-                    'attribute' => 'tipe_pembelian_id',
-                    'value' => 'tipePembelian.nama'
+                    'attribute' => 'tipePembelian',
+                    'value' => 'namaTipePembelian'
                 ],
                 [
                     'class' => '\yii\grid\DataColumn',

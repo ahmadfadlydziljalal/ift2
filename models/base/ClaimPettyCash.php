@@ -4,10 +4,12 @@
 
 namespace app\models\base;
 
-use Yii;
-use yii\helpers\ArrayHelper;
+use app\models\active_queries\ClaimPettyCashQuery;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the base-model class for table "claim_petty_cash".
@@ -28,9 +30,8 @@ use yii\behaviors\TimestampBehavior;
  * @property \app\models\Card $vendor
  * @property string $aliasModel
  */
-abstract class ClaimPettyCash extends \yii\db\ActiveRecord
+abstract class ClaimPettyCash extends ActiveRecord
 {
-
 
 
     /**
@@ -39,6 +40,15 @@ abstract class ClaimPettyCash extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'claim_petty_cash';
+    }
+
+    /**
+     * @inheritdoc
+     * @return ClaimPettyCashQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new ClaimPettyCashQuery(get_called_class());
     }
 
     /**
@@ -93,7 +103,7 @@ abstract class ClaimPettyCash extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getClaimPettyCashNotas()
     {
@@ -101,22 +111,11 @@ abstract class ClaimPettyCash extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getVendor()
     {
         return $this->hasOne(\app\models\Card::class, ['id' => 'vendor_id']);
-    }
-
-
-    
-    /**
-     * @inheritdoc
-     * @return \app\models\active_queries\ClaimPettyCashQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new \app\models\active_queries\ClaimPettyCashQuery(get_called_class());
     }
 
 

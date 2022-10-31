@@ -85,7 +85,7 @@ use yii\data\ActiveDataProvider;
             [
                 'class' => '\yii\grid\DataColumn',
                 'attribute' => 'tipe_pembelian_id',
-                'value' => 'tipePembelian.nama',
+                'value' => 'barang.tipePembelian.nama',
                 'label' => 'Tipe'
             ],
             [

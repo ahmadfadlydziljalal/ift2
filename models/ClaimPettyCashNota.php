@@ -62,4 +62,13 @@ class ClaimPettyCashNota extends BaseClaimPettyCashNota
                 $this->tanggal_nota;
         return parent::beforeSave($insert);
     }
+
+    public function getClaimPettyCashNotaDetails()
+    {
+        return parent::getClaimPettyCashNotaDetails()
+            ->select('claim_petty_cash_nota_detail.*')
+            ->addSelect('barang.tipe_pembelian_id as tipePembelian')
+            ->joinWith('barang');
+
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Barang;
 use app\models\ClaimPettyCash;
 use app\models\ClaimPettyCashNota;
 use app\models\ClaimPettyCashNotaDetail;
@@ -201,6 +202,7 @@ class ClaimPettyCashController extends Controller
         $model = $this->findModel($id);
         $modelsDetail = !empty($model->claimPettyCashNotas) ? $model->claimPettyCashNotas : [new ClaimPettyCashNota()];
 
+
         $modelsDetailDetail = [];
         $oldDetailDetails = [];
 
@@ -212,6 +214,7 @@ class ClaimPettyCashController extends Controller
                 $oldDetailDetails = ArrayHelper::merge(ArrayHelper::index($claimPettyCashNotaDetails, 'id'), $oldDetailDetails);
             }
         }
+
 
         if ($model->load($request->post())) {
 
@@ -364,6 +367,28 @@ class ClaimPettyCashController extends Controller
         return $this->render('print', [
             'model' => $this->findModel($id),
         ]);
+
+    }
+
+    public function actionFindBarang(): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+
+            if ($parents != null) {
+                $out = Barang::find()
+                    ->select('id,nama as name')
+                    ->where([
+                        'tipe_pembelian_id' => $parents[0]
+                    ])
+                    ->asArray()
+                    ->all();
+                return ['output' => $out, 'selected' => ''];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
     }
 
 }

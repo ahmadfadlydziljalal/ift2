@@ -5,6 +5,7 @@ namespace app\models;
 use app\enums\TipePembelianEnum;
 use app\models\base\ClaimPettyCashNotaDetail as BaseClaimPettyCashNotaDetail;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Inflector;
 
 /**
  * This is the model class for table "claim_petty_cash_nota_detail".
@@ -17,6 +18,8 @@ use yii\helpers\ArrayHelper;
  */
 class ClaimPettyCashNotaDetail extends BaseClaimPettyCashNotaDetail
 {
+
+    public ?string $tipePembelian = null;
 
     public function behaviors(): array
     {
@@ -33,26 +36,28 @@ class ClaimPettyCashNotaDetail extends BaseClaimPettyCashNotaDetail
         return ArrayHelper::merge(
             parent::rules(),
             [
+                ['tipePembelian', 'safe'],
+
                 [['barang_id'], 'required', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
                     return
-                        in_array($model->tipe_pembelian_id, [
+                        in_array($model->tipePembelian, [
                             TipePembelianEnum::STOCK->value,
                             TipePembelianEnum::PERLENGKAPAN->value
                         ]);
-                }],
+                }, 'message' => 'Barang / Perlengkapan cannot be blank'],
 
                 [['barang_id'], 'compare', 'compareValue' => '', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
-                    return !in_array($model->tipe_pembelian_id, [
+                    return !in_array($model->tipePembelian, [
                         TipePembelianEnum::STOCK->value,
                         TipePembelianEnum::PERLENGKAPAN->value
                     ]);
-                }, 'message' => '{attribute} must be should be blank ...!'],
+                }, 'message' => '{attribute} should be blank ...!'],
 
                 [['description'], 'required', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
-                    return !in_array($model->tipe_pembelian_id, [
+                    return !in_array($model->tipePembelian, [
                         TipePembelianEnum::STOCK->value,
                         TipePembelianEnum::PERLENGKAPAN->value
                     ]);
@@ -69,7 +74,7 @@ class ClaimPettyCashNotaDetail extends BaseClaimPettyCashNotaDetail
             [
                 'id' => 'ID',
                 'claim_petty_cash_nota_id' => 'Claim Petty Cash Not',
-                'tipe_pembelian_id' => 'Tipe Pembelian',
+                'tipePembelian' => 'Tipe Pembelian',
                 'barang_id' => 'Barang',
                 'description' => 'Description',
                 'quantity' => 'Quantity',
@@ -82,5 +87,14 @@ class ClaimPettyCashNotaDetail extends BaseClaimPettyCashNotaDetail
     public function getSubTotal(): float|int
     {
         return $this->quantity * $this->harga;
+    }
+
+    public function getNamaTipePembelian(): string
+    {
+
+        /** @var ClaimPettyCashNotaDetail $model */
+        return isset($this->barang)
+            ? $this->barang->tipePembelian->nama
+            : Inflector::camel2words(TipePembelianEnum::LAIN_LAIN->name);
     }
 }
