@@ -3,22 +3,24 @@
 namespace app\models;
 
 use app\enums\TipePembelianEnum;
-use app\models\base\ClaimPettyCashNotaDetail as BaseClaimPettyCashNotaDetail;
+use app\models\base\MaterialRequisitionDetail as BaseMaterialRequisitionDetail;
 use yii\helpers\ArrayHelper;
 
 /**
- * This is the model class for table "claim_petty_cash_nota_detail".
- * @property string $approved_by [varchar(255)]
- * @property string $acknowledge_by [varchar(255)]
- * @property int $created_at [int]
- * @property int $updated_at [int]
- * @property string $created_by [varchar(10)]
- * @property string $updated_by [varchar(10)]
+ * This is the model class for table "material_requisition_detail".
  */
-class ClaimPettyCashNotaDetail extends BaseClaimPettyCashNotaDetail
+class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
 {
 
-    public function behaviors(): array
+
+    public ?string $barangPartNumber = null;
+    public ?string $barangIftNumber = null;
+    public ?string $barangMerkPartNumber = null;
+    public ?string $barangNama = null;
+    public ?string $tipePembelianNama = null;
+
+
+    public function behaviors()
     {
         return ArrayHelper::merge(
             parent::behaviors(),
@@ -47,30 +49,25 @@ class ClaimPettyCashNotaDetail extends BaseClaimPettyCashNotaDetail
                     /** @var ClaimPettyCashNotaDetail $model */
                     return ($model->tipe_pembelian_id != TipePembelianEnum::STOCK->value);
                 }],
-
             ]
         );
     }
 
     public function attributeLabels(): array
     {
-        return ArrayHelper::merge(
-            parent::attributeLabels(),
-            [
-                'id' => 'ID',
-                'claim_petty_cash_nota_id' => 'Claim Petty Cash Not',
-                'tipe_pembelian_id' => 'Tipe Pembelian',
-                'barang_id' => 'Barang',
-                'description' => 'Description',
-                'quantity' => 'Quantity',
-                'satuan_id' => 'Satuan',
-                'harga' => 'Harga',
-            ]
-        );
+        return ArrayHelper::merge(parent::attributeLabels(), [
+            'id' => 'ID',
+            'material_requisition_id' => 'Material Requisition',
+            'tipe_pembelian_id' => 'Tipe',
+            'barang_id' => 'Barang',
+            'description' => 'Description',
+            'quantity' => 'Quantity',
+            'satuan_id' => 'Satuan',
+            'waktu_permintaan_terakhir' => 'Last Req',
+            'harga_terakhir' => 'Last Price',
+            'stock_terakhir' => 'Last Stock',
+        ]);
     }
 
-    public function getSubTotal(): float|int
-    {
-        return $this->quantity * $this->harga;
-    }
+
 }

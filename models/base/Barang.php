@@ -19,7 +19,9 @@ use yii\helpers\ArrayHelper;
  * @property integer $originalitas_id
  *
  * @property \app\models\BarangSatuan[] $barangSatuans
+ * @property \app\models\ClaimPettyCashNotaDetail[] $claimPettyCashNotaDetails
  * @property \app\models\FakturDetail[] $fakturDetails
+ * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
  * @property \app\models\Originalitas $originalitas
  * @property \app\models\PurchaseOrderDetail[] $purchaseOrderDetails
  * @property string $aliasModel
@@ -80,9 +82,25 @@ abstract class Barang extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getClaimPettyCashNotaDetails()
+    {
+        return $this->hasMany(\app\models\ClaimPettyCashNotaDetail::class, ['barang_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getFakturDetails()
     {
         return $this->hasMany(\app\models\FakturDetail::class, ['barang_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMaterialRequisitionDetails()
+    {
+        return $this->hasMany(\app\models\MaterialRequisitionDetail::class, ['barang_id' => 'id']);
     }
 
     /**

@@ -55,15 +55,18 @@ use yii\widgets\MaskedInput;
             <tr class="room-item">
 
                 <td>
+
                     <?php if (!$modelDetailDetail->isNewRecord) {
                         echo Html::activeHiddenInput($modelDetailDetail, "[$i][$j]id");
                     } ?>
+
                     <?= $form->field($modelDetailDetail, "[$i][$j]tipe_pembelian_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                         ->dropDownList(TipePembelian::find()->map(), [
                             'prompt' => '-',
                             'class' => 'tipe-pembelian'
                         ]);
                     ?>
+
                 </td>
 
                 <td class="column-barang">

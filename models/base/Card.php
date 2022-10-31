@@ -25,9 +25,12 @@ use yii\behaviors\TimestampBehavior;
  * @property \app\models\CardBelongsType[] $cardBelongsTypes
  * @property \app\models\CardOwnEquipment[] $cardOwnEquipments
  * @property \app\models\CardPersonInCharge[] $cardPersonInCharges
+ * @property \app\models\ClaimPettyCashNota[] $claimPettyCashNotas
+ * @property \app\models\ClaimPettyCash[] $claimPettyCashes
  * @property \app\models\FakturDetail[] $fakturDetails
  * @property \app\models\Faktur[] $fakturs
  * @property \app\models\Faktur[] $fakturs0
+ * @property \app\models\MaterialRequisition[] $materialRequisitions
  * @property \app\models\PurchaseOrder[] $purchaseOrders
  * @property string $aliasModel
  */
@@ -123,6 +126,22 @@ abstract class Card extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getClaimPettyCashNotas()
+    {
+        return $this->hasMany(\app\models\ClaimPettyCashNota::class, ['vendor_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getClaimPettyCashes()
+    {
+        return $this->hasMany(\app\models\ClaimPettyCash::class, ['vendor_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getFakturDetails()
     {
         return $this->hasMany(\app\models\FakturDetail::class, ['vendor_id' => 'id']);
@@ -142,6 +161,14 @@ abstract class Card extends \yii\db\ActiveRecord
     public function getFakturs0()
     {
         return $this->hasMany(\app\models\Faktur::class, ['toko_saya_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMaterialRequisitions()
+    {
+        return $this->hasMany(\app\models\MaterialRequisition::class, ['vendor_id' => 'id']);
     }
 
     /**
