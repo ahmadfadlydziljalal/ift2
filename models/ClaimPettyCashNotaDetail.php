@@ -34,19 +34,21 @@ class ClaimPettyCashNotaDetail extends BaseClaimPettyCashNotaDetail
         return ArrayHelper::merge(
             parent::rules(),
             [
-                # custom validation rules
                 [['barang_id'], 'required', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
                     return ($model->tipe_pembelian_id == self::TIPE_PEMBELIAN_STOCK);
                 }],
+
                 [['barang_id'], 'compare', 'compareValue' => '', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
                     return ($model->tipe_pembelian_id != self::TIPE_PEMBELIAN_STOCK);
-                }, 'message' => '{attribute} must be not fill ...!'],
+                }, 'message' => '{attribute} must be should be blank ...!'],
+
                 [['description'], 'required', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
                     return ($model->tipe_pembelian_id != self::TIPE_PEMBELIAN_STOCK);
                 }],
+
             ]
         );
     }
