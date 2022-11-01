@@ -47,6 +47,7 @@ class CardSearch extends Card
                 'nama' => 'card.nama',
                 'kode' => 'card.kode',
                 'alamat' => 'card.alamat',
+                'npwp' => 'card.npwp',
                 'cardTypeName' => new Expression("GROUP_CONCAT(card_type.nama)")
             ])
             ->joinWith(['cardBelongsTypes' => function ($cbt) {
@@ -70,9 +71,10 @@ class CardSearch extends Card
             // $query->where('0=1');
             return $dataProvider;
         }
-        
+
         $query->andFilterWhere(['like', 'card.nama', $this->nama])
-            ->andFilterWhere(['like', 'card.kode', $this->kode]);
+            ->andFilterWhere(['like', 'card.kode', $this->kode])
+            ->andFilterWhere(['like', 'card.npwp', $this->npwp]);
 
         return $dataProvider;
     }

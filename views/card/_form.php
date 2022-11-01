@@ -54,6 +54,8 @@ use yii\helpers\Html;
 
             <?= $form->field($model, 'alamat')->textarea(['rows' => 4]) ?>
 
+            <?= $form->field($model, 'npwp')->textInput(['maxlength' => true]) ?>
+
             <div class="d-flex mt-3 justify-content-between">
                 <?= Html::a(' Tutup', ['index'], [
                     'class' => 'btn btn-secondary',
