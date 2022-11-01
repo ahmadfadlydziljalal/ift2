@@ -1,5 +1,6 @@
 <?php
 
+use app\models\ClaimPettyCash;
 use yii\bootstrap5\Html;
 use yii\helpers\Url;
 
@@ -7,15 +8,14 @@ return [
     [
         'class' => 'yii\grid\SerialColumn',
     ],
-    // [
-    // 'class'=>'yii\grid\DataColumn',
-    // 'attribute'=>'id',
-    // 'format'=>'text',
-    // ],
     [
         'class' => 'yii\grid\DataColumn',
         'attribute' => 'nomor',
         'format' => 'text',
+        'value' => function ($model) {
+            /** @var ClaimPettyCash $model */
+            return $model->nomorDisplay;
+        }
     ],
     [
         'class' => 'yii\grid\DataColumn',
@@ -31,7 +31,10 @@ return [
     [
         'class' => 'yii\grid\DataColumn',
         'attribute' => 'remarks',
-        'format' => 'text',
+        'format' => 'nText',
+        'contentOptions' => [
+            'class' => 'text-wrap'
+        ]
     ],
     [
         'class' => 'yii\grid\DataColumn',
@@ -43,26 +46,23 @@ return [
         'attribute' => 'acknowledge_by',
         'format' => 'text',
     ],
-    // [
-    // 'class'=>'yii\grid\DataColumn',
-    // 'attribute'=>'created_at',
-    // 'format'=>'text',
-    // ],
-    // [
-    // 'class'=>'yii\grid\DataColumn',
-    // 'attribute'=>'updated_at',
-    // 'format'=>'text',
-    // ],
-    // [
-    // 'class'=>'yii\grid\DataColumn',
-    // 'attribute'=>'created_by',
-    // 'format'=>'text',
-    // ],
-    // [
-    // 'class'=>'yii\grid\DataColumn',
-    // 'attribute'=>'updated_by',
-    // 'format'=>'text',
-    // ],
+    [
+        'class' => 'yii\grid\DataColumn',
+        'label' => 'Total',
+        'format' => 'raw',
+        'value' => function ($model) {
+            /** @var ClaimPettyCash $model */
+            return
+                Html::beginTag('div', ['class' => 'd-flex justify-content-between gap-1']) .
+                Html::tag('span', Yii::$app->formatter->currencyCode) .
+                Html::tag('span', Yii::$app->formatter->asDecimal($model->totalClaim, 2)) .
+                Html::endTag('div');
+        },
+        'contentOptions' => [
+            'class' => 'text-end',
+
+        ]
+    ],
     [
         'class' => 'yii\grid\ActionColumn',
         'urlCreator' => function ($action, $model) {

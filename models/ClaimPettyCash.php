@@ -69,4 +69,13 @@ class ClaimPettyCash extends BaseClaimPettyCash
             ->via('claimPettyCashNotas');
         return round($parent->sum('quantity * harga'), 2);
     }
+
+    public function getNomorDisplay(): string
+    {
+        $nomor = explode('/', $this->nomor);
+
+        return $nomor[0] . '-' . ($nomor[count($nomor) - 2]) . '-' . end($nomor);
+
+    }
+
 }

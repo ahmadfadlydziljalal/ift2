@@ -89,7 +89,15 @@ return [
             'contentOptions' => [
                 'style' => [
                     'text-align' => 'right',
-                    'vertical-align' => 'middle'
+                    'vertical-align' => 'top'
+                ]
+            ],
+        ],
+        \kartik\grid\SerialColumn::class => [
+            'contentOptions' => [
+                'style' => [
+                    'text-align' => 'right',
+                    'vertical-align' => 'top'
                 ]
             ],
         ],
