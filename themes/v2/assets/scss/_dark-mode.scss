@@ -1,6 +1,6 @@
 @use "vars";
 
-body.dark{
+body.dark {
 
   background-color: vars.$dark !important;
   color: vars.$white !important;
@@ -10,7 +10,7 @@ body.dark{
       &.left-navigation {
         border-right: none;
         background: #343a40;
-        box-shadow:  -5px -5px 10px #2f343a,
+        box-shadow: -5px -5px 10px #2f343a,
         5px 5px 10px #394046;
 
       }
@@ -27,26 +27,28 @@ body.dark{
   aside,
   nav.card,
   ul.pagination li.page-item a.page-link,
-  footer {
+  footer,
+  div.modal-content {
     background-color: vars.$dark !important;
     color: vars.$white !important;
   }
 
-  div.card{
+  div.card,
+  div.modal-content {
     border: 1px solid vars.$white;
   }
 
-  .dropdown-menu{
+  .dropdown-menu {
     border: 1px solid vars.$white !important;
     background-color: vars.$dark !important;
     color: vars.$white !important;
   }
 
-  a, i.bi{
+  a, i.bi {
     color: vars.$white !important;
   }
 
-  .dropdown-item:hover{
+  .dropdown-item:hover {
     background-color: vars.$primary !important;
   }
 
@@ -56,7 +58,7 @@ body.dark{
     border-color: transparent;
   }
 
-  footer{
+  footer {
     border-top: 0;
   }
 
