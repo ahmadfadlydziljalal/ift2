@@ -54,7 +54,10 @@ $fieldConfig = [
             </div>
         </div>
 
-        <?= $this->render('_form_detail', ['form' => $form, 'modelsDetail' => $modelsDetail]) ?>
+        <?= $this->render('_form_detail', [
+            'form' => $form,
+            'modelsDetail' => $modelsDetail
+        ]) ?>
 
         <div class="d-flex justify-content-between">
             <?= Html::a(' Tutup', ['index'], ['class' => 'btn btn-secondary']) ?>

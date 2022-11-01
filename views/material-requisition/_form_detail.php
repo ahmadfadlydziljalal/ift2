@@ -10,10 +10,12 @@ use app\models\Barang;
 use app\models\MaterialRequisitionDetail;
 use app\models\Satuan;
 use app\models\TipePembelian;
+use kartik\depdrop\DepDrop;
 use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 
 ?>
@@ -32,7 +34,7 @@ use yii\web\View;
         'deleteButton' => '.remove-item',
         'model' => $modelsDetail[0],
         'formId' => 'dynamic-form',
-        'formFields' => ['id', 'material_requisition_id', 'tipe_pembelian_id', 'barang_id', 'description', 'quantity', 'satuan_id', 'waktu_permintaan_terakhir', 'harga_terakhir', 'stock_terakhir',],
+        'formFields' => ['id', 'material_requisition_id', 'barang_id', 'description', 'quantity', 'satuan_id', 'waktu_permintaan_terakhir', 'harga_terakhir', 'stock_terakhir',],
     ]);
     ?>
 
@@ -44,7 +46,7 @@ use yii\web\View;
             </tr>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Tipe pembelian</th>
+                <th scope="col">Tipe</th>
                 <th scope="col">Barang</th>
                 <th scope="col">Description</th>
                 <th scope="col">Quantity</th>
@@ -65,23 +67,42 @@ use yii\web\View;
                         <i class="bi bi-arrow-right-short"></i>
                     </td>
 
-                    <td><?= $form->field($modelDetail, "[$i]tipe_pembelian_id", ['template' =>
+                    <td><?= $form->field($modelDetail, "[$i]tipePembelian", ['template' =>
                             '{input}{error}{hint}', 'options' => ['class' => null]])
-                            ->dropDownList(TipePembelian::find()->map(), [
+                            ->dropDownList(TipePembelian::find()->map(true), [
                                 'prompt' => '-',
-                                'class' => 'tipe-pembelian'
+                                'class' => 'tipe-pembelian',
+                                'id' => 'materialrequisitiondetail-' . $i . '-tipepembelian'
                             ])
-                        ?></td>
-                    <td class="column-barang"><?= $form->field($modelDetail, "[$i]barang_id", ['template' =>
-                            '{input}{error}{hint}', 'options' => ['class' => null]])
-                            ->widget(Select2::class, [
-                                'data' => Barang::find()->map(),
+                        ?>
+                    </td>
+
+                    <td class="column-barang">
+                        <?php
+                        $data = [];
+
+                        if (Yii::$app->request->isPost || !$modelDetail->isNewRecord) {
+                            if ($modelDetail->barang_id) {
+                                $data = Barang::find()->map($modelDetail->tipePembelian);
+                            }
+                        }
+
+                        ?>
+
+                        <?= $form->field($modelDetail, "[$i]barang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                            ->widget(DepDrop::class, [
+                                'data' => $data,
                                 'options' => [
-                                    'placeholder' => '= Pilih barang =',
-                                    'class' => 'barang',
+                                    'id' => 'materialrequisitiondetail-' . $i . '-barang_id',
+                                    'placeholder' => 'Select ...',
+                                    'class' => 'form-control barang',
                                 ],
+                                'type' => DepDrop::TYPE_SELECT2,
+                                'select2Options' => ['pluginOptions' => ['allowClear' => true]],
                                 'pluginOptions' => [
-                                    'allowClear' => true
+                                    'depends' => ['materialrequisitiondetail-' . $i . '-tipepembelian'],
+                                    'placeholder' => 'Select...',
+                                    'url' => Url::to(['barang/find-barang-with-tipe-pembelian-param'])
                                 ]
                             ]);
                         ?></td>

@@ -86,10 +86,6 @@ use yii\data\ActiveDataProvider;
                         'width' => '2px'
                     ]
                 ],
-//                'pageSummary' => function () use ($model) {
-//                    /** @var ClaimPettyCashNota $model */
-//                    return "Terbilang: " . Yii::$app->formatter->asSpellout($model->sumDetails);
-//                },
                 'pageSummaryOptions' => [
                     'colspan' => 8,
                     'class' => 'border-0'

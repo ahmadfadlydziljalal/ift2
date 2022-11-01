@@ -3,6 +3,8 @@
 namespace app\models;
 
 use app\models\base\MaterialRequisition as BaseMaterialRequisition;
+use yii\db\ActiveQuery;
+use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -10,7 +12,6 @@ use yii\helpers\ArrayHelper;
  */
 class MaterialRequisition extends BaseMaterialRequisition
 {
-
 
     public function behaviors()
     {
@@ -48,15 +49,16 @@ class MaterialRequisition extends BaseMaterialRequisition
                 'barangIftNumber' => 'barang.ift_number',
                 'barangMerkPartNumber' => 'barang.merk_part_number',
                 'barangNama' => 'barang.nama',
-                'description' => 'material_requisition_detail.description',
+                'description' => new Expression('CONCAT(barang.nama, " " ,COALESCE(material_requisition_detail.description, ""))'),
                 'quantity' => 'material_requisition_detail.quantity',
-                'nama_satuan' => 'satuan.nama',
+                'satuanNama' => 'satuan.nama',
                 'last_req' => 'material_requisition_detail.waktu_permintaan_terakhir',
                 'last_price' => 'material_requisition_detail.harga_terakhir',
                 'last_stock' => 'material_requisition_detail.stock_terakhir',
             ])
-            ->joinWith('barang', false)
-            ->joinWith('tipePembelian', false)
+            ->joinWith(['barang' => function ($barang) {
+                $barang->joinWith('tipePembelian', false);
+            }], false)
             ->joinWith('satuan', false)
             ->asArray()
             ->all();
@@ -67,6 +69,14 @@ class MaterialRequisition extends BaseMaterialRequisition
             'tipePembelianNama'
         );
 
+    }
+
+    public function getMaterialRequisitionDetails(): ActiveQuery
+    {
+        return parent::getMaterialRequisitionDetails()
+            ->select('material_requisition_detail.*')
+            ->addSelect('barang.tipe_pembelian_id as tipePembelian')
+            ->joinWith('barang');
     }
 
 }

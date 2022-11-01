@@ -232,6 +232,27 @@ class BarangController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionFindBarangWithTipePembelianParam(): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+
+            if ($parents != null) {
+                $out = Barang::find()
+                    ->select('id,nama as name')
+                    ->where([
+                        'tipe_pembelian_id' => $parents[0]
+                    ])
+                    ->asArray()
+                    ->all();
+                return ['output' => $out, 'selected' => ''];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+
     public function actionFindAvailableVendor()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;

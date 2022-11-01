@@ -1,15 +1,13 @@
 <?php
 
-
+/* @see \app\controllers\MaterialRequisitionController::actionPrint() */
 /* @var $this View */
 
 /* @var $model MaterialRequisition */
 
 use app\models\MaterialRequisition;
 use app\models\User;
-use yii\data\ArrayDataProvider;
 use yii\web\View;
-use yii\widgets\ListView;
 
 $settings = Yii::$app->settings;
 ?>
@@ -59,21 +57,7 @@ $settings = Yii::$app->settings;
     <div style="clear: both"></div>
 
     <div class="mb-1" style="width: 100%">
-        <?= ListView::widget([
-            'dataProvider' => new ArrayDataProvider([
-                'allModels' => $model->getMaterialRequisitionDetailsGroupingByTipePembelian()
-            ]),
-            'options' => [
-                'class' => 'd-flex flex-column gap-3'
-            ],
-            'itemOptions' => [],
-            'itemView' => function ($model, $key, $index, $widget) {
-                return $this->render('_item_group', [
-                    'model' => $model,
-                    'key' => $key
-                ]);
-            }
-        ]); ?>
+        <?= $this->render('_item', ['model' => $model]) ?>
     </div>
 
     <div style="clear: both"></div>

@@ -73,9 +73,7 @@ class ClaimPettyCash extends BaseClaimPettyCash
     public function getNomorDisplay(): string
     {
         $nomor = explode('/', $this->nomor);
-
         return $nomor[0] . '-' . ($nomor[count($nomor) - 2]) . '-' . end($nomor);
-
     }
 
 }

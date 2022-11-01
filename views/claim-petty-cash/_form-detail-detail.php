@@ -88,7 +88,7 @@ use yii\widgets\MaskedInput;
                     }
 
                     ?>
-                    <?php /* @see \app\controllers\ClaimPettyCashController::actionFindBarang() */ ?>
+
                     <?= $form->field($modelDetailDetail, "[$i][$j]barang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                         ->widget(DepDrop::class, [
                             'data' => $data,
@@ -102,7 +102,7 @@ use yii\widgets\MaskedInput;
                             'pluginOptions' => [
                                 'depends' => ['claim-petty-cash-nota-detail-' . $i . '-' . $j . '-tipe_pembelian_id'],
                                 'placeholder' => 'Select...',
-                                'url' => Url::to(['claim-petty-cash/find-barang'])
+                                'url' => Url::to(['barang/find-barang-with-tipe-pembelian-param'])
                             ]
                         ]);
                     ?>

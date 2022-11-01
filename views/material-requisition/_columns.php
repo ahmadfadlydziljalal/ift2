@@ -39,7 +39,7 @@ return [
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'remarks',
-        'format' => 'ntext',
+        'format' => 'nText',
     ],
     [
         'class' => '\yii\grid\DataColumn',

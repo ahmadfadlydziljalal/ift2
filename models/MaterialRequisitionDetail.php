@@ -17,6 +17,7 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
     public ?string $barangIftNumber = null;
     public ?string $barangMerkPartNumber = null;
     public ?string $barangNama = null;
+    public ?string $tipePembelian = null;
     public ?string $tipePembelianNama = null;
 
 
@@ -35,19 +36,30 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
         return ArrayHelper::merge(
             parent::rules(),
             [
+                ['tipePembelian', 'safe'],
                 [['barang_id'], 'required', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
-                    return ($model->tipe_pembelian_id == TipePembelianEnum::STOCK->value);
-                }],
+                    return
+                        in_array($model->tipePembelian, [
+                            TipePembelianEnum::STOCK->value,
+                            TipePembelianEnum::PERLENGKAPAN->value
+                        ]);
+                }, 'message' => 'Barang / Perlengkapan cannot be blank'],
 
                 [['barang_id'], 'compare', 'compareValue' => '', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
-                    return ($model->tipe_pembelian_id != TipePembelianEnum::STOCK->value);
-                }, 'message' => '{attribute} must be should be blank ...!'],
+                    return !in_array($model->tipePembelian, [
+                        TipePembelianEnum::STOCK->value,
+                        TipePembelianEnum::PERLENGKAPAN->value
+                    ]);
+                }, 'message' => '{attribute} should be blank ...!'],
 
                 [['description'], 'required', 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
-                    return ($model->tipe_pembelian_id != TipePembelianEnum::STOCK->value);
+                    return !in_array($model->tipePembelian, [
+                        TipePembelianEnum::STOCK->value,
+                        TipePembelianEnum::PERLENGKAPAN->value
+                    ]);
                 }],
             ]
         );
@@ -58,7 +70,6 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'material_requisition_id' => 'Material Requisition',
-            'tipe_pembelian_id' => 'Tipe',
             'barang_id' => 'Barang',
             'description' => 'Description',
             'quantity' => 'Quantity',

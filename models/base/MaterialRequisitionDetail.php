@@ -12,7 +12,6 @@ use yii\helpers\ArrayHelper;
  *
  * @property integer $id
  * @property integer $material_requisition_id
- * @property integer $tipe_pembelian_id
  * @property integer $barang_id
  * @property string $description
  * @property string $quantity
@@ -24,7 +23,6 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\Barang $barang
  * @property \app\models\MaterialRequisition $materialRequisition
  * @property \app\models\Satuan $satuan
- * @property \app\models\TipePembelian $tipePembelian
  * @property string $aliasModel
  */
 abstract class MaterialRequisitionDetail extends \yii\db\ActiveRecord
@@ -46,15 +44,14 @@ abstract class MaterialRequisitionDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['material_requisition_id', 'tipe_pembelian_id', 'barang_id', 'satuan_id'], 'integer'],
-            [['tipe_pembelian_id', 'quantity', 'satuan_id'], 'required'],
+            [['material_requisition_id', 'barang_id', 'satuan_id'], 'integer'],
+            [['barang_id', 'quantity', 'satuan_id'], 'required'],
             [['quantity', 'harga_terakhir', 'stock_terakhir'], 'number'],
             [['waktu_permintaan_terakhir'], 'safe'],
             [['description'], 'string', 'max' => 255],
             [['barang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Barang::class, 'targetAttribute' => ['barang_id' => 'id']],
             [['material_requisition_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MaterialRequisition::class, 'targetAttribute' => ['material_requisition_id' => 'id']],
-            [['satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['satuan_id' => 'id']],
-            [['tipe_pembelian_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\TipePembelian::class, 'targetAttribute' => ['tipe_pembelian_id' => 'id']]
+            [['satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['satuan_id' => 'id']]
         ]);
     }
 
@@ -66,7 +63,6 @@ abstract class MaterialRequisitionDetail extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'material_requisition_id' => 'Material Requisition ID',
-            'tipe_pembelian_id' => 'Tipe Pembelian ID',
             'barang_id' => 'Barang ID',
             'description' => 'Description',
             'quantity' => 'Quantity',
@@ -99,14 +95,6 @@ abstract class MaterialRequisitionDetail extends \yii\db\ActiveRecord
     public function getSatuan()
     {
         return $this->hasOne(\app\models\Satuan::class, ['id' => 'satuan_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTipePembelian()
-    {
-        return $this->hasOne(\app\models\TipePembelian::class, ['id' => 'tipe_pembelian_id']);
     }
 
 
