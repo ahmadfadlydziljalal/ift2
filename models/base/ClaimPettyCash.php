@@ -118,5 +118,4 @@ abstract class ClaimPettyCash extends ActiveRecord
         return $this->hasOne(\app\models\Card::class, ['id' => 'vendor_id']);
     }
 
-
 }

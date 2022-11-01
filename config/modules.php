@@ -63,5 +63,9 @@ return [
     ],
     'gridview' => [
         'class' => 'kartik\grid\Module',
-    ]
+    ],
+    'gridviewPrint' => [
+        'class' => 'kartik\grid\Module',
+        'layout' => '{items}',
+    ],
 ];

@@ -63,6 +63,12 @@ class ClaimPettyCashNota extends BaseClaimPettyCashNota
         return parent::beforeSave($insert);
     }
 
+    public function getSumDetails(): float
+    {
+        $parent = parent::getClaimPettyCashNotaDetails();
+        return round($parent->sum('quantity * harga'), 2);
+    }
+
     public function getClaimPettyCashNotaDetails()
     {
         return parent::getClaimPettyCashNotaDetails()

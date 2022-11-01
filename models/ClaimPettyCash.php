@@ -55,4 +55,18 @@ class ClaimPettyCash extends BaseClaimPettyCash
             ]
         );
     }
+
+
+    public function getClaimPettyCashNotaDetails()
+    {
+        return $this->hasMany(ClaimPettyCashNotaDetail::class, ['claim_petty_cash_nota_id' => 'id'])
+            ->via('claimPettyCashNotas');
+    }
+
+    public function getTotalClaim(): float
+    {
+        $parent = $this->hasMany(ClaimPettyCashNotaDetail::class, ['claim_petty_cash_nota_id' => 'id'])
+            ->via('claimPettyCashNotas');
+        return round($parent->sum('quantity * harga'), 2);
+    }
 }

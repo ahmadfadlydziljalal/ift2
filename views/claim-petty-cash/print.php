@@ -39,16 +39,6 @@ $settings = Yii::$app->settings;
                     <td>:</td>
                     <td><?= Yii::$app->formatter->asDate($model->tanggal) ?></td>
                 </tr>
-                <!--<tr>
-                    <td>Page</td>
-                    <td>:</td>
-                    <td><span id="page-number"></span></td>
-                </tr>-->
-                <tr>
-                    <td>Ref No.</td>
-                    <td>:</td>
-                    <td></td>
-                </tr>
                 </tbody>
             </table>
         </div>
@@ -57,9 +47,7 @@ $settings = Yii::$app->settings;
 
     <div style="clear: both"></div>
 
-    <div class="mb-1" style="width: 100%">
-
-
+    <div class="mb-1" style="width: 99.9%">
         <?php echo ListView::widget([
             'dataProvider' => new ActiveDataProvider([
                 'query' => $model->getClaimPettyCashNotas()
@@ -71,13 +59,21 @@ $settings = Yii::$app->settings;
                 ]);
             },
             'itemOptions' => [
-                'class' => 'mb-3'
+                'class' => 'mb-3 p-0'
             ],
             'layout' => '{items}'
         ]); ?>
     </div>
 
-    <div style="clear: both"></div>
+    <div class="mb-1">
+        <p class='font-weight-bold'>
+            Total
+            claim: <?= Yii::$app->formatter->currencyCode ?> <?= Yii::$app->formatter->asDecimal($model->totalClaim, 2) ?>
+            <br/>
+            Terbilang: <?= Yii::$app->formatter->asSpellout($model->totalClaim) ?>
+        </p>
+    </div>
+
 
     <div class="mb-1" style="width: 100%">
         <table class="table table-grid-view table-bordered">
