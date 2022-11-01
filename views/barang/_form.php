@@ -111,7 +111,7 @@ use yii\helpers\Html;
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th colspan="4">Barang satuan</th>
+                    <th colspan="6">Barang satuan</th>
                 </tr>
                 <tr>
                     <th scope="col">#</th>
