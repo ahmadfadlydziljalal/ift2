@@ -15,4 +15,6 @@ enum TextLinkEnum: string
     case DOWNLOAD = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-cloud-download"></i> Download</div>';
     case VIEW = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-eye-fill"></i> View</div>';
     case DELETE = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-trash-fill"></i> Delete</div>';
+    case SEARCH = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-search"></i> Search</div>';
+    case TAMBAH = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-plus-circle"></i> Tambah</div>';
 }
