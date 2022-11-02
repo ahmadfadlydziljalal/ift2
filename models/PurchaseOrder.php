@@ -57,10 +57,10 @@ class PurchaseOrder extends BasePurchaseOrder
 
     public function getSumSubTotal(): float|int
     {
-        $details = $this->purchaseOrderDetails;
+        $details = $this->materialRequisitionDetails;
         $total = 0;
         foreach ($details as $detail) {
-            $total += $detail->quantity * $detail->price;
+            $total += $detail->quantity * $detail->harga_terakhir;
         }
         return $total;
     }

@@ -4,8 +4,8 @@ namespace app\controllers;
 
 use app\models\form\BeforeCreatePurchaseOrderForm;
 use app\models\MaterialRequisition;
+use app\models\MaterialRequisitionDetail;
 use app\models\PurchaseOrder;
-use app\models\PurchaseOrderDetail;
 use app\models\search\PurchaseOrderSearch;
 use app\models\Tabular;
 use Exception;
@@ -86,7 +86,6 @@ class PurchaseOrderController extends Controller
         }
     }
 
-
     public function actionBeforeCreate(): Response|string
     {
         $model = new BeforeCreatePurchaseOrderForm();
@@ -139,14 +138,20 @@ class PurchaseOrderController extends Controller
     {
         $materialRequestAndVendorId = Json::decode($materialRequestAndVendorId);
         $request = Yii::$app->request;
+
         $model = new PurchaseOrder([
-            'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id']
+            'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
+            'vendor_id' => $materialRequestAndVendorId['vendor_id']
         ]);
 
-        $modelsDetail = [new PurchaseOrderDetail()];
+        $modelsDetail = MaterialRequisitionDetail::findAll([
+            'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
+            'vendor_id' => $materialRequestAndVendorId['vendor_id'],
+        ]);
+
         if ($model->load($request->post())) {
 
-            $modelsDetail = Tabular::createMultiple(PurchaseOrderDetail::class);
+            $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetail::class, $modelsDetail);
             Tabular::loadMultiple($modelsDetail, $request->post());
 
             //validate models
@@ -182,17 +187,17 @@ class PurchaseOrderController extends Controller
                 }
 
                 if ($status['code']) {
-                    Yii::$app->session->setFlash('success', 'Purchase Order berhasil dibuat.');
-                    return $this->redirect(['purchase-order/view', 'id' => $model->id]);
-
+                    Yii::$app->session->setFlash('success', 'PurchaseOrder: ' . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
+                    return $this->redirect(['index']);
                 }
-                Yii::$app->session->setFlash('danger', " Purchase Order is failed to insert. Info: " . $status['message']);
+
+                Yii::$app->session->setFlash('danger', " PurchaseOrder is failed to insert. Info: " . $status['message']);
             }
         }
 
         return $this->render('create', [
             'model' => $model,
-            'modelsDetail' => empty($modelsDetail) ? [new PurchaseOrderDetail()] : $modelsDetail,
+            'modelsDetail' => empty($modelsDetail) ? [new MaterialRequisitionDetail()] : $modelsDetail,
         ]);
 
     }
@@ -205,16 +210,18 @@ class PurchaseOrderController extends Controller
      * @throws HttpException
      * @throws NotFoundHttpException
      */
-    public function actionUpdate(int $id)
+    public function actionUpdate(int $id): Response|string
     {
         $request = Yii::$app->request;
         $model = $this->findModel($id);
-        $modelsDetail = !empty($model->purchaseOrderDetails) ? $model->purchaseOrderDetails : [new PurchaseOrderDetail()];
+        $modelsDetail = !empty($model->materialRequisitionDetails)
+            ? $model->materialRequisitionDetails
+            : [new MaterialRequisitionDetail()];
 
         if ($model->load($request->post())) {
 
             $oldDetailsID = ArrayHelper::map($modelsDetail, 'id', 'id');
-            $modelsDetail = Tabular::createMultiple(PurchaseOrderDetail::class, $modelsDetail);
+            $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetail::class, $modelsDetail);
 
             Tabular::loadMultiple($modelsDetail, $request->post());
             $deletedDetailsID = array_diff($oldDetailsID, array_filter(ArrayHelper::map($modelsDetail, 'id', 'id')));
@@ -228,7 +235,7 @@ class PurchaseOrderController extends Controller
                     if ($flag = $model->save(false)) {
 
                         if (!empty($deletedDetailsID)) {
-                            PurchaseOrderDetail::deleteAll(['id' => $deletedDetailsID]);
+                            MaterialRequisitionDetail::updateAll(['purchase_order_id' => null], ['id' => $deletedDetailsID]);
                         }
 
                         foreach ($modelsDetail as $detail) :

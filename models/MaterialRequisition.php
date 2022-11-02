@@ -52,6 +52,8 @@ class MaterialRequisition extends BaseMaterialRequisition
                 'description' => new Expression('CONCAT(barang.nama, " " ,COALESCE(material_requisition_detail.description, ""))'),
                 'quantity' => 'material_requisition_detail.quantity',
                 'satuanNama' => 'satuan.nama',
+                'purchaseOrderNomor' => 'purchase_order.nomor',
+                'vendorNama' => 'card.nama',
                 'last_req' => 'material_requisition_detail.waktu_permintaan_terakhir',
                 'last_price' => 'material_requisition_detail.harga_terakhir',
                 'last_stock' => 'material_requisition_detail.stock_terakhir',
@@ -60,6 +62,8 @@ class MaterialRequisition extends BaseMaterialRequisition
                 $barang->joinWith('tipePembelian', false);
             }], false)
             ->joinWith('satuan', false)
+            ->joinWith('purchaseOrder', false)
+            ->joinWith('vendor', false)
             ->asArray()
             ->all();
 

@@ -6,10 +6,8 @@
 
 /* @var $model PurchaseOrder */
 
-use app\models\Card;
 use app\models\PurchaseOrder;
 use kartik\datecontrol\DateControl;
-use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 use yii\web\View;
@@ -21,15 +19,9 @@ use yii\web\View;
         <div class="col-12 col-lg-7">
 
             <?= Html::activeHiddenInput($model, 'material_requisition_id') ?>
-            <?= $form->field($model, 'vendor_id')->widget(Select2::class, [
-                'data' => Card::find()->map(Card::GET_ONLY_VENDOR),
-                'options' => [
-                    'prompt' => '= Pilih Salah Satu Vendor =',
-                    'autofocus' => 'autofocus'
-                ]
-            ]) ?>
+            <?= Html::activeHiddenInput($model, 'vendor_id') ?>
+            
             <?= $form->field($model, 'tanggal')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
-
             <?= $form->field($model, 'remarks')->textarea(['rows' => 6]) ?>
 
             <?php

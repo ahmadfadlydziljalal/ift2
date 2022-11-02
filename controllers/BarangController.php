@@ -54,35 +54,6 @@ class BarangController extends Controller
     }
 
     /**
-     * Displays a single Barang model.
-     * @param integer $id
-     * @return string
-     * @throws HttpException
-     */
-    public function actionView(int $id): string
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
-     * Finds the Barang model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Barang the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel(int $id): Barang
-    {
-        if (($model = Barang::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-
-    /**
      * Creates a new Barang model.
      * @return string|Response
      */
@@ -143,6 +114,52 @@ class BarangController extends Controller
             'modelsDetail' => empty($modelsDetail) ? [new BarangSatuan()] : $modelsDetail,
         ]);
 
+    }
+
+    /**
+     * Displays a single Barang model.
+     * @param integer $id
+     * @return string
+     * @throws HttpException
+     */
+    public function actionView(int $id): string
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    /**
+     * Finds the Barang model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Barang the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel(int $id): Barang
+    {
+        if (($model = Barang::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    public function actionFindAvailableHarga(): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return [
+            'data' => BarangSatuan::findOne([
+                'barang_id' => (int)Yii::$app->request->post('barangId'),
+                'satuan_id' => (int)Yii::$app->request->post('satuanId'),
+                'vendor_id' => (int)Yii::$app->request->post('vendorId'),
+
+            ]),
+            'barangId' => (int)Yii::$app->request->post('barangId'),
+            'vendorId' => (int)Yii::$app->request->post('vendorId'),
+            'satuanId' => (int)Yii::$app->request->post('satuanId'),
+
+        ];
     }
 
     /**
@@ -236,7 +253,7 @@ class BarangController extends Controller
      * Digunakan pada DepDrop
      * @return array|string[]
      */
-    public function actionFindBarangWithTipePembelianParam(): array
+    public function actionDepdropFindBarangByTipePembelian(): array
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -251,11 +268,7 @@ class BarangController extends Controller
         return ['output' => '', 'selected' => ''];
     }
 
-    /**
-     * Digunakan pada DepDrop
-     * @return array|string[]
-     */
-    public function actionFindBarangAvailableVendor(): array
+    public function actionDepdropFindSatuanByBarang(): array
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
@@ -263,58 +276,35 @@ class BarangController extends Controller
             $parents = $_POST['depdrop_parents'];
             if ($parents != null) {
 
-                $out = BarangSatuan::find()->availableVendor($parents[0]);
-                if (!empty($out)) {
-                    return ['output' => $out, 'selected' => $out[0]];
-                }
-                return ['output' => $out, 'selected' => ''];
+                $out = BarangSatuan::find()->availableSatuan($parents[0]);
+                return ['output' => $out, 'selected' => $out[0]];
             }
         }
         return ['output' => '', 'selected' => ''];
     }
 
-    public function actionFindAvailableVendor()
+
+    /**
+     * Digunakan pada DepDrop
+     * @return array|string[]
+     */
+    public function actionDepdropFindVendorByBarangDanSatuan(): array
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $barangId = (int)Yii::$app->request->post('barangId');
-        $data = ArrayHelper::map(Barang::find()->availableVendor($barangId), 'id', 'name');
-        return [
-            'data' => $data,
-            'countData' => count($data),
-            'barangId' => $barangId,
-        ];
-    }
 
+        $out = [];
+        if (isset($_POST['depdrop_parents'])) {
 
-    public function actionFindAvailableSatuan()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $barangId = (int)Yii::$app->request->post('barangId');
-        $vendorId = (int)Yii::$app->request->post('vendorId');
-        $data = ArrayHelper::map(Barang::find()->availableSatuan($barangId, $vendorId), 'id', 'name');
-        return [
-            'data' => $data,
-            'countData' => count($data),
-            'barangId' => $barangId,
-        ];
+            $ids = $_POST['depdrop_parents'];
+            $barangId = empty($ids[0]) ? null : $ids[0];
+            $satuanId = empty($ids[1]) ? null : $ids[1];
 
-
-    }
-
-    public function actionFindAvailableHarga(): array
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        return [
-            'data' => BarangSatuan::findOne([
-                'barang_id' => (int)Yii::$app->request->post('barangId'),
-                'vendor_id' => (int)Yii::$app->request->post('vendorId'),
-                'satuan_id' => (int)Yii::$app->request->post('satuanId')
-            ]),
-            'barangId' => (int)Yii::$app->request->post('barangId'),
-            'vendorId' => (int)Yii::$app->request->post('vendorId'),
-            'satuanId' => (int)Yii::$app->request->post('satuanId'),
-
-        ];
+            if ($barangId != null) {
+                $data = BarangSatuan::find()->availableVendor($barangId, $satuanId);
+                return ['output' => $data, 'selected' => ''];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
     }
 
 }

@@ -32,7 +32,7 @@ use yii\helpers\Html;
             ]
         ]*/
     ]); ?>
-
+    
     <div class="d-flex flex-column mt-0" style="gap: 1rem">
 
         <?= $this->render('_form_master', ['form' => $form, 'model' => $model]) ?>

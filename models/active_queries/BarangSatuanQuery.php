@@ -28,20 +28,20 @@ class BarangSatuanQuery extends ActiveQuery
         return parent::one($db);
     }
 
-    public function map(int $barangId): array
+    public function mapSatuan(int $barangId): array
     {
-        $data = self::availableVendor($barangId);
+        $data = self::availableSatuan($barangId);
         return ArrayHelper::map($data, 'id', 'name');
     }
 
-    public function availableVendor($barangId): array
+    public function availableSatuan(mixed $barangId): array
     {
-        return parent::select('barang_satuan.vendor_id as id,card.nama as name')
-            ->joinWith('vendor', false)
+        return parent::select('barang_satuan.satuan_id as id,satuan.nama as name')
+            ->joinWith('satuan', false)
             ->where([
                 'barang_id' => $barangId
             ])
-            ->orderBy('card.nama')
+            ->orderBy('satuan.nama')
             ->asArray()
             ->all();
     }
@@ -53,6 +53,25 @@ class BarangSatuanQuery extends ActiveQuery
     public function all($db = null)
     {
         return parent::all($db);
+    }
+
+    public function mapVendor(int $barangId, $satuanId): array
+    {
+        $data = self::availableVendor($barangId, $satuanId);
+        return ArrayHelper::map($data, 'id', 'name');
+    }
+
+    public function availableVendor($barangId, $satuanId): array
+    {
+        return parent::select('barang_satuan.vendor_id as id,card.nama as name')
+            ->joinWith('vendor', false)
+            ->where([
+                'barang_id' => $barangId,
+                'satuan_id' => $satuanId
+            ])
+            ->orderBy('card.nama')
+            ->asArray()
+            ->all();
     }
 
 

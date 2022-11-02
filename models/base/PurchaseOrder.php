@@ -26,7 +26,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $updated_by
  *
  * @property \app\models\MaterialRequisition $materialRequisition
- * @property \app\models\PurchaseOrderDetail[] $purchaseOrderDetails
+ * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
  * @property \app\models\Card $vendor
  * @property string $aliasModel
  */
@@ -107,9 +107,9 @@ abstract class PurchaseOrder extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPurchaseOrderDetails()
+    public function getMaterialRequisitionDetails()
     {
-        return $this->hasMany(\app\models\PurchaseOrderDetail::class, ['purchase_order_id' => 'id']);
+        return $this->hasMany(\app\models\MaterialRequisitionDetail::class, ['purchase_order_id' => 'id']);
     }
 
     /**

@@ -115,8 +115,8 @@ use yii\helpers\Html;
                 </tr>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Vendor</th>
                     <th scope="col">Satuan</th>
+                    <th scope="col">Vendor</th>
                     <th scope="col">Harga Beli</th>
                     <th scope="col">Harga Jual</th>
                     <th scope="col" style="width: 2px">Aksi</th>
@@ -135,6 +135,16 @@ use yii\helpers\Html;
                             <i class="bi bi-arrow-right-short"></i>
                         </td>
 
+
+                        <td>
+                            <?= $form->field($modelDetail, "[$i]satuan_id", ['template' =>
+                                '{input}{error}{hint}', 'options' => ['class' => null]])
+                                ->dropDownList(Satuan::find()->map(), [
+                                    'prompt' => '= Pilih Salah Satu ='
+                                ]);
+                            ?>
+                        </td>
+
                         <td>
                             <?= $form->field($modelDetail, "[$i]vendor_id", ['template' =>
                                 '{input}{error}{hint}', 'options' => ['class' => null]])
@@ -147,14 +157,6 @@ use yii\helpers\Html;
                             ?>
                         </td>
 
-                        <td>
-                            <?= $form->field($modelDetail, "[$i]satuan_id", ['template' =>
-                                '{input}{error}{hint}', 'options' => ['class' => null]])
-                                ->dropDownList(Satuan::find()->map(), [
-                                    'prompt' => '= Pilih Salah Satu ='
-                                ]);
-                            ?>
-                        </td>
                         <td><?= $form->field($modelDetail, "[$i]harga_beli", ['template' =>
                                 '{input}{error}{hint}', 'options' => ['class' => null]])->widget(NumberControl::class, [
                                 'maskedInputOptions' => [

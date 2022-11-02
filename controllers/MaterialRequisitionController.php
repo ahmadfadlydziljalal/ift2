@@ -90,7 +90,9 @@ class MaterialRequisitionController extends Controller
     {
         $request = Yii::$app->request;
         $model = new MaterialRequisition();
-        $modelsDetail = [new MaterialRequisitionDetail()];
+        $modelsDetail = [new MaterialRequisitionDetail([
+            'scenario' => MaterialRequisitionDetail::SCENARIO_MR
+        ])];
 
         if ($model->load($request->post())) {
 

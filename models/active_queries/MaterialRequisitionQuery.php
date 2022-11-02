@@ -48,7 +48,17 @@ SQL;
                 $mrd->joinWith('vendor', false);
             }], false)
             ->where([
+                'IS NOT', 'material_requisition_detail.vendor_id', NULL
+            ])
+            ->andWhere([
+                'IS', 'material_requisition_detail.purchase_order_id', NULL
+            ])
+            ->andWhere([
                 'LIKE', 'nomor', $q
+            ])
+            ->groupBy([
+                'material_requisition.id',
+                'material_requisition_detail.vendor_id',
             ])
             ->asArray()
             ->all();

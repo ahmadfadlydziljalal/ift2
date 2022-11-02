@@ -7,11 +7,8 @@
 
 /* @var $form ActiveForm */
 
-use app\models\Barang;
-use app\models\Satuan;
-use kartik\select2\Select2;
+use app\models\MaterialRequisitionDetail;
 use wbraganca\dynamicform\DynamicFormWidget;
-use yii\base\InvalidConfigException;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\web\View;
@@ -33,7 +30,7 @@ use yii\widgets\MaskedInput;
         'deleteButton' => '.remove-item',
         'model' => $modelsDetail[0],
         'formId' => 'dynamic-form',
-        'formFields' => ['id', 'purchase_order_id', 'barang_id', 'vendor_id', 'quantity', 'satuan_id', 'price',],
+        'formFields' => ['id', 'material_requisition_id', 'barang_id', 'description', 'quantity', 'satuan_id', 'vendor_id', 'purchase_order_id', 'waktu_permintaan_terakhir', 'harga_terakhir', 'stock_terakhir',],
     ]);
     ?>
 
@@ -41,15 +38,17 @@ use yii\widgets\MaskedInput;
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th colspan="6">Purchase order detail</th>
+                <th colspan="8">Purchase order detail</th>
             </tr>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Barang</th>
-                <th scope="col" style="width: 140px">Quantity</th>
+                <th scope="col">M.R</th>
+                <th scope="col" style="width: 140px">Barang</th>
+                <th scope="col">Description</th>
+                <th scope="col">Quantity</th>
                 <th scope="col">Satuan</th>
-                <th scope="col">Price</th>
-                <th scope="col" style="width: 2px">Aksi</th>
+                <th scope="col">Vendor</th>
+                <th scope="col">Harga Terakhir</th>
             </tr>
             </thead>
 
@@ -59,52 +58,43 @@ use yii\widgets\MaskedInput;
                 <tr class="item">
 
                     <td style="width: 2px;" class="align-middle">
-                        <?php if (!$modelDetail->isNewRecord) {
-                            echo Html::activeHiddenInput($modelDetail, "[$i]id");
-                        } ?>
+                        <?php /** @var MaterialRequisitionDetail $modelDetail */ ?>
+                        <?= Html::activeHiddenInput($modelDetail, "[$i]id"); ?>
+                        <?= Html::activeHiddenInput($modelDetail, "[$i]material_requisition_id") ?>
+                        <?= Html::activeHiddenInput($modelDetail, "[$i]barang_id") ?>
+                        <?= Html::activeHiddenInput($modelDetail, "[$i]description") ?>
+                        <?= Html::activeHiddenInput($modelDetail, "[$i]quantity") ?>
+                        <?= Html::activeHiddenInput($modelDetail, "[$i]vendor_id") ?>
                         <i class="bi bi-arrow-right-short"></i>
                     </td>
 
                     <td>
-                        <?php try {
-                            echo $form->field($modelDetail, "[$i]barang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                                ->widget(Select2::class, [
-                                    'data' => Barang::find()->map(),
-                                    'options' => [
-                                        'prompt' => '= Pilih salah satu ='
-                                    ]
-                                ]);
-                        } catch (Exception $e) {
-                            echo $e->getMessage();
-                        }
-                        ?>
-                    </td>
-
-
-                    <td>
-                        <?php try {
-                            echo $form->field($modelDetail, "[$i]quantity", ['template' =>
-                                '{input}{error}{hint}', 'options' => ['class' => null]])
-                                ->textInput([
-                                    'class' => 'form-control quantity',
-                                    'type' => 'number'
-                                ]);
-                        } catch (InvalidConfigException $e) {
-                            echo $e->getMessage();
-                        }
-                        ?>
+                        <?= $modelDetail->materialRequisition->nomor ?>
                     </td>
 
                     <td>
-                        <?= $form->field($modelDetail, "[$i]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                            ->dropDownList(Satuan::find()->map(), [
-                                'prompt' => '= Pilih salah satu ='
-                            ]); ?>
+                        <?= $modelDetail->barang->nama ?>
+                    </td>
+
+                    <td>
+                        <?= $modelDetail->description ?>
+                    </td>
+
+                    <td>
+                        <?= $modelDetail->quantity ?>
+                    </td>
+
+                    <td>
+                        <?= $modelDetail->satuan->nama ?>
+                    </td>
+
+                    <td>
+                        <?= $modelDetail->vendor->nama ?>
                     </td>
 
                     <td>
                         <?php try {
-                            echo $form->field($modelDetail, "[$i]price", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                            echo $form->field($modelDetail, "[$i]harga_terakhir", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                                 ->widget(MaskedInput::class, [
                                     'clientOptions' => [
                                         'alias' => 'numeric',
@@ -116,7 +106,7 @@ use yii\widgets\MaskedInput;
                                         'removeMaskOnSubmit' => true
                                     ],
                                     'options' => [
-                                        'class' => 'form-control price'
+                                        'class' => 'form-control harga-terakhir'
                                     ]
                                 ]);
                         } catch (Exception $e) {
@@ -125,24 +115,12 @@ use yii\widgets\MaskedInput;
                         ?>
                     </td>
 
-                    <td>
-                        <button type="button" class="remove-item btn btn-link text-danger">
-                            <i class="bi bi-trash"> </i>
-                        </button>
-                    </td>
                 </tr>
             <?php endforeach; ?>
 
             </tbody>
 
-            <tfoot>
-            <tr>
-                <td class="text-end" colspan="5">
-                    <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
-                </td>
-                <td></td>
-            </tr>
-            </tfoot>
+
         </table>
     </div>
 

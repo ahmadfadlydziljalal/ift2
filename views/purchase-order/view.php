@@ -85,10 +85,10 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 
     <?php try {
-        echo !empty($model->purchaseOrderDetails) ?
+        echo !empty($model->materialRequisitionDetails) ?
             GridView::widget([
                 'dataProvider' => new ActiveDataProvider([
-                    'query' => $model->getPurchaseOrderDetails(),
+                    'query' => $model->getMaterialRequisitionDetails(),
                     'sort' => false
                 ]),
                 'columns' => [
@@ -136,7 +136,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'class' => DataColumn::class,
-                        'attribute' => 'price',
+                        'attribute' => 'harga_terakhir',
                         'format' => ['decimal', 2],
                         'contentOptions' => [
                             'class' => 'text-end'

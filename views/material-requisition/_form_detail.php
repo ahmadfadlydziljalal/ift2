@@ -9,15 +9,14 @@
 use app\models\Barang;
 use app\models\BarangSatuan;
 use app\models\MaterialRequisitionDetail;
-use app\models\Satuan;
 use app\models\TipePembelian;
 use kartik\depdrop\DepDrop;
-use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
+use yii\widgets\MaskedInput;
 
 ?>
 
@@ -53,6 +52,7 @@ use yii\web\View;
                 <th scope="col">Quantity</th>
                 <th scope="col">Satuan</th>
                 <th scope="col">Vendor</th>
+                <th scope="col">Harga</th>
                 <th scope="col" style="width: 2px">Aksi</th>
             </tr>
             </thead>
@@ -97,58 +97,126 @@ use yii\web\View;
                                 'options' => [
                                     'id' => 'materialrequisitiondetail-' . $i . '-barang_id',
                                     'placeholder' => 'Select ...',
-                                    'class' => 'form-control barang',
+                                    'class' => 'form-control barang-id',
                                 ],
                                 'type' => DepDrop::TYPE_SELECT2,
                                 'select2Options' => ['pluginOptions' => ['allowClear' => true]],
                                 'pluginOptions' => [
                                     'depends' => ['materialrequisitiondetail-' . $i . '-tipepembelian'],
                                     'placeholder' => 'Select...',
-                                    'url' => Url::to(['barang/find-barang-with-tipe-pembelian-param'])
+                                    'url' => Url::to(['barang/depdrop-find-barang-by-tipe-pembelian'])
                                 ]
                             ]);
                         ?></td>
-                    <td><?= $form->field($modelDetail, "[$i]description", ['template' =>
+                    <td>
+                        <?= $form->field($modelDetail, "[$i]description", ['template' =>
                             '{input}{error}{hint}', 'options' => ['class' => null]])->textInput([
                             'class' => 'form-control description'
                         ]); ?></td>
-                    <td><?= $form->field($modelDetail, "[$i]quantity", ['template' =>
+                    <td>
+                        <?= $form->field($modelDetail, "[$i]quantity", ['template' =>
                             '{input}{error}{hint}', 'options' => ['class' => null]])->textInput([
                             'class' => 'form-control quantity',
                             'type' => 'number'
                         ]) ?></td>
                     <td>
-                        <?= $form->field($modelDetail, "[$i]satuan_id", ['template' =>
-                            '{input}{error}{hint}', 'options' => ['class' => null]])->widget(Select2::class, [
-                            'data' => Satuan::find()->map(),
+                        <?php
+                        $data2 = [];
+                        if (Yii::$app->request->isPost || !$modelDetail->isNewRecord) {
+                            if ($modelDetail->satuan_id) {
+                                $data2 = BarangSatuan::find()->mapSatuan($modelDetail->barang_id);
+                            }
+                        }
+                        ?>
+                        <?= $form->field($modelDetail, "[$i]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->widget(DepDrop::class, [
+                            'data' => $data2,
+                            'pluginOptions' => [
+                                'depends' => [
+                                    'materialrequisitiondetail-' . $i . '-barang_id'
+                                ],
+                                'placeholder' => 'Select...',
+                                'url' => Url::to(['barang/depdrop-find-satuan-by-barang'])
+                            ],
                             'options' => [
-                                'prompt' => ' - ',
-                                'class' => 'satuan-id form-control',
+                                'class' => 'form-control satuan-id'
                             ]
                         ]) ?>
                     </td>
 
                     <td>
                         <?php
-                        $data2 = [];
+                        $data3 = [];
                         if (Yii::$app->request->isPost || !$modelDetail->isNewRecord) {
-                            if ($modelDetail->vendor_id) {
-                                $data2 = BarangSatuan::find()->map($modelDetail->barang_id);
+                            if ($modelDetail->satuan_id) {
+                                $data3 = BarangSatuan::find()->mapVendor($modelDetail->barang_id, $modelDetail->satuan_id);
                             }
                         }
                         ?>
 
-                        <?= $form->field($modelDetail, "[$i]vendor_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                            ->widget(DepDrop::class, [
-                                'data' => $data2,
-                                'pluginOptions' => [
-                                    'depends' => [
-                                        'materialrequisitiondetail-' . $i . '-barang_id'
+                        <?php
+                        $urlFindHarga = Url::to(['barang/find-available-harga']);
+                        $onChangeVendor = <<<JS
+                            
+                            var ini = jQuery(this);
+                            var vendorId = ini.val();
+                            if(vendorId){
+                                
+                                var row = ini.closest('tr');
+                                var barangId = row.find('.barang-id').val();
+                                var satuanId = row.find('.satuan-id').val();
+                                var hargaBarang = row.find('.harga-barang');
+                                
+                                hargaBarang.val('');
+                                
+                                jQuery.post('$urlFindHarga', { barangId : barangId, satuanId : satuanId, vendorId : vendorId }, function(response){
+                                   
+                                   hargaBarang.val(0);
+                                   if(response.data.harga_beli){
+                                        hargaBarang.val(response.data.harga_beli);   
+                                   }
+                                   
+                                })
+                            }
+                                        
+JS;
+                        echo $form->field($modelDetail, "[$i]vendor_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->widget(DepDrop::class, [
+                            'data' => $data3,
+                            'pluginOptions' => [
+                                'depends' => [
+                                    'materialrequisitiondetail-' . $i . '-barang_id',
+                                    'materialrequisitiondetail-' . $i . '-satuan_id',
+                                ],
+                                'placeholder' => 'Select...',
+                                'url' => Url::to(['barang/depdrop-find-vendor-by-barang-dan-satuan'])
+                            ],
+                            'options' => [
+                                'onchange' => $onChangeVendor
+                            ]
+                        ])
+
+                        ?>
+                    </td>
+
+                    <td>
+                        <?php try {
+                            echo $form->field($modelDetail, "[$i]harga_terakhir", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                                ->widget(MaskedInput::class, [
+                                    'clientOptions' => [
+                                        'alias' => 'numeric',
+                                        'digits' => 2,
+                                        'groupSeparator' => ',',
+                                        'radixPoint' => '.',
+                                        'autoGroup' => true,
+                                        'autoUnmask' => true,
+                                        'removeMaskOnSubmit' => true
                                     ],
-                                    'placeholder' => 'Select...',
-                                    'url' => Url::to(['barang/find-barang-available-vendor'])
-                                ]
-                            ])
+                                    'options' => [
+                                        'class' => 'form-control harga-barang'
+                                    ]
+                                ]);
+                        } catch (Exception $e) {
+                            echo $e->getMessage();
+                        }
                         ?>
                     </td>
 

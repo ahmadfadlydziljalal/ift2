@@ -2,9 +2,11 @@
 
 /* @var $this yii\web\View */
 /* @var $model app\models\PurchaseOrder */
-/* @var $modelsDetail app\models\PurchaseOrderDetail */
+
+/* @var $modelsDetail app\models\MaterialRequisitionDetail */
 
 use yii\helpers\Html;
+
 $this->title = 'Tambah Purchase Order';
 $this->params['breadcrumbs'][] = ['label' => 'Purchase Order', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;

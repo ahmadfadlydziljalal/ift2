@@ -12,6 +12,8 @@ use yii\helpers\ArrayHelper;
 class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
 {
 
+    const SCENARIO_MR = 'mr';
+    const SCENARIO_PO = 'po';
 
     public ?string $barangPartNumber = null;
     public ?string $barangIftNumber = null;
@@ -37,7 +39,7 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
             parent::rules(),
             [
                 ['tipePembelian', 'safe'],
-                [['barang_id'], 'required', 'when' => function ($model) {
+                [['barang_id'], 'required', 'on' => self::SCENARIO_MR, 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
                     return
                         in_array($model->tipePembelian, [
@@ -46,7 +48,7 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
                         ]);
                 }, 'message' => 'Barang / Perlengkapan cannot be blank'],
 
-                [['barang_id'], 'compare', 'compareValue' => '', 'when' => function ($model) {
+                [['barang_id'], 'compare', 'compareValue' => '', 'on' => self::SCENARIO_MR, 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
                     return !in_array($model->tipePembelian, [
                         TipePembelianEnum::STOCK->value,
@@ -54,7 +56,7 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
                     ]);
                 }, 'message' => '{attribute} should be blank ...!'],
 
-                [['description'], 'required', 'when' => function ($model) {
+                [['description'], 'required', 'on' => self::SCENARIO_MR, 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
                     return !in_array($model->tipePembelian, [
                         TipePembelianEnum::STOCK->value,
@@ -78,6 +80,11 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
             'harga_terakhir' => 'Last Price',
             'stock_terakhir' => 'Last Stock',
         ]);
+    }
+
+    public function getSubtotal()
+    {
+        return $this->quantity * $this->harga_terakhir;
     }
 
 
