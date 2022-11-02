@@ -78,4 +78,15 @@ class BarangQuery extends ActiveQuery
             ->asArray()
             ->all();
     }
+
+    public function byTipePembelian($tipePembelianId): array
+    {
+        return parent::select('id,nama as name')
+            ->where([
+                'tipe_pembelian_id' => $tipePembelianId
+            ])
+            ->orderBy('barang.nama')
+            ->asArray()
+            ->all();
+    }
 }

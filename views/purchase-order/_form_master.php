@@ -11,6 +11,7 @@ use app\models\PurchaseOrder;
 use kartik\datecontrol\DateControl;
 use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
+use yii\helpers\Html;
 use yii\web\View;
 
 ?>
@@ -18,7 +19,8 @@ use yii\web\View;
 <div class="form-master">
     <div class="row">
         <div class="col-12 col-lg-7">
-            
+
+            <?= Html::activeHiddenInput($model, 'material_requisition_id') ?>
             <?= $form->field($model, 'vendor_id')->widget(Select2::class, [
                 'data' => Card::find()->map(Card::GET_ONLY_VENDOR),
                 'options' => [
@@ -27,7 +29,7 @@ use yii\web\View;
                 ]
             ]) ?>
             <?= $form->field($model, 'tanggal')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
-            <?= $form->field($model, 'reference_number')->textInput(['maxlength' => true]) ?>
+
             <?= $form->field($model, 'remarks')->textarea(['rows' => 6]) ?>
 
             <?php

@@ -31,10 +31,17 @@ return [
             ]
         ]
     ],
+
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'tanggal',
         'format' => 'date',
+    ],
+    [
+        'class' => '\yii\grid\DataColumn',
+        'attribute' => 'material_requisition_id',
+        'format' => 'text',
+        'value' => 'materialRequisition.nomor'
     ],
     /*[
         'class' => '\yii\grid\DataColumn',

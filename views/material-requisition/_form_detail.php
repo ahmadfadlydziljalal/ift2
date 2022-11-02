@@ -7,6 +7,7 @@
 /* @var $modelsDetail MaterialRequisitionDetail[] */
 
 use app\models\Barang;
+use app\models\BarangSatuan;
 use app\models\MaterialRequisitionDetail;
 use app\models\Satuan;
 use app\models\TipePembelian;
@@ -51,6 +52,7 @@ use yii\web\View;
                 <th scope="col">Description</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Satuan</th>
+                <th scope="col">Vendor</th>
                 <th scope="col" style="width: 2px">Aksi</th>
             </tr>
             </thead>
@@ -115,15 +117,39 @@ use yii\web\View;
                             'class' => 'form-control quantity',
                             'type' => 'number'
                         ]) ?></td>
-                    <td><?= $form->field($modelDetail, "[$i]satuan_id", ['template' =>
+                    <td>
+                        <?= $form->field($modelDetail, "[$i]satuan_id", ['template' =>
                             '{input}{error}{hint}', 'options' => ['class' => null]])->widget(Select2::class, [
                             'data' => Satuan::find()->map(),
                             'options' => [
                                 'prompt' => ' - ',
                                 'class' => 'satuan-id form-control',
-
                             ]
                         ]) ?>
+                    </td>
+
+                    <td>
+                        <?php
+                        $data2 = [];
+                        if (Yii::$app->request->isPost || !$modelDetail->isNewRecord) {
+                            if ($modelDetail->vendor_id) {
+                                $data2 = BarangSatuan::find()->map($modelDetail->barang_id);
+                            }
+                        }
+                        ?>
+
+                        <?= $form->field($modelDetail, "[$i]vendor_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                            ->widget(DepDrop::class, [
+                                'data' => $data2,
+                                'pluginOptions' => [
+                                    'depends' => [
+                                        'materialrequisitiondetail-' . $i . '-barang_id'
+                                    ],
+                                    'placeholder' => 'Select...',
+                                    'url' => Url::to(['barang/find-barang-available-vendor'])
+                                ]
+                            ])
+                        ?>
                     </td>
 
                     <td>
@@ -139,7 +165,7 @@ use yii\web\View;
             <tfoot>
             <tr>
                 <td></td>
-                <td class="text-end" colspan="6">
+                <td class="text-end" colspan="7">
                     <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
                 </td>
 

@@ -16,6 +16,7 @@ use yii\helpers\ArrayHelper;
  * @property string $description
  * @property string $quantity
  * @property integer $satuan_id
+ * @property integer $vendor_id
  * @property string $waktu_permintaan_terakhir
  * @property string $harga_terakhir
  * @property string $stock_terakhir
@@ -23,6 +24,7 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\Barang $barang
  * @property \app\models\MaterialRequisition $materialRequisition
  * @property \app\models\Satuan $satuan
+ * @property \app\models\Card $vendor
  * @property string $aliasModel
  */
 abstract class MaterialRequisitionDetail extends \yii\db\ActiveRecord
@@ -44,14 +46,15 @@ abstract class MaterialRequisitionDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['material_requisition_id', 'barang_id', 'satuan_id'], 'integer'],
+            [['material_requisition_id', 'barang_id', 'satuan_id', 'vendor_id'], 'integer'],
             [['barang_id', 'quantity', 'satuan_id'], 'required'],
             [['quantity', 'harga_terakhir', 'stock_terakhir'], 'number'],
             [['waktu_permintaan_terakhir'], 'safe'],
             [['description'], 'string', 'max' => 255],
             [['barang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Barang::class, 'targetAttribute' => ['barang_id' => 'id']],
             [['material_requisition_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MaterialRequisition::class, 'targetAttribute' => ['material_requisition_id' => 'id']],
-            [['satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['satuan_id' => 'id']]
+            [['satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['satuan_id' => 'id']],
+            [['vendor_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['vendor_id' => 'id']]
         ]);
     }
 
@@ -67,6 +70,7 @@ abstract class MaterialRequisitionDetail extends \yii\db\ActiveRecord
             'description' => 'Description',
             'quantity' => 'Quantity',
             'satuan_id' => 'Satuan ID',
+            'vendor_id' => 'Vendor ID',
             'waktu_permintaan_terakhir' => 'Waktu Permintaan Terakhir',
             'harga_terakhir' => 'Harga Terakhir',
             'stock_terakhir' => 'Stock Terakhir',
@@ -95,6 +99,14 @@ abstract class MaterialRequisitionDetail extends \yii\db\ActiveRecord
     public function getSatuan()
     {
         return $this->hasOne(\app\models\Satuan::class, ['id' => 'satuan_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVendor()
+    {
+        return $this->hasOne(\app\models\Card::class, ['id' => 'vendor_id']);
     }
 
 

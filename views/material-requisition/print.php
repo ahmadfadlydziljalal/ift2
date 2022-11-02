@@ -43,11 +43,6 @@ $settings = Yii::$app->settings;
                     <td>:</td>
                     <td><span id="page-number"></span></td>
                 </tr>-->
-                <tr>
-                    <td>Ref No.</td>
-                    <td>:</td>
-                    <td></td>
-                </tr>
                 </tbody>
             </table>
         </div>

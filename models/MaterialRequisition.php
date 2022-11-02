@@ -79,4 +79,14 @@ class MaterialRequisition extends BaseMaterialRequisition
             ->joinWith('barang');
     }
 
+
+    public function attributeLabels()
+    {
+        return ArrayHelper::merge(
+            parent::attributeLabels(), [
+                'vendor_id' => 'Orang Kantor'
+            ]
+        );
+    }
+
 }

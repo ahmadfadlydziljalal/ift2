@@ -13,10 +13,10 @@ use yii\behaviors\TimestampBehavior;
  * This is the base-model class for table "purchase_order".
  *
  * @property integer $id
+ * @property integer $material_requisition_id
  * @property string $nomor
  * @property integer $vendor_id
  * @property string $tanggal
- * @property string $reference_number
  * @property string $remarks
  * @property string $approved_by
  * @property string $acknowledge_by
@@ -25,6 +25,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $created_by
  * @property string $updated_by
  *
+ * @property \app\models\MaterialRequisition $materialRequisition
  * @property \app\models\PurchaseOrderDetail[] $purchaseOrderDetails
  * @property \app\models\Card $vendor
  * @property string $aliasModel
@@ -63,12 +64,13 @@ abstract class PurchaseOrder extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['vendor_id', 'tanggal', 'approved_by', 'acknowledge_by'], 'required'],
-            [['vendor_id'], 'integer'],
+            [['material_requisition_id', 'vendor_id', 'tanggal', 'approved_by', 'acknowledge_by'], 'required'],
+            [['material_requisition_id', 'vendor_id'], 'integer'],
             [['tanggal'], 'safe'],
             [['remarks'], 'string'],
             [['nomor'], 'string', 'max' => 128],
-            [['reference_number', 'approved_by', 'acknowledge_by'], 'string', 'max' => 255],
+            [['approved_by', 'acknowledge_by'], 'string', 'max' => 255],
+            [['material_requisition_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MaterialRequisition::class, 'targetAttribute' => ['material_requisition_id' => 'id']],
             [['vendor_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['vendor_id' => 'id']]
         ]);
     }
@@ -80,10 +82,10 @@ abstract class PurchaseOrder extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'material_requisition_id' => 'Material Requisition ID',
             'nomor' => 'Nomor',
             'vendor_id' => 'Vendor ID',
             'tanggal' => 'Tanggal',
-            'reference_number' => 'Reference Number',
             'remarks' => 'Remarks',
             'approved_by' => 'Approved By',
             'acknowledge_by' => 'Acknowledge By',
@@ -92,6 +94,14 @@ abstract class PurchaseOrder extends \yii\db\ActiveRecord
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMaterialRequisition()
+    {
+        return $this->hasOne(\app\models\MaterialRequisition::class, ['id' => 'material_requisition_id']);
     }
 
     /**

@@ -232,6 +232,10 @@ class BarangController extends Controller
         return $this->redirect(['index']);
     }
 
+    /**
+     * Digunakan pada DepDrop
+     * @return array|string[]
+     */
     public function actionFindBarangWithTipePembelianParam(): array
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -240,13 +244,29 @@ class BarangController extends Controller
             $parents = $_POST['depdrop_parents'];
 
             if ($parents != null) {
-                $out = Barang::find()
-                    ->select('id,nama as name')
-                    ->where([
-                        'tipe_pembelian_id' => $parents[0]
-                    ])
-                    ->asArray()
-                    ->all();
+                $out = Barang::find()->byTipePembelian($parents[0]);
+                return ['output' => $out, 'selected' => $out[0]];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+
+    /**
+     * Digunakan pada DepDrop
+     * @return array|string[]
+     */
+    public function actionFindBarangAvailableVendor(): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        if (isset($_POST['depdrop_parents'])) {
+            $parents = $_POST['depdrop_parents'];
+            if ($parents != null) {
+
+                $out = BarangSatuan::find()->availableVendor($parents[0]);
+                if (!empty($out)) {
+                    return ['output' => $out, 'selected' => $out[0]];
+                }
                 return ['output' => $out, 'selected' => ''];
             }
         }

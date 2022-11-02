@@ -2,17 +2,21 @@
 
 namespace app\controllers;
 
+use app\models\form\BeforeCreatePurchaseOrderForm;
+use app\models\MaterialRequisition;
 use app\models\PurchaseOrder;
 use app\models\PurchaseOrderDetail;
 use app\models\search\PurchaseOrderSearch;
 use app\models\Tabular;
 use Exception;
+use JetBrains\PhpStorm\ArrayShape;
 use Throwable;
 use Yii;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -82,16 +86,64 @@ class PurchaseOrderController extends Controller
         }
     }
 
+
+    public function actionBeforeCreate(): Response|string
+    {
+        $model = new BeforeCreatePurchaseOrderForm();
+
+        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post()) && $model->validate()) {
+            return $this->redirect(['purchase-order/create',
+                'materialRequestAndVendorId' => $model->nomorMaterialRequest
+            ]);
+        }
+
+        return $this->render('before_create', [
+            'model' => $model
+        ]);
+    }
+
+    /**
+     * @param $q
+     * @param $id
+     * @return string[][]
+     */
+    #[ArrayShape(['results' => "mixed|string[]"])]
+    public function actionFindMaterialRequisitionForCreatePurchaseOrder($q = null, $id = null): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $out = ['results' => ['id' => '', 'text' => '']];
+
+        if (!is_null($q)) {
+
+            $data = MaterialRequisition::find()->createForPurchaseOrder($q);
+            $out['results'] = array_values($data);
+
+        } elseif ($id > 0) {
+
+            $out['results'] = [
+                'id' => $id,
+                'text' => MaterialRequisition::find($id)->nama
+            ];
+
+        }
+
+        return $out;
+    }
+
     /**
      * Creates a new PurchaseOrder model.
+     * @param $materialRequestAndVendorId
      * @return string|Response
      */
-    public function actionCreate()
+    public function actionCreate($materialRequestAndVendorId): Response|string
     {
+        $materialRequestAndVendorId = Json::decode($materialRequestAndVendorId);
         $request = Yii::$app->request;
-        $model = new PurchaseOrder();
-        $modelsDetail = [new PurchaseOrderDetail()];
+        $model = new PurchaseOrder([
+            'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id']
+        ]);
 
+        $modelsDetail = [new PurchaseOrderDetail()];
         if ($model->load($request->post())) {
 
             $modelsDetail = Tabular::createMultiple(PurchaseOrderDetail::class);
