@@ -15,6 +15,7 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
     const SCENARIO_MR = 'mr';
     const SCENARIO_PO = 'po';
 
+    public ?string $barangId = null;
     public ?string $barangPartNumber = null;
     public ?string $barangIftNumber = null;
     public ?string $barangMerkPartNumber = null;

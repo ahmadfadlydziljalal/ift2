@@ -301,7 +301,7 @@ class BarangController extends Controller
 
             if ($barangId != null) {
                 $data = BarangSatuan::find()->availableVendor($barangId, $satuanId);
-                return ['output' => $data, 'selected' => ''];
+                return ['output' => $data, 'selected' => $data[0]];
             }
         }
         return ['output' => '', 'selected' => ''];

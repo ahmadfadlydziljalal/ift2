@@ -45,6 +45,7 @@ class MaterialRequisition extends BaseMaterialRequisition
         $parentMaterialRequisitionDetails = parent::getMaterialRequisitionDetails()
             ->select([
                 'tipePembelianNama' => 'tipe_pembelian.nama',
+                'barangId' => 'barang.part_number',
                 'barangPartNumber' => 'barang.part_number',
                 'barangIftNumber' => 'barang.ift_number',
                 'barangMerkPartNumber' => 'barang.merk_part_number',
@@ -57,14 +58,15 @@ class MaterialRequisition extends BaseMaterialRequisition
                 'last_req' => 'material_requisition_detail.waktu_permintaan_terakhir',
                 'last_price' => 'material_requisition_detail.harga_terakhir',
                 'last_stock' => 'material_requisition_detail.stock_terakhir',
+                //'vendor_alternatives' => new Expression("1000"),
             ])
             ->joinWith(['barang' => function ($barang) {
+                $barang->joinWith('barangSatuans', false);
                 $barang->joinWith('tipePembelian', false);
             }], false)
             ->joinWith('satuan', false)
             ->joinWith('purchaseOrder', false)
             ->joinWith('vendor', false)
-            ->asArray()
             ->all();
 
         return ArrayHelper::index(

@@ -44,7 +44,6 @@ use yii\helpers\Html;
                 'attribute' => 'satuanNama',
                 'header' => 'Satuan'
             ],
-
         ];
 
         if ($this->context->action->id != 'print') {
@@ -106,5 +105,6 @@ use yii\helpers\Html;
         echo $e->getMessage();
     }
     ?>
+
 
 </div>

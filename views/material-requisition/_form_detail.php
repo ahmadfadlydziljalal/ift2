@@ -42,7 +42,7 @@ use yii\widgets\MaskedInput;
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th colspan="10">Material requisition detail</th>
+                <th colspan="8">Material requisition detail</th>
             </tr>
             <tr>
                 <th scope="col">#</th>
@@ -51,7 +51,6 @@ use yii\widgets\MaskedInput;
                 <th scope="col">Description</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Satuan</th>
-                <th scope="col">Vendor</th>
                 <th scope="col">Harga</th>
                 <th scope="col" style="width: 2px">Aksi</th>
             </tr>
@@ -96,54 +95,20 @@ use yii\widgets\MaskedInput;
                                 'data' => $data,
                                 'options' => [
                                     'id' => 'materialrequisitiondetail-' . $i . '-barang_id',
-                                    'placeholder' => 'Select ...',
+                                    'placeholder' => '= Pilih nama barang =',
                                     'class' => 'form-control barang-id',
                                 ],
                                 'type' => DepDrop::TYPE_SELECT2,
                                 'select2Options' => ['pluginOptions' => ['allowClear' => true]],
                                 'pluginOptions' => [
                                     'depends' => ['materialrequisitiondetail-' . $i . '-tipepembelian'],
-                                    'placeholder' => 'Select...',
                                     'url' => Url::to(['barang/depdrop-find-barang-by-tipe-pembelian'])
                                 ]
                             ]);
-                        ?></td>
-                    <td>
-                        <?= $form->field($modelDetail, "[$i]description", ['template' =>
-                            '{input}{error}{hint}', 'options' => ['class' => null]])->textInput([
-                            'class' => 'form-control description'
-                        ]); ?></td>
-                    <td>
-                        <?= $form->field($modelDetail, "[$i]quantity", ['template' =>
-                            '{input}{error}{hint}', 'options' => ['class' => null]])->textInput([
-                            'class' => 'form-control quantity',
-                            'type' => 'number'
-                        ]) ?></td>
-                    <td>
-                        <?php
-                        $data2 = [];
-                        if (Yii::$app->request->isPost || !$modelDetail->isNewRecord) {
-                            if ($modelDetail->satuan_id) {
-                                $data2 = BarangSatuan::find()->mapSatuan($modelDetail->barang_id);
-                            }
-                        }
                         ?>
-                        <?= $form->field($modelDetail, "[$i]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->widget(DepDrop::class, [
-                            'data' => $data2,
-                            'pluginOptions' => [
-                                'depends' => [
-                                    'materialrequisitiondetail-' . $i . '-barang_id'
-                                ],
-                                'placeholder' => 'Select...',
-                                'url' => Url::to(['barang/depdrop-find-satuan-by-barang'])
-                            ],
-                            'options' => [
-                                'class' => 'form-control satuan-id'
-                            ]
-                        ]) ?>
-                    </td>
 
-                    <td>
+                        <div class="my-2"></div>
+
                         <?php
                         $data3 = [];
                         if (Yii::$app->request->isPost || !$modelDetail->isNewRecord) {
@@ -186,16 +151,53 @@ JS;
                                     'materialrequisitiondetail-' . $i . '-barang_id',
                                     'materialrequisitiondetail-' . $i . '-satuan_id',
                                 ],
-                                'placeholder' => 'Select...',
                                 'url' => Url::to(['barang/depdrop-find-vendor-by-barang-dan-satuan'])
                             ],
                             'options' => [
-                                'onchange' => $onChangeVendor
-                            ]
+                                'onchange' => $onChangeVendor,
+                                'placeholder' => '= Pilih Vendor =',
+
+                            ],
+                            'type' => DepDrop::TYPE_SELECT2,
                         ])
 
                         ?>
                     </td>
+                    <td>
+                        <?= $form->field($modelDetail, "[$i]description", ['template' =>
+                            '{input}{error}{hint}', 'options' => ['class' => null]])->textInput([
+                            'class' => 'form-control description'
+                        ]); ?></td>
+                    <td>
+                        <?= $form->field($modelDetail, "[$i]quantity", ['template' =>
+                            '{input}{error}{hint}', 'options' => ['class' => null]])->textInput([
+                            'class' => 'form-control quantity',
+                            'type' => 'number'
+                        ]) ?></td>
+                    <td>
+                        <?php
+                        $data2 = [];
+                        if (Yii::$app->request->isPost || !$modelDetail->isNewRecord) {
+                            if ($modelDetail->satuan_id) {
+                                $data2 = BarangSatuan::find()->mapSatuan($modelDetail->barang_id);
+                            }
+                        }
+                        ?>
+                        <?= $form->field($modelDetail, "[$i]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->widget(DepDrop::class, [
+                            'data' => $data2,
+                            'pluginOptions' => [
+                                'depends' => [
+                                    'materialrequisitiondetail-' . $i . '-barang_id'
+                                ],
+                                'placeholder' => 'Select...',
+                                'url' => Url::to(['barang/depdrop-find-satuan-by-barang'])
+                            ],
+                            'options' => [
+                                'class' => 'form-control satuan-id'
+                            ]
+                        ]) ?>
+                    </td>
+
 
                     <td>
                         <?php try {
@@ -232,7 +234,7 @@ JS;
 
             <tfoot>
             <tr>
-                <td></td>
+
                 <td class="text-end" colspan="7">
                     <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
                 </td>

@@ -5,6 +5,7 @@ namespace app\models\active_queries;
 use app\components\helpers\ArrayHelper;
 use app\models\BarangSatuan;
 use yii\db\ActiveQuery;
+use yii\db\Expression;
 
 /**
  * This is the ActiveQuery class for [[\app\models\BarangSatuan]].
@@ -63,7 +64,22 @@ class BarangSatuanQuery extends ActiveQuery
 
     public function availableVendor($barangId, $satuanId): array
     {
-        return parent::select('barang_satuan.vendor_id as id,card.nama as name')
+        $sql = new Expression("
+              card.nama, '', 
+                IF(
+                    barang_satuan.harga_beli = NULL,
+                    CONCAT(card.nama , ' Harga Beli not available'),
+                    CONCAT(
+                        card.nama, ' => ', CAST(FORMAT(barang_satuan.harga_beli , 2) AS char)        
+                    )
+                )
+              
+        ");
+        return parent::select([
+                'id' => 'barang_satuan.vendor_id',
+                'name' => $sql
+            ]
+        )
             ->joinWith('vendor', false)
             ->where([
                 'barang_id' => $barangId,

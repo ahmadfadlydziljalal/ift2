@@ -6,6 +6,7 @@ use app\models\base\MaterialRequisition;
 use yii\data\ArrayDataProvider;
 use yii\widgets\ListView;
 
+
 echo ListView::widget([
     'dataProvider' => new ArrayDataProvider([
         'allModels' => $model->getMaterialRequisitionDetailsGroupingByTipePembelian()
@@ -19,7 +20,7 @@ echo ListView::widget([
     'itemView' => function ($model, $key, $index, $widget) {
         return $this->render('_item_group', [
             'model' => $model,
-            'key' => $key
+            'key' => $key,
         ]);
     },
     'layout' => '{items}'
