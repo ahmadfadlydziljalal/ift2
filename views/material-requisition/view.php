@@ -63,8 +63,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'tanggal:date',
                 'remarks:ntext',
-                'approved_by',
-                'acknowledge_by',
+                'approvedBy.nama',
+                'acknowledgeBy.nama',
                 [
                     'attribute' => 'created_at',
                     'format' => 'datetime',
@@ -87,8 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   ],*/
             ],
         ]);
-
-        echo Html::tag('h2', 'Material Requisition Detail');
+        
         echo !empty($model->materialRequisitionDetails) ?
             GridView::widget([
                 'dataProvider' => new ArrayDataProvider([
@@ -123,6 +122,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'class' => '\kartik\grid\DataColumn',
                         'attribute' => 'quantity',
+                        'contentOptions' => [
+                            'class' => 'text-end'
+                        ]
                     ],
                     [
                         'class' => '\kartik\grid\DataColumn',
@@ -136,6 +138,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'class' => '\kartik\grid\DataColumn',
                         'attribute' => 'harga_terakhir',
+                        'format' => ['decimal', 2],
+                        'contentOptions' => [
+                            'class' => 'text-end'
+                        ]
                     ],
                     [
                         'class' => '\kartik\grid\DataColumn',

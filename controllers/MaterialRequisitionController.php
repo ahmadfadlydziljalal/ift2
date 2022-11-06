@@ -46,6 +46,7 @@ class MaterialRequisitionController extends Controller
     {
         $searchModel = new MaterialRequisitionSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->key = 'id';
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -245,6 +246,33 @@ class MaterialRequisitionController extends Controller
         return $this->render('print', [
             'model' => $this->findModel($id),
         ]);
+    }
+
+    /**
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionExpandItem(): string
+    {
+        if (isset($_POST['expandRowKey'])) {
+            return $this->renderPartial('_item', [
+                'model' => $this->findModel($_POST['expandRowKey'])
+            ]);
+        } else {
+            return '<div class="alert alert-danger">No data found</div>';
+        }
+    }
+
+    public function actionExpandItemGroup(): string
+    {
+        if (isset($_POST['expandRowKey'])) {
+            return "Test";
+            /* return $this->renderPartial('_item', [
+                 'model' => $this->findModel($_POST['expandRowKey'])
+             ]);*/
+        } else {
+            return '<div class="alert alert-danger">No data found</div>';
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 return [
     [
@@ -14,11 +15,9 @@ return [
     [
         'class' => 'kartik\grid\ExpandRowColumn',
         'width' => '50px',
-        'detail' => function ($model, $key, $index, $column) {
-            return $this->context->renderPartial('_item', ['model' => $model]);
-        },
-        'headerOptions' => ['class' => 'kartik-sheet-style'],
-        'expandOneOnly' => true
+        'detailUrl' => Url::toRoute(['material-requisition/expand-item']),
+        'expandOneOnly' => true,
+        'header' => '',
     ],
     [
         'class' => '\yii\grid\DataColumn',

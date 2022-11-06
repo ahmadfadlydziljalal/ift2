@@ -48,8 +48,18 @@ $fieldConfig = [
                     ])->hint(false) ?>
                     <?= $form->field($model, 'tanggal', $fieldConfig)->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
                     <?= $form->field($model, 'remarks', $fieldConfig)->textarea(['rows' => 6]) ?>
-                    <?= $form->field($model, 'approved_by', $fieldConfig)->textInput(['maxlength' => true]) ?>
-                    <?= $form->field($model, 'acknowledge_by', $fieldConfig)->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'approved_by_id', $fieldConfig)->widget(Select2::class, [
+                        'data' => Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR),
+                        'options' => [
+                            'placeholder' => '= Pilih orang kantor ='
+                        ]
+                    ]) ?>
+                    <?= $form->field($model, 'acknowledge_by_id', $fieldConfig)->widget(Select2::class, [
+                        'data' => Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR),
+                        'options' => [
+                            'placeholder' => '= Pilih orang kantor ='
+                        ]
+                    ]) ?>
                 </div>
             </div>
         </div>

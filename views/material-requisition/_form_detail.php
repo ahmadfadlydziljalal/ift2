@@ -155,8 +155,7 @@ JS;
                             ],
                             'options' => [
                                 'onchange' => $onChangeVendor,
-                                'placeholder' => '= Pilih Vendor =',
-
+                                'placeholder' => '= Pilih nama vendor =',
                             ],
                             'type' => DepDrop::TYPE_SELECT2,
                         ])

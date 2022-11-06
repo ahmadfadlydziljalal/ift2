@@ -43,30 +43,39 @@ class MaterialRequisition extends BaseMaterialRequisition
     public function getMaterialRequisitionDetailsGroupingByTipePembelian(): array
     {
         $parentMaterialRequisitionDetails = parent::getMaterialRequisitionDetails()
-            ->select([
+            ->select('material_requisition_detail.*')
+            ->addSelect([
                 'tipePembelianNama' => 'tipe_pembelian.nama',
                 'barangId' => 'barang.part_number',
                 'barangPartNumber' => 'barang.part_number',
                 'barangIftNumber' => 'barang.ift_number',
                 'barangMerkPartNumber' => 'barang.merk_part_number',
                 'barangNama' => 'barang.nama',
-                'description' => new Expression('CONCAT(barang.nama, " " ,COALESCE(material_requisition_detail.description, ""))'),
-                'quantity' => 'material_requisition_detail.quantity',
                 'satuanNama' => 'satuan.nama',
                 'purchaseOrderNomor' => 'purchase_order.nomor',
                 'vendorNama' => 'card.nama',
-                'last_req' => 'material_requisition_detail.waktu_permintaan_terakhir',
-                'last_price' => 'material_requisition_detail.harga_terakhir',
-                'last_stock' => 'material_requisition_detail.stock_terakhir',
-                //'vendor_alternatives' => new Expression("1000"),
+                'barangSatuanJson' => new Expression(
+                    'JSON_ARRAYAGG(
+                                JSON_OBJECT(
+                                    "barang_satuan_id", barang_satuan.id,
+                                    "vendor", vbs.nama,
+                                    "harga_jual", harga_jual,
+                                    "harga_beli", harga_beli
+                                )
+                              )')
             ])
             ->joinWith(['barang' => function ($barang) {
-                $barang->joinWith('barangSatuans', false);
+                $barang->joinWith(['barangSatuans' => function ($bs) {
+                    $bs->joinWith(['vendor' => function ($vbs) {
+                        $vbs->alias('vbs');
+                    }], false);
+                }], false);
                 $barang->joinWith('tipePembelian', false);
             }], false)
             ->joinWith('satuan', false)
             ->joinWith('purchaseOrder', false)
             ->joinWith('vendor', false)
+            ->groupBy('material_requisition_detail.id')
             ->all();
 
         return ArrayHelper::index(
@@ -90,9 +99,12 @@ class MaterialRequisition extends BaseMaterialRequisition
     {
         return ArrayHelper::merge(
             parent::attributeLabels(), [
-                'vendor_id' => 'Orang Kantor'
+                'vendor_id' => 'Orang Kantor',
+                'approved_by_id' => 'Approved By',
+                'acknowledge_by_id' => 'Acknowledge By',
             ]
         );
     }
+
 
 }

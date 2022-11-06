@@ -65,7 +65,7 @@ class BarangSatuanQuery extends ActiveQuery
     public function availableVendor($barangId, $satuanId): array
     {
         $sql = new Expression("
-              card.nama, '', 
+           
                 IF(
                     barang_satuan.harga_beli = NULL,
                     CONCAT(card.nama , ' Harga Beli not available'),

@@ -23,9 +23,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php try {
         echo GridView::widget([
+            'id' => 'gridview-master',
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => require(__DIR__ . '/_columns.php'),
+            'rowOptions' => function ($model, $key, $index, $grid) {
+                return [
+                    'data-id' => $model->id,
+                    'class' => 'text-nowrap'
+                ];
+            }
         ]);
     } catch (Exception $e) {
         echo $e->getMessage();

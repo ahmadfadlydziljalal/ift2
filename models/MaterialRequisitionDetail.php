@@ -20,8 +20,11 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
     public ?string $barangIftNumber = null;
     public ?string $barangMerkPartNumber = null;
     public ?string $barangNama = null;
+    public ?string $barangSatuanJson = null;
     public ?string $tipePembelian = null;
     public ?string $tipePembelianNama = null;
+    public ?string $vendorNama = null;
+    public ?string $satuanNama = null;
 
 
     public function behaviors()

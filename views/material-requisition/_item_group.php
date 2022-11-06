@@ -9,6 +9,7 @@ use kartik\grid\GridView;
 use yii\data\ArrayDataProvider;
 use yii\grid\SerialColumn;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 ?>
 
@@ -21,6 +22,19 @@ use yii\helpers\Html;
         $columns = [
             [
                 'class' => SerialColumn::class
+            ],
+            [
+                'class' => 'kartik\grid\ExpandRowColumn',
+                'width' => '50px',
+                'detailUrl' => Url::toRoute(['material-requisition/expand-item-group']),
+                'header' => '',
+
+//                'detail' => function ($model, $key, $index, $column) {
+//                    return $this->context->renderPartial('_harga_per_vendor', [
+//                        'model' => Json::decode($model['barangSatuanJson']),
+//                        'key' => $key
+//                    ]);
+//                },
             ],
             [
                 'attribute' => 'barangPartNumber',
@@ -45,7 +59,6 @@ use yii\helpers\Html;
                 'header' => 'Satuan'
             ],
         ];
-
         if ($this->context->action->id != 'print') {
             $columns = ArrayHelper::merge($columns, [
                 [
@@ -64,23 +77,22 @@ use yii\helpers\Html;
                 ],
             ]);
         }
-
         $columns = ArrayHelper::merge($columns, [
             [
-                'attribute' => 'last_price',
+                'attribute' => 'harga_terakhir',
                 'format' => ['decimal', 2],
                 'contentOptions' => [
                     'class' => 'text-end'
                 ]
             ]
         ]);
-
-
         echo GridView::widget([
+            'id' => 'gridview-detail',
             'tableOptions' => [
                 'class' => 'table table-grid-view bg-white p-0 m-0'
             ],
             'dataProvider' => new ArrayDataProvider([
+                'key' => 'id',
                 'allModels' => $model,
                 'pagination' => false,
                 'sort' => false
@@ -99,10 +111,17 @@ use yii\helpers\Html;
                     ],
                 ],
             ],
-            'columns' => $columns
+            'columns' => $columns,
+            'rowOptions' => function ($model, $key, $index, $grid) {
+                return [
+                    'data-id' => $model->id,
+                    'class' => 'text-nowrap'
+                ];
+            }
         ]);
     } catch (Throwable $e) {
         echo $e->getMessage();
+        echo $e->getTraceAsString();
     }
     ?>
 
