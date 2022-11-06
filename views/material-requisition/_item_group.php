@@ -9,7 +9,6 @@ use kartik\grid\GridView;
 use yii\data\ArrayDataProvider;
 use yii\grid\SerialColumn;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 ?>
 
@@ -23,19 +22,12 @@ use yii\helpers\Url;
             [
                 'class' => SerialColumn::class
             ],
-            [
-                'class' => 'kartik\grid\ExpandRowColumn',
-                'width' => '50px',
-                'detailUrl' => Url::toRoute(['material-requisition/expand-item-group']),
-                'header' => '',
+            /* [
+                 'class' => 'kartik\grid\ExpandRowColumn',
+                 'width' => '50px',
+                 'detailUrl' => Url::toRoute(['material-requisition/expand-item-group']),
 
-//                'detail' => function ($model, $key, $index, $column) {
-//                    return $this->context->renderPartial('_harga_per_vendor', [
-//                        'model' => Json::decode($model['barangSatuanJson']),
-//                        'key' => $key
-//                    ]);
-//                },
-            ],
+             ],*/
             [
                 'attribute' => 'barangPartNumber',
                 'header' => 'Part Number'
@@ -59,7 +51,7 @@ use yii\helpers\Url;
                 'header' => 'Satuan'
             ],
         ];
-        if ($this->context->action->id != 'print') {
+        if ($this->context->action->id == 'index') {
             $columns = ArrayHelper::merge($columns, [
                 [
                     'attribute' => 'purchaseOrderNomor',
@@ -71,21 +63,20 @@ use yii\helpers\Url;
                             : $model['purchaseOrderNomor'];
                     }
                 ],
+            ]);
+        }
+
+        if ($this->context->action->id == 'print-penawaran') {
+            $columns = ArrayHelper::merge($columns, [
                 [
-                    'attribute' => 'vendorNama',
-                    'header' => 'Vendor'
+
+                    'header' => 'Penawaran',
+                    'format' => 'raw',
+                    'value' => 'Penawaran Disini'
                 ],
             ]);
         }
-        $columns = ArrayHelper::merge($columns, [
-            [
-                'attribute' => 'harga_terakhir',
-                'format' => ['decimal', 2],
-                'contentOptions' => [
-                    'class' => 'text-end'
-                ]
-            ]
-        ]);
+
         echo GridView::widget([
             'id' => 'gridview-detail',
             'tableOptions' => [

@@ -16,7 +16,6 @@ use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
-use yii\widgets\MaskedInput;
 
 ?>
 
@@ -51,7 +50,6 @@ use yii\widgets\MaskedInput;
                 <th scope="col">Description</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Satuan</th>
-                <th scope="col">Harga</th>
                 <th scope="col" style="width: 2px">Aksi</th>
             </tr>
             </thead>
@@ -106,61 +104,6 @@ use yii\widgets\MaskedInput;
                                 ]
                             ]);
                         ?>
-
-                        <div class="my-2"></div>
-
-                        <?php
-                        $data3 = [];
-                        if (Yii::$app->request->isPost || !$modelDetail->isNewRecord) {
-                            if ($modelDetail->satuan_id) {
-                                $data3 = BarangSatuan::find()->mapVendor($modelDetail->barang_id, $modelDetail->satuan_id);
-                            }
-                        }
-                        ?>
-
-                        <?php
-                        $urlFindHarga = Url::to(['barang/find-available-harga']);
-                        $onChangeVendor = <<<JS
-                            
-                            var ini = jQuery(this);
-                            var vendorId = ini.val();
-                            if(vendorId){
-                                
-                                var row = ini.closest('tr');
-                                var barangId = row.find('.barang-id').val();
-                                var satuanId = row.find('.satuan-id').val();
-                                var hargaBarang = row.find('.harga-barang');
-                                
-                                hargaBarang.val('');
-                                
-                                jQuery.post('$urlFindHarga', { barangId : barangId, satuanId : satuanId, vendorId : vendorId }, function(response){
-                                   
-                                   hargaBarang.val(0);
-                                   if(response.data.harga_beli){
-                                        hargaBarang.val(response.data.harga_beli);   
-                                   }
-                                   
-                                })
-                            }
-                                        
-JS;
-                        echo $form->field($modelDetail, "[$i]vendor_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->widget(DepDrop::class, [
-                            'data' => $data3,
-                            'pluginOptions' => [
-                                'depends' => [
-                                    'materialrequisitiondetail-' . $i . '-barang_id',
-                                    'materialrequisitiondetail-' . $i . '-satuan_id',
-                                ],
-                                'url' => Url::to(['barang/depdrop-find-vendor-by-barang-dan-satuan'])
-                            ],
-                            'options' => [
-                                'onchange' => $onChangeVendor,
-                                'placeholder' => '= Pilih nama vendor =',
-                            ],
-                            'type' => DepDrop::TYPE_SELECT2,
-                        ])
-
-                        ?>
                     </td>
                     <td>
                         <?= $form->field($modelDetail, "[$i]description", ['template' =>
@@ -195,30 +138,6 @@ JS;
                                 'class' => 'form-control satuan-id'
                             ]
                         ]) ?>
-                    </td>
-
-
-                    <td>
-                        <?php try {
-                            echo $form->field($modelDetail, "[$i]harga_terakhir", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                                ->widget(MaskedInput::class, [
-                                    'clientOptions' => [
-                                        'alias' => 'numeric',
-                                        'digits' => 2,
-                                        'groupSeparator' => ',',
-                                        'radixPoint' => '.',
-                                        'autoGroup' => true,
-                                        'autoUnmask' => true,
-                                        'removeMaskOnSubmit' => true
-                                    ],
-                                    'options' => [
-                                        'class' => 'form-control harga-barang'
-                                    ]
-                                ]);
-                        } catch (Exception $e) {
-                            echo $e->getMessage();
-                        }
-                        ?>
                     </td>
 
                     <td>

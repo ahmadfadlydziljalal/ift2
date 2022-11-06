@@ -24,6 +24,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property \app\models\Barang $barang
  * @property \app\models\MaterialRequisition $materialRequisition
+ * @property \app\models\MaterialRequisitionDetailPenawaran[] $materialRequisitionDetailPenawarans
  * @property \app\models\PurchaseOrder $purchaseOrder
  * @property \app\models\Satuan $satuan
  * @property \app\models\Card $vendor
@@ -95,6 +96,14 @@ abstract class MaterialRequisitionDetail extends \yii\db\ActiveRecord
     public function getMaterialRequisition()
     {
         return $this->hasOne(\app\models\MaterialRequisition::class, ['id' => 'material_requisition_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMaterialRequisitionDetailPenawarans()
+    {
+        return $this->hasMany(\app\models\MaterialRequisitionDetailPenawaran::class, ['material_requisition_detail_id' => 'id']);
     }
 
     /**

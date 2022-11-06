@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\MaterialRequisition;
 use app\models\MaterialRequisitionDetail;
+use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\search\MaterialRequisitionSearch;
 use app\models\Tabular;
 use Exception;
@@ -263,16 +264,201 @@ class MaterialRequisitionController extends Controller
         }
     }
 
+    /**
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionExpandItemGroup(): string
     {
         if (isset($_POST['expandRowKey'])) {
-            return "Test";
-            /* return $this->renderPartial('_item', [
-                 'model' => $this->findModel($_POST['expandRowKey'])
-             ]);*/
+            return $this->renderPartial('_item', [
+                'model' => $this->findModel($_POST['expandRowKey'])
+            ]);
         } else {
             return '<div class="alert alert-danger">No data found</div>';
         }
     }
+
+
+    /**
+     * @param int $materialRequisitionDetailId
+     * @return Response|string
+     * @throws NotFoundHttpException
+     */
+    public function actionCreatePenawaran(int $materialRequisitionDetailId): Response|string
+    {
+
+        $modelMaterialRequisitionDetail = $this->findModelDetail($materialRequisitionDetailId);
+        $modelMaterialRequisition = $this->findModel($modelMaterialRequisitionDetail->materialRequisition->id);
+
+        $modelsDetail = [new MaterialRequisitionDetailPenawaran()];
+
+        if ($this->request->isPost) {
+
+            $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetailPenawaran::class);
+            Tabular::loadMultiple($modelsDetail, $this->request->post());
+
+            if (Tabular::validateMultiple($modelsDetail)) {
+
+                $transaction = MaterialRequisitionDetailPenawaran::getDb()->beginTransaction();
+
+                try {
+
+                    $flag = true;
+                    foreach ($modelsDetail as $detail) :
+
+                        /** @var MaterialRequisitionDetailPenawaran $detail */
+                        $detail->material_requisition_detail_id = $materialRequisitionDetailId;
+                        if (!($flag = $detail->save(false))) {
+                            break;
+                        }
+                    endforeach;
+
+                    if ($flag) {
+                        $transaction->commit();
+                        $status = ['code' => 1, 'message' => 'Commit'];
+                    } else {
+                        $transaction->rollBack();
+                        $status = ['code' => 0, 'message' => 'Roll Back'];
+                    }
+
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                    $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
+                }
+
+                if ($status['code']) {
+                    Yii::$app->session->setFlash('success', " Harga penawaran berhasil ditambahkan.");
+                    return $this->redirect(['material-requisition/view', 'id' => $modelMaterialRequisition->id]);
+                }
+
+                Yii::$app->session->setFlash('danger', " Harga penawaran is failed to insert. Info: " . $status['message']);
+            }
+
+        }
+
+        return $this->render('create_penawaran', [
+            'modelMaterialRequisition' => $modelMaterialRequisition,
+            'modelMaterialRequisitionDetail' => $modelMaterialRequisitionDetail,
+            'modelsDetail' => $modelsDetail,
+        ]);
+    }
+
+    /**
+     * @param $materialRequisitionDetailId
+     * @return MaterialRequisitionDetail|null
+     * @throws NotFoundHttpException
+     */
+    protected function findModelDetail($materialRequisitionDetailId): ?MaterialRequisitionDetail
+    {
+        if (($model = MaterialRequisitionDetail::findOne($materialRequisitionDetailId)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    /**
+     * @param int $materialRequisitionDetailId
+     * @return Response|string
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdatePenawaran(int $materialRequisitionDetailId): Response|string
+    {
+        $modelMaterialRequisitionDetail = $this->findModelDetail($materialRequisitionDetailId);
+        $modelMaterialRequisition = $this->findModel($modelMaterialRequisitionDetail->materialRequisition->id);
+
+        $modelsDetail = empty($modelMaterialRequisitionDetail->materialRequisitionDetailPenawarans)
+            ? [new MaterialRequisitionDetailPenawaran()]
+            : $modelMaterialRequisitionDetail->materialRequisitionDetailPenawarans;
+
+        if ($this->request->isPost) {
+
+            $oldDetailsID = ArrayHelper::map($modelsDetail, 'id', 'id');
+            $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetailPenawaran::class, $modelsDetail);
+
+            Tabular::loadMultiple($modelsDetail, $this->request->post());
+            $deletedDetailsID = array_diff($oldDetailsID, array_filter(ArrayHelper::map($modelsDetail, 'id', 'id')));
+
+            if (Tabular::validateMultiple($modelsDetail)) {
+
+                $transaction = MaterialRequisitionDetailPenawaran::getDb()->beginTransaction();
+
+                try {
+
+                    $flag = true;
+
+                    if (!empty($deletedDetailsID)) {
+                        MaterialRequisitionDetailPenawaran::deleteAll(['id' => $deletedDetailsID]);
+                    }
+
+                    foreach ($modelsDetail as $detail) :
+
+                        /** @var MaterialRequisitionDetailPenawaran $detail */
+                        $detail->material_requisition_detail_id = $materialRequisitionDetailId;
+                        if (!($flag = $detail->save(false))) {
+                            break;
+                        }
+                    endforeach;
+
+                    if ($flag) {
+                        $transaction->commit();
+                        $status = ['code' => 1, 'message' => 'Commit'];
+                    } else {
+                        $transaction->rollBack();
+                        $status = ['code' => 0, 'message' => 'Roll Back'];
+                    }
+
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                    $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
+                }
+
+                if ($status['code']) {
+                    Yii::$app->session->setFlash('success', " Harga penawaran berhasil di-update.");
+                    return $this->redirect(['material-requisition/view', 'id' => $modelMaterialRequisition->id]);
+                }
+
+                Yii::$app->session->setFlash('danger', " Harga penawaran is failed to insert. Info: " . $status['message']);
+            }
+
+        }
+
+        return $this->render('update_penawaran', [
+            'modelMaterialRequisition' => $modelMaterialRequisition,
+            'modelMaterialRequisitionDetail' => $modelMaterialRequisitionDetail,
+            'modelsDetail' => $modelsDetail,
+        ]);
+    }
+
+    /**
+     * @param int $materialRequisitionDetailId
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionDeletePenawaran(int $materialRequisitionDetailId): Response
+    {
+        $modelMaterialRequisitionDetail = $this->findModelDetail($materialRequisitionDetailId);
+        $count = MaterialRequisitionDetailPenawaran::deleteAll([
+            'material_requisition_detail_id' => $materialRequisitionDetailId
+        ]);
+
+        Yii::$app->session->setFlash('success', $count . ' penawaran records berhasil dibatalkan.');
+        return $this->redirect(['material-requisition/view', 'id' => $modelMaterialRequisitionDetail->material_requisition_id]);
+    }
+
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionPrintPenawaran($id): string
+    {
+        $this->layout = 'print';
+        return $this->render('print_penawaran', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
 
 }
