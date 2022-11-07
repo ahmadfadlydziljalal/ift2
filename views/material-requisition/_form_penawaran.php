@@ -10,6 +10,7 @@
 use app\models\Card;
 use app\models\MaterialRequisition;
 use app\models\MaterialRequisitionDetailPenawaran;
+use app\models\Status;
 use kartik\form\ActiveForm;
 use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
@@ -38,7 +39,7 @@ use yii\widgets\MaskedInput;
         'deleteButton' => '.remove-item',
         'model' => $modelsDetail[0],
         'formId' => 'dynamic-form',
-        'formFields' => ['id', 'material_requisition_detail_id', 'vendor_id', 'harga_penawaran'],
+        'formFields' => ['id', 'material_requisition_detail_id', 'vendor_id', 'harga_penawaran', 'status_id'],
     ]);
     ?>
 
@@ -52,6 +53,7 @@ use yii\widgets\MaskedInput;
                 <th scope="col">#</th>
                 <th scope="col">Vendor</th>
                 <th scope="col">Harga Penawaran</th>
+                <th scope="col">Status</th>
                 <th scope="col" style="width: 2px">Aksi</th>
             </tr>
             </thead>
@@ -99,6 +101,12 @@ use yii\widgets\MaskedInput;
                     </td>
 
                     <td>
+                        <?= $form->field($modelDetail, "[$i]status_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                            ->dropDownList(Status::find()->map(Status::MATERIAL_REQUISITION_DETAIL_PENAWARAN_STATUS))
+                        ?>
+                    </td>
+
+                    <td>
                         <button type="button" class="remove-item btn btn-link text-danger">
                             <i class="bi bi-trash"> </i>
                         </button>
@@ -111,7 +119,7 @@ use yii\widgets\MaskedInput;
             <tfoot>
             <tr>
 
-                <td class="text-end" colspan="3">
+                <td class="text-end" colspan="4">
                     <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
                 </td>
                 <td></td>

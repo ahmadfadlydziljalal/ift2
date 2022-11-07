@@ -59,32 +59,37 @@ use yii\helpers\Html;
                             ]);
                         ?>
                     </p>
-                    <?php
-                    echo GridView::widget([
-                        'dataProvider' => new ActiveDataProvider([
-                            'query' => $model->getMaterialRequisitionDetailPenawarans()
-                        ]),
-                        'layout' => '{items}',
-                        'columns' => [
-                            [
-                                'class' => SerialColumn::class
-                            ],
-                            [
-                                'class' => DataColumn::class,
-                                'attribute' => 'vendor_id',
-                                'value' => 'vendor.nama'
-                            ],
-                            [
-                                'class' => DataColumn::class,
-                                'attribute' => 'harga_penawaran',
-                                'format' => ['decimal', 2],
-                                'contentOptions' => [
-                                    'class' => 'text-end'
-                                ]
+
+                    <div class="table-responsive">
+                        <?php
+                        echo GridView::widget([
+                            'dataProvider' => new ActiveDataProvider([
+                                'query' => $model->getMaterialRequisitionDetailPenawarans()
+                            ]),
+                            'layout' => '{items}',
+                            'columns' => [
+                                [
+                                    'class' => SerialColumn::class
+                                ],
+                                [
+                                    'class' => DataColumn::class,
+                                    'attribute' => 'vendor_id',
+                                    'value' => 'vendor.nama'
+                                ],
+                                [
+                                    'class' => DataColumn::class,
+                                    'attribute' => 'harga_penawaran',
+                                    'format' => ['decimal', 2],
+                                    'contentOptions' => [
+                                        'class' => 'text-end'
+                                    ]
+                                ],
+                                'statusLabel'
                             ]
-                        ]
-                    ]);
-                    ?>
+                        ]);
+                        ?>
+                    </div>
+
 
                 <?php endif ?>
 

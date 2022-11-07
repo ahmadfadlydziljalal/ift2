@@ -25,6 +25,7 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
     public ?string $tipePembelianNama = null;
     public ?string $vendorNama = null;
     public ?string $satuanNama = null;
+    public ?string $penawaranDariVendor = null;
 
 
     public function behaviors()

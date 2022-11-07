@@ -9,6 +9,7 @@ use kartik\grid\GridView;
 use yii\data\ArrayDataProvider;
 use yii\grid\SerialColumn;
 use yii\helpers\Html;
+use yii\helpers\Json;
 
 ?>
 
@@ -28,6 +29,10 @@ use yii\helpers\Html;
                  'detailUrl' => Url::toRoute(['material-requisition/expand-item-group']),
 
              ],*/
+            [
+                'attribute' => 'barangNama',
+                'header' => 'Nama'
+            ],
             [
                 'attribute' => 'barangPartNumber',
                 'header' => 'Part Number'
@@ -51,31 +56,50 @@ use yii\helpers\Html;
                 'header' => 'Satuan'
             ],
         ];
-        if ($this->context->action->id == 'index') {
-            $columns = ArrayHelper::merge($columns, [
+
+        if ($this->context->action->id == 'expand-item') {
+            $columns = ArrayHelper::merge(
+                $columns,
                 [
-                    'attribute' => 'purchaseOrderNomor',
-                    'header' => 'P.O',
-                    'format' => 'raw',
-                    'value' => function ($model) {
-                        return empty($model['purchaseOrderNomor'])
-                            ? Html::tag('span', "Belum dibuatkan P.O", ['class' => 'badge bg-danger'])
-                            : $model['purchaseOrderNomor'];
-                    }
-                ],
-            ]);
+                    [
+                        'attribute' => 'penawaranDariVendor',
+                        'format' => 'raw',
+                        'value' => function ($model) {
+                            $json = Json::decode($model['penawaranDariVendor']);
+                            return empty($json[0]['status']) ?
+                                Html::tag('span', "Belum dibuatkan penawaran", ['class' => 'badge bg-danger'])
+                                : GridView::widget([
+                                    'dataProvider' => new ArrayDataProvider([
+                                        'allModels' => Json::decode($model['penawaranDariVendor'])
+                                    ]),
+                                    'layout' => '{items}',
+                                    'columns' => [
+                                        'vendor',
+                                        [
+                                            'attribute' => 'harga_penawaran',
+                                            'contentOptions' => [
+                                                'class' => 'text-end'
+                                            ]
+                                        ],
+                                        'status'
+                                    ]
+                                ]);
+                        }
+                    ],
+                    [
+                        'attribute' => 'purchaseOrderNomor',
+                        'header' => 'P.O',
+                        'format' => 'raw',
+                        'value' => function ($model) {
+                            return empty($model['purchaseOrderNomor'])
+                                ? Html::tag('span', "Belum dibuatkan P.O", ['class' => 'badge bg-danger'])
+                                : $model['purchaseOrderNomor'];
+                        }
+                    ],
+                ]
+            );
         }
 
-        if ($this->context->action->id == 'print-penawaran') {
-            $columns = ArrayHelper::merge($columns, [
-                [
-
-                    'header' => 'Penawaran',
-                    'format' => 'raw',
-                    'value' => 'Penawaran Disini'
-                ],
-            ]);
-        }
 
         echo GridView::widget([
             'id' => 'gridview-detail',

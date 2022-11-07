@@ -8,8 +8,14 @@ use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\search\MaterialRequisitionSearch;
 use app\models\Tabular;
 use Exception;
+use kartik\mpdf\Pdf;
+use Mpdf\MpdfException;
+use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
+use setasign\Fpdi\PdfParser\PdfParserException;
+use setasign\Fpdi\PdfParser\Type\PdfTypeException;
 use Throwable;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -247,6 +253,24 @@ class MaterialRequisitionController extends Controller
         return $this->render('print', [
             'model' => $this->findModel($id),
         ]);
+    }
+
+    /**
+     * @throws MpdfException
+     * @throws CrossReferenceException
+     * @throws InvalidConfigException
+     * @throws PdfParserException
+     * @throws NotFoundHttpException
+     * @throws PdfTypeException
+     */
+    public function actionPrintPdf($id): string
+    {
+        /** @var Pdf $pdf */
+        $pdf = Yii::$app->pdfWithLetterhead;
+        $pdf->content = $this->renderPartial('print_pdf', [
+            'model' => $this->findModel($id),
+        ]);
+        return $pdf->render();
     }
 
     /**

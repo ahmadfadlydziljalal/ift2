@@ -11,24 +11,10 @@ class PdfHtmlHeader extends Widget
 
     public ?string $perusahaan = null;
 
-    public ?string $alamat = 'Alamat tidak tersedia, karena anda tidak terdaftar di cabang manapun...!';
+    public ?string $alamat = '';
 
     public bool $renderMediaAsPdf = true;
-    private string $imgRenderPath = '/images/logo-tms.png';
-
-    public function init()
-    {
-
-        parent::init();
-        if(!Yii::$app->user->isGuest){
-            $dataKaryawan = Yii::$app->cache->get('sihrd-karyawan' . Yii::$app->user->identity->id);
-            if(isset($dataKaryawan['jabatan_utama']['perusahaan'])){
-                $this->perusahaan = $dataKaryawan['jabatan_utama']['perusahaan'];
-                $this->alamat = $dataKaryawan['jabatan_utama']['alamat'];
-            }
-        }
-
-    }
+    private string $imgRenderPath = '/images/logo.png';
 
     public function run()
     {
@@ -46,38 +32,44 @@ class PdfHtmlHeader extends Widget
             'class' => 'row'
         ]);
 
-            /* ============ Image ==============*/
-            echo Html::beginTag('div', [
-                'style' => [
-                    'float' => "left",
-                    "width" => "10%",
-                ]
-            ]);
-                echo Html::img($this->imgRenderPath, [
-                    'style' => [
-                        'width' => '80px',
-                        'height' => '80px',
-                    ]
-                ]);
-            echo Html::endTag('div');
-            /* ============ Image ==============*/
+        /* ============ Image ==============*/
+        echo Html::beginTag('div', [
+            'style' => [
+                'float' => "left",
+                "width" => "10%",
+            ]
+        ]);
+        echo Html::img($this->imgRenderPath, [
+            'style' => [
+                'width' => '80px',
+                'height' => '80px',
+            ]
+        ]);
+        echo Html::endTag('div');
+        /* ============ Image ==============*/
 
 
-            /* ======== Company =============== */
-            echo Html::beginTag('div', [
-                'style' => [
-                    'float' => "left",
-                    "width" => "89%",
-                    //'border' => '1px solid black',
-                    'text-align' => 'center',
-                    'padding' => '0'
-                ]
-            ]);
-                echo Html::tag('h3', $this->perusahaan , ['style' => ['margin' => '0', 'padding' => '0']]);
-                echo Html::tag('small', $this->alamat, ['style' => ['margin' => '0', 'padding' => '0']]);
+        /* ======== Company =============== */
+        echo Html::beginTag('div', [
+            'style' => [
+                'float' => "left",
+                "width" => "89%",
+                //'border' => '1px solid black',
+                'text-align' => 'center',
+                'padding' => '0'
+            ]
+        ]);
+        echo Html::tag('h3', Yii::$app->settings->get('site.companyClient'), ['style' => ['margin' => '0', 'padding' => '0']]);
+        echo Html::tag('small',
+            Yii::$app->settings->get('site.alamat') . '<br/>' .
+            'Telp:' . Yii::$app->settings->get('site.telepon') . ', ' .
+            'Email:' . Yii::$app->settings->get('site.email')
+            ,
+            ['style' => ['margin' => '0', 'padding' => '0']]
+        );
 
-            echo Html::endTag('div');
-            /* ======== Company =============== */
+        echo Html::endTag('div');
+        /* ======== Company =============== */
 
         echo Html::endTag('div');
         /* End Row */

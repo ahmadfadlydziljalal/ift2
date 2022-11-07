@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\enums\MaterialRequisitionDetailPenawaranEnum;
 use app\models\base\MaterialRequisitionDetailPenawaran as BaseMaterialRequisitionDetailPenawaran;
 use yii\helpers\ArrayHelper;
 
@@ -11,7 +12,7 @@ use yii\helpers\ArrayHelper;
 class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPenawaran
 {
 
-    public function behaviors()
+    public function behaviors(): array
     {
         return ArrayHelper::merge(
             parent::behaviors(),
@@ -21,7 +22,7 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
         );
     }
 
-    public function rules()
+    public function rules(): array
     {
         return ArrayHelper::merge(
             parent::rules(),
@@ -31,11 +32,17 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
         );
     }
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
             'material_requisition_detail_id' => 'Material Requisition Detail',
             'vendor_id' => 'Vendor',
         ]);
     }
+
+    public function getStatusLabel(): string
+    {
+        return $this->status->key;
+    }
+
 }

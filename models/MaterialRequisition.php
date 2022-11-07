@@ -54,27 +54,29 @@ class MaterialRequisition extends BaseMaterialRequisition
                 'satuanNama' => 'satuan.nama',
                 'purchaseOrderNomor' => 'purchase_order.nomor',
                 'vendorNama' => 'card.nama',
-                'barangSatuanJson' => new Expression(
+                'penawaranDariVendor' => new Expression(
                     'JSON_ARRAYAGG(
                                 JSON_OBJECT(
-                                    "barang_satuan_id", barang_satuan.id,
-                                    "vendor", vbs.nama,
-                                    "harga_jual", harga_jual,
-                                    "harga_beli", harga_beli
+                                    "vendor", vendorPenawar.nama,
+                                    "harga_penawaran", FORMAT(harga_penawaran, 2),
+                                    "status", status.key
                                 )
-                              )')
+                              )'
+                )
             ])
             ->joinWith(['barang' => function ($barang) {
-                $barang->joinWith(['barangSatuans' => function ($bs) {
-                    $bs->joinWith(['vendor' => function ($vbs) {
-                        $vbs->alias('vbs');
-                    }], false);
-                }], false);
                 $barang->joinWith('tipePembelian', false);
             }], false)
             ->joinWith('satuan', false)
             ->joinWith('purchaseOrder', false)
             ->joinWith('vendor', false)
+            ->joinWith(['materialRequisitionDetailPenawarans' => function ($mrdp) {
+                $mrdp->alias('mrdp')
+                    ->joinWith('status', false)
+                    ->joinWith(['vendor' => function ($vendorPenawar) {
+                        $vendorPenawar->alias('vendorPenawar');
+                    }], false);
+            }], false)
             ->groupBy('material_requisition_detail.id')
             ->all();
 
