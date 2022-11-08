@@ -211,7 +211,7 @@ class MaterialRequisitionController extends Controller
 
                 if ($status['code']) {
                     Yii::$app->session->setFlash('info', "MaterialRequisition: " . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil di update.");
-                    return $this->redirect(['index']);
+                    return $this->redirect(['material-requisition/view', 'id' => $id]);
                 }
 
                 Yii::$app->session->setFlash('danger', " MaterialRequisition is failed to updated. Info: " . $status['message']);

@@ -18,6 +18,7 @@ class m221106_050031_CreateMaterialRequisitionDetailPenawaranTable extends Migra
             'vendor_id' => $this->integer()->notNull(),
             'harga_penawaran' => $this->decimal(12, 2)->notNull(),
             'status_id' => $this->integer(),
+            'purchase_order_id' => $this->integer()->null(),
             'created_at' => $this->integer(11)->null()->defaultValue(null),
             'updated_at' => $this->integer(11)->null()->defaultValue(null),
             'created_by' => $this->string(10)->null()->defaultValue(null),
@@ -52,6 +53,20 @@ class m221106_050031_CreateMaterialRequisitionDetailPenawaranTable extends Migra
             'id',
             'RESTRICT',
             'CASCADE',
+        );
+
+        $this->createIndex('idx_purchase_order_di_penawaran',
+            'material_requisition_detail_penawaran',
+            'purchase_order_id'
+        );
+
+        $this->addForeignKey('fk_purchase_order_di_penawaran',
+            'material_requisition_detail_penawaran',
+            'purchase_order_id',
+            'purchase_order',
+            'id',
+            'SET NULL',
+            'RESTRICT'
         );
 
     }

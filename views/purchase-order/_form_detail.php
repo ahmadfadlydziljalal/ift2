@@ -8,6 +8,7 @@
 /* @var $form ActiveForm */
 
 use app\models\MaterialRequisitionDetail;
+use app\models\MaterialRequisitionDetailPenawaran;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
@@ -48,44 +49,46 @@ use yii\widgets\MaskedInput;
                 <th scope="col">Quantity</th>
                 <th scope="col">Satuan</th>
                 <th scope="col">Vendor</th>
-                <th scope="col">Harga Terakhir</th>
+                <th scope="col">Harga Penawaran</th>
             </tr>
             </thead>
 
             <tbody class="container-items">
 
-            <?php foreach ($modelsDetail as $i => $modelDetail): ?>
+            <?php /** @var MaterialRequisitionDetailPenawaran $modelDetail */
+            foreach ($modelsDetail as $i => $modelDetail): ?>
                 <tr class="item">
 
                     <td style="width: 2px;" class="align-middle">
                         <?php /** @var MaterialRequisitionDetail $modelDetail */ ?>
                         <?= Html::activeHiddenInput($modelDetail, "[$i]id"); ?>
-                        <?= Html::activeHiddenInput($modelDetail, "[$i]material_requisition_id") ?>
-                        <?= Html::activeHiddenInput($modelDetail, "[$i]barang_id") ?>
-                        <?= Html::activeHiddenInput($modelDetail, "[$i]description") ?>
-                        <?= Html::activeHiddenInput($modelDetail, "[$i]quantity") ?>
+                        <?= Html::activeHiddenInput($modelDetail, "[$i]material_requisition_detail_id") ?>
                         <?= Html::activeHiddenInput($modelDetail, "[$i]vendor_id") ?>
+                        <?= Html::activeHiddenInput($modelDetail, "[$i]harga_penawaran") ?>
+                        <?= Html::activeHiddenInput($modelDetail, "[$i]status_id") ?>
+
+
                         <i class="bi bi-arrow-right-short"></i>
                     </td>
 
                     <td>
-                        <?= $modelDetail->materialRequisition->nomor ?>
+                        <?= $modelDetail->materialRequisitionDetail->materialRequisition->nomor ?>
                     </td>
 
                     <td>
-                        <?= $modelDetail->barang->nama ?>
+                        <?= $modelDetail->materialRequisitionDetail->barang->nama ?>
                     </td>
 
                     <td>
-                        <?= $modelDetail->description ?>
+                        <?= $modelDetail->materialRequisitionDetail->description ?>
                     </td>
 
                     <td>
-                        <?= $modelDetail->quantity ?>
+                        <?= $modelDetail->materialRequisitionDetail->quantity ?>
                     </td>
 
                     <td>
-                        <?= $modelDetail->satuan->nama ?>
+                        <?= $modelDetail->materialRequisitionDetail->satuan->nama ?>
                     </td>
 
                     <td>
@@ -94,7 +97,7 @@ use yii\widgets\MaskedInput;
 
                     <td>
                         <?php try {
-                            echo $form->field($modelDetail, "[$i]harga_terakhir", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                            echo $form->field($modelDetail, "[$i]harga_penawaran", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                                 ->widget(MaskedInput::class, [
                                     'clientOptions' => [
                                         'alias' => 'numeric',

@@ -47,6 +47,17 @@ class m221107_093701_CreateStatusTable extends Migration
      */
     public function safeDown()
     {
+
+        $this->dropForeignKey(
+            'fk_status_di_penawaran',
+            'material_requisition_detail_penawaran'
+        );
+        
+        $this->dropIndex(
+            'idx_status_di_penawaran',
+            'material_requisition_detail_penawaran'
+        );
+
         $this->dropTable('{{%status}}');
     }
 }

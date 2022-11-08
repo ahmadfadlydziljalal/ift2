@@ -14,6 +14,7 @@ use yii\helpers\ArrayHelper;
  * @property string $section
  * @property string $key
  * @property string $value
+ * @property array $options
  *
  * @property \app\models\MaterialRequisitionDetailPenawaran[] $materialRequisitionDetailPenawarans
  * @property string $aliasModel
@@ -38,6 +39,7 @@ abstract class Status extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::rules(), [
             [['section', 'key', 'value'], 'required'],
+            [['options'], 'safe'],
             [['section', 'key', 'value'], 'string', 'max' => 255]
         ]);
     }
@@ -52,6 +54,7 @@ abstract class Status extends \yii\db\ActiveRecord
             'section' => 'Section',
             'key' => 'Key',
             'value' => 'Value',
+            'options' => 'Options',
         ];
     }
 

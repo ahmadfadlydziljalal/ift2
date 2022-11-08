@@ -5,6 +5,8 @@ namespace app\models;
 use app\enums\MaterialRequisitionDetailPenawaranEnum;
 use app\models\base\MaterialRequisitionDetailPenawaran as BaseMaterialRequisitionDetailPenawaran;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "material_requisition_detail_penawaran".
@@ -42,7 +44,12 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
 
     public function getStatusLabel(): string
     {
-        return $this->status->key;
+        $htmlElement = Json::decode($this->status->options);
+        return Html::tag(
+            $htmlElement['tag'],
+            $this->status->key,
+            $htmlElement['options']
+        );
     }
 
 }

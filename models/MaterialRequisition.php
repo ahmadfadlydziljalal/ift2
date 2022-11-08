@@ -40,6 +40,9 @@ class MaterialRequisition extends BaseMaterialRequisition
         );
     }
 
+    /**
+     * @return array
+     */
     public function getMaterialRequisitionDetailsGroupingByTipePembelian(): array
     {
         $parentMaterialRequisitionDetails = parent::getMaterialRequisitionDetails()
@@ -52,14 +55,16 @@ class MaterialRequisition extends BaseMaterialRequisition
                 'barangMerkPartNumber' => 'barang.merk_part_number',
                 'barangNama' => 'barang.nama',
                 'satuanNama' => 'satuan.nama',
-                'purchaseOrderNomor' => 'purchase_order.nomor',
                 'vendorNama' => 'card.nama',
                 'penawaranDariVendor' => new Expression(
                     'JSON_ARRAYAGG(
                                 JSON_OBJECT(
-                                    "vendor", vendorPenawar.nama,
-                                    "harga_penawaran", FORMAT(harga_penawaran, 2),
-                                    "status", status.key
+                                    "vendor", vendorPenawar.nama
+                                    , "harga_penawaran", FORMAT(harga_penawaran, 2)
+                                    , "status", status.key
+                                    , "status_options", status.options
+                                    , "purchase_order_id", purchase_order.nomor
+                                    
                                 )
                               )'
                 )
@@ -68,14 +73,14 @@ class MaterialRequisition extends BaseMaterialRequisition
                 $barang->joinWith('tipePembelian', false);
             }], false)
             ->joinWith('satuan', false)
-            ->joinWith('purchaseOrder', false)
             ->joinWith('vendor', false)
             ->joinWith(['materialRequisitionDetailPenawarans' => function ($mrdp) {
                 $mrdp->alias('mrdp')
                     ->joinWith('status', false)
                     ->joinWith(['vendor' => function ($vendorPenawar) {
                         $vendorPenawar->alias('vendorPenawar');
-                    }], false);
+                    }], false)
+                    ->joinWith('purchaseOrder', false);
             }], false)
             ->groupBy('material_requisition_detail.id')
             ->all();

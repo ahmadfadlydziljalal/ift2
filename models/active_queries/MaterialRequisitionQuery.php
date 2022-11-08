@@ -35,33 +35,38 @@ class MaterialRequisitionQuery extends ActiveQuery
     public function createForPurchaseOrder(string $q): array
     {
         $sql = <<<SQL
-            JSON_OBJECT('material_requisition_id',  material_requisition.id, 'vendor_id', material_requisition_detail.vendor_id )
+            JSON_OBJECT(
+                'material_requisition_id',  material_requisition.id, 
+                'vendor_id', material_requisition_detail_penawaran.vendor_id 
+            )
 SQL;
 
-        return parent::select(
+        $query = parent::select(
             [
                 //'id' => new Expression('CONCAT(material_requisition.id, ";", material_requisition_detail.vendor_id)'),
                 'id' => new Expression($sql),
                 'text' => new Expression('CONCAT(material_requisition.nomor, " - ", card.nama)')
             ])
             ->joinWith(['materialRequisitionDetails' => function ($mrd) {
-                $mrd->joinWith('vendor', false);
+                $mrd->joinWith(['materialRequisitionDetailPenawarans' => function ($mrdp) {
+                    $mrdp->joinWith('vendor', false);
+                }], false);
             }], false)
             ->where([
-                'IS NOT', 'material_requisition_detail.vendor_id', NULL
+                'IS NOT', 'material_requisition_detail_penawaran.vendor_id', NULL
             ])
             ->andWhere([
-                'IS', 'material_requisition_detail.purchase_order_id', NULL
+                'IS', 'material_requisition_detail_penawaran.purchase_order_id', NULL
             ])
             ->andWhere([
                 'LIKE', 'nomor', $q
             ])
             ->groupBy([
                 'material_requisition.id',
-                'material_requisition_detail.vendor_id',
-            ])
-            ->asArray()
-            ->all();
+                'material_requisition_detail_penawaran.vendor_id',
+            ]);
+
+        return $query->asArray()->all();
     }
 
     /**

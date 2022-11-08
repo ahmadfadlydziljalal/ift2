@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\form\BeforeCreatePurchaseOrderForm;
 use app\models\MaterialRequisition;
 use app\models\MaterialRequisitionDetail;
+use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\PurchaseOrder;
 use app\models\search\PurchaseOrderSearch;
 use app\models\Tabular;
@@ -114,7 +115,7 @@ class PurchaseOrderController extends Controller
 
         if (!is_null($q)) {
 
-            $data = MaterialRequisition::find()->createForPurchaseOrder($q);
+            $data = MaterialRequisitionDetail::find()->createForPurchaseOrder($q);
             $out['results'] = array_values($data);
 
         } elseif ($id > 0) {
@@ -137,21 +138,26 @@ class PurchaseOrderController extends Controller
     public function actionCreate($materialRequestAndVendorId): Response|string
     {
         $materialRequestAndVendorId = Json::decode($materialRequestAndVendorId);
+
+
         $request = Yii::$app->request;
 
         $model = new PurchaseOrder([
             'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
             'vendor_id' => $materialRequestAndVendorId['vendor_id']
         ]);
-
-        $modelsDetail = MaterialRequisitionDetail::findAll([
-            'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
-            'vendor_id' => $materialRequestAndVendorId['vendor_id'],
-        ]);
+        
+        $modelsDetail = MaterialRequisitionDetailPenawaran::find()
+            ->joinWith('materialRequisitionDetail', false)
+            ->where([
+                'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
+                'material_requisition_detail_penawaran.vendor_id' => $materialRequestAndVendorId['vendor_id'],
+            ])
+            ->all();
 
         if ($model->load($request->post())) {
 
-            $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetail::class, $modelsDetail);
+            $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetailPenawaran::class, $modelsDetail);
             Tabular::loadMultiple($modelsDetail, $request->post());
 
             //validate models
@@ -197,7 +203,7 @@ class PurchaseOrderController extends Controller
 
         return $this->render('create', [
             'model' => $model,
-            'modelsDetail' => empty($modelsDetail) ? [new MaterialRequisitionDetail()] : $modelsDetail,
+            'modelsDetail' => empty($modelsDetail) ? [new MaterialRequisitionDetailPenawaran()] : $modelsDetail,
         ]);
 
     }

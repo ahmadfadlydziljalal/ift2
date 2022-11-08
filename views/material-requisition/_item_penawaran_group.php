@@ -124,9 +124,10 @@ use yii\helpers\Html;
                                         }
                                     ],
                                     [
-                                        'header' => 'Approved',
-                                        'value' => ''
-                                    ]
+                                        'attribute' => 'statusLabel',
+                                        'header' => 'Status',
+                                        'format' => 'raw'
+                                    ],
                                 ]
                             ]);
                     }

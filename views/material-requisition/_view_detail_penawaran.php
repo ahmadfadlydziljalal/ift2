@@ -4,6 +4,7 @@
 
 
 use app\models\MaterialRequisitionDetail;
+use app\models\MaterialRequisitionDetailPenawaran;
 use kartik\grid\DataColumn;
 use kartik\grid\GridView;
 use kartik\grid\SerialColumn;
@@ -84,7 +85,18 @@ use yii\helpers\Html;
                                         'class' => 'text-end'
                                     ]
                                 ],
-                                'statusLabel'
+                                [
+                                    'attribute' => 'statusLabel',
+                                    'format' => 'raw'
+                                ],
+                                [
+                                    'class' => DataColumn::class,
+                                    'attribute' => 'purchase_order_id',
+                                    'value' => function ($model) {
+                                        /** @var MaterialRequisitionDetailPenawaran $model */
+                                        return empty($model->purchaseOrder) ? '' : $model->purchaseOrder->nomor;
+                                    }
+                                ],
                             ]
                         ]);
                         ?>
