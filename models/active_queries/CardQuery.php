@@ -75,7 +75,7 @@ class CardQuery extends ActiveQuery
             default:
                 throw new NotFoundHttpException('Mode Anda tidak didukung');
         endswitch;
-        return ArrayHelper::map($q->all(), 'id', 'nama');
+        return ArrayHelper::map($q->orderBy('nama')->all(), 'id', 'nama');
     }
 
     /**

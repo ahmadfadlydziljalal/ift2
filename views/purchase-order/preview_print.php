@@ -9,7 +9,7 @@ use yii\web\View;
 /* @var $this View */
 /* @var $model PurchaseOrder */
 /* @var $openWindowPrint int */
-/** @var PurchaseOrderDetail $purchaseOrderDetail */
+
 
 $settings = Yii::$app->settings;
 
@@ -21,7 +21,7 @@ $settings = Yii::$app->settings;
     <div style="width: 100%">
 
         <div class="mb-1" style=" float: left; width: 45%; padding-right: 2em">
-            <div class="border-1" style="min-height: 1.6cm; max-height: 1.6cm; padding: .5em">
+            <div class="border-1" style="min-height: 1.6cm; max-height: 3.6cm; padding: .5em">
                 To: <?= $model->vendor->nama ?><br/>
                 <?= $model->vendor->alamat ?>
             </div>
@@ -147,8 +147,8 @@ $settings = Yii::$app->settings;
 
             <tr>
 
-                <td><?= $model->approved_by ?></td>
-                <td><?= $model->acknowledge_by ?></td>
+                <td><?= $model->approvedBy->nama ?></td>
+                <td><?= $model->acknowledgeBy->nama ?></td>
                 <td></td>
             </tr>
             <tr>

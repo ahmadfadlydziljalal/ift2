@@ -6,6 +6,7 @@
 
 /* @var $model PurchaseOrder */
 
+use app\models\Card;
 use app\models\PurchaseOrder;
 use kartik\datecontrol\DateControl;
 use yii\bootstrap5\ActiveForm;
@@ -20,20 +21,20 @@ use yii\web\View;
 
             <?= Html::activeHiddenInput($model, 'material_requisition_id') ?>
             <?= Html::activeHiddenInput($model, 'vendor_id') ?>
-            
+
             <?= $form->field($model, 'tanggal')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
             <?= $form->field($model, 'remarks')->textarea(['rows' => 6]) ?>
-
-            <?php
-            if ($model->isNewRecord) {
-                $settings = Yii::$app->settings;
-                $model->approved_by = $settings->get('purchase_order.approved_by_nama');
-                $model->acknowledge_by = $settings->get('purchase_order.acknowledge_by_nama');
-            }
-
-            echo $form->field($model, 'approved_by')->textInput(['maxlength' => true]);
-            echo $form->field($model, 'acknowledge_by')->textInput(['maxlength' => true])
-            ?>
+            
+            <?= $form->field($model, 'approved_by_id')->dropDownList(
+                Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR), [
+                    'prompt' => '= Pilih orang kantor ='
+                ]
+            ); ?>
+            <?= $form->field($model, 'acknowledge_by_id')->dropDownList(
+                Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR), [
+                    'prompt' => '= Pilih orang kantor ='
+                ]
+            ); ?>
         </div>
     </div>
 </div>

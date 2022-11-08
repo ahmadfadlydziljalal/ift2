@@ -195,7 +195,7 @@ class PurchaseOrderController extends Controller
 
                 if ($status['code']) {
                     Yii::$app->session->setFlash('success', 'PurchaseOrder: ' . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
-                    return $this->redirect(['index']);
+                    return $this->redirect(['purchase-order/view', 'id' => $model->id]);
                 }
 
                 Yii::$app->session->setFlash('danger', " PurchaseOrder is failed to insert. Info: " . $status['message']);

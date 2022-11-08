@@ -67,10 +67,15 @@ $this->params['breadcrumbs'][] = $this->title;
                             'value' => $model->vendor->nama
                         ],
                         'tanggal:date',
-                        'reference_number',
                         'remarks:nText',
-                        'approved_by',
-                        'acknowledge_by',
+                        [
+                            'attribute' => 'approved_by_id',
+                            'value' => $model->approvedBy->nama
+                        ],
+                        [
+                            'attribute' => 'acknowledge_by_id',
+                            'value' => $model->acknowledgeBy->nama
+                        ],
                         [
                             'label' => 'Created By',
                             'value' => function ($model) {

@@ -51,6 +51,8 @@ class PurchaseOrder extends BasePurchaseOrder
         return ArrayHelper::merge(
             parent::attributeLabels(), [
                 'vendor_id' => 'Vendor',
+                'approved_by_id' => 'Approved By',
+                'acknowledge_by_id' => 'Acknowledge By',
             ]
         );
     }

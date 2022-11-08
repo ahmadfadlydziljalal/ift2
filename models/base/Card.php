@@ -31,8 +31,14 @@ use yii\behaviors\TimestampBehavior;
  * @property \app\models\FakturDetail[] $fakturDetails
  * @property \app\models\Faktur[] $fakturs
  * @property \app\models\Faktur[] $fakturs0
+ * @property \app\models\MaterialRequisitionDetailPenawaran[] $materialRequisitionDetailPenawarans
+ * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
  * @property \app\models\MaterialRequisition[] $materialRequisitions
+ * @property \app\models\MaterialRequisition[] $materialRequisitions0
+ * @property \app\models\MaterialRequisition[] $materialRequisitions1
  * @property \app\models\PurchaseOrder[] $purchaseOrders
+ * @property \app\models\PurchaseOrder[] $purchaseOrders0
+ * @property \app\models\PurchaseOrder[] $purchaseOrders1
  * @property string $aliasModel
  */
 abstract class Card extends \yii\db\ActiveRecord
@@ -169,7 +175,39 @@ abstract class Card extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getMaterialRequisitionDetailPenawarans()
+    {
+        return $this->hasMany(\app\models\MaterialRequisitionDetailPenawaran::class, ['vendor_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMaterialRequisitionDetails()
+    {
+        return $this->hasMany(\app\models\MaterialRequisitionDetail::class, ['vendor_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getMaterialRequisitions()
+    {
+        return $this->hasMany(\app\models\MaterialRequisition::class, ['acknowledge_by_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMaterialRequisitions0()
+    {
+        return $this->hasMany(\app\models\MaterialRequisition::class, ['approved_by_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMaterialRequisitions1()
     {
         return $this->hasMany(\app\models\MaterialRequisition::class, ['vendor_id' => 'id']);
     }
@@ -178,6 +216,22 @@ abstract class Card extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     public function getPurchaseOrders()
+    {
+        return $this->hasMany(\app\models\PurchaseOrder::class, ['acknowledge_by_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPurchaseOrders0()
+    {
+        return $this->hasMany(\app\models\PurchaseOrder::class, ['approved_by_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPurchaseOrders1()
     {
         return $this->hasMany(\app\models\PurchaseOrder::class, ['vendor_id' => 'id']);
     }
