@@ -24,7 +24,6 @@ use yii\helpers\Html;
                 'hint' => '',
             ],
         ],
-
         /*'layout' => ActiveForm::LAYOUT_FLOATING,
         'fieldConfig' => [
             'options' => [
@@ -50,7 +49,7 @@ use yii\helpers\Html;
             <div class="ms-auto">
                 <?= Html::submitButton('<i class="bi bi-save"></i> Simpan Purchase Order', ['class' => 'btn btn-success']) ?>
             </div>
-            
+
         </div>
 
     </div>

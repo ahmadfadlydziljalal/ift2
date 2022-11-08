@@ -5,11 +5,11 @@ jQuery(document).ready(function () {
     let leftNavigation = jQuery('aside.left-navigation');
     jQuery('#btn-toggle-sidebar').on('click', function () {
         let width = leftNavigation.css('width');
-        if(width === '0px'){
+        if (width === '0px') {
             content.css('margin-left', '200px');
             leftNavigation.css('width', '200px');
             leftNavigation.css('border-right', '1px solid #e9ecef');
-        }else{
+        } else {
             content.css('margin-left', 0);
             leftNavigation.css('width', 0);
             leftNavigation.css('border-right', 'none');
@@ -23,7 +23,7 @@ jQuery(document).ready(function () {
         if (i.hasClass('bi-arrow-right-circle')) {
             i.removeClass('bi-arrow-right-circle');
             i.addClass('bi-arrow-down-circle');
-        } else { 
+        } else {
             i.removeClass('bi-arrow-down-circle');
             i.addClass('bi-arrow-right-circle');
         }
@@ -42,6 +42,7 @@ jQuery(document).ready(function () {
     const dark = 'dark';
 
     let body = jQuery('body');
+
     function handleBody(response) {
         body.removeClass(light);
         body.removeClass(dark);
@@ -50,6 +51,7 @@ jQuery(document).ready(function () {
 
 
     let navbar = jQuery('#navbar');
+
     function handleNavbar(response) {
         navbar.removeClass('navbar-dark');
         navbar.removeClass('bg-dark');
@@ -80,13 +82,17 @@ jQuery(document).ready(function () {
         return false;
     });
 
-
     // Animation On Submit
     jQuery(document).on('beforeSubmit', 'form', function (event) {
         let buttonSubmit = jQuery(this).find('button[type=submit]');
         buttonSubmit.html('<i class="bi bi-arrow-repeat"></i> Memproses...');
         buttonSubmit.attr('disabled', true).addClass('disabled');
     });
+
+    let modalAlert = jQuery('#pa3py6aka-modal-alert');
+    if (modalAlert) {
+        jQuery('#pa3py6aka-modal-alert .modal-dialog .modal-content .modal-header .modal-title').html('Pesan Sistem');
+    }
 
 
 });
