@@ -1,6 +1,7 @@
 <?php
 
 use app\enums\TextLinkEnum;
+use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\PurchaseOrder;
 use kartik\grid\DataColumn;
 use kartik\grid\GridView;
@@ -50,45 +51,50 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
     </div>
 
-    <?php
-    try {
-        echo DetailView::widget([
-            'model' => $model,
-            'options' => [
-                'class' => 'table table-bordered table-detail-view'
-            ],
-            'attributes' => [
-                'nomor',
-                [
-                    'attribute' => 'vendor_id',
-                    'value' => $model->vendor->nama
-                ],
-                'tanggal:date',
-                'reference_number',
-                'remarks:nText',
-                'approved_by',
-                'acknowledge_by',
-                [
-                    'label' => 'Created By',
-                    'value' => function ($model) {
-                        /** @var PurchaseOrder $model */
-                        return !empty($model->userKaryawan)
-                            ? $model->userKaryawan['nama']
-                            : $model->usernameWhoCreated;
-                    }
-                ],
-            ],
-        ]);
-    } catch (Throwable $e) {
-        echo $e->getMessage();
-    }
-    ?>
+    <div class="row">
+        <div class="col-sm-12 col-md-8 col-lg-6">
+            <?php
+            try {
+                echo DetailView::widget([
+                    'model' => $model,
+                    'options' => [
+                        'class' => 'table table-bordered table-detail-view'
+                    ],
+                    'attributes' => [
+                        'nomor',
+                        [
+                            'attribute' => 'vendor_id',
+                            'value' => $model->vendor->nama
+                        ],
+                        'tanggal:date',
+                        'reference_number',
+                        'remarks:nText',
+                        'approved_by',
+                        'acknowledge_by',
+                        [
+                            'label' => 'Created By',
+                            'value' => function ($model) {
+                                /** @var PurchaseOrder $model */
+                                return !empty($model->userKaryawan)
+                                    ? $model->userKaryawan['nama']
+                                    : $model->usernameWhoCreated;
+                            }
+                        ],
+                    ],
+                ]);
+            } catch (Throwable $e) {
+                echo $e->getMessage();
+            }
+            ?>
+        </div>
+    </div>
+
 
     <?php try {
-        echo !empty($model->materialRequisitionDetails) ?
+        echo !empty($model->materialRequisitionDetailPenawarans) ?
             GridView::widget([
                 'dataProvider' => new ActiveDataProvider([
-                    'query' => $model->getMaterialRequisitionDetails(),
+                    'query' => $model->getMaterialRequisitionDetailPenawarans(),
                     'sort' => false
                 ]),
                 'columns' => [
@@ -97,73 +103,88 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'class' => DataColumn::class,
+                        'header' => 'Material Requisition',
+                        'value' => function ($model) {
+                            /** @var MaterialRequisitionDetailPenawaran $model */
+                            return $model->materialRequisitionDetail->materialRequisition->nomor;
+                        }
+                    ],
+                    [
+                        'class' => DataColumn::class,
+                        'header' => 'Tipe Pembelian',
+                        'value' => function ($model) {
+                            /** @var MaterialRequisitionDetailPenawaran $model */
+                            return $model->materialRequisitionDetail->barang->tipePembelian->nama;
+                        }
+                    ],
+                    [
+                        'class' => DataColumn::class,
+                        'header' => 'Barang',
+                        'value' => function ($model) {
+                            /** @var MaterialRequisitionDetailPenawaran $model */
+                            return $model->materialRequisitionDetail->barang->nama;
+                        }
+                    ],
+                    [
+                        'class' => DataColumn::class,
                         'header' => 'Part Number',
-                        'value' => 'barang.part_number',
-                        'pageSummaryOptions' => [
-                            'colspan' => 6
-                        ],
-                        'pageSummary' => function ($summary, $data, $widget) use ($model) {
-                            return "Spell out: " . Yii::$app->formatter->asSpellout($model->getSumSubTotal());
-                        },
+                        'value' => function ($model) {
+                            /** @var MaterialRequisitionDetailPenawaran $model */
+                            return $model->materialRequisitionDetail->barang->part_number;
+                        }
                     ],
                     [
                         'class' => DataColumn::class,
                         'header' => 'IFT Number',
-                        'value' => 'barang.ift_number'
+                        'value' => function ($model) {
+                            /** @var MaterialRequisitionDetailPenawaran $model */
+                            return $model->materialRequisitionDetail->barang->ift_number;
+                        }
                     ],
                     [
                         'class' => DataColumn::class,
                         'header' => 'Merk',
-                        'value' => 'barang.merk_part_number'
+                        'value' => function ($model) {
+                            /** @var MaterialRequisitionDetailPenawaran $model */
+                            return $model->materialRequisitionDetail->barang->merk_part_number;
+                        }
                     ],
                     [
                         'class' => DataColumn::class,
                         'header' => 'Description',
-                        'value' => 'barang.nama'
+                        'value' => function ($model) {
+                            /** @var MaterialRequisitionDetailPenawaran $model */
+                            return $model->materialRequisitionDetail->description;
+                        }
                     ],
                     [
                         'class' => DataColumn::class,
-                        'attribute' => 'quantity',
-                        'format' => ['decimal', 2],
-                        'contentOptions' => [
-                            'class' => 'text-end'
-                        ]
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'attribute' => 'satuan_id',
-                        'value' => 'satuan.nama'
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'attribute' => 'harga_terakhir',
-                        'format' => ['decimal', 2],
+                        'header' => 'Qty',
                         'contentOptions' => [
                             'class' => 'text-end'
                         ],
-                        'pageSummary' => 'Total: ',
-                        'pageSummaryOptions' => [
-                            'class' => 'text-end'
-                        ]
+                        'value' => function ($model) {
+                            /** @var MaterialRequisitionDetailPenawaran $model */
+                            return $model->materialRequisitionDetail->quantity;
+                        }
                     ],
                     [
                         'class' => DataColumn::class,
-                        'attribute' => 'subtotal',
+                        'header' => 'Satuan',
+                        'value' => function ($model) {
+                            /** @var MaterialRequisitionDetailPenawaran $model */
+                            return $model->materialRequisitionDetail->satuan->nama;
+                        }
+                    ],
+                    [
+                        'class' => DataColumn::class,
+                        'attribute' => 'harga_penawaran',
                         'format' => ['decimal', 2],
                         'contentOptions' => [
                             'class' => 'text-end'
-                        ],
-                        'pageSummary' => function ($summary, $data, $widget) use ($model) {
-                            return Yii::$app->formatter->asDecimal($model->getSumSubTotal(), 2);
-                        },
-                        'pageSummaryOptions' => [
-                            'class' => 'text-end'
                         ]
-                        //'pageSummary' => true,
-                        //'pageSummaryFormat' => ['decimal', 2]
-                    ],
+                    ]
                 ],
-                'showPageSummary' => true,
                 'layout' => '{items}'
 
             ]) :
