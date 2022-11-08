@@ -1,5 +1,6 @@
 <?php
 
+use app\models\ClaimPettyCash;
 use mdm\admin\components\Helper;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
@@ -38,37 +39,58 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <?php try {
-        echo DetailView::widget([
-            'model' => $model,
-            'options' => [
-                'class' => 'table table-bordered table-detail-view'
-            ],
-            'attributes' => [
-                'nomor',
-                [
-                    'attribute' => 'vendor_id',
-                    'value' => $model->vendor->nama
-                ],
-                'tanggal:date',
-                'remarks:nText',
-                'approved_by',
-                'acknowledge_by',
-                [
-                    'attribute' => 'created_by',
-                    'value' => function ($model) {
-                        return app\models\User::findOne($model->created_by)->username;
-                    }
-                ],
-                [
-                    'attribute' => 'updated_by',
-                    'value' => function ($model) {
-                        return app\models\User::findOne($model->updated_by)->username;
-                    }
-                ],
-            ],
-        ]);
+    <div class="row">
+        <div class="col-sm-12 col-md-8 col-lg-6">
+            <?php
+            try {
+                echo DetailView::widget([
+                    'model' => $model,
+                    'options' => [
+                        'class' => 'table table-bordered table-detail-view'
+                    ],
+                    'attributes' => [
+                        'nomor',
+                        [
+                            'attribute' => 'vendor_id',
+                            'value' => $model->vendor->nama
+                        ],
+                        'tanggal:date',
+                        'remarks:nText',
+                        [
+                            'attribute' => 'approved_by_id',
+                            'value' => function ($model) {
+                                /** @var ClaimPettyCash $model */
+                                return $model->approvedBy->nama;
+                            }
+                        ],
+                        [
+                            'attribute' => 'acknowledge_by_id',
+                            'value' => function ($model) {
+                                /** @var ClaimPettyCash $model */
+                                return $model->acknowledgeBy->nama;
+                            }
+                        ],
+                        [
+                            'attribute' => 'created_by',
+                            'value' => function ($model) {
+                                return app\models\User::findOne($model->created_by)->username;
+                            }
+                        ],
+                        [
+                            'attribute' => 'updated_by',
+                            'value' => function ($model) {
+                                return app\models\User::findOne($model->updated_by)->username;
+                            }
+                        ],
+                    ],
+                ]);
+            } catch (Throwable $e) {
+            }
+            ?>
+        </div>
+    </div>
 
+    <?php try {
         echo ListView::widget([
             'dataProvider' => new ActiveDataProvider([
                 'query' => $model->getClaimPettyCashNotas()
@@ -81,7 +103,6 @@ $this->params['breadcrumbs'][] = $this->title;
             },
             'layout' => '{items}'
         ]);
-
     } catch (Exception $e) {
         echo $e->getMessage();
     }

@@ -14,27 +14,34 @@ use yii\widgets\DetailView;
 
 <div class="card mb-4 border-1 item">
 
-    <div class="card-body">
+    <div class="card-header border-bottom">
         <strong>
             <?= ($index + 1) . '. ' . StringHelper::basename(get_class($model)) ?>
         </strong>
     </div>
 
+    <div class="card-body">
+        <?php
+        try {
+            echo DetailView::widget([
+                'model' => $model,
+                'attributes' => [
+                    // 'id',
+                    // 'claim_petty_cash_id',
+                    'nomor',
+                    [
+                        'attribute' => 'vendor_id',
+                        'value' => $model->vendor->nama
+                    ],
+                ],
+            ]);
+        } catch (Throwable $e) {
+            echo $e->getTraceAsString();
+        }
+        ?>
+    </div>
 
     <?php try {
-        echo DetailView::widget([
-            'model' => $model,
-            'attributes' => [
-                // 'id',
-                // 'claim_petty_cash_id',
-                'nomor',
-                [
-                    'attribute' => 'vendor_id',
-                    'value' => $model->vendor->nama
-                ],
-            ],
-        ]);
-
         echo GridView::widget([
             'panel' => false,
             'bordered' => false,

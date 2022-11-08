@@ -125,19 +125,21 @@ use yii\web\View;
                             }
                         }
                         ?>
-                        <?= $form->field($modelDetail, "[$i]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->widget(DepDrop::class, [
-                            'data' => $data2,
-                            'pluginOptions' => [
-                                'depends' => [
-                                    'materialrequisitiondetail-' . $i . '-barang_id'
+                        <?= $form->field($modelDetail, "[$i]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                            ->widget(DepDrop::class, [
+                                'data' => $data2,
+                                'pluginOptions' => [
+                                    'depends' => [
+                                        'materialrequisitiondetail-' . $i . '-barang_id'
+                                    ],
+                                    'placeholder' => 'Select...',
+                                    'url' => Url::to(['barang/depdrop-find-satuan-by-barang'])
                                 ],
-                                'placeholder' => 'Select...',
-                                'url' => Url::to(['barang/depdrop-find-satuan-by-barang'])
-                            ],
-                            'options' => [
-                                'class' => 'form-control satuan-id'
-                            ]
-                        ]) ?>
+                                'options' => [
+                                    'class' => 'form-control satuan-id'
+                                ]
+                            ]);
+                        ?>
                     </td>
 
                     <td>

@@ -87,8 +87,8 @@ $settings = Yii::$app->settings;
 
             <tr>
 
-                <td><?= $model->approved_by ?></td>
-                <td><?= $model->acknowledge_by ?></td>
+                <td><?= $model->approvedBy->nama ?></td>
+                <td><?= $model->acknowledgeBy->nama ?></td>
                 <td><?= isset($model->userKaryawan) ?
                         $model->userKaryawan['nama'] :
                         User::findOne($model->created_by)->username

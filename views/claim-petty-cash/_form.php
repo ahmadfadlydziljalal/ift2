@@ -44,8 +44,16 @@ $fieldConfig = [
                     ]) ?>
                     <?php echo $form->field($model, 'tanggal', $fieldConfig)->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]); ?>
                     <?php echo $form->field($model, 'remarks', $fieldConfig)->textarea(['rows' => 5]); ?>
-                    <?php echo $form->field($model, 'approved_by', $fieldConfig)->textInput(['maxlength' => true]); ?>
-                    <?php echo $form->field($model, 'acknowledge_by', $fieldConfig)->textInput(['maxlength' => true]); ?>
+                    <?= $form->field($model, 'approved_by_id', $fieldConfig)->dropDownList(
+                        Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR), [
+                            'prompt' => '= Pilih orang kantor ='
+                        ]
+                    ); ?>
+                    <?= $form->field($model, 'acknowledge_by_id', $fieldConfig)->dropDownList(
+                        Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR), [
+                            'prompt' => '= Pilih orang kantor ='
+                        ]
+                    ); ?>
                 </div>
             </div>
         </div>

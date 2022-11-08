@@ -58,8 +58,32 @@ class m221108_090333_AlterPurchaseOrderTable extends Migration
      */
     public function safeDown()
     {
-        $this->alterColumn('purchase_order', 'approved_by', $this->string()->notNull());
-        $this->alterColumn('purchase_order', 'acknowledge_by', $this->string()->notNull());
+        $this->dropForeignKey(
+            'fk_card_acknowledge_by_di_purchase_order',
+            'purchase_order'
+        );
+
+        $this->dropIndex(
+            'idx_card_acknowledge_by_di_purchase_order',
+            'purchase_order'
+        );
+
+        $this->dropForeignKey(
+            'fk_card_approved_by_di_purchase_order',
+            'purchase_order'
+        );
+
+        $this->dropIndex(
+            'idx_card_approved_by_di_purchase_order',
+            'purchase_order'
+        );
+
+        $this->alterColumn('purchase_order', 'approved_by_id', $this->string()->notNull());
+        $this->alterColumn('purchase_order', 'acknowledge_by_id', $this->string()->notNull());
+
+        $this->renameColumn('purchase_order', 'acknowledge_by_id', 'acknowledge_by');
+        $this->renameColumn('purchase_order', 'approved_by_id', 'approved_by');
+
     }
 
     /*

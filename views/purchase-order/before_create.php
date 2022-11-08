@@ -16,7 +16,7 @@ use yii\web\JsExpression;
 use yii\web\View;
 
 
-$this->title = 'Tambah Purchase Order';
+$this->title = 'Membuat Purchase Order';
 $this->params['breadcrumbs'][] = ['label' => 'Purchase Order', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -24,14 +24,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="purchase-order-before-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1>Langkah 1</h1>
 
-    <?php $form = ActiveForm::begin() ?>
+    <?php $form = ActiveForm::begin([
+        'type' => ActiveForm::TYPE_INLINE,
+        'fieldConfig' => ['options' => ['class' => 'form-group mr-2 me-2']]
+    ]) ?>
 
     <?php /* @see \app\controllers\PurchaseOrderController::actionFindMaterialRequisitionForCreatePurchaseOrder() */ ?>
     <?= $form->field($model, 'nomorMaterialRequest')->widget(Select2::class, [
         'initValueText' => '',
-        'options' => ['placeholder' => 'Search for a material request ...'],
+        'options' => ['placeholder' => 'Cari nomor material request ...'],
         'pluginOptions' => [
             'allowClear' => true,
             'minimumInputLength' => 3,
@@ -49,11 +52,9 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-    <div class="form-group">
-        <?= Html::submitButton(TextLinkEnum::SEARCH->value, [
-            'class' => 'btn btn-primary'
-        ]) ?>
-    </div>
+    <?= Html::submitButton(TextLinkEnum::SEARCH->value, [
+        'class' => 'btn btn-primary'
+    ]) ?>
 
     <?php ActiveForm::end(); ?>
 </div>

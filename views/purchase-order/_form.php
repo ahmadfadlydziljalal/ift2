@@ -32,15 +32,25 @@ use yii\helpers\Html;
             ]
         ]*/
     ]); ?>
-    
+
     <div class="d-flex flex-column mt-0" style="gap: 1rem">
 
         <?= $this->render('_form_master', ['form' => $form, 'model' => $model]) ?>
         <?= $this->render('_form_detail', ['form' => $form, 'modelsDetail' => $modelsDetail]); ?>
 
-        <div class="d-flex justify-content-between">
-            <?= Html::a(' Tutup', ['index'], ['class' => 'btn btn-secondary']) ?>
-            <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
+        <div class="d-flex flex-row flex-wrap">
+
+            <div>
+                <?php if ($model->isNewRecord): ?>
+                    <?= Html::a('<i class="bi bi-arrow-left-circle"></i> Kembali ke langkah pertama', ['purchase-order/before-create'], ['class' => 'btn btn-secondary']) ?>
+                <?php endif ?>
+                <?= Html::a(' Tutup', ['index'], ['class' => 'btn btn-secondary']) ?>
+            </div>
+
+            <div class="ms-auto">
+                <?= Html::submitButton('<i class="bi bi-save"></i> Simpan Purchase Order', ['class' => 'btn btn-success']) ?>
+            </div>
+            
         </div>
 
     </div>

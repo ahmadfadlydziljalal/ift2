@@ -2,10 +2,9 @@
 
 namespace app\models\search;
 
-use Yii;
+use app\models\ClaimPettyCash;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\ClaimPettyCash;
 
 /**
  * ClaimPettyCashSearch represents the model behind the search form about `app\models\ClaimPettyCash`.
@@ -19,7 +18,7 @@ class ClaimPettyCashSearch extends ClaimPettyCash
     {
         return [
             [['id', 'vendor_id', 'created_at', 'updated_at'], 'integer'],
-            [['nomor', 'tanggal', 'remarks', 'approved_by', 'acknowledge_by', 'created_by', 'updated_by'], 'safe'],
+            [['nomor', 'tanggal', 'remarks', 'approved_by_id', 'acknowledge_by_id', 'created_by', 'updated_by'], 'safe'],
         ];
     }
 
@@ -70,8 +69,8 @@ class ClaimPettyCashSearch extends ClaimPettyCash
 
         $query->andFilterWhere(['like', 'nomor', $this->nomor])
             ->andFilterWhere(['like', 'remarks', $this->remarks])
-            ->andFilterWhere(['like', 'approved_by', $this->approved_by])
-            ->andFilterWhere(['like', 'acknowledge_by', $this->acknowledge_by])
+            ->andFilterWhere(['like', 'approved_by_id', $this->approved_by_id])
+            ->andFilterWhere(['like', 'acknowledge_by_id', $this->acknowledge_by_id])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by]);
 

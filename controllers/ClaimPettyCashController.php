@@ -172,7 +172,7 @@ class ClaimPettyCashController extends Controller
 
                 if ($status['code']) {
                     Yii::$app->session->setFlash('success', 'ClaimPettyCash: ' . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
-                    return $this->redirect(['index']);
+                    return $this->redirect(['claim-petty-cash/view', 'id' => $model->id]);
                 }
 
                 Yii::$app->session->setFlash('danger', " ClaimPettyCash is failed to insert. Info: " . $status['message']);
@@ -321,7 +321,7 @@ class ClaimPettyCashController extends Controller
 
                 if ($status['code']) {
                     Yii::$app->session->setFlash('info', "ClaimPettyCash: " . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil di update.");
-                    return $this->redirect(['index']);
+                    return $this->redirect(['claim-petty-cash/view', 'id' => $id]);
                 }
 
                 Yii::$app->session->setFlash('danger', " ClaimPettyCash is failed to insert. Info: " . $status['message']);

@@ -38,12 +38,12 @@ return [
     ],
     [
         'class' => 'yii\grid\DataColumn',
-        'attribute' => 'approved_by',
+        'attribute' => 'approved_by_id',
         'format' => 'text',
     ],
     [
         'class' => 'yii\grid\DataColumn',
-        'attribute' => 'acknowledge_by',
+        'attribute' => 'acknowledge_by_id',
         'format' => 'text',
     ],
     [

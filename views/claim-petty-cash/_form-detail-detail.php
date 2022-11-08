@@ -1,10 +1,9 @@
 <?php
 
 use app\models\Barang;
-use app\models\Satuan;
+use app\models\BarangSatuan;
 use app\models\TipePembelian;
 use kartik\depdrop\DepDrop;
-use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
@@ -102,7 +101,7 @@ use yii\widgets\MaskedInput;
                             'pluginOptions' => [
                                 'depends' => ['claim-petty-cash-nota-detail-' . $i . '-' . $j . '-tipe_pembelian_id'],
                                 'placeholder' => 'Select...',
-                                'url' => Url::to(['barang/find-barang-with-tipe-pembelian-param'])
+                                'url' => Url::to(['barang/depdrop-find-barang-by-tipe-pembelian'])
                             ]
                         ]);
                     ?>
@@ -124,14 +123,30 @@ use yii\widgets\MaskedInput;
                     ?>
                 </td>
                 <td>
-                    <?= $form->field($modelDetailDetail, "[$i][$j]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->widget(Select2::class, [
-                        'data' => Satuan::find()->map(),
-                        'options' => [
-                            'prompt' => ' - ',
-                            'class' => 'satuan-id form-control',
+                    <?php
+                    $data2 = [];
+                    if (Yii::$app->request->isPost || !$modelDetailDetail->isNewRecord) {
+                        if ($modelDetailDetail->satuan_id) {
+                            $data2 = BarangSatuan::find()->mapSatuan($modelDetailDetail->barang_id);
+                        }
+                    }
+                    ?>
+                    <?= $form->field($modelDetailDetail, "[$i][$j]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                        ->widget(DepDrop::class, [
+                            'data' => $data2,
+                            'pluginOptions' => [
+                                'depends' => [
+                                    'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-barang_id'
+                                ],
+                                'placeholder' => 'Select...',
+                                'url' => Url::to(['barang/depdrop-find-satuan-by-barang'])
+                            ],
+                            'options' => [
+                                'class' => 'form-control satuan-id'
+                            ]
+                        ]);
 
-                        ]
-                    ]); ?>
+                    ?>
                 </td>
                 <td><?= $form->field($modelDetailDetail, "[$i][$j]harga", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                         ->widget(MaskedInput::class, [

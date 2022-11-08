@@ -4,12 +4,10 @@
 
 namespace app\models\base;
 
-use app\models\active_queries\ClaimPettyCashQuery;
+use Yii;
+use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the base-model class for table "claim_petty_cash".
@@ -19,19 +17,22 @@ use yii\helpers\ArrayHelper;
  * @property integer $vendor_id
  * @property string $tanggal
  * @property string $remarks
- * @property string $approved_by
- * @property string $acknowledge_by
+ * @property integer $approved_by_id
+ * @property integer $acknowledge_by_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $created_by
  * @property string $updated_by
  *
+ * @property \app\models\Card $acknowledgeBy
+ * @property \app\models\Card $approvedBy
  * @property \app\models\ClaimPettyCashNota[] $claimPettyCashNotas
  * @property \app\models\Card $vendor
  * @property string $aliasModel
  */
-abstract class ClaimPettyCash extends ActiveRecord
+abstract class ClaimPettyCash extends \yii\db\ActiveRecord
 {
+
 
 
     /**
@@ -40,15 +41,6 @@ abstract class ClaimPettyCash extends ActiveRecord
     public static function tableName()
     {
         return 'claim_petty_cash';
-    }
-
-    /**
-     * @inheritdoc
-     * @return ClaimPettyCashQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new ClaimPettyCashQuery(get_called_class());
     }
 
     /**
@@ -72,12 +64,13 @@ abstract class ClaimPettyCash extends ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['vendor_id', 'tanggal', 'approved_by', 'acknowledge_by'], 'required'],
-            [['vendor_id'], 'integer'],
+            [['vendor_id', 'tanggal', 'approved_by_id', 'acknowledge_by_id'], 'required'],
+            [['vendor_id', 'approved_by_id', 'acknowledge_by_id'], 'integer'],
             [['tanggal'], 'safe'],
             [['remarks'], 'string'],
             [['nomor'], 'string', 'max' => 128],
-            [['approved_by', 'acknowledge_by'], 'string', 'max' => 255],
+            [['acknowledge_by_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['acknowledge_by_id' => 'id']],
+            [['approved_by_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['approved_by_id' => 'id']],
             [['vendor_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['vendor_id' => 'id']]
         ]);
     }
@@ -93,8 +86,8 @@ abstract class ClaimPettyCash extends ActiveRecord
             'vendor_id' => 'Vendor ID',
             'tanggal' => 'Tanggal',
             'remarks' => 'Remarks',
-            'approved_by' => 'Approved By',
-            'acknowledge_by' => 'Acknowledge By',
+            'approved_by_id' => 'Approved By ID',
+            'acknowledge_by_id' => 'Acknowledge By ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
@@ -103,7 +96,23 @@ abstract class ClaimPettyCash extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAcknowledgeBy()
+    {
+        return $this->hasOne(\app\models\Card::class, ['id' => 'acknowledge_by_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApprovedBy()
+    {
+        return $this->hasOne(\app\models\Card::class, ['id' => 'approved_by_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
      */
     public function getClaimPettyCashNotas()
     {
@@ -111,11 +120,23 @@ abstract class ClaimPettyCash extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getVendor()
     {
         return $this->hasOne(\app\models\Card::class, ['id' => 'vendor_id']);
     }
+
+
+    
+    /**
+     * @inheritdoc
+     * @return \app\models\active_queries\ClaimPettyCashQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \app\models\active_queries\ClaimPettyCashQuery(get_called_class());
+    }
+
 
 }
