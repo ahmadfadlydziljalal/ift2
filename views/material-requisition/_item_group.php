@@ -25,7 +25,7 @@ use yii\helpers\Json;
                 <table class="table table-bordered bg-white">
                     <thead>
                     <tr class="table-success text-center">
-                        <th>No.</th>
+                        <th class="text-end">No.</th>
                         <th>Barang</th>
                         <th>Part Number</th>
                         <th>IFT Number</th>
@@ -39,7 +39,7 @@ use yii\helpers\Json;
                     <?php foreach ($models as $i => $model) : ?>
                         <?php /** @var MaterialRequisitionDetail $model */ ?>
                         <tr>
-                            <td rowspan="2" class="text-right"><?= ($i + 1) ?></td>
+                            <td rowspan="2" class="text-end"><?= ($i + 1) ?></td>
                             <td><?= $model->barang->nama ?></td>
                             <td><?= $model->barang->part_number ?></td>
                             <td><?= $model->barang->ift_number ?></td>
@@ -66,7 +66,10 @@ use yii\helpers\Json;
                                         ],
                                         'columns' => [
                                             [
-                                                'class' => SerialColumn::class
+                                                'class' => SerialColumn::class,
+                                                'contentOptions' => [
+                                                    'class' => 'text-end'
+                                                ],
                                             ],
                                             'vendor',
                                             [

@@ -2,6 +2,7 @@
 
 
 /* @var $this View */
+/* @see \app\controllers\PurchaseOrderController::actionBeforeCreate() */
 
 /* @var $model BeforeCreatePurchaseOrderForm */
 

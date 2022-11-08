@@ -1,6 +1,6 @@
 <?php
 
-/* @see \app\controllers\MaterialRequisitionController::actionPrint() */
+/* @see \app\controllers\MaterialRequisitionController::actionPrintPenawaran() */
 /* @var $this View */
 
 /* @var $model MaterialRequisition */

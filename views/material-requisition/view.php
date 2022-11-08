@@ -21,23 +21,23 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3 mb-lg-0" style="gap: .5rem">
         <h1><?= Html::encode($this->title) ?></h1>
         <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
-            <?= Html::a('Index', ['index'], ['class' => 'btn btn-outline-primary']) ?>
-            <?= Html::a('Buat Lagi', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= Html::a(TextLinkEnum::LIST->value, ['index'], ['class' => 'btn btn-outline-primary']) ?>
+            <?= Html::a(TextLinkEnum::BUAT_LAGI->value, ['create'], ['class' => 'btn btn-success']) ?>
 
         </div>
     </div>
     <div class="d-flex flex-row gap-1 mb-3">
-        <?= Html::a('Kembali', Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
+        <?= Html::a(TextLinkEnum::KEMBALI->value, Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
         <?= Html::a('<div class="d-flex flex-nowrap gap-1">' . TextLinkEnum::PRINT->value . ' Material Requisition </div>', ['print', 'id' => $model->id], [
-            'class' => 'btn btn-outline-primary',
+            'class' => 'btn btn-outline-success',
             'target' => '_blank',
             'rel' => 'noopener noreferrer'
         ]) ?>
 
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-primary']) ?>
+        <?= Html::a(TextLinkEnum::UPDATE->value, ['update', 'id' => $model->id], ['class' => 'btn btn-outline-primary']) ?>
         <?php
         if (Helper::checkRoute('delete')) :
-            echo Html::a('Hapus', ['delete', 'id' => $model->id], [
+            echo Html::a(TextLinkEnum::DELETE->value, ['delete', 'id' => $model->id], [
                 'class' => 'btn btn-outline-danger',
                 'data' => [
                     'confirm' => 'Are you sure you want to delete this item?',
@@ -109,7 +109,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="d-flex flex-row gap-1 mb-3">
         <?= Html::a('<div class="d-flex flex-nowrap gap-1">' . TextLinkEnum::PRINT->value . ' Penawaran Harga</div>', ['material-requisition/print-penawaran', 'id' => $model->id], [
-            'class' => 'btn btn-outline-primary',
+            'class' => 'btn btn-outline-success',
             'target' => '_blank',
             'rel' => 'noopener noreferrer'
         ]) ?>

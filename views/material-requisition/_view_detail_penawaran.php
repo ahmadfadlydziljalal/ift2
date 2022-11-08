@@ -3,6 +3,7 @@
 /* @var $model MaterialRequisitionDetail */
 
 
+use app\enums\TextLinkEnum;
 use app\models\MaterialRequisitionDetail;
 use app\models\MaterialRequisitionDetailPenawaran;
 use kartik\grid\DataColumn;
@@ -41,16 +42,17 @@ use yii\helpers\Html;
 
                 <?php else: ?>
 
-                    <p>
+                    <div class="mb-3">
                         <?php
-                        echo Html::a('<i class="bi bi-pencil"></i> Update',
+                        echo Html::a(TextLinkEnum::UPDATE->value,
                             ['material-requisition/update-penawaran', 'materialRequisitionDetailId' => $model->id], [
                                 'class' => 'btn btn-outline-info'
                             ]);
                         ?>
+
                         <?php
                         /* @see \app\controllers\MaterialRequisitionController::actionDeletePenawaran() */
-                        echo Html::a('<i class="bi bi-trash-fill"></i> Hapus',
+                        echo Html::a(TextLinkEnum::DELETE->value,
                             ['material-requisition/delete-penawaran', 'materialRequisitionDetailId' => $model->id], [
                                 'class' => 'btn btn-outline-danger',
                                 'data' => [
@@ -59,8 +61,8 @@ use yii\helpers\Html;
                                 ]
                             ]);
                         ?>
-                    </p>
-
+                    </div>
+                
                     <div class="table-responsive">
                         <?php
                         echo GridView::widget([
@@ -101,10 +103,7 @@ use yii\helpers\Html;
                         ]);
                         ?>
                     </div>
-
-
                 <?php endif ?>
-
             </div>
         </div>
     </div>

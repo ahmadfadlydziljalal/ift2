@@ -289,22 +289,6 @@ class MaterialRequisitionController extends Controller
     }
 
     /**
-     * @return string
-     * @throws NotFoundHttpException
-     */
-    public function actionExpandItemGroup(): string
-    {
-        if (isset($_POST['expandRowKey'])) {
-            return $this->renderPartial('_item', [
-                'model' => $this->findModel($_POST['expandRowKey'])
-            ]);
-        } else {
-            return '<div class="alert alert-danger">No data found</div>';
-        }
-    }
-
-
-    /**
      * @param int $materialRequisitionDetailId
      * @return Response|string
      * @throws NotFoundHttpException

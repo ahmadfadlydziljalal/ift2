@@ -31,7 +31,7 @@ use yii\widgets\MaskedInput;
         'deleteButton' => '.remove-item',
         'model' => $modelsDetail[0],
         'formId' => 'dynamic-form',
-        'formFields' => ['id', 'material_requisition_id', 'barang_id', 'description', 'quantity', 'satuan_id', 'vendor_id', 'purchase_order_id', 'waktu_permintaan_terakhir', 'harga_terakhir', 'stock_terakhir',],
+        'formFields' => ['id', 'material_requisition_detail_id', 'vendor_id', 'harga_penawaran', 'status_id'],
     ]);
     ?>
 
@@ -64,7 +64,6 @@ use yii\widgets\MaskedInput;
                         <?= Html::activeHiddenInput($modelDetail, "[$i]id"); ?>
                         <?= Html::activeHiddenInput($modelDetail, "[$i]material_requisition_detail_id") ?>
                         <?= Html::activeHiddenInput($modelDetail, "[$i]vendor_id") ?>
-                        <?= Html::activeHiddenInput($modelDetail, "[$i]harga_penawaran") ?>
                         <?= Html::activeHiddenInput($modelDetail, "[$i]status_id") ?>
 
 

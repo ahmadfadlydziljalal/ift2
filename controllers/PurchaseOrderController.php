@@ -87,6 +87,9 @@ class PurchaseOrderController extends Controller
         }
     }
 
+    /**
+     * @return Response|string
+     */
     public function actionBeforeCreate(): Response|string
     {
         $model = new BeforeCreatePurchaseOrderForm();
@@ -139,14 +142,11 @@ class PurchaseOrderController extends Controller
     {
         $materialRequestAndVendorId = Json::decode($materialRequestAndVendorId);
 
-
-        $request = Yii::$app->request;
-
         $model = new PurchaseOrder([
             'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
             'vendor_id' => $materialRequestAndVendorId['vendor_id']
         ]);
-        
+
         $modelsDetail = MaterialRequisitionDetailPenawaran::find()
             ->joinWith('materialRequisitionDetail', false)
             ->where([
@@ -155,6 +155,7 @@ class PurchaseOrderController extends Controller
             ])
             ->all();
 
+        $request = Yii::$app->request;
         if ($model->load($request->post())) {
 
             $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetailPenawaran::class, $modelsDetail);
@@ -220,14 +221,14 @@ class PurchaseOrderController extends Controller
     {
         $request = Yii::$app->request;
         $model = $this->findModel($id);
-        $modelsDetail = !empty($model->materialRequisitionDetails)
-            ? $model->materialRequisitionDetails
-            : [new MaterialRequisitionDetail()];
+        $modelsDetail = !empty($model->materialRequisitionDetailPenawarans)
+            ? $model->materialRequisitionDetailPenawarans
+            : [new MaterialRequisitionDetailPenawaran()];
 
         if ($model->load($request->post())) {
 
             $oldDetailsID = ArrayHelper::map($modelsDetail, 'id', 'id');
-            $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetail::class, $modelsDetail);
+            $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetailPenawaran::class, $modelsDetail);
 
             Tabular::loadMultiple($modelsDetail, $request->post());
             $deletedDetailsID = array_diff($oldDetailsID, array_filter(ArrayHelper::map($modelsDetail, 'id', 'id')));
@@ -266,7 +267,7 @@ class PurchaseOrderController extends Controller
 
                 if ($status['code']) {
                     Yii::$app->session->setFlash('info', "PurchaseOrder: " . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil di update.");
-                    return $this->redirect(['index']);
+                    return $this->redirect(['purchase-order/view', 'id' => $id]);
                 }
 
                 Yii::$app->session->setFlash('danger', " PurchaseOrder is failed to updated. Info: " . $status['message']);
@@ -309,4 +310,5 @@ class PurchaseOrderController extends Controller
             'model' => $this->findModel($id),
         ]);
     }
+
 }

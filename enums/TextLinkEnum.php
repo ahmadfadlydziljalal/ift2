@@ -4,7 +4,7 @@ namespace app\enums;
 
 enum TextLinkEnum: string
 {
-    case KEMBALI = '<i class="bi bi-arrow-left-circle"></i> Kembali';
+    case KEMBALI = '<div class="d-flex flex-nowrap gap-1"> <i class="bi bi-arrow-left-circle"></i> Kembali </div>';
     case UPDATE = '<div class="d-flex flex-nowrap gap-1"> <i class="bi bi-pencil"></i> Update </div>';
     case PRINT = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-printer-fill"></i> Print</div>';
     case HAPUS = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-trash-fill"></i> Hapus</div>';
