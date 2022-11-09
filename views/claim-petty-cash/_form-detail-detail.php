@@ -63,6 +63,15 @@ use yii\widgets\MaskedInput;
                     } ?>
 
                     <?php try {
+                        if (!$modelDetailDetail->isNewRecord) {
+
+                            if (empty($modelDetailDetail->tipePembelian)) {
+                                if (!Yii::$app->request->isPost) {
+                                    $modelDetailDetail->tipePembelian = 3;
+                                }
+                            }
+
+                        }
                         echo $form->field($modelDetailDetail, "[$i][$j]tipePembelian", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                             ->dropDownList(TipePembelian::find()->map(), [
                                 'prompt' => '-',
@@ -126,17 +135,17 @@ use yii\widgets\MaskedInput;
                     <?php
                     $data2 = [];
                     if (Yii::$app->request->isPost || !$modelDetailDetail->isNewRecord) {
-                        if ($modelDetailDetail->satuan_id) {
-                            $data2 = BarangSatuan::find()->mapSatuan($modelDetailDetail->barang_id);
-                        }
+                        $data2 = BarangSatuan::find()->mapSatuan($modelDetailDetail->barang_id);
                     }
+
                     ?>
                     <?= $form->field($modelDetailDetail, "[$i][$j]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                         ->widget(DepDrop::class, [
                             'data' => $data2,
                             'pluginOptions' => [
                                 'depends' => [
-                                    'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-barang_id'
+                                    'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-tipe_pembelian_id',
+                                    'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-barang_id',
                                 ],
                                 'placeholder' => 'Select...',
                                 'url' => Url::to(['barang/depdrop-find-satuan-by-barang'])

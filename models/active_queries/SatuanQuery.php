@@ -42,4 +42,14 @@ class SatuanQuery extends ActiveQuery
     {
         return parent::all($db);
     }
+
+    public function mapIdName()
+    {
+        return parent::select([
+            'id' => 'id',
+            'name' => 'nama'
+        ])
+            ->asArray()
+            ->all();
+    }
 }

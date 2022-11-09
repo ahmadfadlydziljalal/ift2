@@ -14,7 +14,7 @@ use yii\widgets\DetailView;
 
 <div class="card mb-4 border-1 item">
 
-    <div class="card-header border-bottom">
+    <div class="card-header border-bottom text-bg-info">
         <strong>
             <?= ($index + 1) . '. ' . StringHelper::basename(get_class($model)) ?>
         </strong>
@@ -33,6 +33,7 @@ use yii\widgets\DetailView;
                         'attribute' => 'vendor_id',
                         'value' => $model->vendor->nama
                     ],
+                    'tanggal_nota:date'
                 ],
             ]);
         } catch (Throwable $e) {

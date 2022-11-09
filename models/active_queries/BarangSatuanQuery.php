@@ -4,6 +4,7 @@ namespace app\models\active_queries;
 
 use app\components\helpers\ArrayHelper;
 use app\models\BarangSatuan;
+use app\models\Satuan;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
 
@@ -29,8 +30,11 @@ class BarangSatuanQuery extends ActiveQuery
         return parent::one($db);
     }
 
-    public function mapSatuan(int $barangId): array
+    public function mapSatuan(?string $barangId): array
     {
+        if (!$barangId) {
+            return Satuan::find()->map();
+        }
         $data = self::availableSatuan($barangId);
         return ArrayHelper::map($data, 'id', 'name');
     }

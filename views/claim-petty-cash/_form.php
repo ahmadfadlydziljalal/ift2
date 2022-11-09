@@ -95,16 +95,20 @@ $fieldConfig = [
                         <div class="card-body">
                             <?php $form->errorSummary($modelDetail) ?>
                             <div class="row">
-                                <div class="col-sm-12 col-md-10 col-lg-8">
-                                    <?= $form->field($modelDetail, "[$i]nomor", $fieldConfig); ?>
-                                    <?= $form->field($modelDetail, "[$i]vendor_id", $fieldConfig)->widget(Select2::class, [
+                                <div class="col-sm-12 col-md-4">
+                                    <?= $form->field($modelDetail, "[$i]nomor"); ?>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <?= $form->field($modelDetail, "[$i]vendor_id")->widget(Select2::class, [
                                         'data' => Card::find()->map(Card::GET_ONLY_VENDOR),
                                         'options' => [
                                             'prompt' => '= Pilih Vendor',
                                             'autofocus' => 'autofocus'
                                         ],
                                     ]) ?>
-                                    <?= $form->field($modelDetail, "[$i]tanggal_nota", $fieldConfig)
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <?= $form->field($modelDetail, "[$i]tanggal_nota")
                                         ->widget(DatePicker::class);
                                     ?>
                                 </div>

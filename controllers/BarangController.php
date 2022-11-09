@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Barang;
 use app\models\BarangSatuan;
+use app\models\Satuan;
 use app\models\search\BarangSearch;
 use app\models\Tabular;
 use Exception;
@@ -258,11 +259,14 @@ class BarangController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         if (isset($_POST['depdrop_parents'])) {
-            $parents = $_POST['depdrop_parents'];
 
+            $parents = $_POST['depdrop_parents'];
             if ($parents != null) {
                 $out = Barang::find()->byTipePembelian($parents[0]);
-                return ['output' => $out, 'selected' => $out[0]];
+                if (isset($out[0])) {
+                    return ['output' => $out, 'selected' => $out[0]];
+                }
+                return ['output' => $out, 'selected' => ''];
             }
         }
         return ['output' => '', 'selected' => ''];
@@ -277,7 +281,12 @@ class BarangController extends Controller
             if ($parents != null) {
 
                 $out = BarangSatuan::find()->availableSatuan($parents[0]);
-                return ['output' => $out, 'selected' => $out[0]];
+                if (isset($out[0])) {
+                    return ['output' => $out, 'selected' => $out[0]];
+                }
+                
+                $allSatuan = Satuan::find()->mapIdName();
+                return ['output' => $allSatuan, 'selected' => $allSatuan[0]];
             }
         }
         return ['output' => '', 'selected' => ''];

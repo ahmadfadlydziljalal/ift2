@@ -91,7 +91,7 @@ class ClaimPettyCashNotaDetail extends BaseClaimPettyCashNotaDetail
 
     public function getNamaTipePembelian(): string
     {
-
+        
         /** @var ClaimPettyCashNotaDetail $model */
         return isset($this->barang)
             ? $this->barang->tipePembelian->nama
