@@ -125,7 +125,7 @@ return [
             'expandIcon' => '<span class="bi bi-chevron-down"></span>',
             'collapseIcon' => '<span class="bi bi-chevron-up"></span>',
             //'detailRowCssClass' => '',
-            'detailRowCssClass' => BootstrapInterface::BS_TABLE_INFO,
+            'detailRowCssClass' => BootstrapInterface::BS_TABLE_WARNING,
             'expandOneOnly' => true,
             'enableCache' => false,
             'vAlign' => 'middle',
