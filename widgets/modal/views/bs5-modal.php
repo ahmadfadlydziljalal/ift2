@@ -1,9 +1,12 @@
 <?php
 
 /* @var $title string|null */
+/* @var $footer string|null */
 /* @var $messages array */
 /* @var $popupCssClass string */
+
 /* @var $popupId string */
+
 ?>
 <!-- Alert Modal -->
 <div class="modal fade <?= $popupCssClass ?>" id="<?= $popupId ?>" tabindex="-1" aria-labelledby="myModalLabel"
@@ -21,6 +24,12 @@
                     <p><?= $message['message'] ?></p>
                 <?php endforeach; ?>
             </div>
+
+            <?php if (isset($footer)): ?>
+                <div class="modal-footer">
+                    <?= $footer ?>
+                </div>
+            <?php endif ?>
         </div>
     </div>
 </div>

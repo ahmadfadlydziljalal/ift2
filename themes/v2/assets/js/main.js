@@ -91,7 +91,10 @@ jQuery(document).ready(function () {
 
     let modalAlert = jQuery('#pa3py6aka-modal-alert');
     if (modalAlert) {
-        jQuery('#pa3py6aka-modal-alert .modal-dialog .modal-content .modal-header .modal-title').html('Pesan Sistem');
+        let modalTitle = jQuery('#pa3py6aka-modal-alert .modal-dialog .modal-content .modal-header .modal-title');
+        if (modalTitle.html() === '') {
+            modalTitle.html('Pesan Sistem');
+        }
     }
 
 
