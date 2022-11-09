@@ -86,7 +86,10 @@ use yii\helpers\Json;
                                                     return Html::tag($options['tag'], $model['status'], $options['options']);
                                                 }
                                             ],
-                                            'purchase_order_id'
+                                            [
+                                                'attribute' => 'purchase_order_id',
+                                                'header' => 'Purchase Order'
+                                            ]
                                         ]
                                     ]);
                                 ?>

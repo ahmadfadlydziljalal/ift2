@@ -20,6 +20,11 @@ use yii\widgets\ListView;
                 'target' => '_blank',
                 'rel' => 'noopener noreferrer'
             ]); ?>
+            <?= Html::a(Html::tag('div', TextLinkEnum::PRINT->value . ' Penawaran', ['class' => 'd-flex flex-row gap-1']), ['material-requisition/print-penawaran', 'id' => $model->id], [
+                'class' => 'btn btn-success',
+                'target' => '_blank',
+                'rel' => 'noopener noreferrer'
+            ]); ?>
             <?= Html::a(TextLinkEnum::VIEW->value, ['material-requisition/view', 'id' => $model->id], [
                 'class' => 'btn btn-primary'
             ]); ?>

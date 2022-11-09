@@ -39,6 +39,7 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
         return ArrayHelper::merge(parent::attributeLabels(), [
             'material_requisition_detail_id' => 'Material Requisition Detail',
             'vendor_id' => 'Vendor',
+            'purchase_order_id' => 'Purchase Order',
         ]);
     }
 
