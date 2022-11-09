@@ -28,7 +28,7 @@ class MaterialRequisitionDetailQuery extends ActiveQuery
         return parent::one($db);
     }
 
-    public function createForPurchaseOrder(mixed $q): array
+    public function beforeCreatePurchaseOrder(mixed $q): array
     {
 
         $query = parent::select([

@@ -9,7 +9,6 @@ use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\PurchaseOrder;
 use app\models\search\PurchaseOrderSearch;
 use app\models\Tabular;
-use Exception;
 use JetBrains\PhpStorm\ArrayShape;
 use Throwable;
 use Yii;
@@ -88,6 +87,7 @@ class PurchaseOrderController extends Controller
     }
 
     /**
+     * Langkah pertama dalam membuat purchase order
      * @return Response|string
      */
     public function actionBeforeCreate(): Response|string
@@ -118,7 +118,7 @@ class PurchaseOrderController extends Controller
 
         if (!is_null($q)) {
 
-            $data = MaterialRequisitionDetail::find()->createForPurchaseOrder($q);
+            $data = MaterialRequisitionDetail::find()->beforeCreatePurchaseOrder($q);
             $out['results'] = array_values($data);
 
         } elseif ($id > 0) {
@@ -141,57 +141,21 @@ class PurchaseOrderController extends Controller
     public function actionCreate($materialRequestAndVendorId): Response|string
     {
         $materialRequestAndVendorId = Json::decode($materialRequestAndVendorId);
-
         $model = new PurchaseOrder([
             'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
             'vendor_id' => $materialRequestAndVendorId['vendor_id']
         ]);
-
         $modelsDetail = MaterialRequisitionDetailPenawaran::find()
-            ->joinWith('materialRequisitionDetail', false)
-            ->where([
-                'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
-                'material_requisition_detail_penawaran.vendor_id' => $materialRequestAndVendorId['vendor_id'],
-            ])
-            ->all();
+            ->forCreateAction($materialRequestAndVendorId);
 
-        $request = Yii::$app->request;
-        if ($model->load($request->post())) {
+        if ($model->load($this->request->post())) {
 
             $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetailPenawaran::class, $modelsDetail);
-            Tabular::loadMultiple($modelsDetail, $request->post());
+            Tabular::loadMultiple($modelsDetail, $this->request->post());
 
             //validate models
-            $isValid = $model->validate();
-            $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
-
-            if ($isValid) {
-
-                $transaction = PurchaseOrder::getDb()->beginTransaction();
-
-                try {
-
-                    if ($flag = $model->save(false)) {
-                        foreach ($modelsDetail as $detail) :
-                            $detail->purchase_order_id = $model->id;
-                            if (!($flag = $detail->save(false))) {
-                                break;
-                            }
-                        endforeach;
-                    }
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = ['code' => 1, 'message' => 'Commit'];
-                    } else {
-                        $transaction->rollBack();
-                        $status = ['code' => 0, 'message' => 'Roll Back'];
-                    }
-
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
-                }
+            if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
+                $status = $model->createWithDetails($modelsDetail);
 
                 if ($status['code']) {
                     Yii::$app->session->setFlash('success', 'PurchaseOrder: ' . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
@@ -232,38 +196,10 @@ class PurchaseOrderController extends Controller
 
             Tabular::loadMultiple($modelsDetail, $request->post());
             $deletedDetailsID = array_diff($oldDetailsID, array_filter(ArrayHelper::map($modelsDetail, 'id', 'id')));
+            
+            if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
 
-            $isValid = $model->validate();
-            $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
-
-            if ($isValid) {
-                $transaction = PurchaseOrder::getDb()->beginTransaction();
-                try {
-                    if ($flag = $model->save(false)) {
-
-                        if (!empty($deletedDetailsID)) {
-                            MaterialRequisitionDetail::updateAll(['purchase_order_id' => null], ['id' => $deletedDetailsID]);
-                        }
-
-                        foreach ($modelsDetail as $detail) :
-                            $detail->purchase_order_id = $model->id;
-                            if (!($flag = $detail->save(false))) {
-                                break;
-                            }
-                        endforeach;
-                    }
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = ['code' => 1, 'message' => 'Commit'];
-                    } else {
-                        $transaction->rollBack();
-                        $status = ['code' => 0, 'message' => 'Roll Back'];
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
-                }
+                $status = $model->updateWithDetails($modelsDetail, $deletedDetailsID);
 
                 if ($status['code']) {
                     Yii::$app->session->setFlash('info', "PurchaseOrder: " . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil di update.");
