@@ -23,6 +23,9 @@ use yii\web\View;
                 'pagination' => false,
                 'sort' => false
             ]),
+            'headerRowOptions' => [
+                'class' => 'table table-primary'
+            ],
             'layout' => '{items}',
             'columns' => [
                 [

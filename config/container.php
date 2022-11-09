@@ -1,6 +1,5 @@
 <?php
 
-use kartik\base\BootstrapInterface;
 use kartik\date\DatePicker;
 use kartik\grid\GridViewInterface;
 use yii\bootstrap5\LinkPager as Bs5LinkPager;
@@ -125,7 +124,7 @@ return [
             'expandIcon' => '<span class="bi bi-chevron-down"></span>',
             'collapseIcon' => '<span class="bi bi-chevron-up"></span>',
             //'detailRowCssClass' => '',
-            'detailRowCssClass' => BootstrapInterface::BS_TABLE_WARNING,
+            'detailRowCssClass' => 'bg-white',
             'expandOneOnly' => true,
             'enableCache' => false,
             'vAlign' => 'middle',

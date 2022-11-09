@@ -196,6 +196,7 @@ class PurchaseOrderController extends Controller
     protected function checkUrlCreate(): bool
     {
         $allowedUrl = ['/purchase-order/before-create'];
+
         if (!in_array(Url::previous(), $allowedUrl)) {
 
             /*Yii::$app->session->setFlash('warning', [[
@@ -280,6 +281,17 @@ class PurchaseOrderController extends Controller
         return $this->render('preview_print', [
             'model' => $this->findModel($id),
         ]);
+    }
+
+    public function actionExpandItem(): string
+    {
+        if (isset($_POST['expandRowKey'])) {
+            return $this->renderPartial('_item', [
+                'model' => $this->findModel($_POST['expandRowKey'])
+            ]);
+        } else {
+            return '<div class="alert alert-danger">No data found</div>';
+        }
     }
 
 }

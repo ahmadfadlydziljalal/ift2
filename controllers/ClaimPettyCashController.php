@@ -256,7 +256,7 @@ class ClaimPettyCashController extends Controller
         ]);
     }
 
-    public function actionExpandItem()
+    public function actionExpandItem(): string
     {
         if (isset($_POST['expandRowKey'])) {
             return $this->renderPartial('_item', [

@@ -1,11 +1,8 @@
 <?php
 
 use app\enums\TextLinkEnum;
-use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\PurchaseOrder;
-use kartik\grid\DataColumn;
 use kartik\grid\GridView;
-use kartik\grid\SerialColumn;
 use mdm\admin\components\Helper;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
@@ -94,113 +91,28 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
+    <div class="bg-white">
+        <?php try {
+            echo !empty($model->materialRequisitionDetailPenawarans) ?
+                GridView::widget([
+                    'dataProvider' => new ActiveDataProvider([
+                        'query' => $model->getMaterialRequisitionDetailPenawarans(),
+                        'sort' => false
+                    ]),
+                    'columns' => require __DIR__ . '/_penawaran_columns.php',
+                    'layout' => '{items}'
 
-    <?php try {
-        echo !empty($model->materialRequisitionDetailPenawarans) ?
-            GridView::widget([
-                'dataProvider' => new ActiveDataProvider([
-                    'query' => $model->getMaterialRequisitionDetailPenawarans(),
-                    'sort' => false
-                ]),
-                'columns' => [
-                    [
-                        'class' => SerialColumn::class
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'header' => 'Material Requisition',
-                        'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->materialRequisition->nomor;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'header' => 'Tipe Pembelian',
-                        'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->barang->tipePembelian->nama;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'header' => 'Barang',
-                        'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->barang->nama;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'header' => 'Part Number',
-                        'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->barang->part_number;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'header' => 'IFT Number',
-                        'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->barang->ift_number;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'header' => 'Merk',
-                        'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->barang->merk_part_number;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'header' => 'Description',
-                        'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->description;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'header' => 'Qty',
-                        'contentOptions' => [
-                            'class' => 'text-end'
-                        ],
-                        'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->quantity;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'header' => 'Satuan',
-                        'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->satuan->nama;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'attribute' => 'harga_penawaran',
-                        'format' => ['decimal', 2],
-                        'contentOptions' => [
-                            'class' => 'text-end'
-                        ]
-                    ]
-                ],
-                'layout' => '{items}'
+                ]) :
+                Html::tag("p", 'Purchase Order Detail tidak tersedia', [
+                    'class' => 'text-warning font-weight-bold p-3'
+                ]);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        } catch (Throwable $e) {
+            echo $e->getMessage();
+        }
+        ?>
+    </div>
 
-            ]) :
-            Html::tag("p", 'Purchase Order Detail tidak tersedia', [
-                'class' => 'text-warning font-weight-bold p-3'
-            ]);
-    } catch (Exception $e) {
-        echo $e->getMessage();
-    } catch (Throwable $e) {
-        echo $e->getMessage();
-    }
-    ?>
 
 </div>
