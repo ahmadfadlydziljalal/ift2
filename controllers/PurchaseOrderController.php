@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\enums\TextLinkEnum;
 use app\models\form\BeforeCreatePurchaseOrderForm;
 use app\models\MaterialRequisition;
 use app\models\MaterialRequisitionDetail;
@@ -17,6 +18,7 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -95,6 +97,7 @@ class PurchaseOrderController extends Controller
         $model = new BeforeCreatePurchaseOrderForm();
 
         if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post()) && $model->validate()) {
+            Url::remember();
             return $this->redirect(['purchase-order/create',
                 'materialRequestAndVendorId' => $model->nomorMaterialRequest
             ]);
@@ -140,6 +143,11 @@ class PurchaseOrderController extends Controller
      */
     public function actionCreate($materialRequestAndVendorId): Response|string
     {
+
+        if (!$this->checkUrlCreate()) {
+            return $this->redirect(['purchase-order/before-create']);
+        }
+
         $materialRequestAndVendorId = Json::decode($materialRequestAndVendorId);
         $model = new PurchaseOrder([
             'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
@@ -152,17 +160,25 @@ class PurchaseOrderController extends Controller
             $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetailPenawaran::class, $modelsDetail);
             Tabular::loadMultiple($modelsDetail, $this->request->post());
 
-            //validate models
             if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
 
                 $status = $model->createWithDetails($modelsDetail);
 
                 if ($status['code']) {
-                    Yii::$app->session->setFlash('success', 'PurchaseOrder: ' . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
+                    Url::remember(); // reset url dari before-create ke create
+
+                    Yii::$app->session->setFlash('success', [[
+                        'title' => 'Sukses membuat sebuah Purchase Order',
+                        'message' => 'Purchase Order: ' . Html::tag('strong', $model->nomor) . " berhasil ditambahkan.",
+                        'footer' =>
+                            Html::a(TextLinkEnum::PRINT->value, ['view', 'id' => $model->id], [
+                                'class' => 'btn btn-success'
+                            ])
+                    ]]);
                     return $this->redirect(['purchase-order/view', 'id' => $model->id]);
                 }
 
-                Yii::$app->session->setFlash('danger', " PurchaseOrder is failed to insert. Info: " . $status['message']);
+                Yii::$app->session->setFlash('danger', " Purchase Order is failed to insert. Info: " . $status['message']);
             }
         }
 
@@ -170,7 +186,24 @@ class PurchaseOrderController extends Controller
             'model' => $model,
             'modelsDetail' => empty($modelsDetail) ? [new MaterialRequisitionDetailPenawaran()] : $modelsDetail,
         ]);
+    }
 
+    /**
+     * @return bool
+     */
+    protected function checkUrlCreate(): bool
+    {
+        $allowedUrl = ['/purchase-order/before-create'];
+        if (!in_array(Url::previous(), $allowedUrl)) {
+
+            /*Yii::$app->session->setFlash('warning', [[
+                'title' => 'Pesan Sistem',
+                'message' => 'Anda mencoba meng-akses langkah ke - 2 secara langsung.<br/> Sistem telah mengembalikan Anda ke langkah 1 lagi.',
+            ]]);*/
+            return false;
+        }
+
+        return true;
     }
 
     /**

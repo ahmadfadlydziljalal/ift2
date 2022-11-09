@@ -25,7 +25,7 @@
                 <?php endforeach; ?>
             </div>
 
-            <?php if (isset($footer)): ?>
+            <?php if (isset($footer) and !empty($footer)): ?>
                 <div class="modal-footer">
                     <?= $footer ?>
                 </div>

@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?= Html::a(TextLinkEnum::KEMBALI->value, Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
         <?= Html::a(TextLinkEnum::PRINT->value, ['print', 'id' => $model->id], [
-            'class' => 'btn btn-outline-primary',
+            'class' => 'btn btn-outline-success',
             'target' => '_blank',
             'rel' => 'noopener noreferrer'
         ]) ?>
