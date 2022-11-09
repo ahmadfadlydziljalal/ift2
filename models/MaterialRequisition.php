@@ -3,7 +3,9 @@
 namespace app\models;
 
 use app\models\base\MaterialRequisition as BaseMaterialRequisition;
+use JetBrains\PhpStorm\ArrayShape;
 use yii\db\ActiveQuery;
+use yii\db\Exception;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 
@@ -111,6 +113,76 @@ class MaterialRequisition extends BaseMaterialRequisition
                 'acknowledge_by_id' => 'Acknowledge By',
             ]
         );
+    }
+
+    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    public function createWithDetails(array $modelsDetail): array
+    {
+        $transaction = MaterialRequisition::getDb()->beginTransaction();
+        try {
+
+            if ($flag = $this->save(false)) {
+                foreach ($modelsDetail as $detail) :
+                    $detail->material_requisition_id = $this->id;
+                    if (!($flag = $detail->save(false))) {
+                        break;
+                    }
+                endforeach;
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                $status = ['code' => 1, 'message' => 'Commit'];
+            } else {
+                $transaction->rollBack();
+                $status = ['code' => 0, 'message' => 'Roll Back'];
+            }
+
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
+        }
+
+        return $status;
+    }
+
+    /**
+     * @param array $modelsDetail
+     * @param array $deletedDetailsID
+     * @return array
+     */
+    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    public function updateWithDetails(array $modelsDetail, array $deletedDetailsID): array
+    {
+        $transaction = MaterialRequisition::getDb()->beginTransaction();
+        try {
+            if ($flag = $this->save(false)) {
+
+                if (!empty($deletedDetailsID)) {
+                    MaterialRequisitionDetail::deleteAll(['id' => $deletedDetailsID]);
+                }
+
+                foreach ($modelsDetail as $detail) :
+                    $detail->material_requisition_id = $this->id;
+                    if (!($flag = $detail->save(false))) {
+                        break;
+                    }
+                endforeach;
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                $status = ['code' => 1, 'message' => 'Commit'];
+            } else {
+                $transaction->rollBack();
+                $status = ['code' => 0, 'message' => 'Roll Back'];
+            }
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
+        }
+
+        return $status;
     }
 
 

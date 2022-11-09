@@ -2,12 +2,12 @@
 
 namespace app\controllers;
 
+use app\enums\TextLinkEnum;
 use app\models\MaterialRequisition;
 use app\models\MaterialRequisitionDetail;
 use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\search\MaterialRequisitionSearch;
 use app\models\Tabular;
-use Exception;
 use kartik\mpdf\Pdf;
 use Mpdf\MpdfException;
 use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
@@ -112,38 +112,21 @@ class MaterialRequisitionController extends Controller
             $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
 
             if ($isValid) {
-
-                $transaction = MaterialRequisition::getDb()->beginTransaction();
-
-                try {
-
-                    if ($flag = $model->save(false)) {
-                        foreach ($modelsDetail as $detail) :
-                            $detail->material_requisition_id = $model->id;
-                            if (!($flag = $detail->save(false))) {
-                                break;
-                            }
-                        endforeach;
-                    }
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = ['code' => 1, 'message' => 'Commit'];
-                    } else {
-                        $transaction->rollBack();
-                        $status = ['code' => 0, 'message' => 'Roll Back'];
-                    }
-
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
-                }
-
+                $status = $model->createWithDetails($modelsDetail);
                 if ($status['code']) {
-                    Yii::$app->session->setFlash('success', 'MaterialRequisition: ' . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
+                    Yii::$app->session->setFlash('success', [
+                        [
+                            'title' => 'Sukses membuat sebuah Material Request',
+                            'message' => 'Material Request: ' . $model->nomor . ' berhasil dibuat',
+                            'footer' =>
+                                Html::a(TextLinkEnum::PRINT->value, ['material-requisition/print', 'id' => $model->id], [
+                                    'target' => '_blank',
+                                    'class' => 'btn btn-success'
+                                ])
+                        ]
+                    ]);
                     return $this->redirect(['material-requisition/view', 'id' => $model->id]);
                 }
-
                 Yii::$app->session->setFlash('danger', " MaterialRequisition is failed to insert. Info: " . $status['message']);
             }
         }
@@ -181,39 +164,22 @@ class MaterialRequisitionController extends Controller
             $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
 
             if ($isValid) {
-                $transaction = MaterialRequisition::getDb()->beginTransaction();
-                try {
-                    if ($flag = $model->save(false)) {
-
-                        if (!empty($deletedDetailsID)) {
-                            MaterialRequisitionDetail::deleteAll(['id' => $deletedDetailsID]);
-                        }
-
-                        foreach ($modelsDetail as $detail) :
-                            $detail->material_requisition_id = $model->id;
-                            if (!($flag = $detail->save(false))) {
-                                break;
-                            }
-                        endforeach;
-                    }
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = ['code' => 1, 'message' => 'Commit'];
-                    } else {
-                        $transaction->rollBack();
-                        $status = ['code' => 0, 'message' => 'Roll Back'];
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
-                }
-
+                $status = $model->updateWithDetails($modelsDetail, $deletedDetailsID);
                 if ($status['code']) {
-                    Yii::$app->session->setFlash('info', "MaterialRequisition: " . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil di update.");
+                    Yii::$app->session->setFlash('info', [
+                            [
+                                'title' => 'Update berhasil',
+                                'message' => 'Material Requisition: ' . $model->nomor . ' berhasil di-update',
+                                'footer' =>
+                                    Html::a(TextLinkEnum::PRINT->value, ['material-requisition/print', 'id' => $model->id], [
+                                        'target' => '_blank',
+                                        'class' => 'btn btn-success'
+                                    ])
+                            ]
+                        ]
+                    );
                     return $this->redirect(['material-requisition/view', 'id' => $id]);
                 }
-
                 Yii::$app->session->setFlash('danger', " MaterialRequisition is failed to updated. Info: " . $status['message']);
             }
         }
@@ -308,32 +274,7 @@ class MaterialRequisitionController extends Controller
 
             if (Tabular::validateMultiple($modelsDetail)) {
 
-                $transaction = MaterialRequisitionDetailPenawaran::getDb()->beginTransaction();
-
-                try {
-
-                    $flag = true;
-                    foreach ($modelsDetail as $detail) :
-
-                        /** @var MaterialRequisitionDetailPenawaran $detail */
-                        $detail->material_requisition_detail_id = $materialRequisitionDetailId;
-                        if (!($flag = $detail->save(false))) {
-                            break;
-                        }
-                    endforeach;
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = ['code' => 1, 'message' => 'Commit'];
-                    } else {
-                        $transaction->rollBack();
-                        $status = ['code' => 0, 'message' => 'Roll Back'];
-                    }
-
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
-                }
+                $status = $modelMaterialRequisitionDetail->createPenawaran($modelsDetail, $materialRequisitionDetailId);
 
                 if ($status['code']) {
                     Yii::$app->session->setFlash('success', " Harga penawaran berhasil ditambahkan.");
@@ -390,37 +331,7 @@ class MaterialRequisitionController extends Controller
 
             if (Tabular::validateMultiple($modelsDetail)) {
 
-                $transaction = MaterialRequisitionDetailPenawaran::getDb()->beginTransaction();
-
-                try {
-
-                    $flag = true;
-
-                    if (!empty($deletedDetailsID)) {
-                        MaterialRequisitionDetailPenawaran::deleteAll(['id' => $deletedDetailsID]);
-                    }
-
-                    foreach ($modelsDetail as $detail) :
-
-                        /** @var MaterialRequisitionDetailPenawaran $detail */
-                        $detail->material_requisition_detail_id = $materialRequisitionDetailId;
-                        if (!($flag = $detail->save(false))) {
-                            break;
-                        }
-                    endforeach;
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = ['code' => 1, 'message' => 'Commit'];
-                    } else {
-                        $transaction->rollBack();
-                        $status = ['code' => 0, 'message' => 'Roll Back'];
-                    }
-
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
-                }
+                $status = $modelMaterialRequisitionDetail->updatePenawaran($modelsDetail, $materialRequisitionDetailId, $deletedDetailsID);
 
                 if ($status['code']) {
                     Yii::$app->session->setFlash('success', " Harga penawaran berhasil di-update.");
@@ -451,7 +362,7 @@ class MaterialRequisitionController extends Controller
             'material_requisition_detail_id' => $materialRequisitionDetailId
         ]);
 
-        Yii::$app->session->setFlash('success', $count . ' penawaran records berhasil dibatalkan.');
+        Yii::$app->session->setFlash('success', $count . ' records penawaran berhasil dibatalkan.');
         return $this->redirect(['material-requisition/view', 'id' => $modelMaterialRequisitionDetail->material_requisition_id]);
     }
 

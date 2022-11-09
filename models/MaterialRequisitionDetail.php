@@ -4,6 +4,8 @@ namespace app\models;
 
 use app\enums\TipePembelianEnum;
 use app\models\base\MaterialRequisitionDetail as BaseMaterialRequisitionDetail;
+use JetBrains\PhpStorm\ArrayShape;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -90,6 +92,82 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
     public function getSubtotal()
     {
         return $this->quantity * $this->harga_terakhir;
+    }
+
+    /**
+     * @param array $modelsDetail
+     * @param int $materialRequisitionDetailId
+     * @return array
+     */
+    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    public function createPenawaran(array $modelsDetail, int $materialRequisitionDetailId): array
+    {
+        $transaction = MaterialRequisitionDetail::getDb()->beginTransaction();
+
+        try {
+
+            $flag = true;
+            foreach ($modelsDetail as $detail) :
+
+                /** @var MaterialRequisitionDetailPenawaran $detail */
+                $detail->material_requisition_detail_id = $materialRequisitionDetailId;
+                if (!($flag = $detail->save(false))) {
+                    break;
+                }
+            endforeach;
+
+            if ($flag) {
+                $transaction->commit();
+                $status = ['code' => 1, 'message' => 'Commit'];
+            } else {
+                $transaction->rollBack();
+                $status = ['code' => 0, 'message' => 'Roll Back'];
+            }
+
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
+        }
+
+        return $status;
+    }
+
+    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    public function updatePenawaran(array $modelsDetail, int $materialRequisitionDetailId, array $deletedDetailsID): array
+    {
+        $transaction = MaterialRequisitionDetailPenawaran::getDb()->beginTransaction();
+
+        try {
+
+            $flag = true;
+
+            if (!empty($deletedDetailsID)) {
+                MaterialRequisitionDetailPenawaran::deleteAll(['id' => $deletedDetailsID]);
+            }
+
+            foreach ($modelsDetail as $detail) :
+
+                /** @var MaterialRequisitionDetailPenawaran $detail */
+                $detail->material_requisition_detail_id = $materialRequisitionDetailId;
+                if (!($flag = $detail->save(false))) {
+                    break;
+                }
+            endforeach;
+
+            if ($flag) {
+                $transaction->commit();
+                $status = ['code' => 1, 'message' => 'Commit'];
+            } else {
+                $transaction->rollBack();
+                $status = ['code' => 0, 'message' => 'Roll Back'];
+            }
+
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            $status = ['code' => 0, 'message' => 'Roll Back ' . $e->getMessage(),];
+        }
+
+        return $status;
     }
 
 
