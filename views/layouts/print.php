@@ -27,7 +27,7 @@ $settings = Yii::$app->settings;
         <?php $this->head() ?>
     </head>
 
-    <body onload="print(); close();">
+    <body>
 
     <?php $this->beginBody() ?>
 

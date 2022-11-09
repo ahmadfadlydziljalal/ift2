@@ -22,7 +22,7 @@ $settings = Yii::$app->settings;
         <div class="mb-1" style=" float: left; width: 49%;">
             <div class="border-1" style="min-height: 1.6cm; max-height: 1.6cm; padding: .5em">
                 To: <?= $model->vendor->nama ?><br/>
-                <?= $model->vendor->alamat ?>
+                <?= nl2br($model->vendor->alamat) ?>
             </div>
         </div>
 
