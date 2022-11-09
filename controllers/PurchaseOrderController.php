@@ -171,8 +171,10 @@ class PurchaseOrderController extends Controller
                         'title' => 'Sukses membuat sebuah Purchase Order',
                         'message' => 'Purchase Order: ' . Html::tag('strong', $model->nomor) . " berhasil ditambahkan.",
                         'footer' =>
-                            Html::a(TextLinkEnum::PRINT->value, ['view', 'id' => $model->id], [
-                                'class' => 'btn btn-success'
+                            Html::a(TextLinkEnum::PRINT->value, ['purchase-order/print', 'id' => $model->id], [
+                                'class' => 'btn btn-success',
+                                'target' => '_blank',
+                                'rel' => 'noopener noreferrer'
                             ])
                     ]]);
                     return $this->redirect(['purchase-order/view', 'id' => $model->id]);

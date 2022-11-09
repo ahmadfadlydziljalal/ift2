@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <h1><?= Html::encode($this->title) ?></h1>
         <div class="d-flex flex-row flex-wrap align-items-center gap-2">
             <?= Html::a(TextLinkEnum::LIST->value, ['index'], ['class' => 'btn btn-outline-primary']) ?>
-            <?= Html::a(TextLinkEnum::BUAT_LAGI->value, ['create'], ['class' => 'btn btn-success']) ?>
+            <?= Html::a(TextLinkEnum::BUAT_LAGI->value, ['purchase-order/before-create'], ['class' => 'btn btn-success']) ?>
         </div>
     </div>
 
