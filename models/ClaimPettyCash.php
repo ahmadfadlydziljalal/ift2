@@ -3,6 +3,8 @@
 namespace app\models;
 
 use app\models\base\ClaimPettyCash as BaseClaimPettyCash;
+use JetBrains\PhpStorm\ArrayShape;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -74,6 +76,125 @@ class ClaimPettyCash extends BaseClaimPettyCash
     {
         $nomor = explode('/', $this->nomor);
         return $nomor[0] . '-' . ($nomor[count($nomor) - 2]) . '-' . end($nomor);
+    }
+
+    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    public function saveWithDetails($modelsDetail, $modelsDetailDetail): array
+    {
+        $transaction = ClaimPettyCash::getDb()->beginTransaction();
+
+        try {
+
+            if ($flag = $this->save(false)) {
+                foreach ($modelsDetail as $i => $detail) :
+
+                    if ($flag === false) {
+                        break;
+                    }
+
+                    $detail->claim_petty_cash_id = $this->id;
+                    if (!($flag = $detail->save(false))) {
+                        break;
+                    }
+
+                    if (isset($modelsDetailDetail[$i]) && is_array($modelsDetailDetail[$i])) {
+                        foreach ($modelsDetailDetail[$i] as $modelDetailDetail) {
+                            $modelDetailDetail->claim_petty_cash_nota_id = $detail->id;
+                            if (!($flag = $modelDetailDetail->save(false))) {
+                                break;
+                            }
+                        }
+                    }
+
+                endforeach;
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                $status = [
+                    'code' => 1,
+                    'message' => 'Commit'
+                ];
+            } else {
+                $transaction->rollBack();
+                $status = [
+                    'code' => 0,
+                    'message' => 'Roll Back'
+                ];
+            }
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            $status = [
+                'code' => 0,
+                'message' => 'Roll Back ' . $e->getMessage(),
+            ];
+        }
+
+        return $status;
+    }
+
+    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    public function updateWithDetails($modelsDetail, $modelsDetailDetail, $deletedDetailsID, $deletedDetailDetailsIDs): array
+    {
+        $transaction = ClaimPettyCash::getDb()->beginTransaction();
+
+        try {
+
+            if ($flag = $this->save(false)) {
+
+                if (!empty($deletedDetailDetailsIDs)) {
+                    ClaimPettyCashNotaDetail::deleteAll(['id' => $deletedDetailDetailsIDs]);
+                }
+
+                if (!empty($deletedDetailsID)) {
+                    ClaimPettyCashNota::deleteAll(['id' => $deletedDetailsID]);
+                }
+
+                foreach ($modelsDetail as $i => $detail) :
+
+                    if ($flag === false) {
+                        break;
+                    }
+
+                    $detail->claim_petty_cash_id = $this->id;
+                    if (!($flag = $detail->save(false))) {
+                        break;
+                    }
+
+                    if (isset($modelsDetailDetail[$i]) && is_array($modelsDetailDetail[$i])) {
+                        foreach ($modelsDetailDetail[$i] as $modelDetailDetail) {
+                            $modelDetailDetail->claim_petty_cash_nota_id = $detail->id;
+                            if (!($flag = $modelDetailDetail->save(false))) {
+                                break;
+                            }
+                        }
+                    }
+
+                endforeach;
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                $status = [
+                    'code' => 1,
+                    'message' => 'Commit'
+                ];
+            } else {
+                $transaction->rollBack();
+                $status = [
+                    'code' => 0,
+                    'message' => 'Roll Back'
+                ];
+            }
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            $status = [
+                'code' => 0,
+                'message' => 'Roll Back ' . $e->getMessage(),
+            ];
+        }
+
+        return $status;
     }
 
 }

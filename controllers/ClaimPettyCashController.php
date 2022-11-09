@@ -9,8 +9,6 @@ use app\models\search\ClaimPettyCashSearch;
 use app\models\Tabular;
 use Throwable;
 use Yii;
-use yii\base\InvalidConfigException;
-use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -88,8 +86,6 @@ class ClaimPettyCashController extends Controller
     /**
      * Creates a new ClaimPettyCash model.
      * @return Response | string
-     * @throws HttpException
-     * @throws InvalidConfigException
      */
     public function actionCreate(): Response|string
     {
@@ -120,56 +116,7 @@ class ClaimPettyCashController extends Controller
             }
 
             if ($isValid) {
-
-                $transaction = ClaimPettyCash::getDb()->beginTransaction();
-
-                try {
-
-                    if ($flag = $model->save(false)) {
-                        foreach ($modelsDetail as $i => $detail) :
-
-                            if ($flag === false) {
-                                break;
-                            }
-
-                            $detail->claim_petty_cash_id = $model->id;
-                            if (!($flag = $detail->save(false))) {
-                                break;
-                            }
-
-                            if (isset($modelsDetailDetail[$i]) && is_array($modelsDetailDetail[$i])) {
-                                foreach ($modelsDetailDetail[$i] as $modelDetailDetail) {
-                                    $modelDetailDetail->claim_petty_cash_nota_id = $detail->id;
-                                    if (!($flag = $modelDetailDetail->save(false))) {
-                                        break;
-                                    }
-                                }
-                            }
-
-                        endforeach;
-                    }
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = [
-                            'code' => 1,
-                            'message' => 'Commit'
-                        ];
-                    } else {
-                        $transaction->rollBack();
-                        $status = [
-                            'code' => 0,
-                            'message' => 'Roll Back'
-                        ];
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    $status = [
-                        'code' => 0,
-                        'message' => 'Roll Back ' . $e->getMessage(),
-                    ];
-                }
-
+                $status = $model->saveWithDetails($modelsDetail, $modelsDetailDetail);
                 if ($status['code']) {
                     Yii::$app->session->setFlash('success', 'ClaimPettyCash: ' . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
                     return $this->redirect(['claim-petty-cash/view', 'id' => $model->id]);
@@ -193,7 +140,6 @@ class ClaimPettyCashController extends Controller
      * @return Response | string
      * @throws HttpException
      * @throws NotFoundHttpException
-     * @throws InvalidConfigException
      */
     public function actionUpdate(int $id): Response|string
     {
@@ -261,64 +207,7 @@ class ClaimPettyCashController extends Controller
 
             if ($isValid) {
 
-                $transaction = ClaimPettyCash::getDb()->beginTransaction();
-
-                try {
-
-                    if ($flag = $model->save(false)) {
-
-                        if (!empty($deletedDetailDetailsIDs)) {
-                            ClaimPettyCashNotaDetail::deleteAll(['id' => $deletedDetailDetailsIDs]);
-                        }
-
-                        if (!empty($deletedDetailsID)) {
-                            ClaimPettyCashNota::deleteAll(['id' => $deletedDetailsID]);
-                        }
-
-                        foreach ($modelsDetail as $i => $detail) :
-
-                            if ($flag === false) {
-                                break;
-                            }
-
-                            $detail->claim_petty_cash_id = $model->id;
-                            if (!($flag = $detail->save(false))) {
-                                break;
-                            }
-
-                            if (isset($modelsDetailDetail[$i]) && is_array($modelsDetailDetail[$i])) {
-                                foreach ($modelsDetailDetail[$i] as $modelDetailDetail) {
-                                    $modelDetailDetail->claim_petty_cash_nota_id = $detail->id;
-                                    if (!($flag = $modelDetailDetail->save(false))) {
-                                        break;
-                                    }
-                                }
-                            }
-
-                        endforeach;
-                    }
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = [
-                            'code' => 1,
-                            'message' => 'Commit'
-                        ];
-                    } else {
-                        $transaction->rollBack();
-                        $status = [
-                            'code' => 0,
-                            'message' => 'Roll Back'
-                        ];
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    $status = [
-                        'code' => 0,
-                        'message' => 'Roll Back ' . $e->getMessage(),
-                    ];
-                }
-
+                $status = $model->updateWithDetails($modelsDetail, $modelsDetailDetail, $deletedDetailsID, $deletedDetailDetailsIDs);
                 if ($status['code']) {
                     Yii::$app->session->setFlash('info', "ClaimPettyCash: " . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil di update.");
                     return $this->redirect(['claim-petty-cash/view', 'id' => $id]);
