@@ -6,10 +6,17 @@ use yii\helpers\Url;
 
 return [
     [
-        'class' => 'yii\grid\SerialColumn',
+        'class' => 'kartik\grid\SerialColumn',
     ],
     [
-        'class' => 'yii\grid\DataColumn',
+        'class' => 'kartik\grid\ExpandRowColumn',
+        'width' => '50px',
+        'detailUrl' => Url::toRoute(['claim-petty-cash/expand-item']),
+        'expandOneOnly' => true,
+        'header' => '',
+    ],
+    [
+        'class' => 'kartik\grid\DataColumn',
         'attribute' => 'nomor',
         'format' => 'text',
         'value' => function ($model) {
@@ -18,18 +25,18 @@ return [
         }
     ],
     [
-        'class' => 'yii\grid\DataColumn',
+        'class' => 'kartik\grid\DataColumn',
         'attribute' => 'vendor_id',
         'format' => 'text',
         'value' => 'vendor.nama'
     ],
     [
-        'class' => 'yii\grid\DataColumn',
+        'class' => 'kartik\grid\DataColumn',
         'attribute' => 'tanggal',
         'format' => 'date',
     ],
     [
-        'class' => 'yii\grid\DataColumn',
+        'class' => 'kartik\grid\DataColumn',
         'attribute' => 'remarks',
         'format' => 'nText',
         'contentOptions' => [
@@ -37,17 +44,19 @@ return [
         ]
     ],
     [
-        'class' => 'yii\grid\DataColumn',
+        'class' => 'kartik\grid\DataColumn',
         'attribute' => 'approved_by_id',
+        'value' => 'approvedBy.nama',
         'format' => 'text',
     ],
     [
-        'class' => 'yii\grid\DataColumn',
+        'class' => 'kartik\grid\DataColumn',
         'attribute' => 'acknowledge_by_id',
+        'value' => 'acknowledgeBy.nama',
         'format' => 'text',
     ],
     [
-        'class' => 'yii\grid\DataColumn',
+        'class' => 'kartik\grid\DataColumn',
         'label' => 'Total',
         'format' => 'raw',
         'value' => function ($model) {

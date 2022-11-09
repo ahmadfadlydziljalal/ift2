@@ -9,6 +9,7 @@ use yii\widgets\ListView;
 
 /* @var $this View */
 /* @var $model ClaimPettyCash */
+/* @see \app\controllers\ClaimPettyCashController::actionPrint() */
 
 $settings = Yii::$app->settings;
 ?>

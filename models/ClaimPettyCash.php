@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\models\base\ClaimPettyCash as BaseClaimPettyCash;
 use JetBrains\PhpStorm\ArrayShape;
+use yii\db\ActiveQuery;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
@@ -48,8 +49,8 @@ class ClaimPettyCash extends BaseClaimPettyCash
                 'vendor_id' => 'Vendor',
                 'tanggal' => 'Tanggal',
                 'remarks' => 'Remarks',
-                'approved_by' => 'Approved By',
-                'acknowledge_by' => 'Acknowledge By',
+                'approved_by_id' => 'Approved By',
+                'acknowledge_by_id' => 'Acknowledge By',
                 'created_at' => 'Created At',
                 'updated_at' => 'Updated At',
                 'created_by' => 'Created By',
@@ -58,13 +59,18 @@ class ClaimPettyCash extends BaseClaimPettyCash
         );
     }
 
-
-    public function getClaimPettyCashNotaDetails()
+    /**
+     * @return ActiveQuery
+     */
+    public function getClaimPettyCashNotaDetails(): ActiveQuery
     {
         return $this->hasMany(ClaimPettyCashNotaDetail::class, ['claim_petty_cash_nota_id' => 'id'])
             ->via('claimPettyCashNotas');
     }
 
+    /**
+     * @return float
+     */
     public function getTotalClaim(): float
     {
         $parent = $this->hasMany(ClaimPettyCashNotaDetail::class, ['claim_petty_cash_nota_id' => 'id'])
@@ -72,6 +78,9 @@ class ClaimPettyCash extends BaseClaimPettyCash
         return round($parent->sum('quantity * harga'), 2);
     }
 
+    /**
+     * @return string
+     */
     public function getNomorDisplay(): string
     {
         $nomor = explode('/', $this->nomor);
