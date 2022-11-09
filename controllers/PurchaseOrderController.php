@@ -145,8 +145,7 @@ class PurchaseOrderController extends Controller
             'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
             'vendor_id' => $materialRequestAndVendorId['vendor_id']
         ]);
-        $modelsDetail = MaterialRequisitionDetailPenawaran::find()
-            ->forCreateAction($materialRequestAndVendorId);
+        $modelsDetail = MaterialRequisitionDetailPenawaran::find()->forCreateAction($materialRequestAndVendorId);
 
         if ($model->load($this->request->post())) {
 
@@ -155,6 +154,7 @@ class PurchaseOrderController extends Controller
 
             //validate models
             if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
+
                 $status = $model->createWithDetails($modelsDetail);
 
                 if ($status['code']) {
@@ -196,7 +196,7 @@ class PurchaseOrderController extends Controller
 
             Tabular::loadMultiple($modelsDetail, $request->post());
             $deletedDetailsID = array_diff($oldDetailsID, array_filter(ArrayHelper::map($modelsDetail, 'id', 'id')));
-            
+
             if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
 
                 $status = $model->updateWithDetails($modelsDetail, $deletedDetailsID);
