@@ -44,6 +44,9 @@ class CardController extends Controller
     {
         $searchModel = new CardSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination = [
+            'pageSize' => 12
+        ];
 
         return $this->render('index', [
             'searchModel' => $searchModel,
