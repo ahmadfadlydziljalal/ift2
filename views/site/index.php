@@ -76,8 +76,6 @@ $this->title = 'Dashboard';
                 <div class="position-absolute top-50 start-0 translate-middle badge rounded-circle shadow bg-info p-sm-1 p-md-2 p-lg-2 d-none d-md-none d-lg-block">
                     <i class="bi bi-arrow-right-short text-dark p-0 m-0 fs-4"></i>
                 </div>
-
-
             </div>
         </div>
 

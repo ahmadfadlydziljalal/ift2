@@ -20,7 +20,7 @@ class CardSearch extends Card
     public function rules(): array
     {
         return [
-            [['id', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'created_at', 'updated_at', 'mata_uang_id'], 'integer'],
             [['nama', 'kode', 'created_by', 'updated_by'], 'safe'],
         ];
     }
@@ -48,11 +48,14 @@ class CardSearch extends Card
                 'kode' => 'card.kode',
                 'alamat' => 'card.alamat',
                 'npwp' => 'card.npwp',
+                'mata_uang_id' => 'card.mata_uang_id',
+                'mataUang' => 'mata_uang.singkatan',
                 'cardTypeName' => new Expression("GROUP_CONCAT(card_type.nama)")
             ])
             ->joinWith(['cardBelongsTypes' => function ($cbt) {
-                return $cbt->joinWith('cardType');
-            }])
+                return $cbt->joinWith('cardType', false);
+            }], false)
+            ->joinWith('mataUang', false)
             ->groupBy('card.id');
 
         $dataProvider = new ActiveDataProvider([
@@ -72,6 +75,9 @@ class CardSearch extends Card
             return $dataProvider;
         }
 
+        $query->andFilterWhere([
+            'mata_uang_id' => $this->mata_uang_id
+        ]);
         $query->andFilterWhere(['like', 'card.nama', $this->nama])
             ->andFilterWhere(['like', 'card.kode', $this->kode])
             ->andFilterWhere(['like', 'card.npwp', $this->npwp]);

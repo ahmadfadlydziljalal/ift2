@@ -85,14 +85,13 @@ class CardController extends Controller
      * If creation is successful, the browser will be redirected to the 'index' page.
      * @return Response|string
      */
-    public function actionCreate()
+    public function actionCreate(): Response|string
     {
         $model = new Card();
         $model->scenario = Card::SCENARIO_CREATE_AND_UPDATE;
 
         if ($this->request->isPost) {
             if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-
 
                 $transaction = Yii::$app->db->beginTransaction();
 

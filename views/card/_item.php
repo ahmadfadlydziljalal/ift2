@@ -23,6 +23,8 @@ use yii\helpers\Html;
                 <span><?= nl2br($model->alamat) ?></span>
 
                 <p>
+
+                    <span class="badge bg-info rounded-circle"> <?= $model->mataUang->singkatan ?> </span> |
                     <?= (is_null($model->npwp) | empty($model->npwp))
                         ? Html::tag('span', 'NPWP is not available', ['class' => 'text-warning'])
                         : Html::tag('span', 'NPWP: ' . $model->npwp, ['class' => 'text-info'])

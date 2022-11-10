@@ -16,6 +16,7 @@ use yii\helpers\ArrayHelper;
  * @property string $kode
  * @property string $singkatan
  *
+ * @property \app\models\Card[] $cards
  * @property \app\models\MaterialRequisitionDetailPenawaran[] $materialRequisitionDetailPenawarans
  * @property string $aliasModel
  */
@@ -68,6 +69,14 @@ abstract class MataUang extends \yii\db\ActiveRecord
             'kode' => 'eg. IDR, USD',
             'singkatan' => 'eg. `Rp.` , USD. ',
         ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCards()
+    {
+        return $this->hasMany(\app\models\Card::class, ['mata_uang_id' => 'id']);
     }
 
     /**

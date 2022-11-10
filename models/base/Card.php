@@ -17,6 +17,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $kode
  * @property string $alamat
  * @property string $npwp
+ * @property integer $mata_uang_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $created_by
@@ -28,9 +29,12 @@ use yii\behaviors\TimestampBehavior;
  * @property \app\models\CardPersonInCharge[] $cardPersonInCharges
  * @property \app\models\ClaimPettyCashNota[] $claimPettyCashNotas
  * @property \app\models\ClaimPettyCash[] $claimPettyCashes
+ * @property \app\models\ClaimPettyCash[] $claimPettyCashes0
+ * @property \app\models\ClaimPettyCash[] $claimPettyCashes1
  * @property \app\models\FakturDetail[] $fakturDetails
  * @property \app\models\Faktur[] $fakturs
  * @property \app\models\Faktur[] $fakturs0
+ * @property \app\models\MataUang $mataUang
  * @property \app\models\MaterialRequisitionDetailPenawaran[] $materialRequisitionDetailPenawarans
  * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
  * @property \app\models\MaterialRequisition[] $materialRequisitions
@@ -76,9 +80,11 @@ abstract class Card extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::rules(), [
             [['nama', 'kode', 'alamat'], 'required'],
+            [['mata_uang_id'], 'integer'],
             [['nama', 'alamat'], 'string', 'max' => 255],
             [['kode'], 'string', 'max' => 50],
-            [['npwp'], 'string', 'max' => 24]
+            [['npwp'], 'string', 'max' => 24],
+            [['mata_uang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MataUang::class, 'targetAttribute' => ['mata_uang_id' => 'id']]
         ]);
     }
 
@@ -97,6 +103,7 @@ abstract class Card extends \yii\db\ActiveRecord
             'updated_by' => 'Updated By',
             'alamat' => 'Alamat',
             'npwp' => 'Npwp',
+            'mata_uang_id' => 'Mata Uang ID',
         ];
     }
 
@@ -145,6 +152,22 @@ abstract class Card extends \yii\db\ActiveRecord
      */
     public function getClaimPettyCashes()
     {
+        return $this->hasMany(\app\models\ClaimPettyCash::class, ['acknowledge_by_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getClaimPettyCashes0()
+    {
+        return $this->hasMany(\app\models\ClaimPettyCash::class, ['approved_by_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getClaimPettyCashes1()
+    {
         return $this->hasMany(\app\models\ClaimPettyCash::class, ['vendor_id' => 'id']);
     }
 
@@ -170,6 +193,14 @@ abstract class Card extends \yii\db\ActiveRecord
     public function getFakturs0()
     {
         return $this->hasMany(\app\models\Faktur::class, ['toko_saya_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMataUang()
+    {
+        return $this->hasOne(\app\models\MataUang::class, ['id' => 'mata_uang_id']);
     }
 
     /**

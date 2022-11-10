@@ -1,6 +1,7 @@
 <?php
 
 use app\models\CardType;
+use app\models\MataUang;
 use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
@@ -55,6 +56,9 @@ use yii\helpers\Html;
             <?= $form->field($model, 'alamat')->textarea(['rows' => 4]) ?>
 
             <?= $form->field($model, 'npwp')->textInput(['maxlength' => true]) ?>
+
+            <?= $form->field($model, 'mata_uang_id')->dropDownList(MataUang::find()->map()) ?>
+
 
             <div class="d-flex mt-3 justify-content-between">
                 <?= Html::a(' Tutup', ['index'], [
