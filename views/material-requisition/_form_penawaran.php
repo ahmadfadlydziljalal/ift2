@@ -8,6 +8,7 @@
 /* @var $modelsDetail MaterialRequisitionDetailPenawaran[]|string */
 
 use app\models\Card;
+use app\models\MataUang;
 use app\models\MaterialRequisition;
 use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\Status;
@@ -52,6 +53,7 @@ use yii\widgets\MaskedInput;
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Vendor</th>
+                <th scope="col">Mata Uang</th>
                 <th scope="col">Harga Penawaran</th>
                 <th scope="col">Status</th>
                 <th scope="col" style="width: 2px">Aksi</th>
@@ -76,6 +78,17 @@ use yii\widgets\MaskedInput;
                                 'data' => Card::find()->map(Card::GET_ONLY_VENDOR),
                                 'options' => [
                                     'placeholder' => '= Pilih vendor ='
+                                ]
+                            ])
+                        ?>
+                    </td>
+
+                    <td>
+                        <?= $form->field($modelDetail, "[$i]mata_uang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                            ->widget(Select2::class, [
+                                'data' => MataUang::find()->map(),
+                                'options' => [
+                                    'placeholder' => '= Pilih Mata Uang ='
                                 ]
                             ])
                         ?>
@@ -119,7 +132,7 @@ use yii\widgets\MaskedInput;
             <tfoot>
             <tr>
 
-                <td class="text-end" colspan="4">
+                <td class="text-end" colspan="5">
                     <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
                 </td>
                 <td></td>

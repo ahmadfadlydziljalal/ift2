@@ -40,6 +40,7 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
             'material_requisition_detail_id' => 'Material Requisition Detail',
             'vendor_id' => 'Vendor',
             'purchase_order_id' => 'Purchase Order',
+            'mata_uang_id' => 'Mata Uang',
         ]);
     }
 

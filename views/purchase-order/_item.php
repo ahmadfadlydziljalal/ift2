@@ -2,8 +2,9 @@
 
 
 /* @var $this View */
-
 /* @var $model PurchaseOrder */
+
+/* @see \app\controllers\PurchaseOrderController::actionExpandItem() */
 
 use app\models\PurchaseOrder;
 use kartik\grid\GridView;

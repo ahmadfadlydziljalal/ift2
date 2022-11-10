@@ -283,6 +283,10 @@ class PurchaseOrderController extends Controller
         ]);
     }
 
+    /**
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionExpandItem(): string
     {
         if (isset($_POST['expandRowKey'])) {

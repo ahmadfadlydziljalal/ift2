@@ -31,7 +31,7 @@ use yii\widgets\MaskedInput;
         'deleteButton' => '.remove-item',
         'model' => $modelsDetail[0],
         'formId' => 'dynamic-form',
-        'formFields' => ['id', 'material_requisition_detail_id', 'vendor_id', 'harga_penawaran', 'status_id'],
+        'formFields' => ['id', 'material_requisition_detail_id', 'vendor_id', 'harga_penawaran', 'mata_uang_id', 'status_id'],
     ]);
     ?>
 
@@ -49,6 +49,7 @@ use yii\widgets\MaskedInput;
                 <th scope="col">Quantity</th>
                 <th scope="col">Satuan</th>
                 <th scope="col">Vendor</th>
+                <th scope="col">Mata Uang</th>
                 <th scope="col">Harga Penawaran</th>
             </tr>
             </thead>
@@ -65,6 +66,7 @@ use yii\widgets\MaskedInput;
                         <?= Html::activeHiddenInput($modelDetail, "[$i]material_requisition_detail_id") ?>
                         <?= Html::activeHiddenInput($modelDetail, "[$i]vendor_id") ?>
                         <?= Html::activeHiddenInput($modelDetail, "[$i]status_id") ?>
+                        <?= Html::activeHiddenInput($modelDetail, "[$i]mata_uang_id") ?>
 
 
                         <i class="bi bi-arrow-right-short"></i>
@@ -92,6 +94,10 @@ use yii\widgets\MaskedInput;
 
                     <td>
                         <?= $modelDetail->vendor->nama ?>
+                    </td>
+
+                    <td>
+                        <?= $modelDetail->mataUang->singkatan ?>
                     </td>
 
                     <td>

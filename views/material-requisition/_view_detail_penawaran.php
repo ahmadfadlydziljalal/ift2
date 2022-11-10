@@ -62,7 +62,7 @@ use yii\helpers\Html;
                             ]);
                         ?>
                     </div>
-                
+
                     <div class="table-responsive">
                         <?php
                         echo GridView::widget([
@@ -78,6 +78,11 @@ use yii\helpers\Html;
                                     'class' => DataColumn::class,
                                     'attribute' => 'vendor_id',
                                     'value' => 'vendor.nama'
+                                ],
+                                [
+                                    'class' => DataColumn::class,
+                                    'attribute' => 'mata_uang_id',
+                                    'value' => 'mataUang.nama'
                                 ],
                                 [
                                     'class' => DataColumn::class,

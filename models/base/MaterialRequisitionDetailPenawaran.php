@@ -18,11 +18,13 @@ use yii\behaviors\TimestampBehavior;
  * @property string $harga_penawaran
  * @property integer $status_id
  * @property integer $purchase_order_id
+ * @property integer $mata_uang_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $created_by
  * @property string $updated_by
  *
+ * @property \app\models\MataUang $mataUang
  * @property \app\models\MaterialRequisitionDetail $materialRequisitionDetail
  * @property \app\models\PurchaseOrder $purchaseOrder
  * @property \app\models\Status $status
@@ -63,9 +65,10 @@ abstract class MaterialRequisitionDetailPenawaran extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['material_requisition_detail_id', 'vendor_id', 'status_id', 'purchase_order_id'], 'integer'],
+            [['material_requisition_detail_id', 'vendor_id', 'status_id', 'purchase_order_id', 'mata_uang_id'], 'integer'],
             [['vendor_id', 'harga_penawaran'], 'required'],
             [['harga_penawaran'], 'number'],
+            [['mata_uang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MataUang::class, 'targetAttribute' => ['mata_uang_id' => 'id']],
             [['material_requisition_detail_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MaterialRequisitionDetail::class, 'targetAttribute' => ['material_requisition_detail_id' => 'id']],
             [['purchase_order_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\PurchaseOrder::class, 'targetAttribute' => ['purchase_order_id' => 'id']],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Status::class, 'targetAttribute' => ['status_id' => 'id']],
@@ -89,7 +92,16 @@ abstract class MaterialRequisitionDetailPenawaran extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
+            'mata_uang_id' => 'Mata Uang ID',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMataUang()
+    {
+        return $this->hasOne(\app\models\MataUang::class, ['id' => 'mata_uang_id']);
     }
 
     /**
