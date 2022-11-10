@@ -85,6 +85,14 @@ return [
     ],
     [
         'class' => DataColumn::class,
+        'attribute' => 'mata_uang_id',
+        'contentOptions' => [
+            'class' => 'text-end'
+        ],
+        'value' => 'mataUang.singkatan'
+    ],
+    [
+        'class' => DataColumn::class,
         'attribute' => 'harga_penawaran',
         'format' => ['decimal', 2],
         'contentOptions' => [

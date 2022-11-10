@@ -94,6 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="bg-white">
         <?php try {
             echo !empty($model->materialRequisitionDetailPenawarans) ?
+                Html::beginTag('div', ['class' => 'table-responsive']) .
                 GridView::widget([
                     'dataProvider' => new ActiveDataProvider([
                         'query' => $model->getMaterialRequisitionDetailPenawarans(),
@@ -102,7 +103,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'columns' => require __DIR__ . '/_penawaran_columns.php',
                     'layout' => '{items}'
 
-                ]) :
+                ]) .
+                Html::endTag('div')
+                :
                 Html::tag("p", 'Purchase Order Detail tidak tersedia', [
                     'class' => 'text-warning font-weight-bold p-3'
                 ]);

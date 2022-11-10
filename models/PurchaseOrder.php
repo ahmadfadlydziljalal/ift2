@@ -57,17 +57,7 @@ class PurchaseOrder extends BasePurchaseOrder
             ]
         );
     }
-
-    public function getSumSubTotal(): float|int
-    {
-        $details = $this->materialRequisitionDetails;
-        $total = 0;
-        foreach ($details as $detail) {
-            $total += $detail->quantity * $detail->harga_terakhir;
-        }
-        return $total;
-    }
-
+    
     public function getUsernameWhoCreated(): string
     {
         $user = User::findOne($this->created_by);
@@ -172,5 +162,14 @@ class PurchaseOrder extends BasePurchaseOrder
         return $status;
     }
 
+
+    public function getSumSubtotal(): float|int
+    {
+        return array_sum(
+            array_map(function ($el) {
+                return $el->materialRequisitionDetail->quantity * $el->harga_penawaran;
+            }, $this->materialRequisitionDetailPenawarans)
+        );
+    }
 
 }

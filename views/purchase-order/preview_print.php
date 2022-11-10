@@ -48,7 +48,7 @@ $settings = Yii::$app->settings;
                 <tr>
                     <td>Ref No.</td>
                     <td>:</td>
-                    <td><?= $model->nomor ?></td>
+                    <td><?= $model->materialRequisition->nomor ?></td>
                 </tr>
                 </tbody>
             </table>
@@ -84,7 +84,7 @@ $settings = Yii::$app->settings;
                 <?php for ($i = 0; $i <= 16; $i++) : ?>
 
                     <?php if (isset($purchaseOrderDetail[$i])) : ?>
-                        <tr class="text-nowrap " data-key="10">
+                        <tr class="text-nowrap ">
 
                             <td class="text-end" style="width:50px;"><?= ($i + 1) ?></td>
                             <td><?= $purchaseOrderDetail[$i]->materialRequisitionDetail->barang->part_number ?></td>
@@ -93,13 +93,13 @@ $settings = Yii::$app->settings;
                             <td><?= $purchaseOrderDetail[$i]->materialRequisitionDetail->barang->nama ?></td>
                             <td class="text-end"><?= $purchaseOrderDetail[$i]->materialRequisitionDetail->quantity ?></td>
                             <td class=""><?= $purchaseOrderDetail[$i]->materialRequisitionDetail->satuan->nama ?></td>
-                            <td class="border-end-0"><?= Yii::$app->formatter->currencyCode ?></td>
+                            <td class="border-end-0"><?= $purchaseOrderDetail[$i]->mataUang->singkatan ?></td>
                             <td class="border-start-0 text-end"><?= Yii::$app->formatter->asDecimal($purchaseOrderDetail[$i]->harga_penawaran, 2) ?></td>
-                            <td class="border-end-0"><?= Yii::$app->formatter->currencyCode ?></td>
-                            <td class="border-start-0 text-end"></td>
+                            <td class="border-end-0"><?= $purchaseOrderDetail[$i]->mataUang->singkatan ?></td>
+                            <td class="border-start-0 text-end"><?= Yii::$app->formatter->asDecimal($purchaseOrderDetail[$i]->getSubtotal(), 2) ?></td>
                         </tr>
                     <?php else: ?>
-                        <tr class="text-nowrap " data-key="10">
+                        <tr class="text-nowrap ">
                             <td class="text-end" style="width:50px"><?= ($i + 1) ?>
                             </td>
                             <td></td>
@@ -123,10 +123,15 @@ $settings = Yii::$app->settings;
                     <td style="width:50px;">&nbsp;</td>
                     <td colspan="6" class="border-end-0 ">
                         Terbilang:
+                        <?= ($purchaseOrderDetail[0]->mata_uang_id == 1)
+                            ? Yii::$app->formatter->asSpellout($model->getSumSubtotal())
+                            : Yii::$app->formatter->asSpelloutSelainRupiah($model->getSumSubtotal(), $purchaseOrderDetail[0]->mata_uang_id)
+                        ?>
+
                     </td>
                     <td colspan="2" class="text-end">Total:</td>
-                    <td class="border-start-0 border-end-0 text-end"><?= Yii::$app->formatter->currencyCode ?></td>
-                    <td class="border-start-0  text-end"></td>
+                    <td class="border-start-0 border-end-0 text-end"><?= $purchaseOrderDetail[0]->mataUang->singkatan ?></td>
+                    <td class="border-start-0 text-end"> <?= Yii::$app->formatter->asDecimal($model->getSumSubtotal(), 2) ?></td>
                 </tr>
                 </tbody>
             </table>
