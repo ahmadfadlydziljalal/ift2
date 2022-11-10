@@ -86,4 +86,22 @@ class CardQuery extends ActiveQuery
     {
         return parent::all($db);
     }
+
+    /**
+     * @param mixed $id
+     * @return Card[] | array
+     */
+    public function mataUang(mixed $id): array
+    {
+        return parent::select([
+            'id' => 'mata_uang.id',
+            'name' => 'mata_uang.singkatan'
+        ])
+            ->where([
+                'card.id' => $id
+            ])
+            ->joinWith('mataUang')
+            ->asArray()
+            ->all();
+    }
 }

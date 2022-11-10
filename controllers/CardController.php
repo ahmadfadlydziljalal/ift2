@@ -232,4 +232,24 @@ class CardController extends Controller
         Yii::$app->session->setFlash('danger', 'Card: ' . $model->nama . ' berhasil dihapus.');
         return $this->redirect(['index']);
     }
+
+    public function actionDepdropFindMataUangByCardId(): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        if (isset($_POST['depdrop_parents'])) {
+
+            $parents = $_POST['depdrop_parents'];
+            if ($parents != null) {
+                $out = Card::find()->mataUang($parents[0]);
+                if (isset($out[0])) {
+                    return ['output' => $out, 'selected' => $out[0]];
+                }
+                return ['output' => $out, 'selected' => ''];
+            }
+        }
+        return ['output' => '', 'selected' => ''];
+    }
+
+
 }

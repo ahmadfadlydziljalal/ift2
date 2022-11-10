@@ -61,4 +61,13 @@ class Card extends BaseCard
         return $this->hasMany(CardType::class, ['id' => 'card_type_id'])
             ->via('cardBelongsTypes');
     }
+
+    public function attributeLabels()
+    {
+        return ArrayHelper::merge(
+            parent::attributeLabels(), [
+                'mata_uang_id' => 'Mata Uang',
+            ]
+        );
+    }
 }

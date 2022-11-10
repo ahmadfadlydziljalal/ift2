@@ -65,6 +65,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         'alamat:nText',
                         'npwp',
+                        [
+                            'attribute' => 'mata_uang_id',
+                            'value' => $model->mataUang->singkatan
+                        ],
                     ],
                 ]);
             } catch (Throwable $e) {

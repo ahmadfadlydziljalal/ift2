@@ -12,10 +12,12 @@ use app\models\MataUang;
 use app\models\MaterialRequisition;
 use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\Status;
+use kartik\depdrop\DepDrop;
 use kartik\form\ActiveForm;
 use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\bootstrap5\Html;
+use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\MaskedInput;
 
@@ -84,13 +86,33 @@ use yii\widgets\MaskedInput;
                     </td>
 
                     <td>
+
+                        <?php
+                        $data = [];
+
+                        if (Yii::$app->request->isPost || !$modelDetail->isNewRecord) {
+                            if ($modelDetail->mata_uang_id) {
+                                $mataUang = MataUang::findOne([
+                                    $modelDetail->mata_uang_id
+                                ]);
+                                $data = [
+                                    $mataUang->id => $mataUang->singkatan
+                                ];
+                            }
+                        }
+                        ?>
+
                         <?= $form->field($modelDetail, "[$i]mata_uang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                            ->widget(Select2::class, [
-                                'data' => MataUang::find()->map(),
+                            ->widget(DepDrop::class, [
+                                'data' => $data,
                                 'options' => [
-                                    'placeholder' => '= Pilih Mata Uang ='
+                                    'placeholder' => ' - ',
+                                ],
+                                'pluginOptions' => [
+                                    'depends' => ['materialrequisitiondetailpenawaran-' . $i . '-vendor_id'],
+                                    'url' => Url::to(['card/depdrop-find-mata-uang-by-card-id'])
                                 ]
-                            ])
+                            ]);
                         ?>
                     </td>
 
@@ -131,12 +153,10 @@ use yii\widgets\MaskedInput;
 
             <tfoot>
             <tr>
-
                 <td class="text-end" colspan="5">
                     <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
                 </td>
                 <td></td>
-
             </tr>
             </tfoot>
 

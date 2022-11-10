@@ -23,11 +23,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="material-requisition-create">
     <h1><?= $this->title ?></h1>
+
     <div>
         <?= Html::tag('span', $modelMaterialRequisition->nomor, ['class' => 'badge bg-success']) ?>
         <?= Html::tag('span', $modelMaterialRequisitionDetail->barang->nama, ['class' => 'badge bg-info']) ?>
     </div>
-
 
     <?= $this->render('_form_penawaran', [
         'modelsDetail' => $modelsDetail,
