@@ -21,15 +21,27 @@ use yii\helpers\Html;
 
 
         <div class="row">
-            <div class="col-sm-12 col-md-4">
-                <h4 class="card-text"><?= $model->barang->nama ?></h4>
-                <p><?= $model->barang->tipePembelian->nama ?></p>
+            <div class="col-sm-12">
 
-                <p><?= $model->description ?></p>
-                <p><?= $model->quantity ?> <?= $model->satuan->nama ?></p>
+                <div class="d-flex flex-column flex-wrap">
+                    <p>Tipe: <?= $model->barang->tipePembelian->nama ?></p>
+
+                    <div class="d-flex flex-row align-items-baseline gap-2">
+                        <?= Html::tag('h3', $model->barang->nama, ['class' => 'card-text']) ?>
+                        <div>
+                            <?= Html::tag('small', $model->quantity . ' ' . $model->satuan->nama, [
+                                'class' => 'badge bg-info rounded-pill'
+                            ]) ?>
+                        </div>
+                    </div>
+                    <p><?= $model->description ?></p>
+                </div>
+
+
             </div>
-            <div class="col-sm-12 col-md-8">
-                <h4 class="card-text">Penawaran Harga</h4>
+            <hr/>
+            <div class="col-sm-12">
+                <p class="card-text text-muted">Penawaran Harga</p>
                 <?php if (empty($model->materialRequisitionDetailPenawarans)) : ?>
                     <p>
                         <?php
@@ -83,6 +95,14 @@ use yii\helpers\Html;
                                     'class' => DataColumn::class,
                                     'attribute' => 'mata_uang_id',
                                     'value' => 'mataUang.nama'
+                                ],
+                                [
+                                    'class' => DataColumn::class,
+                                    'attribute' => 'quantity',
+                                    'format' => ['decimal', 2],
+                                    'contentOptions' => [
+                                        'class' => 'text-end'
+                                    ]
                                 ],
                                 [
                                     'class' => DataColumn::class,

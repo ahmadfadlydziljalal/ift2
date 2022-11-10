@@ -27,6 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div>
         <?= Html::tag('span', $modelMaterialRequisition->nomor, ['class' => 'badge bg-success']) ?>
         <?= Html::tag('span', $modelMaterialRequisitionDetail->barang->nama, ['class' => 'badge bg-info']) ?>
+        <?= Html::tag('span', $modelMaterialRequisitionDetail->quantity, ['class' => 'badge bg-warning']) ?>
+        <?= Html::tag('span', $modelMaterialRequisitionDetail->satuan->nama, ['class' => 'badge bg-dark']) ?>
     </div>
 
     <?= $this->render('_form_penawaran', [

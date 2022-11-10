@@ -15,10 +15,11 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $id
  * @property integer $material_requisition_detail_id
  * @property integer $vendor_id
+ * @property integer $mata_uang_id
+ * @property string $quantity
  * @property string $harga_penawaran
  * @property integer $status_id
  * @property integer $purchase_order_id
- * @property integer $mata_uang_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $created_by
@@ -65,9 +66,9 @@ abstract class MaterialRequisitionDetailPenawaran extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['material_requisition_detail_id', 'vendor_id', 'status_id', 'purchase_order_id', 'mata_uang_id'], 'integer'],
+            [['material_requisition_detail_id', 'vendor_id', 'mata_uang_id', 'status_id', 'purchase_order_id'], 'integer'],
             [['vendor_id', 'harga_penawaran'], 'required'],
-            [['harga_penawaran'], 'number'],
+            [['quantity', 'harga_penawaran'], 'number'],
             [['mata_uang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MataUang::class, 'targetAttribute' => ['mata_uang_id' => 'id']],
             [['material_requisition_detail_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MaterialRequisitionDetail::class, 'targetAttribute' => ['material_requisition_detail_id' => 'id']],
             [['purchase_order_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\PurchaseOrder::class, 'targetAttribute' => ['purchase_order_id' => 'id']],
@@ -85,6 +86,8 @@ abstract class MaterialRequisitionDetailPenawaran extends \yii\db\ActiveRecord
             'id' => 'ID',
             'material_requisition_detail_id' => 'Material Requisition Detail ID',
             'vendor_id' => 'Vendor ID',
+            'mata_uang_id' => 'Mata Uang ID',
+            'quantity' => 'Quantity',
             'harga_penawaran' => 'Harga Penawaran',
             'status_id' => 'Status ID',
             'purchase_order_id' => 'Purchase Order ID',
@@ -92,8 +95,17 @@ abstract class MaterialRequisitionDetailPenawaran extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
-            'mata_uang_id' => 'Mata Uang ID',
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeHints()
+    {
+        return array_merge(parent::attributeHints(), [
+            'quantity' => 'Quantity yang akan dibeli, bisa berbeda dengan yang ada di Material Request',
+        ]);
     }
 
     /**

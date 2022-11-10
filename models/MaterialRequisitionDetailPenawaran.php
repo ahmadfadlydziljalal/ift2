@@ -56,7 +56,7 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
 
     public function getSubtotal(): float|int
     {
-        return $this->materialRequisitionDetail->quantity * $this->harga_penawaran;
+        return $this->quantity * $this->harga_penawaran;
     }
 
 }

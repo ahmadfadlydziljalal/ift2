@@ -57,7 +57,7 @@ class PurchaseOrder extends BasePurchaseOrder
             ]
         );
     }
-    
+
     public function getUsernameWhoCreated(): string
     {
         $user = User::findOne($this->created_by);
@@ -167,7 +167,7 @@ class PurchaseOrder extends BasePurchaseOrder
     {
         return array_sum(
             array_map(function ($el) {
-                return $el->materialRequisitionDetail->quantity * $el->harga_penawaran;
+                return $el->quantity * $el->harga_penawaran;
             }, $this->materialRequisitionDetailPenawarans)
         );
     }

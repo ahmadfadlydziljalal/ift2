@@ -56,7 +56,8 @@ use yii\widgets\MaskedInput;
                 <th scope="col">#</th>
                 <th scope="col">Vendor</th>
                 <th scope="col">Mata Uang</th>
-                <th scope="col">Harga Penawaran</th>
+                <th scope="col" class="text-end">Quantity</th>
+                <th scope="col" class="text-end">Harga Penawaran @item</th>
                 <th scope="col">Status</th>
                 <th scope="col" style="width: 2px">Aksi</th>
             </tr>
@@ -113,6 +114,15 @@ use yii\widgets\MaskedInput;
                                     'url' => Url::to(['card/depdrop-find-mata-uang-by-card-id'])
                                 ]
                             ]);
+                        ?>
+                    </td>
+
+                    <td>
+                        <?= $form->field($modelDetail, "[$i]quantity", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                            ->textInput([
+                                'class' => 'form-control quantity text-end',
+                                'type' => 'number'
+                            ])
                         ?>
                     </td>
 
