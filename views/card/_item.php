@@ -12,14 +12,17 @@ use yii\helpers\Html;
 
         <div class="d-flex gap-5 flex-column flex-md-row">
             <div>
-                <?= $model->cardTypeName ?>
+
+                <strong><?= $model->cardTypeName ?></strong>
+
                 <p class="card-title">
-                    <?= $model->nama ?> <br/> <small class="text-muted"><?= $model->kode ?></small>
+                    <i class="bi bi-person-badge"></i> <?= $model->nama ?> <br/>
+                    <small class="text-muted"><?= $model->kode ?></small>
                 </p>
+
                 <span><?= nl2br($model->alamat) ?></span>
 
                 <p>
-
                     <?= (is_null($model->npwp) | empty($model->npwp))
                         ? Html::tag('span', 'NPWP is not available', ['class' => 'text-warning'])
                         : Html::tag('span', 'NPWP: ' . $model->npwp, ['class' => 'text-info'])

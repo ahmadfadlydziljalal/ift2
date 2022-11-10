@@ -30,14 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'row'
             ],
             'itemOptions' => [
-                'class' => 'col-sm-12 col-md-12 col-lg-6 mb-3'
+                'class' => 'col-sm-12 col-md-12 col-lg-4 mb-3'
             ]
         ]);
-        /* echo GridView::widget([
-             'dataProvider' => $dataProvider,
-             'filterModel' => $searchModel,
-             'columns' => require(__DIR__ . '/_columns.php'),
-         ]);*/
+        
     } catch (Exception $e) {
         echo $e->getMessage();
     } catch (Throwable $e) {
