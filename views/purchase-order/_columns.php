@@ -2,7 +2,7 @@
 
 use app\models\Card;
 use kartik\grid\DataColumn;
-use kartik\grid\GridView;
+use kartik\grid\GridViewInterface;
 use yii\bootstrap5\Html;
 use yii\helpers\Url;
 
@@ -29,10 +29,10 @@ return [
     ],
     [
         'class' => DataColumn::class,
-        'attribute' => 'vendor_id',
+        'attribute' => 'vendorPurchaseOrder',
         'format' => 'text',
         'value' => 'vendor.nama',
-        'filterType' => GridView::FILTER_SELECT2,
+        'filterType' => GridViewInterface::FILTER_SELECT2,
         'filter' => Card::find()->map(Card::GET_ONLY_VENDOR),
         'filterWidgetOptions' => [
             'options' => [
@@ -48,7 +48,7 @@ return [
     ],
     [
         'class' => '\yii\grid\DataColumn',
-        'attribute' => 'material_requisition_id',
+        'attribute' => 'nomorMaterialRequest',
         'format' => 'text',
         'value' => 'materialRequisition.nomor'
     ],

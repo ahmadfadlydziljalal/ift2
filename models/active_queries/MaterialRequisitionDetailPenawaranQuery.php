@@ -36,9 +36,16 @@ class MaterialRequisitionDetailPenawaranQuery extends ActiveQuery
     public function forCreateAction(array $materialRequestAndVendorId): array
     {
         return parent::joinWith('materialRequisitionDetail', false)
+            ->joinWith('status')
             ->where([
                 'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
                 'material_requisition_detail_penawaran.vendor_id' => $materialRequestAndVendorId['vendor_id'],
+                'status.section' => 'material-requisition-detail-penawaran-status',
+                'status.key' => 'Diterima',
+
+            ])
+            ->andWhere([
+                'IS', 'material_requisition_detail_penawaran.purchase_order_id', NULL
             ])
             ->all();
     }
@@ -52,7 +59,7 @@ class MaterialRequisitionDetailPenawaranQuery extends ActiveQuery
         return parent::all($db);
     }
 
-    public function map()
+    public function map(): array
     {
         $data = parent::select([
             'id' => 'mrdp.id',

@@ -14,6 +14,7 @@ class PurchaseOrderSearch extends PurchaseOrder
 
     public ?string $nomorMaterialRequest = null;
     public ?string $nomorTandaTerimaBarang = null;
+    public ?string $vendorPurchaseOrder = null;
 
     /**
      * @inheritdoc
@@ -24,7 +25,8 @@ class PurchaseOrderSearch extends PurchaseOrder
             [['id', 'created_at', 'updated_at'], 'integer'],
             [['nomor', 'tanggal', 'remarks', 'approved_by_id', 'acknowledge_by_id', 'created_by', 'updated_by',
                 'nomorMaterialRequest',
-                'nomorTandaTerimaBarang'
+                'nomorTandaTerimaBarang',
+                'vendorPurchaseOrder'
             ], 'safe'],
         ];
     }
@@ -46,7 +48,11 @@ class PurchaseOrderSearch extends PurchaseOrder
     public function search(array $params): ActiveDataProvider
     {
         $query = PurchaseOrder::find()
-            ->joinWith('tandaTerimaBarang');
+            ->joinWith(['materialRequisitionDetail' => function ($mrd) {
+                $mrd->joinWith('materialRequisition');
+            }])
+            ->joinWith('tandaTerimaBarang')
+            ->joinWith('vendor');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -79,7 +85,9 @@ class PurchaseOrderSearch extends PurchaseOrder
             ->andFilterWhere(['like', 'acknowledge_by_id', $this->acknowledge_by_id])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
-            ->andFilterWhere(['like', 'tanda_terima_barang.nomor', $this->nomorTandaTerimaBarang]);
+            ->andFilterWhere(['like', 'tanda_terima_barang.nomor', $this->nomorTandaTerimaBarang])
+            ->andFilterWhere(['like', 'material_requisition.nomor', $this->nomorMaterialRequest])
+            ->andFilterWhere(['like', 'card.id', $this->vendorPurchaseOrder]);
 
         return $dataProvider;
     }
