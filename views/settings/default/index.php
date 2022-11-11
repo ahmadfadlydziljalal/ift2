@@ -5,12 +5,12 @@
  * @license MIT http://opensource.org/licenses/MIT
  */
 
-use yii\grid\SerialColumn;
-use yii\helpers\Html;
-use yii\grid\GridView;
-use pheme\settings\Module;
 use pheme\settings\models\Setting;
+use pheme\settings\Module;
+use yii\grid\GridView;
+use yii\grid\SerialColumn;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\widgets\Pjax;
 
 /**
@@ -27,11 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
         <div class="ms-md-auto ms-lg-auto">
-            <?=   Html::a(
-                '<i class="bi bi-plus-circle-dotted"></i>'.' Tambah',
-                ['create'],
-                ['class' => 'btn btn-success']
-            ) ?>
+            <?= Html::a('<i class="bi bi-repeat"></i>' . ' Reset Filter', ['index'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah', ['create'], ['class' => 'btn btn-success']) ?>
         </div>
     </div>
 
@@ -43,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'filterModel' => $searchModel,
             'columns' => [
                 [
-                        'class' => SerialColumn::class
+                    'class' => SerialColumn::class
                 ],
                 // 'id',
                 [
@@ -58,11 +55,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'value',
                     'format' => 'raw',
-                    'value' => function($model){
+                    'value' => function ($model) {
                         return nl2br($model->value);
                     },
                     'contentOptions' => [
-                            'class' =>'text-wrap',
+                        'class' => 'text-wrap',
                         'style' => [
                             'max-width' => '128em',
                         ]
@@ -71,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'type',
                     'contentOptions' => [
-                        'class' =>'text-nowrap',
+                        'class' => 'text-nowrap',
                         'style' => [
                             'max-width' => '2px',
                         ]

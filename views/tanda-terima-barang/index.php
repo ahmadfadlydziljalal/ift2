@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
 
         <div class="ms-md-auto ms-lg-auto">
+            <?= Html::a('<i class="bi bi-repeat"></i>' . ' Reset Filter', ['index'], ['class' => 'btn btn-primary']) ?>
             <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah', ['tanda-terima-barang/before-create'], ['class' => 'btn btn-success']) ?>
         </div>
 
