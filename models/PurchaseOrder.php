@@ -90,6 +90,33 @@ class PurchaseOrder extends BasePurchaseOrder
             ->via('materialRequisitionDetailPenawarans');
     }
 
+    /**
+     * @return ActiveQuery
+     */
+    public function getVendor()
+    {
+        return $this->hasOne(Card::class, ['id' => 'vendor_id'])
+            ->via('materialRequisitionDetailPenawarans');
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getMaterialRequisitionDetail(): ActiveQuery
+    {
+        return $this->hasOne(MaterialRequisitionDetail::class, ['id' => 'material_requisition_detail_id'])
+            ->via('materialRequisitionDetailPenawarans');
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getMaterialRequisition(): ActiveQuery
+    {
+        return $this->hasOne(MaterialRequisition::class, ['id' => 'material_requisition_id'])
+            ->via('materialRequisitionDetail');
+    }
+
 
     #[ArrayShape(['code' => "int", 'message' => "string"])]
     public function createWithDetails(array $modelsDetail): array
@@ -163,7 +190,7 @@ class PurchaseOrder extends BasePurchaseOrder
     {
         return array_sum(
             array_map(function ($el) {
-                return $el->quantity * $el->harga_penawaran;
+                return $el->quantity_pesan * $el->harga_penawaran;
             }, $this->materialRequisitionDetailPenawarans)
         );
     }

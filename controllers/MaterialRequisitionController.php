@@ -263,6 +263,8 @@ class MaterialRequisitionController extends Controller
     {
 
         $modelMaterialRequisitionDetail = $this->findModelDetail($materialRequisitionDetailId);
+        $modelMaterialRequisitionDetail->scenario = MaterialRequisitionDetail::SCENARIO_PENAWARAN_VENDOR;
+
         $modelMaterialRequisition = $this->findModel($modelMaterialRequisitionDetail->materialRequisition->id);
 
         $modelsDetail = [new MaterialRequisitionDetailPenawaran()];
@@ -272,7 +274,10 @@ class MaterialRequisitionController extends Controller
             $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetailPenawaran::class);
             Tabular::loadMultiple($modelsDetail, $this->request->post());
 
-            if (Tabular::validateMultiple($modelsDetail)) {
+            /* @see MaterialRequisitionDetail::validatePenawaranList() */
+            $modelMaterialRequisitionDetail->arrayObjectPenawaran = $modelsDetail;
+
+            if (Tabular::validateMultiple($modelsDetail) && $modelMaterialRequisitionDetail->validate()) {
 
                 $status = $modelMaterialRequisitionDetail->createPenawaran($modelsDetail, $materialRequisitionDetailId);
 
@@ -315,6 +320,7 @@ class MaterialRequisitionController extends Controller
     public function actionUpdatePenawaran(int $materialRequisitionDetailId): Response|string
     {
         $modelMaterialRequisitionDetail = $this->findModelDetail($materialRequisitionDetailId);
+        $modelMaterialRequisitionDetail->scenario = MaterialRequisitionDetail::SCENARIO_PENAWARAN_VENDOR;
         $modelMaterialRequisition = $this->findModel($modelMaterialRequisitionDetail->materialRequisition->id);
 
         $modelsDetail = empty($modelMaterialRequisitionDetail->materialRequisitionDetailPenawarans)
@@ -327,9 +333,12 @@ class MaterialRequisitionController extends Controller
             $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetailPenawaran::class, $modelsDetail);
 
             Tabular::loadMultiple($modelsDetail, $this->request->post());
+            /* @see MaterialRequisitionDetail::validatePenawaranList() */
+            $modelMaterialRequisitionDetail->arrayObjectPenawaran = $modelsDetail;
+
             $deletedDetailsID = array_diff($oldDetailsID, array_filter(ArrayHelper::map($modelsDetail, 'id', 'id')));
 
-            if (Tabular::validateMultiple($modelsDetail)) {
+            if (Tabular::validateMultiple($modelsDetail) && $modelMaterialRequisitionDetail->validate()) {
 
                 $status = $modelMaterialRequisitionDetail->updatePenawaran($modelsDetail, $materialRequisitionDetailId, $deletedDetailsID);
 

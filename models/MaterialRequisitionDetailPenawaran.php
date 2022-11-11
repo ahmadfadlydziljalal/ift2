@@ -15,7 +15,7 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
 {
 
     public ?string $asOptionList = null;
-    
+
     public function behaviors(): array
     {
         return ArrayHelper::merge(
@@ -58,7 +58,7 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
 
     public function getSubtotal(): float|int
     {
-        return $this->quantity * $this->harga_penawaran;
+        return $this->quantity_pesan * $this->harga_penawaran;
     }
 
 }

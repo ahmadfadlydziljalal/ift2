@@ -13,6 +13,14 @@ return [
         'header' => 'Material Requisition',
         'value' => function ($model) {
             /** @var MaterialRequisitionDetailPenawaran $model */
+            return $model->vendor->nama;
+        }
+    ],
+    [
+        'class' => DataColumn::class,
+        'header' => 'Material Requisition',
+        'value' => function ($model) {
+            /** @var MaterialRequisitionDetailPenawaran $model */
             return $model->materialRequisitionDetail->materialRequisition->nomor;
         }
     ],

@@ -42,7 +42,7 @@ use yii\behaviors\TimestampBehavior;
  * @property \app\models\MaterialRequisition[] $materialRequisitions1
  * @property \app\models\PurchaseOrder[] $purchaseOrders
  * @property \app\models\PurchaseOrder[] $purchaseOrders0
- * @property \app\models\PurchaseOrder[] $purchaseOrders1
+ * @property \app\models\TandaTerimaBarang[] $tandaTerimaBarangs
  * @property string $aliasModel
  */
 abstract class Card extends \yii\db\ActiveRecord
@@ -262,9 +262,9 @@ abstract class Card extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPurchaseOrders1()
+    public function getTandaTerimaBarangs()
     {
-        return $this->hasMany(\app\models\PurchaseOrder::class, ['vendor_id' => 'id']);
+        return $this->hasMany(\app\models\TandaTerimaBarang::class, ['acknowledge_by_id' => 'id']);
     }
 
 

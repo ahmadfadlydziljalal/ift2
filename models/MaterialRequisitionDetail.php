@@ -16,6 +16,7 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
 
     const SCENARIO_MR = 'mr';
     const SCENARIO_PO = 'po';
+    const SCENARIO_PENAWARAN_VENDOR = 'penawaran-vendor';
 
     public ?string $barangId = null;
     public ?string $barangPartNumber = null;
@@ -28,6 +29,7 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
     public ?string $vendorNama = null;
     public ?string $satuanNama = null;
     public ?string $penawaranDariVendor = null;
+    public ?array $arrayObjectPenawaran = null;
 
 
     public function behaviors()
@@ -40,12 +42,56 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
         );
     }
 
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_MR] = [
+            'tipePembelian',
+            'barang_id',
+            'description',
+            'quantity',
+            'satuan_id',
+        ];
+        $scenarios[self::SCENARIO_PENAWARAN_VENDOR] = [
+            'arrayObjectPenawaran'
+        ];
+
+        return $scenarios;
+    }
+
+    public function validatePenawaranList($attribute, $params, $validator)
+    {
+
+        $column = array_count_values(
+            array_column(ArrayHelper::toArray($this->$attribute), 'vendor_id'
+            )
+        );
+
+        if (empty($column)) {
+            $this->addError($attribute, 'Tidak ditemukan array vendor');
+        }
+
+        $duplicate = false;
+        foreach ($column as $value) {
+            if ($value > 1) {
+                $duplicate = true;
+                break;
+            }
+        }
+
+        if ($duplicate) {
+            $this->addError($attribute, 'Terdapat vendor yang duplikat');
+        }
+
+    }
+
     public function rules(): array
     {
         return ArrayHelper::merge(
             parent::rules(),
             [
-                ['tipePembelian', 'safe'],
+                [['tipePembelian', 'arrayObjectPenawaran'], 'safe'],
+                [['arrayObjectPenawaran'], 'validatePenawaranList'],
                 [['barang_id'], 'required', 'on' => self::SCENARIO_MR, 'when' => function ($model) {
                     /** @var ClaimPettyCashNotaDetail $model */
                     return

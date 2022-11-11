@@ -149,10 +149,7 @@ class PurchaseOrderController extends Controller
         }
 
         $materialRequestAndVendorId = Json::decode($materialRequestAndVendorId);
-        $model = new PurchaseOrder([
-            'material_requisition_id' => $materialRequestAndVendorId['material_requisition_id'],
-            'vendor_id' => $materialRequestAndVendorId['vendor_id']
-        ]);
+        $model = new PurchaseOrder();
         $modelsDetail = MaterialRequisitionDetailPenawaran::find()->forCreateAction($materialRequestAndVendorId);
 
         if ($model->load($this->request->post())) {

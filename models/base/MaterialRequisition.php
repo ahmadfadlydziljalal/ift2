@@ -27,7 +27,6 @@ use yii\behaviors\TimestampBehavior;
  * @property \app\models\Card $acknowledgeBy
  * @property \app\models\Card $approvedBy
  * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
- * @property \app\models\PurchaseOrder[] $purchaseOrders
  * @property \app\models\Card $vendor
  * @property string $aliasModel
  */
@@ -128,14 +127,6 @@ abstract class MaterialRequisition extends \yii\db\ActiveRecord
     public function getMaterialRequisitionDetails()
     {
         return $this->hasMany(\app\models\MaterialRequisitionDetail::class, ['material_requisition_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPurchaseOrders()
-    {
-        return $this->hasMany(\app\models\PurchaseOrder::class, ['material_requisition_id' => 'id']);
     }
 
     /**

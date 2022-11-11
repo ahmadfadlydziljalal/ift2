@@ -59,10 +59,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'attributes' => [
                         'nomor',
-                        [
-                            'attribute' => 'vendor_id',
-                            'value' => $model->vendor->nama
-                        ],
+//                        [
+//                            'attribute' => 'vendor_id',
+//                            'value' => $model->vendor->nama
+//                        ],
                         'tanggal:date',
                         'remarks:nText',
                         [

@@ -21,7 +21,7 @@ class PurchaseOrderSearch extends PurchaseOrder
     public function rules(): array
     {
         return [
-            [['id', 'vendor_id', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'created_at', 'updated_at'], 'integer'],
             [['nomor', 'tanggal', 'remarks', 'approved_by_id', 'acknowledge_by_id', 'created_by', 'updated_by',
                 'nomorMaterialRequest',
                 'nomorTandaTerimaBarang'
@@ -67,7 +67,7 @@ class PurchaseOrderSearch extends PurchaseOrder
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'vendor_id' => $this->vendor_id,
+
             'tanggal' => $this->tanggal,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

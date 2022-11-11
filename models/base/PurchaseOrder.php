@@ -13,9 +13,7 @@ use yii\behaviors\TimestampBehavior;
  * This is the base-model class for table "purchase_order".
  *
  * @property integer $id
- * @property integer $material_requisition_id
  * @property string $nomor
- * @property integer $vendor_id
  * @property string $tanggal
  * @property string $remarks
  * @property integer $approved_by_id
@@ -27,9 +25,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property \app\models\Card $acknowledgeBy
  * @property \app\models\Card $approvedBy
- * @property \app\models\MaterialRequisition $materialRequisition
  * @property \app\models\MaterialRequisitionDetailPenawaran[] $materialRequisitionDetailPenawarans
- * @property \app\models\Card $vendor
  * @property string $aliasModel
  */
 abstract class PurchaseOrder extends \yii\db\ActiveRecord
@@ -66,15 +62,13 @@ abstract class PurchaseOrder extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['material_requisition_id', 'vendor_id', 'tanggal', 'approved_by_id', 'acknowledge_by_id'], 'required'],
-            [['material_requisition_id', 'vendor_id', 'approved_by_id', 'acknowledge_by_id'], 'integer'],
+            [['tanggal', 'approved_by_id', 'acknowledge_by_id'], 'required'],
             [['tanggal'], 'safe'],
             [['remarks'], 'string'],
+            [['approved_by_id', 'acknowledge_by_id'], 'integer'],
             [['nomor'], 'string', 'max' => 128],
             [['acknowledge_by_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['acknowledge_by_id' => 'id']],
-            [['approved_by_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['approved_by_id' => 'id']],
-            [['material_requisition_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MaterialRequisition::class, 'targetAttribute' => ['material_requisition_id' => 'id']],
-            [['vendor_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['vendor_id' => 'id']]
+            [['approved_by_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['approved_by_id' => 'id']]
         ]);
     }
 
@@ -85,9 +79,7 @@ abstract class PurchaseOrder extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'material_requisition_id' => 'Material Requisition ID',
             'nomor' => 'Nomor',
-            'vendor_id' => 'Vendor ID',
             'tanggal' => 'Tanggal',
             'remarks' => 'Remarks',
             'approved_by_id' => 'Approved By ID',
@@ -118,25 +110,9 @@ abstract class PurchaseOrder extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMaterialRequisition()
-    {
-        return $this->hasOne(\app\models\MaterialRequisition::class, ['id' => 'material_requisition_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getMaterialRequisitionDetailPenawarans()
     {
         return $this->hasMany(\app\models\MaterialRequisitionDetailPenawaran::class, ['purchase_order_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getVendor()
-    {
-        return $this->hasOne(\app\models\Card::class, ['id' => 'vendor_id']);
     }
 
 

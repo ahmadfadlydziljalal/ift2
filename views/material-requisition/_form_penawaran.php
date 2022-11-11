@@ -2,11 +2,12 @@
 
 
 /* @var $this View */
-
+/* @var $modelMaterialRequisitionDetail MaterialRequisitionDetail |null */
 /* @var $modelMaterialRequisition MaterialRequisition */
 
 /* @var $modelsDetail MaterialRequisitionDetailPenawaran[]|string */
 
+use app\models\base\MaterialRequisitionDetail;
 use app\models\Card;
 use app\models\MataUang;
 use app\models\MaterialRequisition;
@@ -23,160 +24,190 @@ use yii\widgets\MaskedInput;
 
 ?>
 
-<div class="mt-3">
-    <?php $form = ActiveForm::begin([
-        'id' => 'dynamic-form',
-        'enableClientValidation' => false,
-        'enableAjaxValidation' => false,
-        'errorSummaryCssClass' => 'alert alert-danger'
-    ]) ?>
+    <div class="mt-3">
+        <?php $form = ActiveForm::begin([
+            'id' => 'dynamic-form',
+            'enableClientValidation' => false,
+            'enableAjaxValidation' => false,
+            'errorSummaryCssClass' => 'alert alert-danger'
+        ]) ?>
 
-    <?php
-    DynamicFormWidget::begin([
-        'widgetContainer' => 'dynamicform_wrapper',
-        'widgetBody' => '.container-items',
-        'widgetItem' => '.item',
-        'limit' => 100,
-        'min' => 1,
-        'insertButton' => '.add-item',
-        'deleteButton' => '.remove-item',
-        'model' => $modelsDetail[0],
-        'formId' => 'dynamic-form',
-        'formFields' => ['id', 'material_requisition_detail_id', 'vendor_id', 'harga_penawaran', 'status_id'],
-    ]);
-    ?>
+        <?php
+        DynamicFormWidget::begin([
+            'widgetContainer' => 'dynamicform_wrapper',
+            'widgetBody' => '.container-items',
+            'widgetItem' => '.item',
+            'limit' => 100,
+            'min' => 1,
+            'insertButton' => '.add-item',
+            'deleteButton' => '.remove-item',
+            'model' => $modelsDetail[0],
+            'formId' => 'dynamic-form',
+            'formFields' => ['id', 'material_requisition_detail_id', 'vendor_id', 'harga_penawaran', 'status_id'],
+        ]);
+        ?>
 
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th colspan="8">Material requisition detail</th>
-            </tr>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Vendor</th>
-                <th scope="col">Mata Uang</th>
-                <th scope="col" class="text-end">Quantity Pesan</th>
-                <th scope="col" class="text-end">Harga Penawaran @item</th>
-                <th scope="col">Status</th>
-                <th scope="col" style="width: 2px">Aksi</th>
-            </tr>
-            </thead>
-
-            <tbody class="container-items">
-
-            <?php foreach ($modelsDetail as $i => $modelDetail): ?>
-                <tr class="item">
-
-                    <td style="width: 2px;" class="align-middle">
-                        <?php if (!$modelDetail->isNewRecord) {
-                            echo Html::activeHiddenInput($modelDetail, "[$i]id");
-                        } ?>
-                        <i class="bi bi-arrow-right-short"></i>
-                    </td>
-
-                    <td>
-                        <?= $form->field($modelDetail, "[$i]vendor_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                            ->widget(Select2::class, [
-                                'data' => Card::find()->map(Card::GET_ONLY_VENDOR),
-                                'options' => [
-                                    'placeholder' => '= Pilih vendor ='
-                                ]
-                            ])
-                        ?>
-                    </td>
-
-                    <td>
-
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="8">Penawaran - penawaran dari vendor
                         <?php
-                        $data = [];
-
-                        if (Yii::$app->request->isPost || !$modelDetail->isNewRecord) {
-                            if ($modelDetail->mata_uang_id) {
-                                $mataUang = MataUang::findOne([
-                                    $modelDetail->mata_uang_id
-                                ]);
-                                $data = [
-                                    $mataUang->id => $mataUang->singkatan
-                                ];
-                            }
+                        if (!empty($modelMaterialRequisitionDetail->getErrors())) {
+                            echo "<br/>";
+                            echo $form->errorSummary($modelMaterialRequisitionDetail);
                         }
                         ?>
-
-                        <?= $form->field($modelDetail, "[$i]mata_uang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                            ->widget(DepDrop::class, [
-                                'data' => $data,
-                                'options' => [
-                                    'placeholder' => ' - ',
-                                ],
-                                'pluginOptions' => [
-                                    'depends' => ['materialrequisitiondetailpenawaran-' . $i . '-vendor_id'],
-                                    'url' => Url::to(['card/depdrop-find-mata-uang-by-card-id'])
-                                ]
-                            ]);
-                        ?>
-                    </td>
-
-                    <td>
-                        <?= $form->field($modelDetail, "[$i]quantity_pesan", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                            ->textInput([
-                                'class' => 'form-control quantity text-end',
-                                'type' => 'number'
-                            ])
-                        ?>
-                    </td>
-
-                    <td>
-                        <?= $form->field($modelDetail, "[$i]harga_penawaran", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                            ->widget(MaskedInput::class, [
-                                'clientOptions' => [
-                                    'alias' => 'numeric',
-                                    'digits' => 2,
-                                    'groupSeparator' => ',',
-                                    'radixPoint' => '.',
-                                    'autoGroup' => true,
-                                    'autoUnmask' => true,
-                                    'removeMaskOnSubmit' => true
-                                ],
-                                'options' => [
-                                    'class' => 'form-control harga-penawaran'
-                                ]
-                            ]);
-                        ?>
-                    </td>
-
-                    <td>
-                        <?= $form->field($modelDetail, "[$i]status_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                            ->dropDownList(Status::find()->map(Status::MATERIAL_REQUISITION_DETAIL_PENAWARAN_STATUS))
-                        ?>
-                    </td>
-
-                    <td>
-                        <button type="button" class="remove-item btn btn-link text-danger">
-                            <i class="bi bi-trash"> </i>
-                        </button>
-                    </td>
+                    </th>
                 </tr>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Vendor</th>
+                    <th scope="col">Mata Uang</th>
+                    <th scope="col" class="text-end">Quantity Pesan</th>
+                    <th scope="col" class="text-end">Harga Penawaran @item</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" style="width: 2px">Aksi</th>
+                </tr>
+                </thead>
 
-            <?php endforeach; ?>
-            </tbody>
+                <tbody class="container-items">
 
-            <tfoot>
-            <tr>
-                <td class="text-end" colspan="5">
-                    <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
-                </td>
-                <td></td>
-            </tr>
-            </tfoot>
+                <?php foreach ($modelsDetail as $i => $modelDetail): ?>
+                    <tr class="item">
 
-        </table>
+                        <td style="width: 2px;" class="align-middle">
+                            <?php if (!$modelDetail->isNewRecord) {
+                                echo Html::activeHiddenInput($modelDetail, "[$i]id");
+                            } ?>
+                            <i class="bi bi-arrow-right-short"></i>
+                        </td>
+
+                        <td>
+                            <?= $form->field($modelDetail, "[$i]vendor_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                                ->widget(Select2::class, [
+                                    'data' => Card::find()->map(Card::GET_ONLY_VENDOR),
+                                    'options' => [
+                                        'placeholder' => '= Pilih vendor =',
+                                        'class' => 'form-control vendor'
+                                    ]
+                                ])
+                            ?>
+                        </td>
+
+                        <td>
+
+                            <?php
+                            $data = [];
+
+                            if (Yii::$app->request->isPost || !$modelDetail->isNewRecord) {
+                                if ($modelDetail->mata_uang_id) {
+                                    $mataUang = MataUang::findOne([
+                                        $modelDetail->mata_uang_id
+                                    ]);
+                                    $data = [
+                                        $mataUang->id => $mataUang->singkatan
+                                    ];
+                                }
+                            }
+                            ?>
+
+                            <?= $form->field($modelDetail, "[$i]mata_uang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                                ->widget(DepDrop::class, [
+                                    'data' => $data,
+                                    'options' => [
+                                        'placeholder' => ' - ',
+                                        'class' => 'form-control mata-uang'
+                                    ],
+                                    'pluginOptions' => [
+                                        'depends' => ['materialrequisitiondetailpenawaran-' . $i . '-vendor_id'],
+                                        'url' => Url::to(['card/depdrop-find-mata-uang-by-card-id'])
+                                    ]
+                                ]);
+                            ?>
+                        </td>
+
+                        <td>
+                            <?= $form->field($modelDetail, "[$i]quantity_pesan", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                                ->textInput([
+                                    'class' => 'form-control quantity-pesan text-end',
+                                    'type' => 'number'
+                                ])
+                            ?>
+                        </td>
+
+                        <td>
+                            <?= $form->field($modelDetail, "[$i]harga_penawaran", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                                ->widget(MaskedInput::class, [
+                                    'clientOptions' => [
+                                        'alias' => 'numeric',
+                                        'digits' => 2,
+                                        'groupSeparator' => ',',
+                                        'radixPoint' => '.',
+                                        'autoGroup' => true,
+                                        'autoUnmask' => true,
+                                        'removeMaskOnSubmit' => true
+                                    ],
+                                    'options' => [
+                                        'class' => 'form-control harga-penawaran'
+                                    ]
+                                ]);
+                            ?>
+                        </td>
+
+                        <td>
+                            <?= $form->field($modelDetail, "[$i]status_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                                ->dropDownList(Status::find()->map(Status::MATERIAL_REQUISITION_DETAIL_PENAWARAN_STATUS), [
+                                        'class' => 'form-control status'
+                                    ]
+                                )
+                            ?>
+                        </td>
+
+                        <td>
+                            <button type="button" class="remove-item btn btn-link text-danger">
+                                <i class="bi bi-trash"> </i>
+                            </button>
+                        </td>
+                    </tr>
+
+                <?php endforeach; ?>
+                </tbody>
+
+                <tfoot>
+                <tr>
+                    <td class="text-end" colspan="6">
+                        <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
+                    </td>
+                    <td></td>
+                </tr>
+                </tfoot>
+
+            </table>
+        </div>
+        <?php DynamicFormWidget::end(); ?>
+
+        <div class="d-flex justify-content-between">
+            <?= Html::a(' Tutup', ['material-requisition/view', 'id' => $modelMaterialRequisition->id], ['class' => 'btn btn-secondary']) ?>
+            <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
+        </div>
+        <?php ActiveForm::end() ?>
     </div>
-    <?php DynamicFormWidget::end(); ?>
 
-    <div class="d-flex justify-content-between">
-        <?= Html::a(' Tutup', ['material-requisition/view', 'id' => $modelMaterialRequisition->id], ['class' => 'btn btn-secondary']) ?>
-        <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
-    </div>
-    <?php ActiveForm::end() ?>
-</div>
+
+<?php
+
+
+$js = <<<JS
+    $(".dynamicform_wrapper").on("afterInsert", function(e, item) {
+        
+        let itemElement = jQuery(item);
+        let tr = itemElement.closest('tr');
+        
+        tr.find('.vendor').val('').trigger('change');
+        tr.find('.status').val(1).trigger('change');
+        
+    });
+JS;
+
+$this->registerJs($js);
