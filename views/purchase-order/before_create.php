@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'fieldConfig' => ['options' => ['class' => 'form-group mr-2 me-2']]
     ]) ?>
 
-    <?php /* @see \app\controllers\PurchaseOrderController::actionFindMaterialRequisitionForCreatePurchaseOrder() */ ?>
+    <?php /* @see \app\controllers\PurchaseOrderController::actionFindMrForCreatePo() */ ?>
     <?= $form->field($model, 'nomorMaterialRequest')->widget(Select2::class, [
         'initValueText' => '',
         'options' => ['placeholder' => 'Cari nomor material request yang sudah ada penawaran harga dengan status disetujui'],
@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
             ],
             'ajax' => [
-                'url' => Url::to(['find-material-requisition-for-create-purchase-order']),
+                'url' => Url::to(['purchase-order/find-mr-for-create-po']),
                 'dataType' => 'json',
                 'data' => new JsExpression('function(params) { return {q:params.term}; }')
             ],

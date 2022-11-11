@@ -114,7 +114,7 @@ class PurchaseOrderController extends Controller
      * @return string[][]
      */
     #[ArrayShape(['results' => "mixed|string[]"])]
-    public function actionFindMaterialRequisitionForCreatePurchaseOrder($q = null, $id = null): array
+    public function actionFindMrForCreatePo($q = null, $id = null): array
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $out = ['results' => ['id' => '', 'text' => '']];
