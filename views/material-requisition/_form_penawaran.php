@@ -56,7 +56,7 @@ use yii\widgets\MaskedInput;
                 <th scope="col">#</th>
                 <th scope="col">Vendor</th>
                 <th scope="col">Mata Uang</th>
-                <th scope="col" class="text-end">Quantity</th>
+                <th scope="col" class="text-end">Quantity Pesan</th>
                 <th scope="col" class="text-end">Harga Penawaran @item</th>
                 <th scope="col">Status</th>
                 <th scope="col" style="width: 2px">Aksi</th>
@@ -118,7 +118,7 @@ use yii\widgets\MaskedInput;
                     </td>
 
                     <td>
-                        <?= $form->field($modelDetail, "[$i]quantity", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                        <?= $form->field($modelDetail, "[$i]quantity_pesan", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                             ->textInput([
                                 'class' => 'form-control quantity text-end',
                                 'type' => 'number'

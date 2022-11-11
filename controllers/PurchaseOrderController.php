@@ -196,16 +196,9 @@ class PurchaseOrderController extends Controller
     protected function checkUrlCreate(): bool
     {
         $allowedUrl = ['/purchase-order/before-create'];
-
         if (!in_array(Url::previous(), $allowedUrl)) {
-
-            /*Yii::$app->session->setFlash('warning', [[
-                'title' => 'Pesan Sistem',
-                'message' => 'Anda mencoba meng-akses langkah ke - 2 secara langsung.<br/> Sistem telah mengembalikan Anda ke langkah 1 lagi.',
-            ]]);*/
             return false;
         }
-
         return true;
     }
 

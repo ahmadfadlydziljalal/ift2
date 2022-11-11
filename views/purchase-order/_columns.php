@@ -52,6 +52,11 @@ return [
         'format' => 'text',
         'value' => 'materialRequisition.nomor'
     ],
+    [
+        'attribute' => 'nomorTandaTerimaBarang',
+        'header' => 'Tanda Terima Barang',
+        'value' => 'tandaTerimaBarang.nomor'
+    ],
     /*[
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'reference_number',

@@ -12,12 +12,12 @@ class m221110_115926_AlterMaterialRequisitionDetailPenawaranTable extends Migrat
      */
     public function safeUp()
     {
-        $this->addColumn('material_requisition_detail_penawaran', 'quantity',
+        $this->addColumn('material_requisition_detail_penawaran', 'quantity_pesan',
             $this->decimal(10, 2)
                 ->defaultValue(1)
                 ->notNull()
                 ->after('mata_uang_id')
-                ->comment('Quantity yang akan dibeli, bisa berbeda dengan yang ada di Material Request')
+
 
         );
     }
@@ -27,7 +27,7 @@ class m221110_115926_AlterMaterialRequisitionDetailPenawaranTable extends Migrat
      */
     public function safeDown()
     {
-        $this->dropColumn('material_requisition_detail_penawaran', 'quantity');
+        $this->dropColumn('material_requisition_detail_penawaran', 'quantity_pesan');
     }
 
     /*

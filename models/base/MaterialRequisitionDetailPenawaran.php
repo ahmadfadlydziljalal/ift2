@@ -16,10 +16,11 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $material_requisition_detail_id
  * @property integer $vendor_id
  * @property integer $mata_uang_id
- * @property string $quantity
+ * @property string $quantity_pesan
  * @property string $harga_penawaran
  * @property integer $status_id
  * @property integer $purchase_order_id
+ * @property integer $tanda_terima_barang_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $created_by
@@ -29,6 +30,8 @@ use yii\behaviors\TimestampBehavior;
  * @property \app\models\MaterialRequisitionDetail $materialRequisitionDetail
  * @property \app\models\PurchaseOrder $purchaseOrder
  * @property \app\models\Status $status
+ * @property \app\models\TandaTerimaBarang $tandaTerimaBarang
+ * @property \app\models\TandaTerimaBarangDetail[] $tandaTerimaBarangDetails
  * @property \app\models\Card $vendor
  * @property string $aliasModel
  */
@@ -66,13 +69,14 @@ abstract class MaterialRequisitionDetailPenawaran extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['material_requisition_detail_id', 'vendor_id', 'mata_uang_id', 'status_id', 'purchase_order_id'], 'integer'],
+            [['material_requisition_detail_id', 'vendor_id', 'mata_uang_id', 'status_id', 'purchase_order_id', 'tanda_terima_barang_id'], 'integer'],
             [['vendor_id', 'harga_penawaran'], 'required'],
-            [['quantity', 'harga_penawaran'], 'number'],
+            [['quantity_pesan', 'harga_penawaran'], 'number'],
             [['mata_uang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MataUang::class, 'targetAttribute' => ['mata_uang_id' => 'id']],
             [['material_requisition_detail_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MaterialRequisitionDetail::class, 'targetAttribute' => ['material_requisition_detail_id' => 'id']],
             [['purchase_order_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\PurchaseOrder::class, 'targetAttribute' => ['purchase_order_id' => 'id']],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Status::class, 'targetAttribute' => ['status_id' => 'id']],
+            [['tanda_terima_barang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\TandaTerimaBarang::class, 'targetAttribute' => ['tanda_terima_barang_id' => 'id']],
             [['vendor_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['vendor_id' => 'id']]
         ]);
     }
@@ -87,25 +91,16 @@ abstract class MaterialRequisitionDetailPenawaran extends \yii\db\ActiveRecord
             'material_requisition_detail_id' => 'Material Requisition Detail ID',
             'vendor_id' => 'Vendor ID',
             'mata_uang_id' => 'Mata Uang ID',
-            'quantity' => 'Quantity',
+            'quantity_pesan' => 'Quantity Pesan',
             'harga_penawaran' => 'Harga Penawaran',
             'status_id' => 'Status ID',
             'purchase_order_id' => 'Purchase Order ID',
+            'tanda_terima_barang_id' => 'Tanda Terima Barang ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
         ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeHints()
-    {
-        return array_merge(parent::attributeHints(), [
-            'quantity' => 'Quantity yang akan dibeli, bisa berbeda dengan yang ada di Material Request',
-        ]);
     }
 
     /**
@@ -138,6 +133,22 @@ abstract class MaterialRequisitionDetailPenawaran extends \yii\db\ActiveRecord
     public function getStatus()
     {
         return $this->hasOne(\app\models\Status::class, ['id' => 'status_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTandaTerimaBarang()
+    {
+        return $this->hasOne(\app\models\TandaTerimaBarang::class, ['id' => 'tanda_terima_barang_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTandaTerimaBarangDetails()
+    {
+        return $this->hasMany(\app\models\TandaTerimaBarangDetail::class, ['material_requisition_detail_penawaran_id' => 'id']);
     }
 
     /**

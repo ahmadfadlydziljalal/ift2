@@ -14,6 +14,8 @@ use yii\helpers\Json;
 class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPenawaran
 {
 
+    public ?string $asOptionList = null;
+    
     public function behaviors(): array
     {
         return ArrayHelper::merge(

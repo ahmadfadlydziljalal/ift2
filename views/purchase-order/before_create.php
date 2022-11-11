@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php /* @see \app\controllers\PurchaseOrderController::actionFindMaterialRequisitionForCreatePurchaseOrder() */ ?>
     <?= $form->field($model, 'nomorMaterialRequest')->widget(Select2::class, [
         'initValueText' => '',
-        'options' => ['placeholder' => 'Cari nomor material request ...'],
+        'options' => ['placeholder' => 'Cari nomor material request yang sudah ada penawaran harga dengan status disetujui'],
         'pluginOptions' => [
             'allowClear' => true,
             'minimumInputLength' => 3,

@@ -83,7 +83,10 @@ $this->title = 'Dashboard';
             <div class="card h-100 rounded position-relative">
                 <div class="card-body">
                     <div class="d-flex flex-column gap-1 align-items-center text-center">
-                        <i class="bi bi-file-pdf fs-1"></i>
+
+                        <?= Html::a('<i class="bi bi-bag-check-fill fs-1"></i>', ['tanda-terima-barang/index'], [
+                            'class' => 'stretched-link'
+                        ]) ?>
                         <span class="card-title">Terima barang</span>
                     </div>
                 </div>

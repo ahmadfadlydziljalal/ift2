@@ -2,37 +2,33 @@
 
 namespace app\models\search;
 
-use app\models\PurchaseOrder;
+use app\models\TandaTerimaBarang;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
 /**
- * PurchaseOrderSearch represents the model behind the search form about `app\models\PurchaseOrder`.
+ * TandaTerimaBarangSearch represents the model behind the search form about `app\models\TandaTerimaBarang`.
  */
-class PurchaseOrderSearch extends PurchaseOrder
+class TandaTerimaBarangSearch extends TandaTerimaBarang
 {
 
-    public ?string $nomorMaterialRequest = null;
-    public ?string $nomorTandaTerimaBarang = null;
+    public ?string $nomorPurchaseOrder = null;
 
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            [['id', 'vendor_id', 'created_at', 'updated_at'], 'integer'],
-            [['nomor', 'tanggal', 'remarks', 'approved_by_id', 'acknowledge_by_id', 'created_by', 'updated_by',
-                'nomorMaterialRequest',
-                'nomorTandaTerimaBarang'
-            ], 'safe'],
+            [['id', 'acknowledge_by_id', 'created_at', 'updated_at'], 'integer'],
+            [['nomor', 'tanggal', 'catatan', 'received_by', 'messenger', 'created_by', 'updated_by', 'nomorPurchaseOrder'], 'safe'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios(): array
+    public function scenarios()
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -40,13 +36,15 @@ class PurchaseOrderSearch extends PurchaseOrder
 
     /**
      * Creates data provider instance with search query applied
+     *
      * @param array $params
+     *
      * @return ActiveDataProvider
      */
-    public function search(array $params): ActiveDataProvider
+    public function search($params)
     {
-        $query = PurchaseOrder::find()
-            ->joinWith('tandaTerimaBarang');
+        $query = TandaTerimaBarang::find()
+            ->joinWith('purchaseOrder');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -67,19 +65,19 @@ class PurchaseOrderSearch extends PurchaseOrder
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'vendor_id' => $this->vendor_id,
             'tanggal' => $this->tanggal,
+            'acknowledge_by_id' => $this->acknowledge_by_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'nomor', $this->nomor])
-            ->andFilterWhere(['like', 'remarks', $this->remarks])
-            ->andFilterWhere(['like', 'approved_by_id', $this->approved_by_id])
-            ->andFilterWhere(['like', 'acknowledge_by_id', $this->acknowledge_by_id])
+            ->andFilterWhere(['like', 'catatan', $this->catatan])
+            ->andFilterWhere(['like', 'received_by', $this->received_by])
+            ->andFilterWhere(['like', 'messenger', $this->messenger])
             ->andFilterWhere(['like', 'created_by', $this->created_by])
             ->andFilterWhere(['like', 'updated_by', $this->updated_by])
-            ->andFilterWhere(['like', 'tanda_terima_barang.nomor', $this->nomorTandaTerimaBarang]);
+            ->andFilterWhere(['like', 'purchase_order.nomor', $this->nomorPurchaseOrder]);
 
         return $dataProvider;
     }

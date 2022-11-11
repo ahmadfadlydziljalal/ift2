@@ -98,7 +98,7 @@ use yii\helpers\Html;
                                 ],
                                 [
                                     'class' => DataColumn::class,
-                                    'attribute' => 'quantity',
+                                    'attribute' => 'quantity_pesan',
                                     'format' => ['decimal', 2],
                                     'contentOptions' => [
                                         'class' => 'text-end'

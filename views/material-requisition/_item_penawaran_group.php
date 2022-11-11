@@ -89,6 +89,13 @@ use yii\helpers\Html;
                                     ],
                                     [
                                         'class' => DataColumn::class,
+                                        'attribute' => 'mata_uang_id',
+                                        'label' => '',
+                                        'header' => '',
+                                        'value' => 'mataUang.singkatan'
+                                    ],
+                                    [
+                                        'class' => DataColumn::class,
                                         'attribute' => 'harga_penawaran',
                                         'format' => ['decimal', 2],
                                         'contentOptions' => [
@@ -105,11 +112,11 @@ use yii\helpers\Html;
                                         ],
                                         'value' => function ($model) {
                                             /** @var MaterialRequisitionDetailPenawaran $model */
-                                            return $model->materialRequisitionDetail->quantity;
+                                            return $model->quantity_pesan;
                                         }
                                     ],
                                     [
-                                        'header' => 'Total',
+                                        'header' => 'Harga Per Item',
                                         'contentOptions' => [
                                             'class' => 'text-end'
                                         ],
