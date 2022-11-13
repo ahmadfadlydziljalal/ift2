@@ -63,6 +63,11 @@ $this->params['breadcrumbs'][] = $this->title;
 //                            'attribute' => 'vendor_id',
 //                            'value' => $model->vendor->nama
 //                        ],
+                        [
+                            'attribute' => 'statusTandaTerima',
+                            'value' => $model->getStatusTandaTerimaInHtmlLabel(),
+                            'format' => 'raw'
+                        ],
                         'tanggal:date',
                         'remarks:nText',
                         [

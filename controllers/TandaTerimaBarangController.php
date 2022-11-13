@@ -400,12 +400,28 @@ class TandaTerimaBarangController extends Controller
         ]);
     }
 
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionPrint($id): string
     {
         $this->layout = 'print';
         return $this->render('preview_print', [
             'model' => $this->findModel($id),
         ]);
+    }
+
+    public function actionExpandItem()
+    {
+        if (isset($_POST['expandRowKey'])) {
+            return $this->renderPartial('_item', [
+                'model' => $this->findModel($_POST['expandRowKey'])
+            ]);
+        } else {
+            return '<div class="alert alert-danger">No data found</div>';
+        }
     }
 
 }

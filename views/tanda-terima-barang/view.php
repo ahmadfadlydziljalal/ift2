@@ -60,7 +60,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'catatan:ntext',
                         'received_by',
                         'messenger',
-                        'acknowledge_by_id',
+                        [
+                            'attribute' => 'acknowledge_by_id',
+                            'value' => function ($model) {
+                                /** @var TandaTerimaBarang $model */
+                                return $model->acknowledgeBy->nama;
+                            }
+                        ],
                         [
                             'attribute' => 'created_at',
                             'format' => 'datetime',

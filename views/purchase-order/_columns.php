@@ -35,6 +35,7 @@ return [
     [
         'class' => DataColumn::class,
         'attribute' => 'vendorPurchaseOrder',
+        'header' => 'Vendor',
         'format' => 'text',
         'value' => 'vendor.nama',
         'filterType' => GridViewInterface::FILTER_SELECT2,
@@ -54,6 +55,7 @@ return [
     [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'nomorMaterialRequest',
+        'header' => 'M.R',
         'format' => 'text',
         //'value' => 'materialRequisition.nomor'
         'value' => function ($model) {
@@ -63,11 +65,22 @@ return [
     ],
     [
         'attribute' => 'nomorTandaTerimaBarang',
-        'header' => 'Tanda Terima Barang',
+        'header' => 'Tanda Terima',
         //'value' => 'tandaTerimaBarang.nomor'
         'value' => function ($model) {
             /** @var PurchaseOrder $model */
-            return $model->tandaTerimaBarang->getNomorDisplay();
+            return
+                isset($model->tandaTerimaBarang) ?
+                    $model->tandaTerimaBarang->getNomorDisplay() :
+                    "-";
+        }
+    ],
+    [
+        'header' => 'Status',
+        'format' => 'raw',
+        'value' => function ($model) {
+            /** @var PurchaseOrder $model */
+            return $model->getStatusTandaTerimaInHtmlLabel();
         }
     ],
     /*[

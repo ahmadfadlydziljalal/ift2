@@ -2,6 +2,7 @@
 
 use app\models\TandaTerimaBarang;
 use yii\bootstrap5\Html;
+use yii\helpers\Url;
 
 return [
     [
@@ -13,6 +14,13 @@ return [
     // 'format'=>'text',
     // ],
     [
+        'class' => 'kartik\grid\ExpandRowColumn',
+        'width' => '50px',
+        'detailUrl' => Url::toRoute(['tanda-terima-barang/expand-item']),
+        'expandOneOnly' => true,
+        'header' => '',
+    ],
+    [
         'class' => 'yii\grid\DataColumn',
         'attribute' => 'nomor',
         'format' => 'text',
@@ -22,25 +30,33 @@ return [
         }
     ],
     [
+        'header' => 'Status',
+        'format' => 'raw',
+        'value' => function ($model) {
+            /** @var TandaTerimaBarang $model */
+            return $model->getStatusInHtmlLabel();
+        }
+    ],
+    [
         'class' => 'yii\grid\DataColumn',
         'attribute' => 'tanggal',
         'format' => 'date',
     ],
-    [
-        'class' => 'yii\grid\DataColumn',
-        'attribute' => 'catatan',
-        'format' => 'ntext',
-    ],
-    [
-        'class' => 'yii\grid\DataColumn',
-        'attribute' => 'received_by',
-        'format' => 'text',
-    ],
-    [
-        'class' => 'yii\grid\DataColumn',
-        'attribute' => 'messenger',
-        'format' => 'text',
-    ],
+    /* [
+         'class' => 'yii\grid\DataColumn',
+         'attribute' => 'catatan',
+         'format' => 'ntext',
+     ],
+     [
+         'class' => 'yii\grid\DataColumn',
+         'attribute' => 'received_by',
+         'format' => 'text',
+     ],
+     [
+         'class' => 'yii\grid\DataColumn',
+         'attribute' => 'messenger',
+         'format' => 'text',
+     ],*/
     [
         'attribute' => 'nomorPurchaseOrder',
         'header' => 'Nomor P.O',

@@ -11,7 +11,7 @@ use yii\web\View;
 
 /* @var $this View */
 /* @var $model TandaTerimaBarang */
-/* @see \app\controllers\TandaTerimaBarangController */
+/* @see \app\controllers\TandaTerimaBarangController::actionPrint() */
 
 ?>
 

@@ -254,9 +254,17 @@ class PurchaseOrderController extends Controller
     public function actionDelete(int $id): Response
     {
         $model = $this->findModel($id);
+
+        if ($model->tandaTerimaBarang) {
+            Yii::$app->session->setFlash('danger', " Purchase Order : " . $model->nomor . " tidak bisa dihapus, karena Tanda Terima strong dependant dengan " .
+                $model->tandaTerimaBarang->nomor
+            );
+            return $this->redirect(Yii::$app->request->referrer);
+        }
+
         $model->delete();
 
-        Yii::$app->session->setFlash('danger', " PurchaseOrder : " . $model->nomor . " berhasil dihapus.");
+        Yii::$app->session->setFlash('success', " PurchaseOrder : " . $model->nomor . " berhasil dihapus.");
         return $this->redirect(['index']);
     }
 
