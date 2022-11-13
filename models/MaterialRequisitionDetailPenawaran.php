@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\enums\MaterialRequisitionDetailPenawaranEnum;
+use app\enums\TandaTerimaStatusEnum;
 use app\models\base\MaterialRequisitionDetailPenawaran as BaseMaterialRequisitionDetailPenawaran;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -10,11 +11,14 @@ use yii\helpers\Json;
 
 /**
  * This is the model class for table "material_requisition_detail_penawaran".
+ * @property $statusPenerimaan bool
+ * @property $totalQuantitySudahDiTerima float | int
  */
 class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPenawaran
 {
 
     public ?string $asOptionList = null;
+
 
     public function behaviors(): array
     {
@@ -59,6 +63,36 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
     public function getSubtotal(): float|int
     {
         return $this->quantity_pesan * $this->harga_penawaran;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusPenerimaanInHtmlLabel($tag = 'span'): string
+    {
+        return $this->getStatusPenerimaan()
+            ? Html::tag($tag,
+                "<i class='bi bi-check-circle-fill'></i> " . TandaTerimaStatusEnum::COMPLETED->value, [
+                    'class' => 'badge bg-primary'
+                ])
+            : Html::tag($tag,
+                "<i class='bi bi-x-circle-fill'></i> " . TandaTerimaStatusEnum::NOT_COMPLETED->value, [
+                    'class' => 'badge bg-danger'
+                ]);
+    }
+
+    public function getStatusPenerimaan(): bool
+    {
+        $totalQuantityTerima = array_column(ArrayHelper::toArray($this->tandaTerimaBarangDetails), 'quantity_terima');
+        return $this->quantity_pesan == $this->getTotalQuantitySudahDiTerima();
+    }
+
+    public function getTotalQuantitySudahDiTerima(): float|int
+    {
+        return
+            array_sum(
+                array_column(ArrayHelper::toArray($this->tandaTerimaBarangDetails), 'quantity_terima')
+            );
     }
 
 }

@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Card;
+use app\models\PurchaseOrder;
 use kartik\grid\DataColumn;
 use kartik\grid\GridViewInterface;
 use yii\bootstrap5\Html;
@@ -26,6 +27,10 @@ return [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'nomor',
         'format' => 'text',
+        'value' => function ($model) {
+            /** @var PurchaseOrder $model */
+            return $model->getNomorDisplay();
+        }
     ],
     [
         'class' => DataColumn::class,
@@ -50,12 +55,20 @@ return [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'nomorMaterialRequest',
         'format' => 'text',
-        'value' => 'materialRequisition.nomor'
+        //'value' => 'materialRequisition.nomor'
+        'value' => function ($model) {
+            /** @var PurchaseOrder $model */
+            return $model->materialRequisition->getNomorDisplay();
+        }
     ],
     [
         'attribute' => 'nomorTandaTerimaBarang',
         'header' => 'Tanda Terima Barang',
-        'value' => 'tandaTerimaBarang.nomor'
+        //'value' => 'tandaTerimaBarang.nomor'
+        'value' => function ($model) {
+            /** @var PurchaseOrder $model */
+            return $model->tandaTerimaBarang->getNomorDisplay();
+        }
     ],
     /*[
         'class' => '\yii\grid\DataColumn',

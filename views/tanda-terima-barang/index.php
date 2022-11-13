@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'headerContainer' => [],
         ]);
     } catch (Exception $e) {
-        echo $e->getMessage();
+        echo $e->getTraceAsString();
     }
     ?>
 

@@ -1,7 +1,7 @@
 <?php
 
 use app\models\TandaTerimaBarang;
-use yii\helpers\Url;
+use yii\bootstrap5\Html;
 
 return [
     [
@@ -16,6 +16,10 @@ return [
         'class' => 'yii\grid\DataColumn',
         'attribute' => 'nomor',
         'format' => 'text',
+        'value' => function ($model) {
+            /** @var TandaTerimaBarang $model */
+            return $model->getNomorDisplay();
+        }
     ],
     [
         'class' => 'yii\grid\DataColumn',
@@ -39,10 +43,11 @@ return [
     ],
     [
         'attribute' => 'nomorPurchaseOrder',
+        'header' => 'Nomor P.O',
         'format' => 'raw',
         'value' => function ($model) {
             /** @var TandaTerimaBarang $model */
-            return $model->purchaseOrder->nomor;
+            return !empty($model->purchaseOrder) ? $model->purchaseOrder->getNomorDisplay() : '';
         }
     ],
     // [
@@ -72,12 +77,16 @@ return [
     // ],
     [
         'class' => 'yii\grid\ActionColumn',
-        'urlCreator' => function ($action, $model) {
-            return Url::to([
-                $action,
-                'id' => $model->id
-            ]);
-        },
+        'template' => '{print} {view} {update} {delete}',
+        'buttons' => [
+            'print' => function ($url, $model) {
+                return Html::a('<i class="bi bi-printer-fill"></i>', ['print', 'id' => $model->id], [
+                    'class' => 'print text-success',
+                    'target' => '_blank',
+                    'rel' => 'noopener noreferrer'
+                ]);
+            },
+        ],
     ],
 
 ];   

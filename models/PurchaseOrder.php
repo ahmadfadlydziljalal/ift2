@@ -16,10 +16,12 @@ use yii\httpclient\Exception;
  * @property $userKaryawan array
  * @property $usernameWhoCreated string
  * @property TandaTerimaBarang $tandaTerimaBarang
+ * @property MaterialRequisition $materialRequisition
  */
 class PurchaseOrder extends BasePurchaseOrder
 {
 
+    use NomorSuratTrait;
 
     public function behaviors(): array
     {

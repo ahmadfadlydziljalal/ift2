@@ -15,6 +15,8 @@ use yii\helpers\ArrayHelper;
 class MaterialRequisition extends BaseMaterialRequisition
 {
 
+    use NomorSuratTrait;
+
     public function behaviors()
     {
         return ArrayHelper::merge(

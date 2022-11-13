@@ -1,5 +1,6 @@
 <?php
 
+use app\models\MaterialRequisition;
 use yii\bootstrap5\Html;
 use yii\helpers\Url;
 
@@ -23,6 +24,10 @@ return [
         'class' => '\yii\grid\DataColumn',
         'attribute' => 'nomor',
         'format' => 'text',
+        'value' => function ($model) {
+            /** @var MaterialRequisition $model */
+            return $model->getNomorDisplay();
+        }
     ],
     [
         'class' => '\yii\grid\DataColumn',

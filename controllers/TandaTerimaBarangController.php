@@ -400,4 +400,12 @@ class TandaTerimaBarangController extends Controller
         ]);
     }
 
+    public function actionPrint($id): string
+    {
+        $this->layout = 'print';
+        return $this->render('preview_print', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
 }

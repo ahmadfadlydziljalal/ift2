@@ -1,3 +1,5 @@
+@import "vars";
+
 .text-start {
   text-align: left !important;
 }
@@ -109,4 +111,54 @@
 
 .text-nowrap {
   white-space: nowrap;
+}
+
+span.badge {
+
+  font-size: large;
+  font-style: normal;
+  font-weight: bold;
+
+  &.bg-danger {
+    color: $danger;
+  }
+
+  &.bg-primary {
+    color: $primary;
+  }
+
+  &.bg-success {
+    color: $success;
+  }
+
+  &.bg-warning {
+    color: $warning;
+  }
+
+  &.bg-info {
+    color: $info;
+  }
+}
+
+small.badge {
+
+  &.bg-danger {
+    color: $danger;
+  }
+
+  &.bg-primary {
+    color: $primary;
+  }
+
+  &.bg-success {
+    color: $success;
+  }
+
+  &.bg-warning {
+    color: $warning;
+  }
+
+  &.bg-info {
+    color: $info;
+  }
 }

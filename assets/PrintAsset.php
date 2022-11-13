@@ -20,5 +20,7 @@ class PrintAsset extends AssetBundle
     public $js = [
         'js/print.js'
     ];
-    public $depends = [];
+    public $depends = [
+        'yii\bootstrap5\BootstrapIconAsset'
+    ];
 }
