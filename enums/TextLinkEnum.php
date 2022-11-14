@@ -17,4 +17,6 @@ enum TextLinkEnum: string
     case DELETE = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-trash-fill"></i> Delete</div>';
     case SEARCH = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-search"></i> Search</div>';
     case TAMBAH = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-plus-circle"></i> Tambah</div>';
+    case RESET_FILTER = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-repeat"></i></div>';
+    case BUTTON_DROPDOWN_REPORTS = '<i class="bi bi-files-alt"></i> <span>Laporan</span>';
 }

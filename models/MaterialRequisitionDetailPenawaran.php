@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use app\enums\MaterialRequisitionDetailPenawaranEnum;
 use app\enums\TandaTerimaStatusEnum;
 use app\models\base\MaterialRequisitionDetailPenawaran as BaseMaterialRequisitionDetailPenawaran;
 use yii\helpers\ArrayHelper;

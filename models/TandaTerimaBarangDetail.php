@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\models\base\TandaTerimaBarangDetail as BaseTandaTerimaBarangDetail;
 use Yii;
+use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -42,5 +43,14 @@ class TandaTerimaBarangDetail extends BaseTandaTerimaBarangDetail
     {
         parent::afterFind();
         $this->tanggal = Yii::$app->formatter->asDate($this->tanggal);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTandaTerimaBarang(): ActiveQuery
+    {
+        return $this->hasOne(TandaTerimaBarang::class, ['id' => 'tanda_terima_barang_id'])
+            ->via('materialRequisitionDetailPenawaran');
     }
 }

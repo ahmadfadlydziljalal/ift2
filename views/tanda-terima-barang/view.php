@@ -106,18 +106,22 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <?php
-    echo ListView::widget([
-        'dataProvider' => new ActiveDataProvider([
-            'query' => $model->getMaterialRequisitionDetailPenawarans()
-        ]),
-        'itemView' => function ($model, $key, $index, $widget) {
-            return $this->render('_view_detail', [
-                'model' => $model,
-                'index' => $index
-            ]);
-        },
-        'layout' => '{items}'
-    ]);
+    try {
+        echo ListView::widget([
+            'dataProvider' => new ActiveDataProvider([
+                'query' => $model->getMaterialRequisitionDetailPenawarans()
+            ]),
+            'itemView' => function ($model, $key, $index, $widget) {
+                return $this->render('_view_detail', [
+                    'model' => $model,
+                    'index' => $index
+                ]);
+            },
+            'layout' => '{items}'
+        ]);
+    } catch (Throwable $e) {
+        echo $e->getTraceAsString();
+    }
     ?>
 
 

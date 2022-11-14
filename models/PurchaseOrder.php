@@ -12,6 +12,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\httpclient\Exception;
 
+
 /**
  * This is the model class for table "purchase_order".
  * @property $userKaryawan array
@@ -19,7 +20,7 @@ use yii\httpclient\Exception;
  * @property TandaTerimaBarang $tandaTerimaBarang
  * @property MaterialRequisition $materialRequisition
  */
-class PurchaseOrder extends BasePurchaseOrder
+class PurchaseOrder extends BasePurchaseOrder implements MasterDetailsInterface
 {
 
     use NomorSuratTrait;

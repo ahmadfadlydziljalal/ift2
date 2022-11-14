@@ -1,6 +1,8 @@
 <?php
 
+use app\enums\TextLinkEnum;
 use kartik\grid\GridView;
+use yii\bootstrap5\ButtonDropdown;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -13,13 +15,29 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tanda-terima-barang-index">
 
-    <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex justify-content-between flex-row flex-wrap mb-2">
 
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
 
-        <div class="ms-md-auto ms-lg-auto">
-            <?= Html::a('<i class="bi bi-repeat"></i>' . ' Reset Filter', ['index'], ['class' => 'btn btn-primary']) ?>
-            <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah', ['tanda-terima-barang/before-create'], ['class' => 'btn btn-success']) ?>
+        <div class="">
+            <?= Html::a(TextLinkEnum::RESET_FILTER->value, ['index'], ['class' => 'btn btn-outline-primary']) ?>
+            <?= ButtonDropdown::widget([
+                'label' => TextLinkEnum::BUTTON_DROPDOWN_REPORTS->value,
+                'dropdown' => [
+                    'items' => [
+                        [
+                            'label' => '<span class="bi bi-file"></span> Incoming',
+                            'url' => ['tanda-terima-barang/laporan-incoming']
+                        ],
+                    ],
+                    'encodeLabels' => false,
+                ],
+                'encodeLabel' => false,
+                'buttonOptions' => [
+                    'class' => 'btn btn-outline-secondary'
+                ]
+            ]) ?>
+            <?= Html::a(TextLinkEnum::TAMBAH->value, ['tanda-terima-barang/before-create'], ['class' => 'btn btn-success']) ?>
         </div>
 
     </div>

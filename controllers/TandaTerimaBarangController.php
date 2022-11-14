@@ -2,17 +2,17 @@
 
 namespace app\controllers;
 
+use app\enums\TextLinkEnum;
 use app\models\form\BeforeCreateTandaTerimaBarangForm;
+use app\models\form\LaporanIncomingTandaTerimaBarang;
 use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\search\TandaTerimaBarangSearch;
 use app\models\Tabular;
 use app\models\TandaTerimaBarang;
 use app\models\TandaTerimaBarangDetail;
+use JetBrains\PhpStorm\ArrayShape;
 use Throwable;
 use Yii;
-use yii\base\InvalidConfigException;
-use yii\db\Exception;
-use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -30,6 +30,7 @@ class TandaTerimaBarangController extends Controller
     /**
      * @inheritdoc
      */
+    #[ArrayShape(['verbs' => "array"])]
     public function behaviors(): array
     {
         return [
@@ -89,9 +90,8 @@ class TandaTerimaBarangController extends Controller
 
     /**
      * Creates a new TandaTerimaBarang model.
+     * @param int $purchaseOrderId
      * @return Response | string
-     * @throws HttpException
-     * @throws InvalidConfigException
      */
     public function actionCreate(int $purchaseOrderId): Response|string
     {
@@ -107,9 +107,9 @@ class TandaTerimaBarangController extends Controller
             'purchase_order_id' => $purchaseOrderId
         ]);
 
-        $count = count(ArrayHelper::toArray($modelsDetail)) - 1;
+        $count = count(ArrayHelper::toArray($modelsDetail));
         $modelsDetailDetail = [];
-        for ($i = 0; $i <= $count; $i++) {
+        for ($i = 0; $i < $count; $i++) {
             $modelsDetailDetail[$i] = [new TandaTerimaBarangDetail()];
         }
 
@@ -135,58 +135,11 @@ class TandaTerimaBarangController extends Controller
             }
 
             if ($isValid) {
-
-                $transaction = TandaTerimaBarang::getDb()->beginTransaction();
-
-                try {
-
-                    if ($flag = $model->save(false)) {
-                        foreach ($modelsDetail as $i => $detail) :
-
-                            if ($flag === false) {
-                                break;
-                            }
-
-                            $detail->tanda_terima_barang_id = $model->id;
-                            if (!($flag = $detail->save(false))) {
-                                break;
-                            }
-
-                            if (isset($modelsDetailDetail[$i]) && is_array($modelsDetailDetail[$i])) {
-                                foreach ($modelsDetailDetail[$i] as $modelDetailDetail) {
-                                    $modelDetailDetail->material_requisition_detail_penawaran_id = $detail->id;
-                                    if (!($flag = $modelDetailDetail->save(false))) {
-                                        break;
-                                    }
-                                }
-                            }
-
-                        endforeach;
-                    }
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = [
-                            'code' => 1,
-                            'message' => 'Commit'
-                        ];
-                    } else {
-                        $transaction->rollBack();
-                        $status = [
-                            'code' => 0,
-                            'message' => 'Roll Back'
-                        ];
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    $status = [
-                        'code' => 0,
-                        'message' => 'Roll Back ' . $e->getMessage(),
-                    ];
-                }
+                $status = $model->createWithDetails($modelsDetail, $modelsDetailDetail);
 
                 if ($status['code']) {
                     Url::remember(); // reset url dari before-create ke create
+
                     Yii::$app->session->setFlash('success', 'TandaTerimaBarang: ' . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
                     return $this->redirect(['tanda-terima-barang/view', 'id' => $model->id]);
                 }
@@ -221,7 +174,6 @@ class TandaTerimaBarangController extends Controller
      * @return Response | string
      * @throws HttpException
      * @throws NotFoundHttpException
-     * @throws InvalidConfigException
      */
     public function actionUpdate(int $id): Response|string
     {
@@ -287,68 +239,21 @@ class TandaTerimaBarangController extends Controller
             $deletedDetailDetailsIDs = array_diff($oldDetailDetailsIDs, $detailDetailIDs);
 
             if ($isValid) {
-
-                $transaction = TandaTerimaBarang::getDb()->beginTransaction();
-
-                try {
-
-                    if ($flag = $model->save(false)) {
-
-                        if (!empty($deletedDetailDetailsIDs)) {
-                            TandaTerimaBarangDetail::deleteAll(['id' => $deletedDetailDetailsIDs]);
-                        }
-
-                        if (!empty($deletedDetailsID)) {
-                            MaterialRequisitionDetailPenawaran::deleteAll(['id' => $deletedDetailsID]);
-                        }
-
-                        foreach ($modelsDetail as $i => $detail) :
-
-                            if ($flag === false) {
-                                break;
-                            }
-
-                            $detail->tanda_terima_barang_id = $model->id;
-                            if (!($flag = $detail->save(false))) {
-                                break;
-                            }
-
-                            if (isset($modelsDetailDetail[$i]) && is_array($modelsDetailDetail[$i])) {
-                                foreach ($modelsDetailDetail[$i] as $modelDetailDetail) {
-                                    $modelDetailDetail->material_requisition_detail_penawaran_id = $detail->id;
-                                    if (!($flag = $modelDetailDetail->save(false))) {
-                                        break;
-                                    }
-                                }
-                            }
-
-                        endforeach;
-                    }
-
-                    if ($flag) {
-                        $transaction->commit();
-                        $status = [
-                            'code' => 1,
-                            'message' => 'Commit'
-                        ];
-                    } else {
-                        $transaction->rollBack();
-                        $status = [
-                            'code' => 0,
-                            'message' => 'Roll Back'
-                        ];
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    $status = [
-                        'code' => 0,
-                        'message' => 'Roll Back ' . $e->getMessage(),
-                    ];
-                }
-
+                $status = $model->updateWithDetails($modelsDetail, $modelsDetailDetail, $deletedDetailsID, $deletedDetailDetailsIDs);
                 if ($status['code']) {
-                    Yii::$app->session->setFlash('info', "TandaTerimaBarang: " . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil di update.");
-                    return $this->redirect(['index']);
+                    Yii::$app->session->setFlash('info', [
+                        [
+                            'title' => 'Successfully updated.!',
+                            'message' => "Tanda Terima Barang: " . $model->nomor . " berhasil di update.",
+                            'footer' =>
+                                Html::a(TextLinkEnum::PRINT->value, ['tanda-terima-barang/print', 'id' => $model->id], [
+                                    'class' => 'btn btn-success',
+                                    'target' => '_blank',
+                                    'rel' => 'noopener noreferrer'
+                                ])
+                        ]
+                    ]);
+                    return $this->redirect(['tanda-terima-barang/view', 'id' => $model->id]);
                 }
 
                 Yii::$app->session->setFlash('danger', " TandaTerimaBarang is failed to insert. Info: " . $status['message']);
@@ -370,7 +275,6 @@ class TandaTerimaBarangController extends Controller
      * @throws HttpException
      * @throws NotFoundHttpException
      * @throws Throwable
-     * @throws StaleObjectException
      */
     public function actionDelete(int $id): Response
     {
@@ -413,7 +317,11 @@ class TandaTerimaBarangController extends Controller
         ]);
     }
 
-    public function actionExpandItem()
+    /**
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionExpandItem(): string
     {
         if (isset($_POST['expandRowKey'])) {
             return $this->renderPartial('_item', [
@@ -423,5 +331,32 @@ class TandaTerimaBarangController extends Controller
             return '<div class="alert alert-danger">No data found</div>';
         }
     }
+
+    public function actionLaporanIncoming(): Response|string
+    {
+        $model = new LaporanIncomingTandaTerimaBarang();
+
+        if ($model->load($this->request->post())) {
+            return $this->redirect(['tanda-terima-barang/preview-laporan-incoming',
+                    'tanggal' => $model->tanggal]
+            );
+        }
+
+        return $this->render('_form_laporan_tanda_terima_barang', [
+            'model' => $model
+        ]);
+
+    }
+
+    public function actionPreviewLaporanIncoming($tanggal): string
+    {
+        $model = new LaporanIncomingTandaTerimaBarang([
+            'tanggal' => $tanggal
+        ]);
+        return $this->render('_preview_laporan_tanda_terima_barang', [
+            'model' => $model
+        ]);
+    }
+
 
 }

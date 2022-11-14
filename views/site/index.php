@@ -19,7 +19,7 @@ $this->title = 'Dashboard';
     <h3>Alur Pembelian Barang</h3>
     <div class="row">
 
-        <div class="col-sm-12 col-md-6 col-lg-3 mb-3">
+        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
             <div class="card h-100 rounded position-relative">
                 <div class="card-body">
                     <div class="d-flex flex-column gap-1 align-items-center text-center">
@@ -39,7 +39,7 @@ $this->title = 'Dashboard';
             </div>
         </div>
 
-        <div class="col-sm-12 col-md-6 col-lg-3 mb-3">
+        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
             <div class="card h-100 rounded position-relative">
                 <div class="card-body">
                     <div class="d-flex flex-column gap-1 align-items-center text-center">
@@ -58,7 +58,7 @@ $this->title = 'Dashboard';
             </div>
         </div>
 
-        <div class="col-sm-12 col-md-6 col-lg-3 mb-3">
+        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
             <div class="card h-100 rounded position-relative">
                 <div class="card-body">
                     <div class="d-flex flex-column gap-1 align-items-center text-center">
@@ -79,15 +79,36 @@ $this->title = 'Dashboard';
             </div>
         </div>
 
-        <div class="col-sm-12 col-md-6 col-lg-3 mb-3">
+        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
+            <div class="card h-100 rounded position-relative">
+                <div class="card-body">
+                    <div class="d-flex flex-column gap-1 align-items-center text-center">
+                        <?= Html::a('<i class="bi bi-bag-check-fill fs-1"></i>', ['tanda-terima-barang/index'], [
+                            'class' => 'stretched-link'
+                        ]) ?>
+                        <span class="card-title">Terima Barang</span>
+                    </div>
+                </div>
+
+                <div class="position-absolute top-0 start-50 translate-middle badge rounded-circle shadow bg-info p-sm-1 p-md-2 p-lg-2 d-block d-md-none">
+                    <i class="bi bi-arrow-down-short text-dark p-0 m-0 fs-4"></i>
+                </div>
+
+                <div class="position-absolute top-50 start-0 translate-middle badge rounded-circle shadow bg-info p-sm-1 p-md-2 p-lg-2 d-none d-md-none d-lg-block">
+                    <i class="bi bi-arrow-right-short text-dark p-0 m-0 fs-4"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
             <div class="card h-100 rounded position-relative">
                 <div class="card-body">
                     <div class="d-flex flex-column gap-1 align-items-center text-center">
 
-                        <?= Html::a('<i class="bi bi-bag-check-fill fs-1"></i>', ['tanda-terima-barang/index'], [
+                        <?= Html::a('<i class="bi bi-flag-fill fs-1"></i>', ['tanda-terima-barang/laporan-incoming'], [
                             'class' => 'stretched-link'
                         ]) ?>
-                        <span class="card-title">Terima barang</span>
+                        <span class="card-title">Laporan Incoming</span>
                     </div>
                 </div>
 

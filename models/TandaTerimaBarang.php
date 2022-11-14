@@ -128,5 +128,128 @@ class TandaTerimaBarang extends BaseTandaTerimaBarang
         return !in_array(false, $statusMaterialRequestDetailPenawaransDenganTandaTerimaDetail);
     }
 
+    /**
+     * @param array $modelsDetail
+     * @param $modelsDetailDetail
+     * @return array
+     */
+    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    public function createWithDetails(array $modelsDetail, $modelsDetailDetail): array
+    {
+
+        $transaction = self::getDb()->beginTransaction();
+        try {
+
+            if ($flag = $this->save(false)) {
+                foreach ($modelsDetail as $i => $detail) :
+
+                    if ($flag === false) {
+                        break;
+                    }
+
+                    $detail->tanda_terima_barang_id = $this->id;
+                    if (!($flag = $detail->save(false))) {
+                        break;
+                    }
+
+                    if (isset($modelsDetailDetail[$i]) && is_array($modelsDetailDetail[$i])) {
+                        foreach ($modelsDetailDetail[$i] as $modelDetailDetail) {
+                            $modelDetailDetail->material_requisition_detail_penawaran_id = $detail->id;
+                            if (!($flag = $modelDetailDetail->save(false))) {
+                                break;
+                            }
+                        }
+                    }
+
+                endforeach;
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                $status = [
+                    'code' => 1,
+                    'message' => 'Commit'
+                ];
+            } else {
+                $transaction->rollBack();
+                $status = [
+                    'code' => 0,
+                    'message' => 'Roll Back'
+                ];
+            }
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            $status = [
+                'code' => 0,
+                'message' => 'Roll Back ' . $e->getMessage(),
+            ];
+        }
+
+        return $status;
+    }
+
+    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    public function updateWithDetails($modelsDetail, $modelsDetailDetail, $deletedDetailsID, $deletedDetailDetailsIDs): array
+    {
+        $transaction = self::getDb()->beginTransaction();
+        try {
+
+            if ($flag = $this->save(false)) {
+
+                if (!empty($deletedDetailDetailsIDs)) {
+                    TandaTerimaBarangDetail::deleteAll(['id' => $deletedDetailDetailsIDs]);
+                }
+
+                if (!empty($deletedDetailsID)) {
+                    MaterialRequisitionDetailPenawaran::deleteAll(['id' => $deletedDetailsID]);
+                }
+
+                foreach ($modelsDetail as $i => $detail) :
+
+                    if ($flag === false) {
+                        break;
+                    }
+
+                    $detail->tanda_terima_barang_id = $this->id;
+                    if (!($flag = $detail->save(false))) {
+                        break;
+                    }
+
+                    if (isset($modelsDetailDetail[$i]) && is_array($modelsDetailDetail[$i])) {
+                        foreach ($modelsDetailDetail[$i] as $modelDetailDetail) {
+                            $modelDetailDetail->material_requisition_detail_penawaran_id = $detail->id;
+                            if (!($flag = $modelDetailDetail->save(false))) {
+                                break;
+                            }
+                        }
+                    }
+
+                endforeach;
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                $status = [
+                    'code' => 1,
+                    'message' => 'Commit'
+                ];
+            } else {
+                $transaction->rollBack();
+                $status = [
+                    'code' => 0,
+                    'message' => 'Roll Back'
+                ];
+            }
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            $status = [
+                'code' => 0,
+                'message' => 'Roll Back ' . $e->getMessage(),
+            ];
+        }
+
+        return $status;
+    }
+
 
 }

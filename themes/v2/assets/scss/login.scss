@@ -1,5 +1,9 @@
-@import "vars";
-@import "dark-mode";
-body{
+@use "vars";
+@use "sass:meta";
+
+@include meta.load-css("dark-mode");
+
+body {
   overflow-x: hidden;
+  background-color: vars.$page;
 }

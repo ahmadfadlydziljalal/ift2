@@ -4,6 +4,7 @@
 body {
 
   overflow-x: hidden;
+  background-color: vars.$page;
 
   @include meta.load-css("header"); // top navigation
   main {
@@ -23,4 +24,10 @@ body {
 .user-photo-32 {
   border-radius: 50%;
   object-fit: cover;
+}
+
+.dropdown-menu {
+  &.kv-checkbox-list {
+    padding: 2em;
+  }
 }
