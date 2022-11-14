@@ -11,11 +11,12 @@ use yii\helpers\ArrayHelper;
  * This is the base-model class for table "tanda_terima_barang_detail".
  *
  * @property integer $id
+ * @property integer $tanda_terima_barang_id
  * @property integer $material_requisition_detail_penawaran_id
- * @property string $tanggal
  * @property string $quantity_terima
  *
  * @property \app\models\MaterialRequisitionDetailPenawaran $materialRequisitionDetailPenawaran
+ * @property \app\models\TandaTerimaBarang $tandaTerimaBarang
  * @property string $aliasModel
  */
 abstract class TandaTerimaBarangDetail extends \yii\db\ActiveRecord
@@ -37,11 +38,11 @@ abstract class TandaTerimaBarangDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['material_requisition_detail_penawaran_id'], 'integer'],
-            [['tanggal', 'quantity_terima'], 'required'],
-            [['tanggal'], 'safe'],
+            [['tanda_terima_barang_id', 'material_requisition_detail_penawaran_id'], 'integer'],
+            [['quantity_terima'], 'required'],
             [['quantity_terima'], 'number'],
-            [['material_requisition_detail_penawaran_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MaterialRequisitionDetailPenawaran::class, 'targetAttribute' => ['material_requisition_detail_penawaran_id' => 'id']]
+            [['material_requisition_detail_penawaran_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\MaterialRequisitionDetailPenawaran::class, 'targetAttribute' => ['material_requisition_detail_penawaran_id' => 'id']],
+            [['tanda_terima_barang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\TandaTerimaBarang::class, 'targetAttribute' => ['tanda_terima_barang_id' => 'id']]
         ]);
     }
 
@@ -52,8 +53,8 @@ abstract class TandaTerimaBarangDetail extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'tanda_terima_barang_id' => 'Tanda Terima Barang ID',
             'material_requisition_detail_penawaran_id' => 'Material Requisition Detail Penawaran ID',
-            'tanggal' => 'Tanggal',
             'quantity_terima' => 'Quantity Terima',
         ];
     }
@@ -64,6 +65,14 @@ abstract class TandaTerimaBarangDetail extends \yii\db\ActiveRecord
     public function getMaterialRequisitionDetailPenawaran()
     {
         return $this->hasOne(\app\models\MaterialRequisitionDetailPenawaran::class, ['id' => 'material_requisition_detail_penawaran_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTandaTerimaBarang()
+    {
+        return $this->hasOne(\app\models\TandaTerimaBarang::class, ['id' => 'tanda_terima_barang_id']);
     }
 
 

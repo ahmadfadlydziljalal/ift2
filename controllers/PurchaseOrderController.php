@@ -32,6 +32,7 @@ class PurchaseOrderController extends Controller
     /**
      * @inheritdoc
      */
+    #[ArrayShape(['verbs' => "array"])]
     public function behaviors(): array
     {
         return [
@@ -128,7 +129,7 @@ class PurchaseOrderController extends Controller
 
             $out['results'] = [
                 'id' => $id,
-                'text' => MaterialRequisition::find($id)->nama
+                'text' => MaterialRequisition::find($id)->nomor
             ];
 
         }
@@ -255,9 +256,9 @@ class PurchaseOrderController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->tandaTerimaBarang) {
+        if ($model->tandaTerimaBarangs) {
             Yii::$app->session->setFlash('danger', " Purchase Order : " . $model->nomor . " tidak bisa dihapus, karena Tanda Terima strong dependant dengan " .
-                $model->tandaTerimaBarang->nomor
+                $model->nomorTandaTerimaColumnsAsHtml
             );
             return $this->redirect(Yii::$app->request->referrer);
         }

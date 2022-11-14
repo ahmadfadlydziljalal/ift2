@@ -2,10 +2,11 @@
 
 /* @var $this yii\web\View */
 /* @var $model app\models\TandaTerimaBarang */
-/* @var $modelsDetail app\models\MaterialRequisitionDetailPenawaran */
-/* @var $modelsDetailDetail app\models\TandaTerimaBarangDetail */
+
+/* @var $modelsDetail app\models\TandaTerimaBarangDetail */
 
 use yii\helpers\Html;
+
 $this->title = 'Tambah Tanda Terima Barang';
 $this->params['breadcrumbs'][] = ['label' => 'Tanda Terima Barang', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -18,7 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $this->render('_form', [
         'model' => $model,
         'modelsDetail' => $modelsDetail,
-        'modelsDetailDetail' => $modelsDetailDetail,
     ]) ?>
 
 </div>

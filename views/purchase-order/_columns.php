@@ -64,23 +64,21 @@ return [
         }
     ],
     [
-        'attribute' => 'nomorTandaTerimaBarang',
+        //'attribute' => 'nomorTandaTerimaBarang',
+        'format' => 'raw',
         'header' => 'Tanda Terima',
-        //'value' => 'tandaTerimaBarang.nomor'
         'value' => function ($model) {
             /** @var PurchaseOrder $model */
-            return
-                isset($model->tandaTerimaBarang) ?
-                    $model->tandaTerimaBarang->getNomorDisplay() :
-                    "-";
+            return $model->nomorTandaTerimaColumnsAsHtml;
         }
     ],
     [
-        'header' => 'Status',
+        'header' => 'Status Terima',
         'format' => 'raw',
         'value' => function ($model) {
             /** @var PurchaseOrder $model */
-            return $model->getStatusTandaTerimaInHtmlLabel();
+            return $model->getStatusTandaTerimaBarangsAsHtml();
+
         }
     ],
     /*[

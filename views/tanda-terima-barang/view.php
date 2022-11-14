@@ -2,11 +2,14 @@
 
 use app\enums\TextLinkEnum;
 use app\models\TandaTerimaBarang;
+use app\models\TandaTerimaBarangDetail;
+use kartik\grid\DataColumn;
+use kartik\grid\GridView;
+use kartik\grid\SerialColumn;
 use mdm\admin\components\Helper;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use yii\widgets\ListView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\TandaTerimaBarang */
@@ -21,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <h1><?= Html::encode($this->title) ?></h1>
         <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
             <?= Html::a('Index', ['index'], ['class' => 'btn btn-outline-primary']) ?>
-            <?= Html::a('Buat Lagi', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= Html::a(TextLinkEnum::BUAT_LAGI->value, ['tanda-terima-barang/before-create'], ['class' => 'btn btn-success']) ?>
         </div>
     </div>
 
@@ -57,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attributes' => [
                         'nomor',
                         'tanggal:date',
-                        'catatan:ntext',
+                        'catatan:nText',
                         'received_by',
                         'messenger',
                         [
@@ -66,6 +69,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                 /** @var TandaTerimaBarang $model */
                                 return $model->acknowledgeBy->nama;
                             }
+                        ],
+                        [
+                            'label' => 'Purchase Order',
+                            'format' => 'raw',
+                            'value' =>
+                                Html::tag('span', $model->purchaseOrder->nomor, ['class' => 'fw-bold']) . ' ' .
+                                $model->purchaseOrder->statusTandaTerimaBarangsAsHtml
                         ],
                         [
                             'attribute' => 'created_at',
@@ -87,14 +97,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                 return app\models\User::findOne($model->updated_by)->username;
                             }
                         ],
-                        [
-                            'attribute' => 'status',
+//                        [
+//                            'label' => 'Purchase Order',
+//                            'value' => $model->purchaseOrder->nomor
+//                        ],
+                        /*[
+                            'attribute' => 'status_pesanan_yang_sudah_diterima',
                             'format' => 'raw',
-                            'value' => function ($model) {
-                                /** @var TandaTerimaBarang $model */
-                                return $model->getStatusInHtmlLabel();
-                            }
-                        ],
+                            'value' => Html::tag('pre', VarDumper::dumpAsString($model->getStatusPesananYangSudahDiterima()))
+                        ],*/
                     ],
                 ]);
 
@@ -103,26 +114,145 @@ $this->params['breadcrumbs'][] = $this->title;
             }
             ?>
         </div>
+
     </div>
 
-    <?php
-    try {
-        echo ListView::widget([
-            'dataProvider' => new ActiveDataProvider([
-                'query' => $model->getMaterialRequisitionDetailPenawarans()
-            ]),
-            'itemView' => function ($model, $key, $index, $widget) {
-                return $this->render('_view_detail', [
-                    'model' => $model,
-                    'index' => $index
-                ]);
-            },
-            'layout' => '{items}'
-        ]);
-    } catch (Throwable $e) {
-        echo $e->getTraceAsString();
-    }
-    ?>
+    <div class="row">
+        <div class="col-12">
+            <?php
+            echo GridView::widget([
+                'dataProvider' => new ActiveDataProvider([
+                    'query' => $model->getTandaTerimaBarangDetails(),
+                    'sort' => false,
+                    'pagination' => false
+                ]),
+                'columns' => [
+                    [
+                        'class' => SerialColumn::class
+                    ],
+                    [
+                        'class' => DataColumn::class,
+                        'vAlign' => 'middle',
+                        'format' => 'raw',
+                        'header' => 'Part Number',
+                        'value' => function ($model) {
+                            /** @var TandaTerimaBarangDetail $model */
+                            return
+                                $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->part_number . '<br/>' .
+                                $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->merk_part_number;
+                        },
+                    ],
+                    [
+                        'class' => DataColumn::class,
+                        'format' => 'raw',
+                        'vAlign' => 'middle',
+                        'header' => 'Nama Barang',
+                        'value' => function ($model) {
+                            /** @var TandaTerimaBarangDetail $model */
+                            return
+                                $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->nama . '<br/>' .
+                                $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->ift_number;
+                        },
+                    ],
+                    [
+                        'class' => DataColumn::class,
+                        'format' => 'raw',
+                        'vAlign' => 'middle',
+                        'attribute' => 'material_requisition_detail_penawaran_id',
+                        'header' => 'Total Qty Pesan',
+                        'value' => function ($model) {
+                            /** @var TandaTerimaBarangDetail $model */
+                            return $model->materialRequisitionDetailPenawaran->quantity_pesan;
+                        },
+                        'contentOptions' => [
+                            'class' => 'text-end'
+                        ],
+                        'headerOptions' => [
+                            'class' => 'text-end'
+                        ],
+                    ],
+                    [
+                        'class' => DataColumn::class,
+                        'vAlign' => 'middle',
+                        'attribute' => 'quantity_terima',
+                        'header' => 'Total Qty Terima',
+                        'contentOptions' => [
+                            'class' => 'text-end'
+                        ],
+                        'headerOptions' => [
+                            'class' => 'text-end'
+                        ],
+                    ],
+                    [
+                        'class' => DataColumn::class,
+                        'vAlign' => 'middle',
+                        'attribute' => 'material_requisition_detail_penawaran_id',
+                        'format' => 'raw',
+                        'header' => 'Status Penerimaan',
+                        'value' => function ($model) {
+                            /** @var TandaTerimaBarangDetail $model */
+                            return $model->materialRequisitionDetailPenawaran->getStatusPenerimaanInHtmlLabel();
+                        },
+                        'contentOptions' => [
+                            'class' => 'text-end'
+                        ],
+                        'headerOptions' => [
+                            'class' => 'text-end'
+                        ],
+                    ],
+                    [
+                        'class' => DataColumn::class,
+                        'vAlign' => 'middle',
+                        'header' => 'Detail',
+                        'format' => 'raw',
+                        'contentOptions' => [
+                            'class' => 'p-2'
+                        ],
+                        'value' => function ($model) {
+                            /** @var TandaTerimaBarangDetail $model */
+                            return GridView::widget([
+                                'dataProvider' => new ActiveDataProvider([
+                                    'query' => $model->materialRequisitionDetailPenawaran
+                                        ->materialRequisitionDetail
+                                        ->getTandaTerimaBarangDetails(),
+                                    'sort' => false,
+                                    'pagination' => false
+                                ]),
+                                'tableOptions' => [
+                                    'class' => 'table table-striped m-0'
+                                ],
+                                'layout' => '{items}',
+                                'columns' => [
+                                    [
+                                        'class' => SerialColumn::class
+                                    ],
+                                    [
+                                        'attribute' => 'tanda_terima_barang_id',
+                                        'format' => 'raw',
+                                        'value' => function ($model) {
+                                            /** @var TandaTerimaBarangDetail $model */
+                                            return Html::a($model->tandaTerimaBarang->nomor, ['tanda-terima-barang/view', 'id' => $model->tandaTerimaBarang->id], [
+                                                'class' => 'text-primary'
+                                            ]);
+                                        },
+                                    ],
+                                    //'quantity_terima'
+                                    [
+                                        'attribute' => 'quantity_terima',
+                                        'format' => ['decimal', 2],
+                                        'contentOptions' => [
+                                            'class' => 'text-end'
+                                        ]
+                                    ],
+                                ]
+                            ]);
+                        },
+                    ],
+                ]
+            ])
+            ?>
+        </div>
+    </div>
 
 
 </div>

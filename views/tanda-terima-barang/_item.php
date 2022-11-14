@@ -6,8 +6,8 @@
 
 /* @var $model TandaTerimaBarang */
 
-use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\TandaTerimaBarang;
+use app\models\TandaTerimaBarangDetail;
 use kartik\grid\GridView;
 use kartik\grid\SerialColumn;
 use yii\data\ActiveDataProvider;
@@ -20,7 +20,7 @@ use yii\web\View;
     try {
         echo GridView::widget([
             'dataProvider' => new ActiveDataProvider([
-                'query' => $model->getMaterialRequisitionDetailPenawarans(),
+                'query' => $model->getTandaTerimaBarangDetails(),
                 'pagination' => false,
                 'sort' => false
             ]),
@@ -36,29 +36,29 @@ use yii\web\View;
                     'header' => 'Status',
                     'format' => 'raw',
                     'value' => function ($model) {
-                        /** @var MaterialRequisitionDetailPenawaran $model */
-                        return $model->getStatusPenerimaanInHtmlLabel();
+                        /** @var TandaTerimaBarangDetail $model */
+                        return $model->materialRequisitionDetailPenawaran->getStatusPenerimaanInHtmlLabel();
                     }
                 ],
                 [
                     'header' => 'M.R',
                     'value' => function ($model) {
-                        /** @var MaterialRequisitionDetailPenawaran $model */
-                        return $model->materialRequisitionDetail->materialRequisition->nomor;
+                        /** @var TandaTerimaBarangDetail $model */
+                        return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->materialRequisition->nomor;
                     }
                 ],
                 [
                     'header' => 'Vendor',
                     'value' => function ($model) {
-                        /** @var MaterialRequisitionDetailPenawaran $model */
-                        return $model->vendor->nama;
+                        /** @var TandaTerimaBarangDetail $model */
+                        return $model->materialRequisitionDetailPenawaran->vendor->nama;
                     }
                 ],
                 [
                     'header' => 'Quantity Pesan',
                     'value' => function ($model) {
-                        /** @var MaterialRequisitionDetailPenawaran $model */
-                        return $model->quantity_pesan;
+                        /** @var TandaTerimaBarangDetail $model */
+                        return $model->materialRequisitionDetailPenawaran->quantity_pesan;
                     },
                     'contentOptions' => [
                         'class' => 'text-end'
@@ -67,8 +67,8 @@ use yii\web\View;
                 [
                     'header' => 'Harga Penawaran',
                     'value' => function ($model) {
-                        /** @var MaterialRequisitionDetailPenawaran $model */
-                        return $model->harga_penawaran;
+                        /** @var TandaTerimaBarangDetail $model */
+                        return $model->materialRequisitionDetailPenawaran->harga_penawaran;
                     },
                     'format' => ['decimal', 2],
                     'contentOptions' => [
@@ -78,8 +78,8 @@ use yii\web\View;
                 [
                     'header' => 'Quantity Terima',
                     'value' => function ($model) {
-                        /** @var MaterialRequisitionDetailPenawaran $model */
-                        return $model->getTotalQuantitySudahDiTerima();
+                        /** @var TandaTerimaBarangDetail $model */
+                        return $model->quantity_terima;
                     },
                     'contentOptions' => [
                         'class' => 'text-end'
@@ -89,8 +89,8 @@ use yii\web\View;
                 [
                     'header' => 'Satuan',
                     'value' => function ($model) {
-                        /** @var MaterialRequisitionDetailPenawaran $model */
-                        return $model->materialRequisitionDetail->satuan->nama;
+                        /** @var TandaTerimaBarangDetail $model */
+                        return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->satuan->nama;
                     }
                 ]
             ]

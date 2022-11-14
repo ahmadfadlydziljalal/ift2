@@ -103,39 +103,25 @@ class TandaTerimaBarangController extends Controller
         $request = Yii::$app->request;
         $model = new TandaTerimaBarang();
 
-        $modelsDetail = MaterialRequisitionDetailPenawaran::findAll([
-            'purchase_order_id' => $purchaseOrderId
-        ]);
-
-        $count = count(ArrayHelper::toArray($modelsDetail));
-        $modelsDetailDetail = [];
-        for ($i = 0; $i < $count; $i++) {
-            $modelsDetailDetail[$i] = [new TandaTerimaBarangDetail()];
+        $mrdp = MaterialRequisitionDetailPenawaran::find()->forCreateTandaTerima($purchaseOrderId);
+        foreach ($mrdp as $k => $m) {
+            $modelsDetail[$k] = new TandaTerimaBarangDetail([
+                'material_requisition_detail_penawaran_id' => $m->id
+            ]);
         }
 
         if ($model->load($request->post())) {
 
-            $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetailPenawaran::class, $modelsDetail);
+            $modelsDetail = Tabular::createMultiple(TandaTerimaBarangDetail::class);
             Tabular::loadMultiple($modelsDetail, $request->post());
 
             //validate models
             $isValid = $model->validate();
             $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
 
-            if (isset($_POST['TandaTerimaBarangDetail'][0][0])) {
-                foreach ($_POST['TandaTerimaBarangDetail'] as $i => $tandaTerimaBarangDetails) {
-                    foreach ($tandaTerimaBarangDetails as $j => $tandaTerimaBarangDetail) {
-                        $data['TandaTerimaBarangDetail'] = $tandaTerimaBarangDetail;
-                        $modelTandaTerimaBarangDetail = new TandaTerimaBarangDetail();
-                        $modelTandaTerimaBarangDetail->load($data);
-                        $modelsDetailDetail[$i][$j] = $modelTandaTerimaBarangDetail;
-                        $isValid = $modelTandaTerimaBarangDetail->validate() && $isValid;
-                    }
-                }
-            }
-
             if ($isValid) {
-                $status = $model->createWithDetails($modelsDetail, $modelsDetailDetail);
+
+                $status = $model->createWithDetails($modelsDetail);
 
                 if ($status['code']) {
                     Url::remember(); // reset url dari before-create ke create
@@ -151,7 +137,6 @@ class TandaTerimaBarangController extends Controller
         return $this->render('create', [
             'model' => $model,
             'modelsDetail' => empty($modelsDetail) ? [new MaterialRequisitionDetailPenawaran()] : $modelsDetail,
-            'modelsDetailDetail' => empty($modelsDetailDetail) ? [[new TandaTerimaBarangDetail()]] : $modelsDetailDetail,
         ]);
     }
 
@@ -179,67 +164,21 @@ class TandaTerimaBarangController extends Controller
     {
         $request = Yii::$app->request;
         $model = $this->findModel($id);
-        $modelsDetail = !empty($model->materialRequisitionDetailPenawarans) ? $model->materialRequisitionDetailPenawarans : [new MaterialRequisitionDetailPenawaran()];
-
-        $modelsDetailDetail = [];
-        $oldDetailDetails = [];
-
-        if (!empty($modelsDetail)) {
-
-            foreach ($modelsDetail as $i => $modelDetail) {
-                $tandaTerimaBarangDetails = $modelDetail->tandaTerimaBarangDetails;
-                $modelsDetailDetail[$i] = $tandaTerimaBarangDetails;
-                $oldDetailDetails = ArrayHelper::merge(ArrayHelper::index($tandaTerimaBarangDetails, 'id'), $oldDetailDetails);
-            }
-        }
+        $modelsDetail = !empty($model->tandaTerimaBarangDetails) ? $model->tandaTerimaBarangDetails : [new TandaTerimaBarangDetail()];
 
         if ($model->load($request->post())) {
 
-            // reset
-            $modelsDetailDetail = [];
-
-            // GET OLD IDs
             $oldDetailsID = ArrayHelper::map($modelsDetail, 'id', 'id');
+            $modelsDetail = Tabular::createMultiple(TandaTerimaBarangDetail::class, $modelsDetail);
 
-            $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetailPenawaran::class, $modelsDetail);
             Tabular::loadMultiple($modelsDetail, $request->post());
+            $deletedDetailsID = array_diff($oldDetailsID, array_filter(ArrayHelper::map($modelsDetail, 'id', 'id')));
 
-            $deletedDetailsID = array_diff($oldDetailsID, array_filter(
-                    ArrayHelper::map($modelsDetail, 'id', 'id')
-                )
-            );
-
-            //validate models
             $isValid = $model->validate();
             $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
 
-            $detailDetailIDs = [];
-            if (isset($_POST['TandaTerimaBarangDetail'][0][0])) {
-                foreach ($_POST['TandaTerimaBarangDetail'] as $i => $tandaTerimaBarangDetails) {
-
-                    $detailDetailIDs = ArrayHelper::merge($detailDetailIDs, array_filter(ArrayHelper::getColumn($tandaTerimaBarangDetails, 'id')));
-
-                    foreach ($tandaTerimaBarangDetails as $j => $tandaTerimaBarangDetail) {
-                        $data['TandaTerimaBarangDetail'] = $tandaTerimaBarangDetail;
-
-                        // Difference with actionCreate Here
-                        $modelTandaTerimaBarangDetail =
-                            (isset($tandaTerimaBarangDetail['id']) && isset($oldDetailDetails[$tandaTerimaBarangDetail['id']]))
-                                ? $oldDetailDetails[$tandaTerimaBarangDetail['id']]
-                                : new TandaTerimaBarangDetail();
-
-                        $modelTandaTerimaBarangDetail->load($data);
-                        $modelsDetailDetail[$i][$j] = $modelTandaTerimaBarangDetail;
-                        $isValid = $modelTandaTerimaBarangDetail->validate() && $isValid;
-                    }
-                }
-            }
-
-            $oldDetailDetailsIDs = ArrayHelper::getColumn($oldDetailDetails, 'id');
-            $deletedDetailDetailsIDs = array_diff($oldDetailDetailsIDs, $detailDetailIDs);
-
             if ($isValid) {
-                $status = $model->updateWithDetails($modelsDetail, $modelsDetailDetail, $deletedDetailsID, $deletedDetailDetailsIDs);
+                $status = $model->updateWithDetails($modelsDetail, $deletedDetailsID);
                 if ($status['code']) {
                     Yii::$app->session->setFlash('info', [
                         [
@@ -263,7 +202,6 @@ class TandaTerimaBarangController extends Controller
         return $this->render('update', [
             'model' => $model,
             'modelsDetail' => $modelsDetail,
-            'modelsDetailDetail' => $modelsDetailDetail,
         ]);
     }
 

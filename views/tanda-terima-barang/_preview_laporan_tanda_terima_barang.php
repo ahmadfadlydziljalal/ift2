@@ -2,6 +2,7 @@
 
 
 /* @var $this View */
+/* @see \app\controllers\TandaTerimaBarangController::actionPreviewLaporanIncoming() */
 
 /* @var $model LaporanIncomingTandaTerimaBarang */
 

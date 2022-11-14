@@ -14,10 +14,11 @@ use yii\helpers\Html;
 
 /**
  * This is the model class for table "tanda_terima_barang".
- * @property TandaTerimaBarangDetail[] $tandaTerimaBarangDetails
+ * @property MaterialRequisitionDetailPenawaran[] $materialRequisitionDetailPenawarans
+ * @property PurchaseOrder[] $purchaseOrders
  * @property PurchaseOrder $purchaseOrder
  */
-class TandaTerimaBarang extends BaseTandaTerimaBarang
+class TandaTerimaBarang extends BaseTandaTerimaBarang implements MasterDetailsInterface
 {
 
     use NomorSuratTrait;
@@ -25,48 +26,105 @@ class TandaTerimaBarang extends BaseTandaTerimaBarang
     const STATUS_TEMPORARY = 'status-temporary';
     const STATUS_FINAL = 'status-final';
 
-    public function behaviors()
-    {
-        return ArrayHelper::merge(
-            parent::behaviors(),
-            [
-                # custom behaviors
-                [
-                    'class' => 'mdm\autonumber\Behavior',
-                    'attribute' => 'nomor', // required
-                    'value' => '?' . '/IFTJKT/TRM-BRG/' . date('m/Y'), // format auto number. '?' will be replaced with generated number
-                    'digit' => 4
-                ],
-            ]
-        );
-    }
-
-    public function rules()
-    {
-        return ArrayHelper::merge(
-            parent::rules(),
-            [
-                # custom validation rules
-            ]
-        );
-    }
-
     /**
-     * @return ActiveQuery
+     * @param array $modelsDetail
+     * @return array
      */
-    public function getTandaTerimaBarangDetails(): ActiveQuery
+    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    public function createWithDetails(array $modelsDetail): array
     {
-        return $this->hasMany(TandaTerimaBarangDetail::class, ['material_requisition_detail_penawaran_id' => 'id'])
-            ->via('materialRequisitionDetailPenawarans');
+
+        $transaction = self::getDb()->beginTransaction();
+        try {
+
+            if ($flag = $this->save(false)) {
+                foreach ($modelsDetail as $detail) :
+
+                    if ($flag === false) {
+                        break;
+                    }
+
+                    $detail->tanda_terima_barang_id = $this->id;
+                    if (!($flag = $detail->save(false))) {
+                        break;
+                    }
+
+                endforeach;
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                $status = [
+                    'code' => 1,
+                    'message' => 'Commit'
+                ];
+            } else {
+                $transaction->rollBack();
+                $status = [
+                    'code' => 0,
+                    'message' => 'Roll Back'
+                ];
+            }
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            $status = [
+                'code' => 0,
+                'message' => 'Roll Back ' . $e->getMessage(),
+            ];
+        }
+
+        return $status;
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getPurchaseOrder(): ActiveQuery
+    #[ArrayShape(['code' => "int", 'message' => "string"])]
+    public function updateWithDetails($modelsDetail, $deletedDetailsID): array
     {
-        return $this->hasOne(PurchaseOrder::class, ['id' => 'purchase_order_id'])
-            ->via('materialRequisitionDetailPenawarans');
+        $transaction = self::getDb()->beginTransaction();
+        try {
+
+            if ($flag = $this->save(false)) {
+
+
+                if (!empty($deletedDetailsID)) {
+                    MaterialRequisitionDetailPenawaran::deleteAll(['id' => $deletedDetailsID]);
+                }
+
+                foreach ($modelsDetail as $i => $detail) :
+
+                    if ($flag === false) {
+                        break;
+                    }
+
+                    $detail->tanda_terima_barang_id = $this->id;
+                    if (!($flag = $detail->save(false))) {
+                        break;
+                    }
+
+                endforeach;
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                $status = [
+                    'code' => 1,
+                    'message' => 'Commit'
+                ];
+            } else {
+                $transaction->rollBack();
+                $status = [
+                    'code' => 0,
+                    'message' => 'Roll Back'
+                ];
+            }
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            $status = [
+                'code' => 0,
+                'message' => 'Roll Back ' . $e->getMessage(),
+            ];
+        }
+
+        return $status;
     }
 
     #[ArrayShape(['code' => "int", 'message' => "string"])]
@@ -101,12 +159,38 @@ class TandaTerimaBarang extends BaseTandaTerimaBarang
         return $status;
     }
 
+    public function behaviors(): array
+    {
+        return ArrayHelper::merge(
+            parent::behaviors(),
+            [
+                # custom behaviors
+                [
+                    'class' => 'mdm\autonumber\Behavior',
+                    'attribute' => 'nomor', // required
+                    'value' => '?' . '/IFTJKT/TRM-BRG/' . date('m/Y'), // format auto number. '?' will be replaced with generated number
+                    'digit' => 4
+                ],
+            ]
+        );
+    }
+
+    public function rules()
+    {
+        return ArrayHelper::merge(
+            parent::rules(),
+            [
+                # custom validation rules
+            ]
+        );
+    }
+
     /**
      * @return string
      */
-    public function getStatusInHtmlLabel(): string
+    public function getStatusPesananYangSudahDiterimaInHtmlFormat(): string
     {
-        return $this->getStatus()
+        return $this->getStatusPesananYangSudahDiterima()
             ? Html::tag('span', SVGIconEnum::CHECK->value . ' ' . TandaTerimaStatusEnum::COMPLETED->value, [
                 'class' => 'badge bg-primary',
                 'title' => $this->nomor
@@ -116,139 +200,33 @@ class TandaTerimaBarang extends BaseTandaTerimaBarang
             ]);
     }
 
-    /**
-     * @return bool
-     */
-    public function getStatus(): bool
+    public function getStatusPesananYangSudahDiterima(): bool
     {
-        $statusMaterialRequestDetailPenawaransDenganTandaTerimaDetail = [];
-        foreach ($this->materialRequisitionDetailPenawarans as $materialRequisitionDetailPenawaran) {
-            $statusMaterialRequestDetailPenawaransDenganTandaTerimaDetail[] = $materialRequisitionDetailPenawaran->getStatusPenerimaan();
+        $statusTandaTerimaDetail = [];
+        foreach ($this->tandaTerimaBarangDetails as $tandaTerimaBarangDetail) {
+            $statusTandaTerimaDetail[] = $tandaTerimaBarangDetail->materialRequisitionDetailPenawaran->getStatusPenerimaan();
         }
-        return !in_array(false, $statusMaterialRequestDetailPenawaransDenganTandaTerimaDetail);
+
+        return !in_array(false, $statusTandaTerimaDetail);
+
     }
 
     /**
-     * @param array $modelsDetail
-     * @param $modelsDetailDetail
-     * @return array
+     * @return ActiveQuery
      */
-    #[ArrayShape(['code' => "int", 'message' => "string"])]
-    public function createWithDetails(array $modelsDetail, $modelsDetailDetail): array
+    public function getMaterialRequisitionDetailPenawarans(): ActiveQuery
     {
-
-        $transaction = self::getDb()->beginTransaction();
-        try {
-
-            if ($flag = $this->save(false)) {
-                foreach ($modelsDetail as $i => $detail) :
-
-                    if ($flag === false) {
-                        break;
-                    }
-
-                    $detail->tanda_terima_barang_id = $this->id;
-                    if (!($flag = $detail->save(false))) {
-                        break;
-                    }
-
-                    if (isset($modelsDetailDetail[$i]) && is_array($modelsDetailDetail[$i])) {
-                        foreach ($modelsDetailDetail[$i] as $modelDetailDetail) {
-                            $modelDetailDetail->material_requisition_detail_penawaran_id = $detail->id;
-                            if (!($flag = $modelDetailDetail->save(false))) {
-                                break;
-                            }
-                        }
-                    }
-
-                endforeach;
-            }
-
-            if ($flag) {
-                $transaction->commit();
-                $status = [
-                    'code' => 1,
-                    'message' => 'Commit'
-                ];
-            } else {
-                $transaction->rollBack();
-                $status = [
-                    'code' => 0,
-                    'message' => 'Roll Back'
-                ];
-            }
-        } catch (Exception $e) {
-            $transaction->rollBack();
-            $status = [
-                'code' => 0,
-                'message' => 'Roll Back ' . $e->getMessage(),
-            ];
-        }
-
-        return $status;
+        return $this->hasMany(MaterialRequisitionDetailPenawaran::class, ['id' => 'material_requisition_detail_penawaran_id'])
+            ->via('tandaTerimaBarangDetails');
     }
 
-    #[ArrayShape(['code' => "int", 'message' => "string"])]
-    public function updateWithDetails($modelsDetail, $modelsDetailDetail, $deletedDetailsID, $deletedDetailDetailsIDs): array
+    /**
+     * @return ActiveQuery
+     */
+    public function getPurchaseOrder(): ActiveQuery
     {
-        $transaction = self::getDb()->beginTransaction();
-        try {
-
-            if ($flag = $this->save(false)) {
-
-                if (!empty($deletedDetailDetailsIDs)) {
-                    TandaTerimaBarangDetail::deleteAll(['id' => $deletedDetailDetailsIDs]);
-                }
-
-                if (!empty($deletedDetailsID)) {
-                    MaterialRequisitionDetailPenawaran::deleteAll(['id' => $deletedDetailsID]);
-                }
-
-                foreach ($modelsDetail as $i => $detail) :
-
-                    if ($flag === false) {
-                        break;
-                    }
-
-                    $detail->tanda_terima_barang_id = $this->id;
-                    if (!($flag = $detail->save(false))) {
-                        break;
-                    }
-
-                    if (isset($modelsDetailDetail[$i]) && is_array($modelsDetailDetail[$i])) {
-                        foreach ($modelsDetailDetail[$i] as $modelDetailDetail) {
-                            $modelDetailDetail->material_requisition_detail_penawaran_id = $detail->id;
-                            if (!($flag = $modelDetailDetail->save(false))) {
-                                break;
-                            }
-                        }
-                    }
-
-                endforeach;
-            }
-
-            if ($flag) {
-                $transaction->commit();
-                $status = [
-                    'code' => 1,
-                    'message' => 'Commit'
-                ];
-            } else {
-                $transaction->rollBack();
-                $status = [
-                    'code' => 0,
-                    'message' => 'Roll Back'
-                ];
-            }
-        } catch (Exception $e) {
-            $transaction->rollBack();
-            $status = [
-                'code' => 0,
-                'message' => 'Roll Back ' . $e->getMessage(),
-            ];
-        }
-
-        return $status;
+        return $this->hasOne(PurchaseOrder::class, ['id' => 'purchase_order_id'])
+            ->via('materialRequisitionDetailPenawarans');
     }
 
 

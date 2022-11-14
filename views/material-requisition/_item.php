@@ -42,6 +42,7 @@ use yii\widgets\ListView;
     <?php endif; ?>
     <?php
     try {
+
         echo ListView::widget([
             'dataProvider' => new ArrayDataProvider([
                 'allModels' => $model->getMaterialRequisitionDetailsGroupingByTipePembelian()

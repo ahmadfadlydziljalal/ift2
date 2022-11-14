@@ -17,7 +17,7 @@ return [
         'class' => 'kartik\grid\ExpandRowColumn',
         'width' => '50px',
         'detailUrl' => Url::toRoute(['tanda-terima-barang/expand-item']),
-        'expandOneOnly' => true,
+        'expandOneOnly' => false,
         'header' => '',
     ],
     [
@@ -30,18 +30,30 @@ return [
         }
     ],
     [
-        'header' => 'Status',
-        'format' => 'raw',
-        'value' => function ($model) {
-            /** @var TandaTerimaBarang $model */
-            return $model->getStatusInHtmlLabel();
-        }
-    ],
-    [
         'class' => 'yii\grid\DataColumn',
         'attribute' => 'tanggal',
         'format' => 'date',
     ],
+    [
+        'class' => 'yii\grid\DataColumn',
+        'attribute' => 'nomorPurchaseOrder',
+        'header' => 'Purchase Order',
+        'format' => 'raw',
+        'value' => function ($model) {
+            /** @var TandaTerimaBarang $model */
+            return empty($model->purchaseOrder) ? ''
+                : $model->purchaseOrder->nomor;
+        }
+    ],
+    [
+        'header' => 'Status P.O',
+        'format' => 'raw',
+        'value' => function ($model) {
+            /** @var TandaTerimaBarang $model */
+            return $model->getStatusPesananYangSudahDiterimaInHtmlFormat();
+        }
+    ],
+
     /* [
          'class' => 'yii\grid\DataColumn',
          'attribute' => 'catatan',
@@ -57,15 +69,15 @@ return [
          'attribute' => 'messenger',
          'format' => 'text',
      ],*/
-    [
-        'attribute' => 'nomorPurchaseOrder',
-        'header' => 'Nomor P.O',
-        'format' => 'raw',
-        'value' => function ($model) {
-            /** @var TandaTerimaBarang $model */
-            return !empty($model->purchaseOrder) ? $model->purchaseOrder->getNomorDisplay() : '';
-        }
-    ],
+//    [
+//        'attribute' => 'nomorPurchaseOrder',
+//        'header' => 'Nomor P.O',
+//        'format' => 'raw',
+//        'value' => function ($model) {
+//            /** @var TandaTerimaBarang $model */
+//            return !empty($model->purchaseOrder) ? $model->purchaseOrder->getNomorDisplay() : '';
+//        }
+//    ],
     // [
     // 'class'=>'yii\grid\DataColumn',
     // 'attribute'=>'acknowledge_by_id',

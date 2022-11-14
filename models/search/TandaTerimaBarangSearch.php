@@ -41,10 +41,12 @@ class TandaTerimaBarangSearch extends TandaTerimaBarang
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search(array $params): ActiveDataProvider
     {
         $query = TandaTerimaBarang::find()
-            ->joinWith('purchaseOrder');
+            ->joinWith(['materialRequisitionDetailPenawarans' => function ($mrdp) {
+                $mrdp->joinWith('purchaseOrder');
+            }]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

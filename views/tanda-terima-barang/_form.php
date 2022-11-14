@@ -1,7 +1,7 @@
 <?php
 
 use app\models\Card;
-use app\models\MaterialRequisitionDetailPenawaran;
+use app\models\TandaTerimaBarangDetail;
 use kartik\datecontrol\DateControl;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\bootstrap5\ActiveForm;
@@ -53,56 +53,74 @@ use yii\helpers\Html;
 
         <div class="form-detail">
 
-            <?php DynamicFormWidget::begin([
+            <?php
+            DynamicFormWidget::begin([
                 'widgetContainer' => 'dynamicform_wrapper',
-                'widgetBody' => '.container-items', // required: css class selector
-                'widgetItem' => '.item', // required: css class
-                'limit' => 100, // the maximum times, an element can be cloned (default 999)
-                'min' => 1, // 0 or 1 (default 1)
-                'insertButton' => '.add-item', // css class
-                'deleteButton' => '.remove-item', // css class
+                'widgetBody' => '.container-items',
+                'widgetItem' => '.item',
+                'limit' => 100,
+                'min' => 1,
+                'insertButton' => '.add-item',
+                'deleteButton' => '.remove-item',
                 'model' => $modelsDetail[0],
                 'formId' => 'dynamic-form',
-                'formFields' => ['id', 'material_requisition_detail_id', 'vendor_id', 'mata_uang_id', 'quantity_pesan', 'harga_penawaran', 'status_id', 'purchase_order_id', 'tanda_terima_barang_id', 'created_at', 'updated_at', 'created_by', 'updated_by',],
-            ]); ?>
+                'formFields' => ['id', 'tanda_terima_barang_id', 'material_requisition_detail_penawaran_id', 'quantity_terima',],
+            ]);
+            ?>
 
-            <div class="container-items">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Barang</th>
+                        <th scope="col">Satuan</th>
+                        <th scope="col">Quantity Pesan</th>
+                        <th scope="col">Quantity terima</th>
+                    </tr>
+                    </thead>
 
-                <?php /** @var MaterialRequisitionDetailPenawaran $modelDetail */
-                foreach ($modelsDetail as $i => $modelDetail): ?>
-                    <div class="card mb-4 item">
+                    <tbody class="container-items">
 
-                        <?php if (!$modelDetail->isNewRecord) {
-                            echo Html::activeHiddenInput($modelDetail, "[$i]id");
-                        } ?>
-                        <?php echo Html::activeHiddenInput($modelDetail, "[$i]material_requisition_detail_id") ?>
-                        <?php echo Html::activeHiddenInput($modelDetail, "[$i]vendor_id") ?>
-                        <?php echo Html::activeHiddenInput($modelDetail, "[$i]mata_uang_id") ?>
-                        <?php echo Html::activeHiddenInput($modelDetail, "[$i]quantity_pesan") ?>
-                        <?php echo Html::activeHiddenInput($modelDetail, "[$i]harga_penawaran") ?>
-                        <?php echo Html::activeHiddenInput($modelDetail, "[$i]status_id") ?>
-                        <?php echo Html::activeHiddenInput($modelDetail, "[$i]material_requisition_detail_id") ?>
+                    <?php /** @var TandaTerimaBarangDetail $modelDetail */
+                    foreach ($modelsDetail as $i => $modelDetail): ?>
+                        <tr class="item">
+
+                            <td style="width: 2px;" class="align-middle">
+                                <?php if (!$modelDetail->isNewRecord) {
+                                    echo Html::activeHiddenInput($modelDetail, "[$i]id");
+                                } ?>
+                                <?php echo Html::activeHiddenInput($modelDetail, "[$i]material_requisition_detail_penawaran_id"); ?>
+                                <i class="bi bi-arrow-right-short"></i>
+                            </td>
+
+                            <td style="vertical-align: middle">
+                                <?= $modelDetail->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->nama ?>
+                            </td>
+
+                            <td style="vertical-align: middle">
+                                <?= $modelDetail->materialRequisitionDetailPenawaran->materialRequisitionDetail->satuan->nama ?>
+                            </td>
+
+                            <td style="vertical-align: middle">
+                                <?= $modelDetail->materialRequisitionDetailPenawaran->quantity_pesan ?>
+                            </td>
+
+                            <td>
+                                <?= $form->field($modelDetail, "[$i]quantity_terima", [
+                                        'template' => '{input}{error}{hint}',
+                                        'options' => ['class' => null]]
+                                ); ?>
+                            </td>
 
 
-                        <div class="card-body">
-                            <p class="fw-bolder">
-                                Pemesanan: <?= $modelDetail->materialRequisitionDetail->barang->nama ?>
-                                <span class="badge bg-info rounded-circle"> <?= $modelDetail->quantity_pesan ?> </span>
-                                <span class="badge bg-info rounded-circle"> <?= $modelDetail->materialRequisitionDetail->satuan->nama ?> </span>
-                            </p>
-                            <?php echo $this->render('_form-detail-detail', [
-                                'form' => $form,
-                                'i' => $i,
-                                'modelsDetailDetail' => $modelsDetailDetail[$i],
-                            ]) ?>
+                        </tr>
+                    <?php endforeach; ?>
 
-                        </div>
+                    </tbody>
 
-                    </div>
-
-                <?php endforeach; ?>
+                </table>
             </div>
-
 
             <?php DynamicFormWidget::end(); ?>
 

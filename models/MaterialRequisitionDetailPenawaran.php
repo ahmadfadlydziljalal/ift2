@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\enums\TandaTerimaStatusEnum;
 use app\models\base\MaterialRequisitionDetailPenawaran as BaseMaterialRequisitionDetailPenawaran;
+use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -16,8 +17,9 @@ use yii\helpers\Json;
 class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPenawaran
 {
 
-    public ?string $asOptionList = null;
+    public float|int|null $totalQuantitySudahDiterima = null;
 
+    public ?string $asOptionList = null;
 
     public function behaviors(): array
     {
@@ -82,16 +84,21 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
 
     public function getStatusPenerimaan(): bool
     {
-        $totalQuantityTerima = array_column(ArrayHelper::toArray($this->tandaTerimaBarangDetails), 'quantity_terima');
         return $this->quantity_pesan == $this->getTotalQuantitySudahDiTerima();
     }
 
     public function getTotalQuantitySudahDiTerima(): float|int
     {
-        return
-            array_sum(
-                array_column(ArrayHelper::toArray($this->tandaTerimaBarangDetails), 'quantity_terima')
-            );
+        return array_sum(array_column(ArrayHelper::toArray($this->tandaTerimaBarangDetails), 'quantity_terima'));
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTandaTerimaBarang(): ActiveQuery
+    {
+        return $this->hasOne(TandaTerimaBarang::class, ['tanda_terima_barang_id' => 'id'])
+            ->via('tandaTerimaBarangDetails');
     }
 
 }

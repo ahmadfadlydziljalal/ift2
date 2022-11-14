@@ -59,13 +59,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'attributes' => [
                         'nomor',
-//                        [
-//                            'attribute' => 'vendor_id',
-//                            'value' => $model->vendor->nama
-//                        ],
                         [
                             'attribute' => 'statusTandaTerima',
-                            'value' => $model->getStatusTandaTerimaInHtmlLabel(),
+                            'value' => $model->getStatusTandaTerimaBarangsAsHtml(),
+                            'format' => 'raw'
+                        ],
+                        [
+                            'label' => 'Tanda Terima',
+                            'value' => $model->getNomorTandaTerimaColumnsAsHtml(),
                             'format' => 'raw'
                         ],
                         'tanggal:date',

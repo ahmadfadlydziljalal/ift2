@@ -42,19 +42,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 
-    <?php try {
-        echo GridView::widget([
-            'dataProvider' => $dataProvider,
-            'filterModel' => $searchModel,
-            'columns' => require(__DIR__ . '/_columns.php'),
-            'panel' => false,
-            'bordered' => true,
-            'striped' => false,
-            'headerContainer' => [],
-        ]);
-    } catch (Exception $e) {
-        echo $e->getTraceAsString();
-    }
+    <?php echo GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => require(__DIR__ . '/_columns.php'),
+        'panel' => false,
+        'bordered' => true,
+        'striped' => false,
+        'headerContainer' => [],
+    ]);
     ?>
 
 </div>

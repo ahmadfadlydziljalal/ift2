@@ -51,8 +51,9 @@ class PurchaseOrderSearch extends PurchaseOrder
             ->joinWith(['materialRequisitionDetail' => function ($mrd) {
                 $mrd->joinWith('materialRequisition');
             }])
-            ->joinWith('tandaTerimaBarang')
-            ->joinWith('vendor');
+//            ->joinWith('tandaTerimaBarangs')
+//            ->joinWith('vendor')
+        ;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

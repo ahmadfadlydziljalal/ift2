@@ -5,5 +5,12 @@
 
 body {
   overflow-x: hidden;
-  background-color: vars.$page;
+  //background-color: vars.$page;
+  background-image: linear-gradient(to bottom,
+          vars.$success 0%,
+          vars.$warning 25%,
+          vars.$info 50%,
+          vars.$warning 75%,
+          vars.$warning 100%
+  );
 }

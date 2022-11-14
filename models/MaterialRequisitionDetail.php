@@ -5,11 +5,14 @@ namespace app\models;
 use app\enums\TipePembelianEnum;
 use app\models\base\MaterialRequisitionDetail as BaseMaterialRequisitionDetail;
 use JetBrains\PhpStorm\ArrayShape;
+use yii\db\ActiveQuery;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "material_requisition_detail".
+ * @property TandaTerimaBarangDetail[] $tandaTerimaBarangDetails
+ * @property TandaTerimaBarang[] $tandaTerimaBarangs
  */
 class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
 {
@@ -214,6 +217,32 @@ class MaterialRequisitionDetail extends BaseMaterialRequisitionDetail
         }
 
         return $status;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getMaterialRequisitionDetailPenawarans()
+    {
+        return $this->hasMany(MaterialRequisitionDetailPenawaran::class, ['material_requisition_detail_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTandaTerimaBarangDetails(): ActiveQuery
+    {
+        return $this->hasMany(TandaTerimaBarangDetail::class, ['material_requisition_detail_penawaran_id' => 'id'])
+            ->via('materialRequisitionDetailPenawarans');
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTandaTerimaBarangs(): ActiveQuery
+    {
+        return $this->hasMany(TandaTerimaBarang::class, ['id' => 'tanda_terima_barang_id'])
+            ->via('tandaTerimaBarangDetails');
     }
 
 

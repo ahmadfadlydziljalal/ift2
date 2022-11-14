@@ -10,7 +10,7 @@ return [
     ],
     [
         'class' => DataColumn::class,
-        'header' => 'Material Requisition',
+        'header' => 'Vendor',
         'value' => function ($model) {
             /** @var MaterialRequisitionDetailPenawaran $model */
             return $model->vendor->nama;

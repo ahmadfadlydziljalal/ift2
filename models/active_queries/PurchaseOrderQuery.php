@@ -35,27 +35,39 @@ class PurchaseOrderQuery extends ActiveQuery
      */
     public function mapListForCreateTandaTerima(): array
     {
-        $subQuery = (new Query())
+        $subQueryPemesanan = (new Query())
             ->select([
                 'id' => 'po.id',
                 'nomor' => 'po.nomor',
-                'quantity_terima' => new Expression("COALESCE(ttbd.quantity_terima, 0)"),
+                'total_quantity_pesan' => new Expression("COALESCE(SUM(quantity_pesan), 0)")
+
             ])
             ->from(['po' => 'purchase_order'])
-            ->leftJoin(
-                ['mrdp' => 'material_requisition_detail_penawaran'],
-                'po.id = mrdp.purchase_order_id')
-            ->leftJoin(
-                ['ttbd' => 'tanda_terima_barang_detail'],
-                'mrdp.id = ttbd.material_requisition_detail_penawaran_id'
-            )
-            ->where(new Expression("COALESCE(ttbd.quantity_terima, 0) = 0"));
+            ->leftJoin(['mrdp' => 'material_requisition_detail_penawaran'], 'po.id = mrdp.purchase_order_id')
+            ->groupBy('po.id');
+
+        $subQueryPenerimaan = (new Query())
+            ->select([
+                'id' => 'po.id',
+                'nomor' => 'po.nomor',
+                'total_quantity_terima' => new Expression("COALESCE(SUM(ttbd.quantity_terima), 0)")
+            ])
+            ->from(['po' => 'purchase_order'])
+            ->leftJoin(['mrdp' => 'material_requisition_detail_penawaran'], 'po.id = mrdp.purchase_order_id')
+            ->leftJoin(['ttbd' => 'tanda_terima_barang_detail'], 'mrdp.id = ttbd.material_requisition_detail_penawaran_id')
+            ->groupBy('po.id');
 
         $data = (new Query())
-            ->select('id, nomor')
-            ->from(['po_with_qty_pesan_terima' => $subQuery])
-            ->groupBy('po_with_qty_pesan_terima.id');
-        
+            ->select([
+                'id' => 'pemesanan.id',
+                'nomor' => 'pemesanan.nomor',
+            ])
+            ->from(['pemesanan' => $subQueryPemesanan])
+            ->innerJoin(['penerimaan' => $subQueryPenerimaan], 'penerimaan.id =  pemesanan.id')
+            ->where("total_quantity_pesan != total_quantity_terima");
+
+        //die($data->createCommand()->rawSql);
+
         return ArrayHelper::map($data->all(), 'id', 'nomor');
     }
 

@@ -1,7 +1,7 @@
 <?php
 
-use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\TandaTerimaBarang;
+use app\models\TandaTerimaBarangDetail;
 use kartik\grid\DataColumn;
 use kartik\grid\GridView;
 use kartik\grid\SerialColumn;
@@ -26,7 +26,7 @@ use yii\web\View;
             </div>
 
             <p class="font-weight-bold">
-                Status : <?= $model->getStatusInHtmlLabel() ?>
+                Status : <?= $model->getStatusPesananYangSudahDiterimaInHtmlFormat() ?>
             </p>
         </div>
 
@@ -61,10 +61,10 @@ use yii\web\View;
     <div style="clear: both"></div>
 
     <div class="mb-1" style="width: 100%">
-        <?php if (!empty($model->materialRequisitionDetailPenawarans)) : ?>
+        <?php if (!empty($model->tandaTerimaBarangDetails)) : ?>
             <?= GridView::widget([
                 'dataProvider' => new ActiveDataProvider([
-                    'query' => $model->getMaterialRequisitionDetailPenawarans(),
+                    'query' => $model->getTandaTerimaBarangDetails(),
                     'pagination' => false,
                     'sort' => false
                 ]),
@@ -78,8 +78,8 @@ use yii\web\View;
                         'vAlign' => 'middle',
                         'header' => 'Part Number',
                         'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->barang->part_number;
+                            /** @var TandaTerimaBarangDetail $model */
+                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->part_number;
                         }
                     ],
                     [
@@ -87,8 +87,8 @@ use yii\web\View;
                         'vAlign' => 'middle',
                         'header' => 'IFT Number',
                         'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->barang->ift_number;
+                            /** @var TandaTerimaBarangDetail $model */
+                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->ift_number;
                         }
                     ],
                     [
@@ -96,8 +96,8 @@ use yii\web\View;
                         'vAlign' => 'middle',
                         'header' => 'Merk',
                         'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->barang->merk_part_number;
+                            /** @var TandaTerimaBarangDetail $model */
+                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->merk_part_number;
                         }
                     ],
                     [
@@ -105,32 +105,32 @@ use yii\web\View;
                         'vAlign' => 'middle',
                         'header' => 'Description',
                         'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->barang->nama;
+                            /** @var TandaTerimaBarangDetail $model */
+                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->nama;
                         }
                     ],
-                    [
-                        'class' => DataColumn::class,
-                        'vAlign' => 'middle',
-                        'header' => 'Order',
-                        'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->quantity_pesan;
-                        },
-                        'contentOptions' => [
-                            'class' => 'text-end border-end-0'
-                        ],
-                        'headerOptions' => [
-                            'class' => 'text-end border-end-0'
-                        ]
-                    ],
+//                    [
+//                        'class' => DataColumn::class,
+//                        'vAlign' => 'middle',
+//                        'header' => 'Order',
+//                        'value' => function ($model) {
+//                            /** @var TandaTerimaBarangDetail $model */
+//                            return $model->materialRequisitionDetailPenawaran->quantity_pesan;
+//                        },
+//                        'contentOptions' => [
+//                            'class' => 'text-end border-end-0'
+//                        ],
+//                        'headerOptions' => [
+//                            'class' => 'text-end border-end-0'
+//                        ]
+//                    ],
                     [
                         'class' => DataColumn::class,
                         'vAlign' => 'middle',
                         'header' => '',
                         'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->satuan->nama;
+                            /** @var TandaTerimaBarangDetail $model */
+                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->satuan->nama;
                         },
                         'contentOptions' => [
                             'class' => 'text-end border-start-0'
@@ -145,8 +145,8 @@ use yii\web\View;
                         'format' => ['decimal', 2],
                         'vAlign' => 'middle',
                         'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->totalQuantitySudahDiTerima;
+                            /** @var TandaTerimaBarangDetail $model */
+                            return $model->quantity_terima;
                         },
                         'contentOptions' => [
                             'class' => 'text-end border-end-0'
@@ -160,8 +160,8 @@ use yii\web\View;
                         'vAlign' => 'middle',
                         'header' => '',
                         'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->materialRequisitionDetail->satuan->nama;
+                            /** @var TandaTerimaBarangDetail $model */
+                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->satuan->nama;
                         },
                         'contentOptions' => [
                             'class' => 'text-end border-start-0'
@@ -176,8 +176,8 @@ use yii\web\View;
                         'header' => 'Status',
                         'format' => 'raw',
                         'value' => function ($model) {
-                            /** @var MaterialRequisitionDetailPenawaran $model */
-                            return $model->getStatusPenerimaanInHtmlLabel('small');
+                            /** @var TandaTerimaBarangDetail $model */
+                            return $model->materialRequisitionDetailPenawaran->getStatusPenerimaanInHtmlLabel('small');
                         },
                         'contentOptions' => [
                             'class' => 'text-end'
@@ -197,7 +197,18 @@ use yii\web\View;
         <table class="table table-grid-view table-bordered">
             <tbody>
             <tr class="text-center">
-                <td rowspan="3" style="width: 40%">Remarks</td>
+                <td rowspan="3" style="width: 40%">
+                    Remarks<br/>
+                    <?php $dataAngsur = $model->purchaseOrder->nomorTandaTerimaColumns ?>
+                    <?php if (count($dataAngsur) > 1) : ?>
+                        <p>By Sistem: P.O diangsur beberapa kali tanda terima sebagai berikut:
+                            <?php foreach ($dataAngsur as $nomorTandaTerimaBarang) : ?>
+                                <?= $nomorTandaTerimaBarang . '<br/>' ?>
+                            <?php endforeach; ?>
+                        </p>
+
+                    <?php endif ?>
+                </td>
                 <td style="height: 100px; white-space: nowrap">Received By</td>
                 <td style="height: 100px">Messenger</td>
                 <td style="white-space: nowrap">Acknowledge By</td>
@@ -221,6 +232,6 @@ use yii\web\View;
     </div>
 
     <div style="clear: both"></div>
-    <p>** Jika barang yang diterima belum sesuai, harap supplier atau vendor membawa tanda terima ini lagi untuk tanda
-        terima selanjutnya.</p>
+
+
 </div>

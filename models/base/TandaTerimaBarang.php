@@ -25,7 +25,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $updated_by
  *
  * @property \app\models\Card $acknowledgeBy
- * @property \app\models\MaterialRequisitionDetailPenawaran[] $materialRequisitionDetailPenawarans
+ * @property \app\models\TandaTerimaBarangDetail[] $tandaTerimaBarangDetails
  * @property string $aliasModel
  */
 abstract class TandaTerimaBarang extends \yii\db\ActiveRecord
@@ -115,9 +115,9 @@ abstract class TandaTerimaBarang extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMaterialRequisitionDetailPenawarans()
+    public function getTandaTerimaBarangDetails()
     {
-        return $this->hasMany(\app\models\MaterialRequisitionDetailPenawaran::class, ['tanda_terima_barang_id' => 'id']);
+        return $this->hasMany(\app\models\TandaTerimaBarangDetail::class, ['tanda_terima_barang_id' => 'id']);
     }
 
 

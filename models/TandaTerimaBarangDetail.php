@@ -3,8 +3,6 @@
 namespace app\models;
 
 use app\models\base\TandaTerimaBarangDetail as BaseTandaTerimaBarangDetail;
-use Yii;
-use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -33,24 +31,5 @@ class TandaTerimaBarangDetail extends BaseTandaTerimaBarangDetail
         );
     }
 
-    public function beforeSave($insert): bool
-    {
-        $this->tanggal = !empty($this->tanggal) ? Yii::$app->formatter->asDate($this->tanggal, 'php:Y-m-d') : null;
-        return parent::beforeSave($insert);
-    }
 
-    public function afterFind()
-    {
-        parent::afterFind();
-        $this->tanggal = Yii::$app->formatter->asDate($this->tanggal);
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getTandaTerimaBarang(): ActiveQuery
-    {
-        return $this->hasOne(TandaTerimaBarang::class, ['id' => 'tanda_terima_barang_id'])
-            ->via('materialRequisitionDetailPenawaran');
-    }
 }
