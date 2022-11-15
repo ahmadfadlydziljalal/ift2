@@ -18,10 +18,6 @@ $config = [
             'region' => 'sgp1',
             'version' => 'latest',
             'endpoint' => 'https://sgp1.digitaloceanspaces.com',
-            //'endpoint' => 'https://files.tsurumaru.online.sgp1.digitaloceanspaces.com',
-            // 'prefix' => 'your-prefix',
-            // 'options' => [],
-            // 'endpoint' => 'http://my-custom-url'
         ],
         'authManager' => require __DIR__ . '/auth_manager.php',
         'cache' => require __DIR__ . '/cache.php',

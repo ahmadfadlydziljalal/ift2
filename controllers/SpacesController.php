@@ -41,19 +41,27 @@ class SpacesController extends Controller
         ];
     }
 
-
-    public function actionIndex($path = null)
+    /**
+     * @param $path
+     * @return string
+     */
+    public function actionIndex($path = null): string
     {
-        $contents = Yii::$app->aws->listContents((!isset($path)
-            ? Yii::$app->params['awsRootPath']
-            : $path)
+        $contents = Yii::$app->aws->listContents(
+            (
+            !isset($path)
+                ? Yii::$app->params['awsRootPath']
+                : $path
+            ), true
         );
+
         return $this->render('index', [
             'contents' => $contents
         ]);
     }
 
     /**
+     * @param $root
      * @return Response|string
      */
     public function actionCreateNewFolder($root = null): Response|string
