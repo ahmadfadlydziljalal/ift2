@@ -1,6 +1,8 @@
 <?php
 
 
+use app\components\AwsS3Filesystem;
+
 $params = require __DIR__ . '/params.php';
 
 $config = [
@@ -11,14 +13,18 @@ $config = [
     'components' => [
         'assetManager' => require __DIR__ . '/asset_manager.php',
         'aws' => [
-            'class' => 'creocoder\flysystem\AwsS3Filesystem',
+            'class' => AwsS3Filesystem::class,
             'key' => getenv('SPACES_DO_KEY'),
             'secret' => getenv('SPACES_DO_SECRET'),
             'bucket' => 'files.tsurumaru.online',
             'region' => 'sgp1',
             'version' => 'latest',
             'endpoint' => 'https://sgp1.digitaloceanspaces.com',
-            'prefix' => "/"
+            'prefix' => "",
+            'options' => [
+                'Delimiter' => ''
+            ],
+
         ],
         'authManager' => require __DIR__ . '/auth_manager.php',
         'cache' => require __DIR__ . '/cache.php',

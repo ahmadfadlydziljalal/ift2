@@ -51,8 +51,8 @@ class SpacesController extends Controller
         /** @var $aws AwsS3Filesystem */
         $aws = Yii::$app->aws;
         $path = (!isset($path) ? Yii::$app->params['awsRootPath'] : $path);
-
-        $contents = $aws->listContents($path, true);
+        $contents = $aws->listContents($path);
+        
         return $this->render('index', [
             'contents' => $contents
         ]);
