@@ -35,10 +35,10 @@
     "kartik-v/yii2-number": "dev-master",
     "kartik-v/yii2-widget-depdrop": "dev-master",
     "kartik-v/yii2-widget-fileinput": "dev-master",
-    "creocoder/yii2-flysystem": "^1.1",
-    "league/flysystem-aws-s3-v3": "~1.0",
     "bilberrry/yii2-digitalocean-spaces": "^0.1.3",
-    "pa3py6aka/yii2-modal-alert-widget": "^1.4"
+    "pa3py6aka/yii2-modal-alert-widget": "^1.4",
+    "creocoder/yii2-flysystem": "dev-master",
+    "league/flysystem-aws-s3-v3": "~1.0"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use bilberrry\spaces\Service;
+use creocoder\flysystem\AwsS3Filesystem;
 use Yii;
 use yii\base\DynamicModel;
 use yii\base\InvalidConfigException;
@@ -47,14 +48,11 @@ class SpacesController extends Controller
      */
     public function actionIndex($path = null): string
     {
-        $contents = Yii::$app->aws->listContents(
-            (
-            !isset($path)
-                ? Yii::$app->params['awsRootPath']
-                : $path
-            ), true
-        );
+        /** @var $aws AwsS3Filesystem */
+        $aws = Yii::$app->aws;
+        $path = (!isset($path) ? Yii::$app->params['awsRootPath'] : $path);
 
+        $contents = $aws->listContents($path, true);
         return $this->render('index', [
             'contents' => $contents
         ]);
