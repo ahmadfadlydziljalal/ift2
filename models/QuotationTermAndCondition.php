@@ -2,18 +2,15 @@
 
 namespace app\models;
 
-use app\models\base\Rekening as BaseRekening;
+use Yii;
+use \app\models\base\QuotationTermAndCondition as BaseQuotationTermAndCondition;
 use yii\helpers\ArrayHelper;
 
 /**
- * This is the model class for table "rekening".
+ * This is the model class for table "quotation_term_and_condition".
  */
-class Rekening extends BaseRekening
+class QuotationTermAndCondition extends BaseQuotationTermAndCondition
 {
-
-
-    public ?string $nomorNomorRekeningBank = null;
-    public ?string $cardNama = null;
 
     public function behaviors()
     {

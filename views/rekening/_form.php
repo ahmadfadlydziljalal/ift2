@@ -1,7 +1,10 @@
 <?php
-use yii\helpers\Html;
-use yii\bootstrap5\ActiveForm;
+
+use app\models\Card;
+use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
+use yii\bootstrap5\ActiveForm;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Rekening */
@@ -12,25 +15,25 @@ use wbraganca\dynamicform\DynamicFormWidget;
 <div class="rekening-form">
 
     <?php $form = ActiveForm::begin([
-            'id' => 'dynamic-form',
-            'layout' => ActiveForm::LAYOUT_HORIZONTAL,
-            'fieldConfig' => [
-                'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
-                'horizontalCssClasses' => [
-                    'label' => 'col-sm-4 col-form-label',
-                    'offset' => 'offset-sm-4',
-                    'wrapper' => 'col-sm-8',
-                    'error' => '',
-                    'hint' => '',
-                ],
+        'id' => 'dynamic-form',
+        'layout' => ActiveForm::LAYOUT_HORIZONTAL,
+        'fieldConfig' => [
+            'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
+            'horizontalCssClasses' => [
+                'label' => 'col-sm-4 col-form-label',
+                'offset' => 'offset-sm-4',
+                'wrapper' => 'col-sm-8',
+                'error' => '',
+                'hint' => '',
             ],
+        ],
 
-            /*'layout' => ActiveForm::LAYOUT_FLOATING,
-            'fieldConfig' => [
-                'options' => [
-                'class' => 'form-floating'
-                ]
-            ]*/
+        /*'layout' => ActiveForm::LAYOUT_FLOATING,
+        'fieldConfig' => [
+            'options' => [
+            'class' => 'form-floating'
+            ]
+        ]*/
     ]); ?>
 
     <div class="d-flex flex-column mt-0" style="gap: 1rem">
@@ -38,17 +41,23 @@ use wbraganca\dynamicform\DynamicFormWidget;
         <div class="form-master">
             <div class="row">
                 <div class="col-12 col-lg-7">
-                    <?= $form->field($model, 'atas_nama')->textInput([
-                    'maxlength' => true,
-                    'autofocus'=> 'autofocus'
-                ]) ?>
+                    <?= $form->field($model, 'card_id')->widget(Select2::class, [
+                        'data' => Card::find()->map(),
+                        'options' => [
+                            'placeholder' => '= Pilih salah satu ='
+                        ]
+                    ]) ?>
+                    <?= $form->field($model, 'atas_nama')->textarea([
+                        'rows' => 6,
+                        'autofocus' => 'autofocus'
+                    ]) ?>
                 </div>
             </div>
         </div>
 
         <div class="form-detail">
 
-            <?php 
+            <?php
             DynamicFormWidget::begin([
                 'widgetContainer' => 'dynamicform_wrapper',
                 'widgetBody' => '.container-items',
@@ -59,8 +68,8 @@ use wbraganca\dynamicform\DynamicFormWidget;
                 'deleteButton' => '.remove-item',
                 'model' => $modelsDetail[0],
                 'formId' => 'dynamic-form',
-                'formFields' => [ 'id',  'rekening_id',  'bank',  'nomor_rekening', ],
-                ]);
+                'formFields' => ['id', 'rekening_id', 'bank', 'nomor_rekening',],
+            ]);
             ?>
 
             <div class="table-responsive">
@@ -80,26 +89,26 @@ use wbraganca\dynamicform\DynamicFormWidget;
                     <tbody class="container-items">
 
                     <?php foreach ($modelsDetail as $i => $modelDetail): ?>
-                    <tr class="item">
+                        <tr class="item">
 
-                        <td style="width: 2px;" class="align-middle">
-                            <?php if (!$modelDetail->isNewRecord) {
-                            echo Html::activeHiddenInput($modelDetail, "[$i]id");
-                            } ?>
-                            <i class="bi bi-arrow-right-short"></i>
-                        </td>
+                            <td style="width: 2px;" class="align-middle">
+                                <?php if (!$modelDetail->isNewRecord) {
+                                    echo Html::activeHiddenInput($modelDetail, "[$i]id");
+                                } ?>
+                                <i class="bi bi-arrow-right-short"></i>
+                            </td>
 
-                        <td><?= $form->field($modelDetail, "[$i]bank", ['template' =>
-                            '{input}{error}{hint}', 'options' =>['class' => null] ]); ?></td>
-                        <td><?= $form->field($modelDetail, "[$i]nomor_rekening", ['template' =>
-                            '{input}{error}{hint}', 'options' =>['class' => null] ]); ?></td>
-                        
-                        <td>
-                            <button type="button" class="remove-item btn btn-link text-danger">
-                                <i class="bi bi-trash"> </i>
-                            </button>
-                        </td>
-                    </tr>
+                            <td><?= $form->field($modelDetail, "[$i]bank", ['template' =>
+                                    '{input}{error}{hint}', 'options' => ['class' => null]]); ?></td>
+                            <td><?= $form->field($modelDetail, "[$i]nomor_rekening", ['template' =>
+                                    '{input}{error}{hint}', 'options' => ['class' => null]]); ?></td>
+
+                            <td>
+                                <button type="button" class="remove-item btn btn-link text-danger">
+                                    <i class="bi bi-trash"> </i>
+                                </button>
+                            </td>
+                        </tr>
                     <?php endforeach; ?>
 
                     </tbody>
@@ -107,7 +116,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
                     <tfoot>
                     <tr>
                         <td class="text-end" colspan="3">
-                            <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', [ 'class' => 'add-item btn btn-success', ]); ?>
+                            <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
                         </td>
                         <td></td>
                     </tr>
@@ -115,15 +124,15 @@ use wbraganca\dynamicform\DynamicFormWidget;
                 </table>
             </div>
 
-            <?php DynamicFormWidget::end(); ?> 
+            <?php DynamicFormWidget::end(); ?>
         </div>
 
         <div class="d-flex justify-content-between">
             <?= Html::a(' Tutup', ['index'], ['class' => 'btn btn-secondary']) ?>
-            <?= Html::submitButton(' Simpan', ['class' =>'btn btn-success'])?>
+            <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
         </div>
     </div>
 
-    <?php ActiveForm::end();  ?> 
+    <?php ActiveForm::end(); ?>
 
 </div>

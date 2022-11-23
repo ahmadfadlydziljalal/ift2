@@ -32,4 +32,13 @@ class CardPersonInChargeQuery extends \yii\db\ActiveQuery
     {
         return parent::one($db);
     }
+
+    public function picAsAttendant($cardId)
+    {
+        return parent::joinWith('card')
+            ->where([
+                'card_id' => $cardId
+            ])
+            ->all();
+    }
 }

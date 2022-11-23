@@ -12,21 +12,23 @@ use yii\db\Expression;
  */
 class RekeningSearch extends Rekening
 {
+
+
     /**
      * @inheritdoc
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
-            [['id', 'created_at', 'updated_at'], 'integer'],
-            [['atas_nama', 'created_by', 'updated_by'], 'safe'],
+            [['id', 'created_at', 'updated_at', 'card_id'], 'integer'],
+            [['atas_nama', 'created_by', 'updated_by', 'cardNama'], 'safe'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios() : array
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -37,11 +39,13 @@ class RekeningSearch extends Rekening
      * @param array $params
      * @return ActiveDataProvider
      */
-    public function search(array $params) : ActiveDataProvider
+    public function search(array $params): ActiveDataProvider
     {
         $query = Rekening::find()
             ->select([
                 'id' => 'rekening.id',
+                'card_id' => 'card.id',
+                'cardNama' => 'card.nama',
                 'atas_nama' => 'rekening.atas_nama',
                 'nomorNomorRekeningBank' => new Expression("
                      JSON_ARRAYAGG(
@@ -52,9 +56,9 @@ class RekeningSearch extends Rekening
                     )
                 ")
             ])
+            ->joinWith('card', false)
             ->joinWith('rekeningDetails', false)
             ->groupBy('rekening.id');
-        ;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

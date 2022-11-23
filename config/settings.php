@@ -1,5 +1,6 @@
 <?php
 
 return [
-    'class' => 'pheme\settings\components\Settings'
+    'class' => 'pheme\settings\components\Settings',
+    'autoDecodeJson' => true
 ];
