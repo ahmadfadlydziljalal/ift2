@@ -46,13 +46,7 @@ use yii\web\View;
 
                     </div>
                     <div class="col">
-                        <?= $form->field($quotation, 'materai_fee')->widget(NumberControl::class, [
-                            'maskedInputOptions' => [
-                                'prefix' => $quotation->mataUang->singkatan,
-                                'allowMinus' => false
-                            ],
-                        ]); ?>
-
+                        
                     </div>
                 </div>
                 <div class="row row-cols-1">

@@ -17,8 +17,11 @@ use yii\web\View;
 
             <div class="d-flex flex-row flex-wrap align-items-center">
                 <div class="master border-end pe-3" style="min-width: 22rem">
-                    <h4 class="card-text"><?= $model->customer->nama ?></h4>
-                    <p class="card-title"><?= $model->nomor ?></p>
+                    <p>
+                        <?= $model->customer->nama ?> <br/>
+                        <?= $model->nomor ?>
+                    </p>
+
 
                     <small class="text-muted">
                         Valid dari <?= Yii::$app->formatter->asDate($model->tanggal) ?>
@@ -93,14 +96,14 @@ use yii\web\View;
                         'class' => 'text-decoration-none'
                     ]) ?>
                     <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete', 'id' => $model->id], [
-                        'class' => 'text-decoration-none',
+                        'class' => 'text-decoration-none text-danger',
                         'data' => [
+                            'confirm' => 'Apakah anda yakin menghapus service quotation ini ?',
                             'method' => 'post'
                         ]
                     ]) ?>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

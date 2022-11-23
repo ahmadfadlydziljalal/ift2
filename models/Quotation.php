@@ -94,10 +94,10 @@ class Quotation extends BaseQuotation
             [
                 # custom validation rules
                 [['modelsQuotationBarang'], 'required', 'on' => self::SCENARIO_CREATE_BARANG_QUOTATION],
-                [['delivery_fee', 'materai_fee', 'catatan_quotation_barang'], 'safe', 'on' => self::SCENARIO_CREATE_BARANG_QUOTATION],
+                [['delivery_fee', 'catatan_quotation_barang'], 'safe', 'on' => self::SCENARIO_CREATE_BARANG_QUOTATION],
 
                 [['modelsQuotationBarang'], 'required', 'on' => self::SCENARIO_UPDATE_BARANG_QUOTATION],
-                [['delivery_fee', 'materai_fee', 'catatan_quotation_barang', 'deletedQuotationBarangsId'], 'safe', 'on' => self::SCENARIO_UPDATE_BARANG_QUOTATION],
+                [['delivery_fee', 'catatan_quotation_barang', 'deletedQuotationBarangsId'], 'safe', 'on' => self::SCENARIO_UPDATE_BARANG_QUOTATION],
 
                 [['modelsQuotationService'], 'required', 'on' => self::SCENARIO_CREATE_SERVICE_QUOTATION],
                 [['catatan_quotation_service'], 'safe', 'on' => self::SCENARIO_CREATE_SERVICE_QUOTATION],
@@ -118,14 +118,12 @@ class Quotation extends BaseQuotation
         $scenarios[self::SCENARIO_CREATE_BARANG_QUOTATION] = [
             'modelsQuotationBarang',
             'delivery_fee',
-            'materai_fee',
             'catatan_quotation_barang',
         ];
         $scenarios[self::SCENARIO_UPDATE_BARANG_QUOTATION] = [
             'modelsQuotationBarang',
             'deletedQuotationBarangsId',
             'delivery_fee',
-            'materai_fee',
             'catatan_quotation_barang',
         ];
         $scenarios[self::SCENARIO_CREATE_SERVICE_QUOTATION] = [

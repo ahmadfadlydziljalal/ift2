@@ -4,6 +4,7 @@ use app\models\Card;
 use app\models\MataUang;
 use app\models\Rekening;
 use kartik\datecontrol\DateControl;
+use kartik\number\NumberControl;
 use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
@@ -47,7 +48,16 @@ use yii\helpers\Html;
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <?= $form->field($model, 'materai_fee')->widget(NumberControl::class, [
+                                'maskedInputOptions' => [
+                                    'allowMinus' => false
+                                ],
+                            ]); ?>
+                        </div>
+
+
+                        <div class="col-12 col-md-6 col-lg-3">
                             <?= $form->field($model, 'rekening_id')->dropDownList(Rekening::find()->mapOnlyTokoSaya()) ?>
                         </div>
                     </div>
@@ -121,6 +131,7 @@ use yii\helpers\Html;
                                 ]
                             ]) ?>
                         </div>
+
 
                     </div>
                 </div>
