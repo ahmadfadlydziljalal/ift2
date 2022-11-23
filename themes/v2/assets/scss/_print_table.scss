@@ -42,6 +42,14 @@ table {
       width: 50%;
     }
 
+    &.table-borderless {
+      border: none;
+
+      tr, td, th {
+        border: none;
+      }
+    }
+
   }
 
 }

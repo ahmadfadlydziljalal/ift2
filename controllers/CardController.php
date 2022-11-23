@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Card;
 use app\models\CardBelongsType;
+use app\models\CardPersonInCharge;
 use app\models\search\CardSearch;
 use Throwable;
 use Yii;
@@ -163,10 +164,12 @@ class CardController extends Controller
                 if ($flag = $model->save(false)) {
 
                     if (!empty($deletedCardBelongsTypeID)) {
-                        CardBelongsType::deleteAll(['AND', 'card_id = :card_id',
-                            ['IN', 'card_type_id', $deletedCardBelongsTypeID]], [':card_id' => $id
+                        CardBelongsType::deleteAll([
+                            'AND', 'card_id = :card_id',
+                            ['IN', 'card_type_id', $deletedCardBelongsTypeID]
+                        ], [
+                            ':card_id' => $id
                         ]);
-
                     }
 
                     foreach ($model->cardBelongsTypesForm as $cardType) {
@@ -196,14 +199,12 @@ class CardController extends Controller
                 if ($flag) {
                     $transaction->commit();
                     Yii::$app->session->setFlash('info', 'Card: ' . Html::a($model->nama, ['card/view', 'id' => $model->id, [
-                            'class' => 'btn btn-link'
-                        ]]) . ' berhasil dirubah.');
-
+                        'class' => 'btn btn-link'
+                    ]]) . ' berhasil dirubah.');
                 } else {
                     $transaction->rollBack();
                     Yii::$app->session->setFlash('danger', "Rollback");
                 }
-
             } catch (Exception $e) {
                 Yii::$app->session->setFlash('danger', $e->getMessage());
             }
@@ -252,4 +253,10 @@ class CardController extends Controller
     }
 
 
+    public function actionFindPicAsAttendant()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $customerId = Yii::$app->request->post('customerId');
+        return CardPersonInCharge::find()->picAsAttendant($customerId);
+    }
 }

@@ -2,18 +2,15 @@
 
 namespace app\models;
 
-use app\models\base\Rekening as BaseRekening;
+use Yii;
+use \app\models\base\QuotationAnotherFee as BaseQuotationAnotherFee;
 use yii\helpers\ArrayHelper;
 
 /**
- * This is the model class for table "rekening".
+ * This is the model class for table "quotation_another_fee".
  */
-class Rekening extends BaseRekening
+class QuotationAnotherFee extends BaseQuotationAnotherFee
 {
-
-
-    public ?string $nomorNomorRekeningBank = null;
-    public ?string $cardNama = null;
 
     public function behaviors()
     {

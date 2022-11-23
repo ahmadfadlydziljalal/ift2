@@ -13,12 +13,14 @@ use yii\behaviors\TimestampBehavior;
  * This is the base-model class for table "rekening".
  *
  * @property integer $id
+ * @property integer $card_id
  * @property string $atas_nama
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $created_by
  * @property string $updated_by
  *
+ * @property \app\models\Card $card
  * @property \app\models\Faktur[] $fakturs
  * @property \app\models\RekeningDetail[] $rekeningDetails
  * @property string $aliasModel
@@ -57,8 +59,10 @@ abstract class Rekening extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
-            [['atas_nama'], 'required'],
-            [['atas_nama'], 'string', 'max' => 255]
+            [['card_id', 'atas_nama'], 'required'],
+            [['card_id'], 'integer'],
+            [['atas_nama'], 'string'],
+            [['card_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['card_id' => 'id']]
         ]);
     }
 
@@ -69,12 +73,21 @@ abstract class Rekening extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'card_id' => 'Card ID',
             'atas_nama' => 'Atas Nama',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCard()
+    {
+        return $this->hasOne(\app\models\Card::class, ['id' => 'card_id']);
     }
 
     /**
