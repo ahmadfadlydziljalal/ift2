@@ -198,7 +198,7 @@ use yii\web\View;
                                             ,
                                             'options' => [
                                                 'colspan' => 8,
-                                                'rowspan' => 5,
+                                                'rowspan' => 4,
                                                 'style' => [
                                                     'vertical-align' => 'top'
                                                 ]
@@ -280,25 +280,7 @@ use yii\web\View;
                                         'class' => 'table-warning'
                                     ]
                                 ],
-                                [
-                                    'columns' => [
-                                        [
-                                            'content' => 'Materai',
-                                            'options' => [
-                                                'colspan' => 2
-                                            ]
-                                        ],
-                                        [
-                                            'content' => Yii::$app->formatter->asDecimal($model->materai_fee, 2),
-                                            'options' => [
-                                                'class' => 'text-end'
-                                            ]
-                                        ],
-                                    ],
-                                    'options' => [
-                                        'class' => 'table-warning'
-                                    ]
-                                ],
+
                             ],
                         ]);
                     } catch (Throwable $e) {

@@ -109,7 +109,7 @@ use yii\web\View;
                 <td class="text-end"><?= $quotationBarang->quantity ?></td>
                 <td><?= $quotationBarang->satuan->nama ?></td>
                 <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationBarang->unit_price) ?></td>
-                <td class="text-end"><?= $quotationBarang->discount ?></td>
+                <td class="text-end"><?= $quotationBarang->discount ?> %</td>
                 <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationBarang->unitPriceAfterDiscount) ?></td>
                 <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationBarang->amount) ?></td>
             </tr>
@@ -126,7 +126,7 @@ use yii\web\View;
             <td class="text-end"><?= Yii::$app->formatter->asDecimal($model->quotationBarangsSubtotal) ?></td>
         </tr>
         <tr>
-            <td rowspan="5" colspan="3"><span class="font-weight-bold">Note</span>: <br/>
+            <td rowspan="4" colspan="3"><span class="font-weight-bold">Note</span>: <br/>
                 <?= $model->catatan_quotation_barang ?>
             </td>
             <td class="border-top-0 border-bottom-0"></td>
@@ -146,17 +146,9 @@ use yii\web\View;
         <tr>
             <td class="border-top-0 border-bottom-0"></td>
             <td colspan="2">PPN</td>
-            <td class="text-center"><?= $model->vatPercentageLabel ?> </td>
+            <td class="text-end"><?= $model->vatPercentageLabel ?> </td>
             <td></td>
             <td class="text-end"><?= Yii::$app->formatter->asDecimal(round($model->quotationBarangsTotalVatNominal)) ?></td>
-        </tr>
-
-        <tr>
-            <td class="border-top-0 border-bottom-0"></td>
-            <td colspan="2">Materai</td>
-            <td class="text-end"><?= Yii::$app->formatter->asDecimal($model->materai_fee) ?></td>
-            <td></td>
-            <td class="text-end"><?= Yii::$app->formatter->asDecimal($model->materai_fee) ?></td>
         </tr>
 
         <tr>
@@ -198,7 +190,7 @@ use yii\web\View;
                     <td style="min-width: 17rem"><?= $quotationService->job_description ?></td>
                     <td class="text-end"><?= $quotationService->hours ?></td>
                     <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationService->rate_per_hour) ?></td>
-                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationService->discount) ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationService->discount) ?> %</td>
                     <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationService->ratePerHourAfterDiscount) ?></td>
                     <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationService->amount) ?></td>
                 </tr>
@@ -260,7 +252,7 @@ use yii\web\View;
                     <td class="text-end border-start-0 font-weight-bold"><?= Yii::$app->formatter->asDecimal($model->materai_fee) ?></td>
                 </tr>
                 <tr>
-                    <td class="border-end-0 font-weight-bold">Grand Total</td>
+                    <td class="border-end-0 font-weight-bold">Grand Total (A+B+C)</td>
                     <td class="border-start-0 border-end-0">:</td>
                     <td class="border-start-0 border-end-0 font-weight-bold"><?= $model->mataUang->singkatan ?></td>
                     <td class="text-end border-start-0 font-weight-bold"><?= Yii::$app->formatter->asDecimal(round($model->quotationGrandTotal)) ?></td>
