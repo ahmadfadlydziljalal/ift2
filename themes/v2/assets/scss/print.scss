@@ -4,8 +4,6 @@
   body {
     display: none !important;
   }
-  //@import "print_table";
-  //@import "print_utils";
 }
 
 @media print {
@@ -21,11 +19,10 @@
     margin: 12pt 12pt 24pt 24pt;
   }
 
-  //@page :first {
-  //size: A4;
-  //margin: 24pt 12pt 24pt 24pt;
-  //margin: 24pt;
-  //}
+  @page :first {
+    size: A4;
+    margin: 12pt 12pt 24pt 24pt;
+  }
 
   body {
     margin: 0;
@@ -34,15 +31,31 @@
     counter-reset: page;
 
     div#header {
-      //position: fixed;
-      //top: 0;
-      //left: 0;
-      //width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
       counter-increment: page;
+    }
+
+    div#content {
+      padding-top: 36pt;
+
+      .content-section {
+        padding-top: 36pt;
+      }
+
+      .content-section:first-child {
+        padding-top: 0;
+      }
     }
 
     #page-number:after {
       content: counter(page)
+    }
+
+    .page-break {
+      page-break-before: always;
     }
 
   }

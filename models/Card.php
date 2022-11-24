@@ -20,6 +20,7 @@ class Card extends BaseCard
     const GET_APART_FROM_TOKO_SAYA = 'selain-toko-saya';
     const GET_ONLY_VENDOR = 'only-vendor';
     const GET_ONLY_PEJABAT_KANTOR = 'only-pejabat-kantor';
+    const GET_ONLY_MEKANIK = 'only-mekanik';
 
     public ?array $cardBelongsTypesForm = [];
     public ?string $cardTypeName = null;

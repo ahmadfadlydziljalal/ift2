@@ -66,6 +66,12 @@ class CardQuery extends ActiveQuery
                 ])->groupBy('card.id');
                 break;
 
+            case Card::GET_ONLY_MEKANIK:
+                $q->where([
+                    'card_type.kode' => 'mekanik'
+                ])->groupBy('card.id');
+                break;
+
             case Card::GET_APART_FROM_TOKO_SAYA:
                 $q->where([
                     '!=', 'card_type.kode', 'toko-saya'

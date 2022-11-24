@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Quotation;
 use app\models\QuotationBarang;
+use app\models\QuotationFormJob;
 use app\models\QuotationService;
 use app\models\QuotationTermAndCondition;
 use app\models\search\QuotationSearch;
@@ -147,6 +148,19 @@ class QuotationController extends Controller
 
         Yii::$app->session->setFlash('danger', 'Quotation: ' . $model->nomor . ' berhasil dihapus.');
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionPrint($id): string
+    {
+        $this->layout = 'print';
+        return $this->render('preview_print', [
+            'model' => $this->findModel($id),
+        ]);
     }
 
     /**
@@ -453,14 +467,109 @@ class QuotationController extends Controller
 
     /**
      * @param $id
-     * @return string
+     * @return string|Response
+     * @throws Exception
      * @throws NotFoundHttpException
      */
-    public function actionPrint($id): string
+    public function actionCreateFormJob($id): Response|string
     {
+        $quotation = $this->findModel($id);
+        $models = [new QuotationFormJob(['quotation_id' => $id])];
+
+        if ($this->request->isPost) {
+
+            $models = Tabular::createMultiple(QuotationFormJob::class);
+            Tabular::loadMultiple($models, $this->request->post());
+
+            $quotation->modelsFormJob = $models;
+            if (Tabular::validateMultiple($models)) {
+
+                if ($quotation->createModelsFormJob()) {
+                    Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
+                    return $this->redirect(['quotation/view', 'id' => $quotation->id]);
+                }
+            }
+
+            Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
+        }
+
+        return $this->render('create_form_job', [
+            'quotation' => $quotation,
+            'models' => $models
+        ]);
+    }
+
+    /**
+     * @param $id
+     * @return Response|string
+     * @throws Exception
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdateFormJob($id): Response|string
+    {
+
+        $quotation = $this->findModel($id);
+        $models = !empty($quotation->quotationFormJobs) ? $quotation->quotationFormJobs : [new QuotationFormJob(['quotation_id' => $quotation->id])];
+
+        if ($this->request->isPost) {
+
+            $oldId = ArrayHelper::map($models, 'id', 'id');
+            $models = Tabular::createMultiple(QuotationFormJob::class, $models);
+
+            Tabular::loadMultiple($models, $this->request->post());
+            $deletedId = array_diff($oldId, array_filter(ArrayHelper::map($models, 'id', 'id')));
+
+            $quotation->modelsFormJob = $models;
+            if (Tabular::validateMultiple($models)) {
+
+                $quotation->deletedFormJob = $deletedId;
+
+                if ($quotation->updateModelsFormJob()) {
+                    Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
+                    return $this->redirect(['quotation/view', 'id' => $quotation->id]);
+                }
+
+            }
+            Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
+        }
+
+        return $this->render('update_form_job', [
+            'quotation' => $quotation,
+            'models' => $models
+        ]);
+    }
+
+    /**
+     * @param $id
+     * @return Response
+     */
+    public function actionDeleteFormJob($id): Response
+    {
+
+        $models = QuotationFormJob::findAll([
+            'quotation_id' => $id
+        ]);
+
+        array_walk($models, function ($item) {
+            $item->delete();
+        });
+
+        Yii::$app->session->setFlash('success', [[
+            'title' => 'Pesan Sistem',
+            'message' => 'Sukses menghapus form job ' . Quotation::findOne($id)->nomor,
+        ]]);
+
+        return $this->redirect(['quotation/view', 'id' => $id]);
+    }
+
+    public function actionPrintFormJobs($id): string
+    {
+        $quotation = $this->findModel($id);
+
         $this->layout = 'print';
-        return $this->render('preview_print', [
-            'model' => $this->findModel($id),
+        return $this->render('preview_print_form_jobs', [
+            'quotation' => $this->findModel($id),
+            'quotationFormJobs' => $quotation->quotationFormJobs
         ]);
     }
 

@@ -30,6 +30,8 @@ use yii\helpers\ArrayHelper;
 class Quotation extends BaseQuotation
 {
 
+    use NomorSuratTrait;
+
     const SCENARIO_CREATE_BARANG_QUOTATION = 'create-barang-quotation';
     const SCENARIO_UPDATE_BARANG_QUOTATION = 'update-barang-quotation';
 
@@ -39,6 +41,8 @@ class Quotation extends BaseQuotation
     const SCENARIO_CREATE_TERM_AND_CONDITION = 'create-term-and-condition';
     const SCENARIO_UPDATE_TERM_AND_CONDITION = 'create-term-and-condition';
 
+    const SCENARIO_CREATE_FORM_JOB = 'create-form-job';
+    const SCENARIO_UPDATE_FORM_JOB = 'update-form-job';
 
     /**
      * @var QuotationBarang[]|null
@@ -69,6 +73,17 @@ class Quotation extends BaseQuotation
      * @var array| null
      */
     public ?array $deletedQuotationTermAndCondition = null;
+
+
+    /**
+     * @var QuotationFormJob[]
+     * */
+    public ?array $modelsFormJob = null;
+
+    /**
+     * @var array| null
+     */
+    public ?array $deletedFormJob = null;
 
 
     public function behaviors(): array
@@ -108,6 +123,8 @@ class Quotation extends BaseQuotation
                 [['modelsQuotationTermAndCondition'], 'required', 'on' => self::SCENARIO_CREATE_TERM_AND_CONDITION],
                 [['modelsQuotationTermAndCondition'], 'required', 'on' => self::SCENARIO_UPDATE_TERM_AND_CONDITION],
                 [['deletedQuotationTermAndCondition'], 'safe', 'on' => self::SCENARIO_UPDATE_TERM_AND_CONDITION],
+
+                [['modelsFormJob'], 'required', 'on' => self::SCENARIO_CREATE_FORM_JOB]
             ]
         );
     }
@@ -144,6 +161,12 @@ class Quotation extends BaseQuotation
             'modelsQuotationTermAndCondition',
             'deletedQuotationTermAndCondition',
         ];
+
+        $scenarios[self::SCENARIO_CREATE_FORM_JOB] = [
+            'modelsFormJob'
+        ];
+
+
         return $scenarios;
     }
 
@@ -386,6 +409,83 @@ class Quotation extends BaseQuotation
 
                 $termAndCondition->quotation_id = $this->id;
                 $flag = $termAndCondition->save(false);
+
+                if (!$flag) {
+                    break;
+                }
+
+            }
+            if ($flag) {
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+            }
+
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            throw new Exception($e->getMessage());
+        }
+        return false;
+    }
+
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function createModelsFormJob(): bool
+    {
+        $transaction = self::getDb()->beginTransaction();
+        try {
+
+            $flag = true;
+            /** @var QuotationFormJob $formJob */
+            foreach ($this->modelsFormJob as $formJob) {
+
+                $formJob->quotation_id = $this->id;
+                $flag = $formJob->save(false);
+
+                if (!$flag) {
+                    break;
+                }
+
+            }
+
+            if ($flag) {
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+            }
+
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            throw new Exception($e->getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function updateModelsFormJob(): bool
+    {
+        $transaction = self::getDb()->beginTransaction();
+
+        try {
+
+            $flag = true;
+            if (!empty($this->deletedFormJob)) {
+                QuotationFormJob::deleteAll(['id' => $this->deletedFormJob]);
+            }
+
+            /** @var QuotationFormJob $formJob */
+            foreach ($this->modelsFormJob as $formJob) {
+
+                $formJob->quotation_id = $this->id;
+                $flag = $formJob->save(false);
 
                 if (!$flag) {
                     break;

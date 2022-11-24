@@ -9,7 +9,7 @@ enum TextLinkEnum: string
     case PRINT = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-printer-fill"></i> Print</div>';
     case HAPUS = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-trash-fill"></i> Hapus</div>';
     case BUAT_LAGI = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-plus-circle"></i> Buat Lagi</div>';
-    case LIST = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-list-ol"></i> Index</div>';
+    case LIST = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-list-ol"></i></div>';
     case BUAT_FOLDER = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-folder-plus"></i> Buat Folder</div>';
     case UPLOAD_FILE = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-cloud-upload"></i> Upload File</div>';
     case DOWNLOAD = '<div class="d-flex flex-nowrap gap-1"><i class="bi bi-cloud-download"></i> Download</div>';

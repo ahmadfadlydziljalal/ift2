@@ -34,6 +34,7 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\MataUang $mataUang
  * @property \app\models\QuotationAnotherFee[] $quotationAnotherFees
  * @property \app\models\QuotationBarang[] $quotationBarangs
+ * @property \app\models\QuotationFormJob[] $quotationFormJobs
  * @property \app\models\QuotationService[] $quotationServices
  * @property \app\models\QuotationTermAndCondition[] $quotationTermAndConditions
  * @property \app\models\Rekening $rekening
@@ -141,6 +142,14 @@ abstract class Quotation extends \yii\db\ActiveRecord
     public function getQuotationBarangs()
     {
         return $this->hasMany(\app\models\QuotationBarang::class, ['quotation_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotationFormJobs()
+    {
+        return $this->hasMany(\app\models\QuotationFormJob::class, ['quotation_id' => 'id']);
     }
 
     /**

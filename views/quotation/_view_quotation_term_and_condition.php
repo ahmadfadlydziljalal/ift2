@@ -21,34 +21,33 @@ use yii\web\View;
 ?>
 
 
-<div class="mt-3">
-    <div class="card rounded shadow border-0 mt-3 mt-md-0">
-        <div class="card-header">Term and Condition</div>
+<div class="card rounded shadow border-0" id="term-and-condition">
+    <div class="card-header">Term and Condition</div>
 
-        <div class="card-body">
-            <div class="d-flex flex-row gap-2">
-                <?php if (!$model->quotationTermAndConditions) : ?>
-                    <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-term-and-condition', 'id' => $model->id], [
-                        'class' => 'btn btn-success'
-                    ]) ?>
+    <div class="card-body">
+        <div class="d-flex flex-row gap-2">
+            <?php if (!$model->quotationTermAndConditions) : ?>
+                <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-term-and-condition', 'id' => $model->id], [
+                    'class' => 'btn btn-success'
+                ]) ?>
 
-                <?php else : ?>
-                    <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-term-and-condition', 'id' => $model->id], [
-                        'class' => 'btn btn-primary'
-                    ]) ?>
+            <?php else : ?>
+                <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-term-and-condition', 'id' => $model->id], [
+                    'class' => 'btn btn-primary'
+                ]) ?>
 
-                    <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-term-and-condition', 'id' => $model->id], [
-                        'class' => 'btn btn-danger',
-                        'data-method' => 'post',
-                        'data-confirm' => 'Apakah Anda akan menghapus detail term and condition ini ?'
-                    ]) ?>
+                <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-term-and-condition', 'id' => $model->id], [
+                    'class' => 'btn btn-danger',
+                    'data-method' => 'post',
+                    'data-confirm' => 'Apakah Anda akan menghapus detail term and condition ini ?'
+                ]) ?>
 
-                <?php endif; ?>
-            </div>
+            <?php endif; ?>
         </div>
+    </div>
 
-        <div class="card-body">
-
+    <div class="card-body">
+        <div class="table-responsive">
             <?= GridView::widget([
                 'dataProvider' => new ActiveDataProvider([
                     'query' => $model->getQuotationTermAndConditions(),
@@ -71,6 +70,6 @@ use yii\web\View;
                 'showFooter' => false,
             ]) ?>
         </div>
-
     </div>
+
 </div>
