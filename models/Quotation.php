@@ -76,14 +76,9 @@ class Quotation extends BaseQuotation
 
 
     /**
-     * @var QuotationFormJob[]
+     * @var QuotationFormJob
      * */
-    public ?array $modelsFormJob = null;
-
-    /**
-     * @var array| null
-     */
-    public ?array $deletedFormJob = null;
+    public ?array $modelFormJob = null;
 
 
     public function behaviors(): array
@@ -124,7 +119,7 @@ class Quotation extends BaseQuotation
                 [['modelsQuotationTermAndCondition'], 'required', 'on' => self::SCENARIO_UPDATE_TERM_AND_CONDITION],
                 [['deletedQuotationTermAndCondition'], 'safe', 'on' => self::SCENARIO_UPDATE_TERM_AND_CONDITION],
 
-                [['modelsFormJob'], 'required', 'on' => self::SCENARIO_CREATE_FORM_JOB]
+                [['modelFormJob'], 'required', 'on' => self::SCENARIO_CREATE_FORM_JOB]
             ]
         );
     }
@@ -163,7 +158,7 @@ class Quotation extends BaseQuotation
         ];
 
         $scenarios[self::SCENARIO_CREATE_FORM_JOB] = [
-            'modelsFormJob'
+            'modelFormJob'
         ];
 
 
@@ -430,41 +425,7 @@ class Quotation extends BaseQuotation
     }
 
 
-    /**
-     * @return bool
-     * @throws Exception
-     */
-    public function createModelsFormJob(): bool
-    {
-        $transaction = self::getDb()->beginTransaction();
-        try {
-
-            $flag = true;
-            /** @var QuotationFormJob $formJob */
-            foreach ($this->modelsFormJob as $formJob) {
-
-                $formJob->quotation_id = $this->id;
-                $flag = $formJob->save(false);
-
-                if (!$flag) {
-                    break;
-                }
-
-            }
-
-            if ($flag) {
-                $transaction->commit();
-                return true;
-            } else {
-                $transaction->rollBack();
-            }
-
-        } catch (Exception $e) {
-            $transaction->rollBack();
-            throw new Exception($e->getMessage());
-        }
-        return false;
-    }
+  
 
     /**
      * @return bool

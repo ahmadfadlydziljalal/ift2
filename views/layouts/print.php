@@ -31,32 +31,48 @@ $settings = Yii::$app->settings;
 
     <?php $this->beginBody() ?>
 
-    <div id="header">
-        <table>
-            <tr>
-                <td>
-                    <?= Html::img(Yii::getAlias('@web') . '/images/logo.png', [
-                        'width' => '128px',
-                        'height' => 'auto'
-                    ]) ?>
-                </td>
-                <td>
-                    <h3 style="margin: 0; padding: 0">
-                        <?= $settings->get('site.companyClient') ?>
-                    </h3>
-                    <p style="margin: 0; padding: 0; font-size: 10pt">
-                        <?= $settings->get('site.alamat') ?><br/>
-                        Telp: <?= $settings->get('site.telepon') ?>,
-                        Email: <?php echo $settings->get('site.email') ?>
-                    </p>
-                </td>
-            </tr>
-        </table>
-    </div>
 
-    <div id="content">
-        <?= $this->render('_content', ['content' => $content]) ?>
-    </div>
+    <table style="margin: 0; padding: 0">
+        <thead>
+        <tr>
+            <th>
+                <div id="header">
+                    <table>
+                        <tr>
+                            <td>
+                                <?= Html::img(Yii::getAlias('@web') . '/images/logo.png', [
+                                    'width' => '128px',
+                                    'height' => 'auto'
+                                ]) ?>
+                            </td>
+                            <td>
+                                <h3 style="margin: 0; padding: 0">
+                                    <?= $settings->get('site.companyClient') ?>
+                                </h3>
+                                <p style="margin: 0; padding: 0; font-size: 10pt">
+                                    <?= $settings->get('site.alamat') ?><br/>
+                                    Telp: <?= $settings->get('site.telepon') ?>,
+                                    Email: <?php echo $settings->get('site.email') ?>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>
+                <div id="content">
+                    <?= $this->render('_content', ['content' => $content]) ?>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
 
     <?php $this->endBody() ?>
 

@@ -19,10 +19,10 @@
     margin: 12pt 12pt 24pt 24pt;
   }
 
-  @page :first {
-    size: A4;
-    margin: 12pt 12pt 24pt 24pt;
-  }
+  /* @page :first {
+     size: A4;
+     margin: 12pt 12pt 24pt 24pt;
+   }*/
 
   body {
     margin: 0;
@@ -30,25 +30,25 @@
     font-size: 11pt;
     counter-reset: page;
 
-    div#header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      counter-increment: page;
-    }
+    /* div#header {
+       position: fixed;
+       top: 0;
+       left: 0;
+       width: 100%;
+       counter-increment: page;
+     }
 
-    div#content {
-      padding-top: 36pt;
+     div#content {
+       padding-top: 36pt;
 
-      .content-section {
-        padding-top: 36pt;
-      }
+       .content-section {
+         padding-top: 36pt;
+       }
 
-      .content-section:first-child {
-        padding-top: 0;
-      }
-    }
+       .content-section:first-child {
+         padding-top: 0;
+       }
+     }*/
 
     #page-number:after {
       content: counter(page)

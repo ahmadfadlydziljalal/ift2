@@ -3,7 +3,7 @@
 
 /* @var $this View */
 /* @var $quotation Quotation */
-/* @var $models QuotationFormJob */
+/* @var $model QuotationFormJob */
 
 /* @see \app\controllers\QuotationController::actionCreateFormJob() */
 
@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form_form_job', [
-        'models' => $models,
+        'model' => $model,
         'quotation' => $quotation,
     ]) ?>
 </div>

@@ -50,6 +50,7 @@ abstract class QuotationFormJob extends \yii\db\ActiveRecord
             [['tanggal'], 'safe'],
             [['issue', 'remarks'], 'string'],
             [['nomor', 'person_in_charge', 'hour_meter'], 'string', 'max' => 255],
+            [['quotation_id'], 'unique'],
             [['mekanik_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['mekanik_id' => 'id']],
             [['card_own_equipment_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\CardOwnEquipment::class, 'targetAttribute' => ['card_own_equipment_id' => 'id']],
             [['quotation_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Quotation::class, 'targetAttribute' => ['quotation_id' => 'id']]

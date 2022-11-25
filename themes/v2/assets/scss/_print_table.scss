@@ -1,7 +1,14 @@
 @import "vars";
 
 table {
+
   page-break-inside: auto;
+
+  //div {
+  //  page-break-inside: avoid;
+  //}
+
+  /* This is the key */
 
   tr {
     page-break-inside: avoid;

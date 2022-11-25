@@ -3,16 +3,17 @@
 
 /* @var $this View */
 /* @var $quotation Quotation */
-/* @var $model QuotationFormJob */
+/* @see \app\controllers\QuotationController::actionUpdateDeliveryOrderReceipt() */
 
-/* @see \app\controllers\QuotationController::actionUpdateFormJob() */
+/* @var $model QuotationDeliveryReceipt */
+
 
 use app\models\Quotation;
-use app\models\QuotationFormJob;
-use yii\helpers\Html;
+use app\models\QuotationDeliveryReceipt;
+use yii\bootstrap5\Html;
 use yii\web\View;
 
-$this->title = 'Update Form Job: ' . $quotation->nomor;
+$this->title = 'Update Delivery Receipt: ' . $quotation->nomor;
 $this->params['breadcrumbs'][] = ['label' => 'Quotation', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $quotation->nomor, 'url' => ['view', 'id' => $quotation->id]];
 $this->params['breadcrumbs'][] = 'Update';
@@ -22,9 +23,10 @@ $this->params['breadcrumbs'][] = 'Update';
 <div class="quotation-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?= $this->render('_form_form_job', [
-        'model' => $model,
-        'quotation' => $quotation,
-    ]); ?>
+
+   <?= $this->render('_form_delivery_receipt', [
+      'model' => $model,
+      'quotation' => $quotation,
+   ]); ?>
 
 </div>

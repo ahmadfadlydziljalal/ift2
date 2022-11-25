@@ -5,6 +5,7 @@ use mdm\admin\components\Helper;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
 
+/* @var $links array */
 /* @var $this yii\web\View */
 /* @var $model app\models\Quotation */
 /* @see app\controllers\QuotationController::actionView() */
@@ -56,13 +57,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $this->render('_view_quotation_service', ['model' => $model]) ?>
                         <?= $this->render('_view_quotation_term_and_condition', ['model' => $model]) ?>
                         <?= $this->render('_view_form_job', ['model' => $model]) ?>
+                        <?= $this->render('_view_delivery_receipt', ['model' => $model]) ?>
                     </div>
                 </div>
 
                 <div class="col-sm-12 col-md-3">
                     <div class="position-fixed">
                         <div class="card shadow border-0" style="min-width: 16rem; max-width: 18rem">
-                            <?php $links = ['master', 'summary', 'barang', 'service', 'term-and-condition', 'form-job'] ?>
+
                             <div class="list-group">
                                 <?php
                                 foreach ($links as $link) {
@@ -75,6 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 

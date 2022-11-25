@@ -3,6 +3,7 @@
 /* @var $model QuotationFormJob */
 
 use app\models\QuotationFormJob;
+use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 
 ?>
@@ -33,12 +34,11 @@ use yii\helpers\Html;
 
                 <?php
 
-
                 echo Html::tag('span',
                     '<i class="bi bi-person-badge"></i> ' .
                     (!empty($model->person_in_charge) ? $model->person_in_charge : "No P.I.C"),
                     [
-                        'class' => 'badge bg-success'
+                        'class' => 'badge bg-dark'
                     ])
                 ?>
 
@@ -47,7 +47,7 @@ use yii\helpers\Html;
                 echo Html::tag('span',
                     '<i class="bi bi-person-check"></i> ' .
                     (!empty($model->mekanik) ? $model->mekanik->nama : "No Mekanik"), [
-                        'class' => 'badge bg-success'
+                        'class' => 'badge bg-dark'
                     ]) ?>
 
             </div>
@@ -55,7 +55,11 @@ use yii\helpers\Html;
                 <div class="float-end">
                     <strong>
                         <i class="bi bi-clock"></i>
-                        <?= Yii::$app->formatter->asDate($model->tanggal) ?>
+                        <?php try {
+                            Yii::$app->formatter->asDate($model->tanggal);
+                        } catch (InvalidConfigException $e) {
+                            echo $e->getMessage();
+                        } ?>
                     </strong>
                 </div>
             </div>

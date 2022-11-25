@@ -2,12 +2,16 @@
 
 namespace app\models;
 
-use app\models\base\QuotationFormJob as BaseQuotationFormJob;
+use app\models\base\QuotationFormJob as BaseQuotationFormJob;;
 use Yii;
 use yii\helpers\ArrayHelper;
 
+
+
 /**
  * This is the model class for table "quotation_form_job".
+ * @property string $cardOwnEquipmentLabel
+ * @property string $namaMekanik
  */
 class QuotationFormJob extends BaseQuotationFormJob
 {
@@ -57,7 +61,8 @@ class QuotationFormJob extends BaseQuotationFormJob
     public function attributeLabels(): array
     {
         return ArrayHelper::merge(
-            parent::attributeLabels(), [
+            parent::attributeLabels(),
+            [
                 'id' => 'ID',
                 'quotation_id' => 'Quotation',
                 'nomor' => 'Nomor',
@@ -71,4 +76,16 @@ class QuotationFormJob extends BaseQuotationFormJob
         );
     }
 
+    public function getCardOwnEquipmentLabel()
+    {
+        return !empty($this->cardOwnEquipment)
+            ? $this->cardOwnEquipment->nama . ' ' . $this->cardOwnEquipment->serial_number
+            : "No Equipment";
+    }
+
+    public function getNamaMekanik(){
+        return !empty($this->mekanik)
+            ? $this->mekanik->nama
+            : "No Mekanik";
+    }
 }

@@ -1,13 +1,9 @@
 <?php
 
 use app\enums\TextLinkEnum;
-use app\models\Quotation;
-use yii\data\ActiveDataProvider;
-use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\web\View;
-use yii\widgets\ListView;
-
+use yii\widgets\DetailView;
 
 /* @var $this View */
 /* @var $model Quotation|string|ActiveRecord */
@@ -21,7 +17,7 @@ use yii\widgets\ListView;
     <div class="card-body">
         <div class="d-flex flex-row gap-2">
 
-            <?php if (!$model->quotationFormJobs) : ?>
+            <?php if (!$model->quotationFormJob) : ?>
 
                 <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-form-job', 'id' => $model->id], [
                     'class' => 'btn btn-success'
@@ -29,7 +25,7 @@ use yii\widgets\ListView;
 
             <?php else : ?>
 
-                <?= Html::a(TextLinkEnum::PRINT->value, ['quotation/print-form-jobs', 'id' => $model->id], [
+                <?= Html::a(TextLinkEnum::PRINT->value, ['quotation/print-form-job', 'id' => $model->id], [
                     'class' => 'btn btn-success',
                     'target' => '_blank',
                     'rel' => 'noopener noreferrer'
@@ -51,22 +47,38 @@ use yii\widgets\ListView;
 
     <div class="card-body">
         <div class="table-responsive">
-            <?php try {
-                echo ListView::widget([
-                    'dataProvider' => new ActiveDataProvider([
-                        'query' => $model->getQuotationFormJobs(),
-                        'pagination' => false,
-                        'sort' => false
-                    ]),
-                    'layout' => '{items}',
-                    'itemView' => '_item_form_job',
-                    'options' => [
-                        'class' => 'd-flex flex-column gap-3'
+            <?php
+
+            if ($model->quotationFormJob) {
+                echo DetailView::widget([
+                    'model' => $model->quotationFormJob,
+                    'attributes' => [
+                        'nomor',
+                        'tanggal',
+                        [
+                            'attribute' => 'card_own_equipment_id',
+                            'value' => function ($model) {
+                                return $model->cardOwnEquipmentLabel;
+                            }
+                        ],
+                        'hour_meter',
+                        'person_in_charge',
+                        [
+                            'attribute' => 'mekanik_id',
+                            'value' => function ($model) {
+                                return $model->namaMekanik;
+                            }
+                        ],
+                        'issue',
+                        'remarks'
                     ]
                 ]);
-            } catch (Throwable $e) {
-                echo $e->getMessage();
-            } ?>
+            } else {
+                echo Html::tag('p', 'Belum ada form job', [
+                    'class' => 'text-danger font-weight-bold'
+                ]);
+            }
+            ?>
         </div>
     </div>
 </div>
