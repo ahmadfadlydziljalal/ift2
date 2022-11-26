@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="d-flex flex-row gap-2 mb-3">
            <?= Html::a(TextLinkEnum::KEMBALI->value, Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
            <?= Html::a(TextLinkEnum::PRINT->value, ['print', 'id' => $model->id], [
-              'class' => 'btn btn-outline-success',
+              'class' => 'btn btn-success',
               'target' => '_blank',
               'rel' => 'noopener noreferrer'
            ]) ?>
@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="col-sm-12 col-md-3">
                     <div class="position-fixed">
-                        <div class="card shadow border-0" style="min-width: 16rem; max-width: 18rem">
+                        <div class="card shadow border-0" style="min-width: 14rem; max-width: 18rem">
                             <div class="list-group">
                                <?php
                                foreach ($links as $link) {

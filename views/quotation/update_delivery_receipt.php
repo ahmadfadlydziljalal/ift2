@@ -7,9 +7,12 @@
 
 /* @var $model QuotationDeliveryReceipt */
 
+/* @var $modelsDetail QuotationDeliveryReceiptDetail[] */
+
 
 use app\models\Quotation;
 use app\models\QuotationDeliveryReceipt;
+use app\models\QuotationDeliveryReceiptDetail;
 use yii\bootstrap5\Html;
 use yii\web\View;
 
@@ -27,6 +30,7 @@ $this->params['breadcrumbs'][] = 'Update';
    <?= $this->render('_form_delivery_receipt', [
       'model' => $model,
       'quotation' => $quotation,
+      'modelsDetail' => $modelsDetail,
    ]); ?>
 
 </div>

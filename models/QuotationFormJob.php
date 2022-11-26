@@ -2,10 +2,9 @@
 
 namespace app\models;
 
-use app\models\base\QuotationFormJob as BaseQuotationFormJob;;
+use app\models\base\QuotationFormJob as BaseQuotationFormJob;
 use Yii;
 use yii\helpers\ArrayHelper;
-
 
 
 /**
@@ -16,76 +15,79 @@ use yii\helpers\ArrayHelper;
 class QuotationFormJob extends BaseQuotationFormJob
 {
 
-    public function behaviors()
-    {
-        return ArrayHelper::merge(
-            parent::behaviors(),
+   use NomorSuratTrait;
+
+   public function behaviors()
+   {
+      return ArrayHelper::merge(
+         parent::behaviors(),
+         [
+            # custom behaviors
             [
-                # custom behaviors
-                [
-                    'class' => 'mdm\autonumber\Behavior',
-                    'attribute' => 'nomor', // required
-                    'value' => '?' . '/IFTJKT/FJ/' . date('m/Y'), // format auto number. '?' will be replaced with generated number
-                    'digit' => 4
-                ],
-            ]
-        );
-    }
+               'class' => 'mdm\autonumber\Behavior',
+               'attribute' => 'nomor', // required
+               'value' => '?' . '/IFTJKT/FJ/' . date('m/Y'), // format auto number. '?' will be replaced with generated number
+               'digit' => 4
+            ],
+         ]
+      );
+   }
 
-    public function rules(): array
-    {
-        return ArrayHelper::merge(
-            parent::rules(),
-            [
-                # custom validation rules
+   public function rules(): array
+   {
+      return ArrayHelper::merge(
+         parent::rules(),
+         [
+            # custom validation rules
 
-            ]
-        );
-    }
+         ]
+      );
+   }
 
-    public function beforeSave($insert): bool
-    {
+   public function beforeSave($insert): bool
+   {
 
-        $this->tanggal = Yii::$app->formatter->asDate($this->tanggal, "php:Y-m-d");
-        return parent::beforeSave($insert);
-    }
+      $this->tanggal = Yii::$app->formatter->asDate($this->tanggal, "php:Y-m-d");
+      return parent::beforeSave($insert);
+   }
 
-    public function afterFind()
-    {
-        parent::afterFind();
-        if (!empty($this->tanggal)) {
-            $this->tanggal = Yii::$app->formatter->asDate($this->tanggal);
-        }
-    }
+   public function afterFind()
+   {
+      parent::afterFind();
+      if (!empty($this->tanggal)) {
+         $this->tanggal = Yii::$app->formatter->asDate($this->tanggal);
+      }
+   }
 
-    public function attributeLabels(): array
-    {
-        return ArrayHelper::merge(
-            parent::attributeLabels(),
-            [
-                'id' => 'ID',
-                'quotation_id' => 'Quotation',
-                'nomor' => 'Nomor',
-                'tanggal' => 'Tanggal',
-                'person_in_charge' => 'Person In Charge',
-                'issue' => 'Issue',
-                'card_own_equipment_id' => 'Card Own Equipment',
-                'hour_meter' => 'Hour Meter',
-                'mekanik_id' => 'Mekanik',
-            ]
-        );
-    }
+   public function attributeLabels(): array
+   {
+      return ArrayHelper::merge(
+         parent::attributeLabels(),
+         [
+            'id' => 'ID',
+            'quotation_id' => 'Quotation',
+            'nomor' => 'Nomor',
+            'tanggal' => 'Tanggal',
+            'person_in_charge' => 'Person In Charge',
+            'issue' => 'Issue',
+            'card_own_equipment_id' => 'Card Own Equipment',
+            'hour_meter' => 'Hour Meter',
+            'mekanik_id' => 'Mekanik',
+         ]
+      );
+   }
 
-    public function getCardOwnEquipmentLabel()
-    {
-        return !empty($this->cardOwnEquipment)
-            ? $this->cardOwnEquipment->nama . ' ' . $this->cardOwnEquipment->serial_number
-            : "No Equipment";
-    }
+   public function getCardOwnEquipmentLabel()
+   {
+      return !empty($this->cardOwnEquipment)
+         ? $this->cardOwnEquipment->nama . ' ' . $this->cardOwnEquipment->serial_number
+         : "No Equipment";
+   }
 
-    public function getNamaMekanik(){
-        return !empty($this->mekanik)
-            ? $this->mekanik->nama
-            : "No Mekanik";
-    }
+   public function getNamaMekanik()
+   {
+      return !empty($this->mekanik)
+         ? $this->mekanik->nama
+         : "No Mekanik";
+   }
 }

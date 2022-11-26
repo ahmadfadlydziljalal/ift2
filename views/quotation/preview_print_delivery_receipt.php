@@ -2,10 +2,12 @@
 
 
 /* @var $this View */
+/* @var $model QuotationDeliveryReceipt */
 
 /* @var $quotation Quotation */
 
 use app\models\Quotation;
+use app\models\QuotationDeliveryReceipt;
 use yii\web\View;
 
 ?>
@@ -76,17 +78,17 @@ use yii\web\View;
                 <tr>
                     <td class="border-end-0">No.</td>
                     <td class="border-start-0 border-end-0">:</td>
-                    <td class="border-start-0"><?= $quotation->quotationDeliveryReceipt->nomor ?></td>
+                    <td class="border-start-0"><?= $model->nomor ?></td>
                 </tr>
                 <tr>
                     <td class="border-end-0">Date</td>
                     <td class="border-start-0 border-end-0">:</td>
-                    <td class="border-start-0"><?= Yii::$app->formatter->asDate($quotation->quotationDeliveryReceipt->tanggal) ?></td>
+                    <td class="border-start-0"><?= Yii::$app->formatter->asDate($model->tanggal) ?></td>
                 </tr>
                 <tr>
                     <td class="border-end-0">P.O Number</td>
                     <td class="border-start-0 border-end-0">:</td>
-                    <td class="border-start-0"><?= $quotation->quotationDeliveryReceipt->purchase_order_number ?></td>
+                    <td class="border-start-0"><?= $model->purchase_order_number ?></td>
                 </tr>
                 <tr>
                     <td class="border-end-0">Quotation</td>
@@ -96,12 +98,12 @@ use yii\web\View;
                 <tr>
                     <td class="border-end-0">Checker</td>
                     <td class="border-start-0 border-end-0">:</td>
-                    <td class="border-start-0"><?= $quotation->quotationDeliveryReceipt->checker ?></td>
+                    <td class="border-start-0"><?= $model->checker ?></td>
                 </tr>
                 <tr>
                     <td class="border-end-0">Vehicle</td>
                     <td class="border-start-0 border-end-0">:</td>
-                    <td class="border-start-0"><?= $quotation->quotationDeliveryReceipt->vehicle ?></td>
+                    <td class="border-start-0"><?= $model->vehicle ?></td>
                 </tr>
                 </tbody>
             </table>
@@ -149,7 +151,7 @@ use yii\web\View;
 
     <p>
         Remarks:<br/>
-       <?= $quotation->quotationDeliveryReceipt->remarks ?>
+       <?= $model->remarks ?>
     </p>
 
     <div style="width: 100%; position:fixed; bottom: 0; left: 0">

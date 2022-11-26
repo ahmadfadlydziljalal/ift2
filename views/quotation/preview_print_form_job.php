@@ -52,7 +52,7 @@ use yii\web\View;
                     <td class="border-start-0 border-end-0">:</td>
                     <td class="border-start-0">
                        <?= !empty($quotationFormJob->cardOwnEquipment)
-                          ? $quotationFormJob->cardOwnEquipmentLabel
+                          ? $quotationFormJob->cardOwnEquipment->serial_number
                           : ""
                        ?>
                     </td>
@@ -70,7 +70,12 @@ use yii\web\View;
                 <tr>
                     <td class="border-end-0">Merk / Type</td>
                     <td class="border-start-0 border-end-0">:</td>
-                    <td class="border-start-0"></td>
+                    <td class="border-start-0">
+                       <?= !empty($quotationFormJob->cardOwnEquipment)
+                          ? $quotationFormJob->cardOwnEquipment->nama
+                          : ""
+                       ?>
+                    </td>
                 </tr>
                 <tr>
                     <td class="border-end-0">H M</td>

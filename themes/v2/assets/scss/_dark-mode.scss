@@ -40,7 +40,7 @@ body.dark {
   div.card,
   div.modal-content,
   a.list-group-item {
-    border: 1px solid vars.$white;
+    border: 1px solid vars.$white !important;
   }
 
   .dropdown-menu {

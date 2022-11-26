@@ -20,6 +20,7 @@ use yii\helpers\ArrayHelper;
  * @property string $remarks
  *
  * @property \app\models\Quotation $quotation
+ * @property \app\models\QuotationDeliveryReceiptDetail[] $quotationDeliveryReceiptDetails
  * @property string $aliasModel
  */
 abstract class QuotationDeliveryReceipt extends \yii\db\ActiveRecord
@@ -74,6 +75,14 @@ abstract class QuotationDeliveryReceipt extends \yii\db\ActiveRecord
     public function getQuotation()
     {
         return $this->hasOne(\app\models\Quotation::class, ['id' => 'quotation_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotationDeliveryReceiptDetails()
+    {
+        return $this->hasMany(\app\models\QuotationDeliveryReceiptDetail::class, ['quotation_delivery_receipt_id' => 'id']);
     }
 
 
