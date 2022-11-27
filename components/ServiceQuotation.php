@@ -7,7 +7,6 @@ use app\models\QuotationService;
 use app\models\Tabular;
 use Yii;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
@@ -28,7 +27,6 @@ class ServiceQuotation extends Component implements DeleteModelDetails, UpdateMo
 
    /**
     * @return void
-    * @throws InvalidConfigException
     * @throws NotFoundHttpException
     */
    public function init(): void
@@ -51,7 +49,7 @@ class ServiceQuotation extends Component implements DeleteModelDetails, UpdateMo
             break;
 
          default:
-            throw new InvalidConfigException('Scenario kosong, tolong provide scenario model yang didukung');
+            break;
       endswitch;
    }
 

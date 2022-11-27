@@ -7,7 +7,6 @@ use app\models\QuotationBarang;
 use app\models\Tabular;
 use Yii;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
@@ -22,7 +21,6 @@ class BarangQuotation extends Component implements CreateModelDetails, UpdateMod
 
    /**
     * @throws NotFoundHttpException
-    * @throws InvalidConfigException
     */
    public function init()
    {
@@ -44,7 +42,7 @@ class BarangQuotation extends Component implements CreateModelDetails, UpdateMod
             break;
 
          default:
-            throw new InvalidConfigException('Scenario kosong, tolong provide scenario model yang didukung');
+            break;
       endswitch;
 
    }

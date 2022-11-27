@@ -64,7 +64,7 @@ class TermConditionQuotation extends Component implements CreateModelDetails, Up
             break;
 
          default:
-            throw new InvalidConfigException('Scenario kosong, tolong provide scenario model yang didukung');
+            break;
       endswitch;
 
    }

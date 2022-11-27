@@ -3,14 +3,13 @@
 namespace app\controllers;
 
 use app\components\BarangQuotation;
+use app\components\DeliveryReceiptQuotation;
 use app\components\ServiceQuotation;
 use app\components\TermConditionQuotation;
 use app\models\Quotation;
 use app\models\QuotationDeliveryReceipt;
-use app\models\QuotationDeliveryReceiptDetail;
 use app\models\QuotationFormJob;
 use app\models\search\QuotationSearch;
-use app\models\Tabular;
 use JetBrains\PhpStorm\ArrayShape;
 use Throwable;
 use Yii;
@@ -18,7 +17,6 @@ use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -69,19 +67,17 @@ class QuotationController extends Controller
     */
    public function actionView(int $id): string
    {
-      $links = [
-         'master',
-         'summary',
-         'barang',
-         'service',
-         'term-and-condition',
-         'form-job',
-         'delivery-receipt'
-      ];
-
       return $this->render('view', [
          'model' => $this->findModel($id),
-         'links' => $links,
+         'links' => [
+            'master',
+            'summary',
+            'barang',
+            'service',
+            'term-and-condition',
+            'form-job',
+            'delivery-receipt'
+         ],
       ]);
    }
 
@@ -135,7 +131,6 @@ class QuotationController extends Controller
          'model' => $model,
       ]);
    }
-
 
    /**
     * @param int $id
@@ -449,128 +444,93 @@ class QuotationController extends Controller
       ]);
    }
 
-
    /**
+    * Create Delivery Receipt
     * @param $id
     * @return Response|string
-    * @throws NotFoundHttpException
+    * @throws InvalidConfigException
     * @throws ServerErrorHttpException
     */
    public function actionCreateDeliveryReceipt($id): Response|string
    {
-      $quotation = $this->findModel($id);
-      $model = new QuotationDeliveryReceipt([
-         'quotation_id' => $quotation->id,
+      $component = Yii::createObject([
+         'class' => DeliveryReceiptQuotation::class,
+         'quotationId' => $id,
          'scenario' => QuotationDeliveryReceipt::SCENARIO_CREATE
       ]);
 
-      $modelsDetail = [new QuotationDeliveryReceiptDetail()];
-
-      if ($this->request->isPost && $model->load($this->request->post())) {
-
-         $modelsDetail = Tabular::createMultiple(QuotationDeliveryReceiptDetail::class);
-         Tabular::loadMultiple($modelsDetail, $this->request->post());
-         $model->modelsQuotationDeliveryReceiptDetail = $modelsDetail;
-
-         if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
-
-            if ($model->createWithDetails($modelsDetail)) {
-               Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
-               return $this->redirect(['quotation/view', 'id' => $quotation->id]);
-            }
-
-            Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
+      if ($this->request->isPost && $component->quotationDeliveryReceipt->load($this->request->post())) {
+         if ($component->create()) {
+            return $this->redirect(['quotation/view', 'id' => $id]);
          }
       }
 
       return $this->render('create_delivery_receipt', [
-         'quotation' => $quotation,
-         'model' => $model,
-         'modelsDetail' => empty($modelsDetail) ? [new QuotationDeliveryReceiptDetail()] : $modelsDetail,
+         'quotation' => $component->quotation,
+         'model' => $component->quotationDeliveryReceipt,
+         'modelsDetail' => $component->quotationDeliveryReceiptDetails,
       ]);
    }
 
    /**
+    * Update Delivery Receipt
     * @param $id
     * @return Response|string
+    * @throws InvalidConfigException
     * @throws ServerErrorHttpException
     */
    public function actionUpdateDeliveryReceipt($id): Response|string
    {
-      $model = QuotationDeliveryReceipt::findOne($id);
-      $modelsDetail = empty($model->quotationDeliveryReceiptDetails)
-         ? [new QuotationDeliveryReceiptDetail()]
-         : $model->quotationDeliveryReceiptDetails;
+      $component = Yii::createObject([
+         'class' => DeliveryReceiptQuotation::class,
+         'quotationDeliveryReceiptId' => $id,
+         'scenario' => QuotationDeliveryReceipt::SCENARIO_UPDATE
+      ]);
 
-      $quotation = $model->quotation;
-
-      if ($this->request->isPost && $model->load($this->request->post())) {
-
-         $oldId = ArrayHelper::map($modelsDetail, 'id', 'id');
-         $modelsDetail = Tabular::createMultiple(QuotationDeliveryReceiptDetail::class, $modelsDetail);
-
-         Tabular::loadMultiple($modelsDetail, $this->request->post());
-         $deletedId = array_diff($oldId, array_filter(ArrayHelper::map($modelsDetail, 'id', 'id')));
-
-         $model->modelsQuotationDeliveryReceiptDetail = $modelsDetail;
-
-         if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
-
-            $model->deletedQuotationDeliveryReceiptDetail = $deletedId;
-
-            if ($model->updateWithDetails()) {
-               Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
-               return $this->redirect(['quotation/view', 'id' => $quotation->id]);
-            }
+      if ($this->request->isPost && $component->quotationDeliveryReceipt->load($this->request->post())) {
+         if ($component->update()) {
+            return $this->redirect(['quotation/view', 'id' => $component->quotation->id]);
          }
-         Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
-
       }
 
       return $this->render('update_delivery_receipt', [
-         'quotation' => $quotation,
-         'model' => $model,
-         'modelsDetail' => $modelsDetail,
+         'quotation' => $component->quotation,
+         'model' => $component->quotationDeliveryReceipt,
+         'modelsDetail' => $component->quotationDeliveryReceiptDetails,
       ]);
-
    }
 
    /**
     * Delete Delivery Receipt
     * @param $id
     * @return Response
+    * @throws InvalidConfigException
     * @throws StaleObjectException
     * @throws Throwable
     */
    public function actionDeleteDeliveryReceipt($id): Response
    {
-      $model = QuotationDeliveryReceipt::findOne($id);
-      $model->delete();
-      Yii::$app->session->setFlash('success', [[
-         'title' => 'Pesan Sistem',
-         'message' => 'Sukses menghapus delivery receipt ' . $model->nomor,
-      ]]);
-      return $this->redirect(['quotation/view', 'id' => $model->quotation_id]);
+      $component = Yii::createObject([
+         'class' => DeliveryReceiptQuotation::class,
+         'quotationDeliveryReceiptId' => $id
+      ]);
+      $component->delete();
+      return $this->redirect(['quotation/view', 'id' => $component->quotationDeliveryReceipt->quotation_id]);
    }
 
    /**
-    * Delete Delivery Receipt
+    * Delete Delivery Receipts
     * @param $id
     * @return Response
-    * @throws StaleObjectException
     * @throws Throwable
     */
    public function actionDeleteAllDeliveryReceipt($id): Response
    {
-      $items = QuotationDeliveryReceipt::findAll(['quotation_id' => $id]);
-
-      array_walk($items, function ($item) {
-         $item->delete();
-      });
-      Yii::$app->session->setFlash('success', [[
-         'title' => 'Pesan Sistem',
-         'message' => 'Sukses menghapus semua delivery receipt ' . Quotation::findOne($id)->nomor,
-      ]]);
+      $component = Yii::createObject([
+         'class' => DeliveryReceiptQuotation::class,
+         'quotationId' => $id
+      ]);
+      $component->deleteAll();
       return $this->redirect(['quotation/view', 'id' => $id]);
    }
 
@@ -581,11 +541,10 @@ class QuotationController extends Controller
     */
    public function actionPrintDeliveryReceipt($id): string
    {
-
       $model = QuotationDeliveryReceipt::findOne($id);
       $quotation = $model->quotation;
-      $this->layout = 'print';
 
+      $this->layout = 'print';
       return $this->render('preview_print_delivery_receipt', [
          'quotation' => $quotation,
          'model' => $model
