@@ -18,7 +18,6 @@ use yii\helpers\Html;
       'id' => 'dynamic-form',
    ]); ?>
 
-   <?= $form->errorSummary($model) ?>
     <div class="card">
 
         <div class="card-body">
@@ -123,8 +122,7 @@ use yii\helpers\Html;
         </div>
 
     </div>
-
-
+   
    <?php ActiveForm::end(); ?>
 
 </div>

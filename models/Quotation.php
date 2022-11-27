@@ -39,7 +39,7 @@ class Quotation extends BaseQuotation
    const SCENARIO_UPDATE_SERVICE_QUOTATION = 'update-service-quotation';
 
    const SCENARIO_CREATE_TERM_AND_CONDITION = 'create-term-and-condition';
-   const SCENARIO_UPDATE_TERM_AND_CONDITION = 'create-term-and-condition';
+   const SCENARIO_UPDATE_TERM_AND_CONDITION = 'update-term-and-condition';
 
    const SCENARIO_CREATE_FORM_JOB = 'create-form-job';
    const SCENARIO_UPDATE_FORM_JOB = 'update-form-job';

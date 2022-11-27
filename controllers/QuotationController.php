@@ -2,18 +2,19 @@
 
 namespace app\controllers;
 
+use app\components\BarangQuotation;
+use app\components\ServiceQuotation;
+use app\components\TermConditionQuotation;
 use app\models\Quotation;
-use app\models\QuotationBarang;
 use app\models\QuotationDeliveryReceipt;
 use app\models\QuotationDeliveryReceiptDetail;
 use app\models\QuotationFormJob;
-use app\models\QuotationService;
-use app\models\QuotationTermAndCondition;
 use app\models\search\QuotationSearch;
 use app\models\Tabular;
 use JetBrains\PhpStorm\ArrayShape;
 use Throwable;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
@@ -48,7 +49,6 @@ class QuotationController extends Controller
    }
 
    /**
-    * Lists all Quotation models.
     * @return string
     */
    public function actionIndex(): string
@@ -63,8 +63,7 @@ class QuotationController extends Controller
    }
 
    /**
-    * Displays a single Quotation model.
-    * @param integer $id
+    * @param int $id
     * @return string
     * @throws NotFoundHttpException
     */
@@ -87,11 +86,7 @@ class QuotationController extends Controller
    }
 
    /**
-    * Finds the Quotation model based on its primary key value.
-    * If the model is not found, a 404 HTTP exception will be thrown.
-    * @param integer $id
-    * @return Quotation the loaded model
-    * @throws NotFoundHttpException if the model cannot be found
+    * @throws NotFoundHttpException
     */
    protected function findModel(int $id): Quotation
    {
@@ -103,14 +98,11 @@ class QuotationController extends Controller
    }
 
    /**
-    * Creates a new Quotation model.
-    * If creation is successful, the browser will be redirected to the 'index' page.
     * @return Response|string
     */
    public function actionCreate(): Response|string
    {
       $model = new Quotation();
-
       if ($this->request->isPost) {
          if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', 'Quotation: ' . $model->nomor . ' berhasil ditambahkan.');
@@ -126,11 +118,9 @@ class QuotationController extends Controller
    }
 
    /**
-    * Updates an existing Quotation model.
-    * If update is successful, the browser will be redirected to the 'index' page with pagination URL
-    * @param integer $id
+    * @param int $id
     * @return Response|string
-    * @throws NotFoundHttpException if the model cannot be found
+    * @throws NotFoundHttpException
     */
    public function actionUpdate(int $id): Response|string
    {
@@ -146,12 +136,11 @@ class QuotationController extends Controller
       ]);
    }
 
+
    /**
-    * Deletes an existing Quotation model.
-    * If deletion is successful, the browser will be redirected to the 'index' page.
-    * @param integer $id
+    * @param int $id
     * @return Response
-    * @throws NotFoundHttpException if the model cannot be found
+    * @throws NotFoundHttpException
     * @throws StaleObjectException
     * @throws Throwable
     */
@@ -179,90 +168,66 @@ class QuotationController extends Controller
 
    /**
     * @param $id
-    * @return string|Response
-    * @throws NotFoundHttpException
+    * @return Response|string
+    * @throws InvalidConfigException
     */
    public function actionCreateBarangQuotation($id): Response|string
    {
-      $quotation = $this->findModel($id);
-      $quotation->scenario = Quotation::SCENARIO_CREATE_BARANG_QUOTATION;
-      $models = [new QuotationBarang(['quotation_id' => $quotation->id])];
+      $component = Yii::createObject([
+         'class' => BarangQuotation::class,
+         'quotationId' => $id,
+         'scenario' => Quotation::SCENARIO_CREATE_BARANG_QUOTATION,
+      ]);
 
-      if ($this->request->isPost && $quotation->load($this->request->post())) {
-
-         $models = Tabular::createMultiple(QuotationBarang::class);
-         Tabular::loadMultiple($models, $this->request->post());
-
-         $quotation->modelsQuotationBarang = $models;
-
-         if ($quotation->validate() && Tabular::validateMultiple($models)) {
-            if ($quotation->createModelsQuotationBarang()) {
-               Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
-               return $this->redirect(['quotation/view', 'id' => $quotation->id]);
-            }
+      if ($this->request->isPost && $component->quotation->load($this->request->post())) {
+         if ($component->create()) {
+            return $this->redirect(['quotation/view', 'id' => $id]);
          }
-
-         Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
       }
 
       return $this->render('create_barang_quotation', [
-         'quotation' => $quotation,
-         'models' => $models,
+         'quotation' => $component->quotation,
+         'models' => $component->quotationBarangs,
       ]);
    }
 
    /**
-    * @throws NotFoundHttpException
+    * @param $id
+    * @return Response|string
+    * @throws InvalidConfigException
     */
    public function actionUpdateBarangQuotation($id): Response|string
    {
-      $quotation = $this->findModel($id);
-      $quotation->scenario = Quotation::SCENARIO_UPDATE_BARANG_QUOTATION;
-      $models = empty($quotation->quotationBarangs) ? [new QuotationBarang(['quotation_id' => $id])] : $quotation->quotationBarangs;
+      $component = Yii::createObject([
+         'class' => BarangQuotation::class,
+         'quotationId' => $id,
+         'scenario' => Quotation::SCENARIO_UPDATE_BARANG_QUOTATION,
+      ]);
 
-      if ($this->request->isPost && $quotation->load($this->request->post())) {
-
-         $oldQuotationBarangsId = ArrayHelper::map($models, 'id', 'id');
-         $models = Tabular::createMultiple(QuotationBarang::class, $models);
-
-         Tabular::loadMultiple($models, $this->request->post());
-         $deletedQuotationBarangsId = array_diff($oldQuotationBarangsId, array_filter(ArrayHelper::map($models, 'id', 'id')));
-
-         $quotation->modelsQuotationBarang = $models;
-
-         if ($quotation->validate() && Tabular::validateMultiple($models)) {
-            $quotation->deletedQuotationBarangsId = $deletedQuotationBarangsId;
-
-            if ($quotation->updateModelsQuotationBarang()) {
-               Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
-               return $this->redirect(['quotation/view', 'id' => $quotation->id]);
-            }
+      if ($this->request->isPost && $component->quotation->load($this->request->post())) {
+         if ($component->update()) {
+            return $this->redirect(['quotation/view', 'id' => $id]);
          }
-         Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
       }
 
       return $this->render('update_barang_quotation', [
-         'quotation' => $quotation,
-         'models' => $models,
+         'quotation' => $component->quotation,
+         'models' => $component->quotationBarangs,
       ]);
    }
 
    /**
     * @param $id
     * @return Response
+    * @throws InvalidConfigException
     */
    public function actionDeleteBarangQuotation($id): Response
    {
-      $models = QuotationBarang::findAll([
-         'quotation_id' => $id
+      $component = Yii::createObject([
+         'class' => BarangQuotation::class,
+         'quotationId' => $id
       ]);
-      array_walk($models, function ($item) {
-         $item->delete();
-      });
-      Yii::$app->session->setFlash('success', [[
-         'title' => 'Pesan Sistem',
-         'message' => 'Sukses menghapus quotation barang ' . Quotation::findOne($id)->nomor,
-      ]]);
+      $component->delete();
       return $this->redirect(['quotation/view', 'id' => $id]);
    }
 
@@ -274,200 +239,119 @@ class QuotationController extends Controller
     */
    public function actionCreateServiceQuotation($id): Response|string
    {
-      $quotation = $this->findModel($id);
-      $quotation->scenario = Quotation::SCENARIO_CREATE_SERVICE_QUOTATION;
-      $models = [new QuotationService([
-         'quotation_id' => $quotation->id
-      ])];
-
-      if ($quotation->load($this->request->post())) {
-         $models = Tabular::createMultiple(QuotationService::class);
-         Tabular::loadMultiple($models, $this->request->post());
-
-         $quotation->modelsQuotationService = $models;
-
-         if ($quotation->validate() && Tabular::validateMultiple($models)) {
-            if ($quotation->createModelsQuotationService()) {
-
-               Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
-               return $this->redirect(['quotation/view', 'id' => $quotation->id]);
-            }
+      $component = Yii::createObject([
+         'class' => ServiceQuotation::class,
+         'quotationId' => $id,
+         'scenario' => Quotation::SCENARIO_CREATE_SERVICE_QUOTATION,
+      ]);
+      if ($component->quotation->load($this->request->post())) {
+         if ($component->create()) {
+            return $this->redirect(['quotation/view', 'id' => $component->quotation->id]);
          }
-
-         Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
       }
-
-
       return $this->render('create_service_quotation', [
-         'quotation' => $quotation,
-         'models' => $models,
+         'quotation' => $component->quotation,
+         'models' => $component->quotationServices,
       ]);
    }
 
    /**
-    * @throws NotFoundHttpException
+    * @param $id
+    * @return Response|string
     * @throws Exception
+    * @throws InvalidConfigException
     */
    public function actionUpdateServiceQuotation($id): Response|string
    {
-      $quotation = $this->findModel($id);
-      $quotation->scenario = Quotation::SCENARIO_UPDATE_SERVICE_QUOTATION;
-      $models = !empty($quotation->quotationServices)
-         ? $quotation->quotationServices
-         : [new QuotationService(['quotation_id' => $id])];
 
-      if ($this->request->isPost && $quotation->load($this->request->post())) {
-
-         $oldQuotationServicesId = ArrayHelper::map($models, 'id', 'id');
-         $models = Tabular::createMultiple(QuotationService::class, $models);
-
-         Tabular::loadMultiple($models, $this->request->post());
-         $deletedQuotationBarangsId = array_diff($oldQuotationServicesId, array_filter(ArrayHelper::map($models, 'id', 'id')));
-
-         $quotation->modelsQuotationService = $models;
-         $quotation->deletedQuotationServicesId = $deletedQuotationBarangsId;
-
-         if ($quotation->validate() && Tabular::validateMultiple($models)) {
-            if ($quotation->updateModelsQuotationService()) {
-               Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
-               return $this->redirect(['quotation/view', 'id' => $quotation->id]);
-            }
+      $component = Yii::createObject([
+         'class' => ServiceQuotation::class,
+         'quotationId' => $id,
+         'scenario' => Quotation::SCENARIO_UPDATE_SERVICE_QUOTATION,
+      ]);
+      if ($this->request->isPost && $component->quotation->load($this->request->post())) {
+         if ($component->update()) {
+            return $this->redirect(['quotation/view', 'id' => $id]);
          }
-         Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
       }
-
       return $this->render('update_service_quotation', [
-         'quotation' => $quotation,
-         'models' => $models,
+         'quotation' => $component->quotation,
+         'models' => $component->quotationServices,
       ]);
    }
 
    /**
     * @param $id
     * @return Response
+    * @throws InvalidConfigException
     */
    public function actionDeleteServiceQuotation($id): Response
    {
-      $models = QuotationService::findAll([
-         'quotation_id' => $id
+      $component = Yii::createObject([
+         'class' => ServiceQuotation::class,
+         'quotationId' => $id
       ]);
-
-      array_walk($models, function ($item) {
-         $item->delete();
-      });
-
-      Yii::$app->session->setFlash('success', [[
-         'title' => 'Pesan Sistem',
-         'message' => 'Sukses menghapus quotation service ' . Quotation::findOne($id)->nomor,
-      ]]);
-
+      $component->delete();
       return $this->redirect(['quotation/view', 'id' => $id]);
    }
 
    /**
+    * @param $id
+    * @return Response|string
     * @throws Exception
-    * @throws NotFoundHttpException
+    * @throws InvalidConfigException
     */
    public function actionCreateTermAndCondition($id): Response|string
    {
-      $quotation = $this->findModel($id);
-      $quotation->scenario = Quotation::SCENARIO_CREATE_TERM_AND_CONDITION;
+      $component = Yii::createObject([
+         'class' => TermConditionQuotation::class,
+         'quotationId' => $id,
+         'scenario' => Quotation::SCENARIO_CREATE_TERM_AND_CONDITION,
+      ]);
 
-      $models = [];
-      if ($this->request->isGet) {
-
-         $template = Yii::$app->settings->get('quotation.term_and_condition_template');
-         if ($template) {
-            foreach ($template as $item) {
-               $models[] = new QuotationTermAndCondition([
-                  'quotation_id' => $id,
-                  'term_and_condition' => $item
-               ]);
-            }
-         } else {
-            $models[] = new QuotationTermAndCondition();
+      if ($this->request->isPost) {
+         if ($component->create()) {
+            return $this->redirect(['quotation/view', 'id' => $component->quotation->id]);
          }
-      } else if ($this->request->isPost) {
-
-         $models = Tabular::createMultiple(QuotationTermAndCondition::class);
-         Tabular::loadMultiple($models, $this->request->post());
-
-         $quotation->modelsQuotationTermAndCondition = $models;
-         if (Tabular::validateMultiple($models)) {
-
-            if ($quotation->createModelsTermAndCondition()) {
-               Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
-               return $this->redirect(['quotation/view', 'id' => $quotation->id]);
-            }
-         }
-
-         Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
       }
 
-
       return $this->render('create_term_and_condition', [
-         'quotation' => $quotation,
-         'models' => $models,
+         'quotation' => $component->quotation,
+         'models' => $component->quotationTermAndConditions,
       ]);
    }
 
    /**
+    * @param $id
+    * @return Response|string
     * @throws Exception
-    * @throws NotFoundHttpException
+    * @throws InvalidConfigException
     */
    public function actionUpdateTermAndCondition($id): Response|string
    {
-      $quotation = $this->findModel($id);
-      $quotation->scenario = Quotation::SCENARIO_UPDATE_TERM_AND_CONDITION;
-      $models = !empty($quotation->quotationTermAndConditions) ? $quotation->quotationTermAndConditions :
-         [new QuotationTermAndCondition([
-            'quotation_id' => $id
-         ])];
+      $component = Yii::createObject(['class' => TermConditionQuotation::class, 'quotationId' => $id, 'scenario' => Quotation::SCENARIO_UPDATE_TERM_AND_CONDITION,]);
 
       if ($this->request->isPost) {
-
-         $oldId = ArrayHelper::map($models, 'id', 'id');
-         $models = Tabular::createMultiple(QuotationTermAndCondition::class, $models);
-
-         Tabular::loadMultiple($models, $this->request->post());
-         $deletedId = array_diff($oldId, array_filter(ArrayHelper::map($models, 'id', 'id')));
-
-         $quotation->modelsQuotationTermAndCondition = $models;
-
-         if (Tabular::validateMultiple($models)) {
-
-            $quotation->deletedQuotationTermAndCondition = $deletedId;
-
-            if ($quotation->updateModelsTermAndCondition()) {
-               Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
-               return $this->redirect(['quotation/view', 'id' => $quotation->id]);
-            }
+         if ($component->update()) {
+            return $this->redirect(['quotation/view', 'id' => $id]);
          }
-         Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
       }
 
       return $this->render('update_term_and_condition', [
-         'quotation' => $quotation,
-         'models' => $models,
+         'quotation' => $component->quotation,
+         'models' => $component->quotationTermAndConditions,
       ]);
    }
 
    /**
     * @param $id
     * @return Response
+    * @throws InvalidConfigException
     */
    public function actionDeleteTermAndCondition($id): Response
    {
-      $models = QuotationTermAndCondition::findAll([
-         'quotation_id' => $id
-      ]);
-      array_walk($models, function ($item) {
-         $item->delete();
-      });
-      Yii::$app->session->setFlash('success', [[
-         'title' => 'Pesan Sistem',
-         'message' => 'Sukses menghapus term and condition ' . Quotation::findOne($id)->nomor,
-      ]]);
+      $component = Yii::createObject(['class' => TermConditionQuotation::class, 'quotationId' => $id]);
+      $component->delete();
       return $this->redirect(['quotation/view', 'id' => $id]);
    }
 
@@ -565,6 +449,7 @@ class QuotationController extends Controller
       ]);
    }
 
+
    /**
     * @param $id
     * @return Response|string
@@ -604,7 +489,6 @@ class QuotationController extends Controller
          'modelsDetail' => empty($modelsDetail) ? [new QuotationDeliveryReceiptDetail()] : $modelsDetail,
       ]);
    }
-
 
    /**
     * @param $id
@@ -694,15 +578,14 @@ class QuotationController extends Controller
     * Print HTML Delivery Receipt
     * @param $id
     * @return string
-    * @throws NotFoundHttpException
     */
    public function actionPrintDeliveryReceipt($id): string
    {
 
       $model = QuotationDeliveryReceipt::findOne($id);
       $quotation = $model->quotation;
-
       $this->layout = 'print';
+
       return $this->render('preview_print_delivery_receipt', [
          'quotation' => $quotation,
          'model' => $model
