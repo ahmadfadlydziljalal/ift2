@@ -22,7 +22,7 @@ use yii\web\View;
         <div class="mb-1" style=" float: left; width: 45%; padding-right: 2em">
             <div class="border-1" style="min-height: 1.6cm; max-height: 3.6cm; padding: .5em">
                 Telah terima dari: <br/>
-                <?= $model->purchaseOrder->vendor->nama ?>
+               <?= $model->purchaseOrder->vendor->nama ?>
             </div>
 
             <p class="font-weight-bold">
@@ -61,54 +61,54 @@ use yii\web\View;
     <div style="clear: both"></div>
 
     <div class="mb-1" style="width: 100%">
-        <?php if (!empty($model->tandaTerimaBarangDetails)) : ?>
-            <?= GridView::widget([
-                'dataProvider' => new ActiveDataProvider([
-                    'query' => $model->getTandaTerimaBarangDetails(),
-                    'pagination' => false,
-                    'sort' => false
-                ]),
-                'layout' => '{items}',
-                'columns' => [
-                    [
-                        'class' => SerialColumn::class
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'vAlign' => 'middle',
-                        'header' => 'Part Number',
-                        'value' => function ($model) {
-                            /** @var TandaTerimaBarangDetail $model */
-                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->part_number;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'vAlign' => 'middle',
-                        'header' => 'IFT Number',
-                        'value' => function ($model) {
-                            /** @var TandaTerimaBarangDetail $model */
-                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->ift_number;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'vAlign' => 'middle',
-                        'header' => 'Merk',
-                        'value' => function ($model) {
-                            /** @var TandaTerimaBarangDetail $model */
-                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->merk_part_number;
-                        }
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'vAlign' => 'middle',
-                        'header' => 'Description',
-                        'value' => function ($model) {
-                            /** @var TandaTerimaBarangDetail $model */
-                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->nama;
-                        }
-                    ],
+       <?php if (!empty($model->tandaTerimaBarangDetails)) : ?>
+          <?= GridView::widget([
+             'dataProvider' => new ActiveDataProvider([
+                'query' => $model->getTandaTerimaBarangDetails(),
+                'pagination' => false,
+                'sort' => false
+             ]),
+             'layout' => '{items}',
+             'columns' => [
+                [
+                   'class' => SerialColumn::class
+                ],
+                [
+                   'class' => DataColumn::class,
+                   'vAlign' => 'middle',
+                   'header' => 'Part Number',
+                   'value' => function ($model) {
+                      /** @var TandaTerimaBarangDetail $model */
+                      return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->part_number;
+                   }
+                ],
+                [
+                   'class' => DataColumn::class,
+                   'vAlign' => 'middle',
+                   'header' => 'IFT Number',
+                   'value' => function ($model) {
+                      /** @var TandaTerimaBarangDetail $model */
+                      return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->ift_number;
+                   }
+                ],
+                [
+                   'class' => DataColumn::class,
+                   'vAlign' => 'middle',
+                   'header' => 'Merk',
+                   'value' => function ($model) {
+                      /** @var TandaTerimaBarangDetail $model */
+                      return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->merk_part_number;
+                   }
+                ],
+                [
+                   'class' => DataColumn::class,
+                   'vAlign' => 'middle',
+                   'header' => 'Description',
+                   'value' => function ($model) {
+                      /** @var TandaTerimaBarangDetail $model */
+                      return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->nama;
+                   }
+                ],
 //                    [
 //                        'class' => DataColumn::class,
 //                        'vAlign' => 'middle',
@@ -124,71 +124,71 @@ use yii\web\View;
 //                            'class' => 'text-end border-end-0'
 //                        ]
 //                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'vAlign' => 'middle',
-                        'header' => '',
-                        'value' => function ($model) {
-                            /** @var TandaTerimaBarangDetail $model */
-                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->satuan->nama;
-                        },
-                        'contentOptions' => [
-                            'class' => 'text-end border-start-0'
-                        ],
-                        'headerOptions' => [
-                            'class' => 'text-end border-start-0'
-                        ],
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'header' => 'Actual',
-                        'format' => ['decimal', 2],
-                        'vAlign' => 'middle',
-                        'value' => function ($model) {
-                            /** @var TandaTerimaBarangDetail $model */
-                            return $model->quantity_terima;
-                        },
-                        'contentOptions' => [
-                            'class' => 'text-end border-end-0'
-                        ],
-                        'headerOptions' => [
-                            'class' => 'text-end border-end-0'
-                        ]
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'vAlign' => 'middle',
-                        'header' => '',
-                        'value' => function ($model) {
-                            /** @var TandaTerimaBarangDetail $model */
-                            return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->satuan->nama;
-                        },
-                        'contentOptions' => [
-                            'class' => 'text-end border-start-0'
-                        ],
-                        'headerOptions' => [
-                            'class' => 'text-end border-start-0'
-                        ],
-                    ],
-                    [
-                        'class' => DataColumn::class,
-                        'vAlign' => 'middle',
-                        'header' => 'Status',
-                        'format' => 'raw',
-                        'value' => function ($model) {
-                            /** @var TandaTerimaBarangDetail $model */
-                            return $model->materialRequisitionDetailPenawaran->getStatusPenerimaanInHtmlLabel('small');
-                        },
-                        'contentOptions' => [
-                            'class' => 'text-end'
-                        ],
-                        'headerOptions' => [
-                            'class' => 'text-end'
-                        ],
-                    ],
-                ]
-            ]) ?>
-        <?php endif ?>
+                [
+                   'class' => DataColumn::class,
+                   'vAlign' => 'middle',
+                   'header' => '',
+                   'value' => function ($model) {
+                      /** @var TandaTerimaBarangDetail $model */
+                      return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->satuan->nama;
+                   },
+                   'contentOptions' => [
+                      'class' => 'text-end border-start-0'
+                   ],
+                   'headerOptions' => [
+                      'class' => 'text-end border-start-0'
+                   ],
+                ],
+                [
+                   'class' => DataColumn::class,
+                   'header' => 'Actual',
+                   'format' => ['decimal', 2],
+                   'vAlign' => 'middle',
+                   'value' => function ($model) {
+                      /** @var TandaTerimaBarangDetail $model */
+                      return $model->quantity_terima;
+                   },
+                   'contentOptions' => [
+                      'class' => 'text-end border-end-0'
+                   ],
+                   'headerOptions' => [
+                      'class' => 'text-end border-end-0'
+                   ]
+                ],
+                [
+                   'class' => DataColumn::class,
+                   'vAlign' => 'middle',
+                   'header' => '',
+                   'value' => function ($model) {
+                      /** @var TandaTerimaBarangDetail $model */
+                      return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->satuan->nama;
+                   },
+                   'contentOptions' => [
+                      'class' => 'text-end border-start-0'
+                   ],
+                   'headerOptions' => [
+                      'class' => 'text-end border-start-0'
+                   ],
+                ],
+                [
+                   'class' => DataColumn::class,
+                   'vAlign' => 'middle',
+                   'header' => 'Status',
+                   'format' => 'raw',
+                   'value' => function ($model) {
+                      /** @var TandaTerimaBarangDetail $model */
+                      return $model->materialRequisitionDetailPenawaran->getStatusPenerimaanInHtmlLabel('small');
+                   },
+                   'contentOptions' => [
+                      'class' => 'text-end'
+                   ],
+                   'headerOptions' => [
+                      'class' => 'text-end'
+                   ],
+                ],
+             ]
+          ]) ?>
+       <?php endif ?>
     </div>
 
     <div style="clear: both"></div>
@@ -199,15 +199,15 @@ use yii\web\View;
             <tr class="text-center">
                 <td rowspan="3" style="width: 40%">
                     Remarks<br/>
-                    <?php $dataAngsur = $model->purchaseOrder->nomorTandaTerimaColumns ?>
-                    <?php if (count($dataAngsur) > 1) : ?>
-                        <p>By Sistem: P.O diangsur beberapa kali tanda terima sebagai berikut:
-                            <?php foreach ($dataAngsur as $nomorTandaTerimaBarang) : ?>
-                                <?= $nomorTandaTerimaBarang . '<br/>' ?>
-                            <?php endforeach; ?>
-                        </p>
+                   <?php $dataAngsur = $model->purchaseOrder->nomorTandaTerimaColumns ?>
+                   <?php if (count($dataAngsur) > 1) : ?>
+                       <p>By Sistem: P.O diangsur beberapa kali tanda terima:
+                          <?php foreach ($dataAngsur as $nomorTandaTerimaBarang) : ?>
+                             <?= $nomorTandaTerimaBarang . '<br/>' ?>
+                          <?php endforeach; ?>
+                       </p>
 
-                    <?php endif ?>
+                   <?php endif ?>
                 </td>
                 <td style="height: 100px; white-space: nowrap">Received By</td>
                 <td style="height: 100px">Messenger</td>

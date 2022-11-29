@@ -60,10 +60,23 @@ use yii\web\View;
              [
                 'class' => SerialColumn::class
              ],
+             //'id',
              [
                 'class' => DataColumn::class,
+                'header' => 'Barang',
                 'value' => 'quotationBarang.barang.nama'
-             ]
+             ],
+             [
+                'class' => DataColumn::class,
+                'value' => 'quotationBarang.quantity',
+                'header' => 'Quotation Qty'
+             ],
+             [
+                'class' => DataColumn::class,
+                'attribute' => 'quantity',
+                'value' => 'quantity',
+                'header' => 'Qty Dikirim'
+             ],
           ]
        ]) ?>
 
@@ -72,7 +85,8 @@ use yii\web\View;
     <div class="card-footer border-top p-3">
         <div class="d-flex flex-row gap-3">
             <div>
-               <?= Html::a(TextLinkEnum::UPDATE->value,
+               <?= Html::a(
+                  TextLinkEnum::UPDATE->value,
                   ['quotation/update-delivery-receipt', 'id' => $model->id],
                   [
                      'class' => 'btn btn-primary'
@@ -85,7 +99,8 @@ use yii\web\View;
                ]) ?>
             </div>
             <div class="ms-auto">
-               <?= Html::a(TextLinkEnum::DELETE->value,
+               <?= Html::a(
+                  TextLinkEnum::DELETE->value,
                   ['quotation/delete-delivery-receipt', 'id' => $model->id],
                   [
                      'data' => [
@@ -93,7 +108,8 @@ use yii\web\View;
                         'method' => 'post'
                      ],
                      'class' => 'btn btn-danger'
-                  ]) ?>
+                  ]
+               ) ?>
             </div>
         </div>
     </div>

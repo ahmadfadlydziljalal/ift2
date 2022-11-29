@@ -7,6 +7,7 @@ use app\components\DeliveryReceiptQuotation;
 use app\components\ServiceQuotation;
 use app\components\TermConditionQuotation;
 use app\models\Quotation;
+use app\models\QuotationBarang;
 use app\models\QuotationDeliveryReceipt;
 use app\models\QuotationFormJob;
 use app\models\search\QuotationSearch;
@@ -445,7 +446,7 @@ class QuotationController extends Controller
    }
 
    /**
-    * Create Delivery Receipt
+    * Create Delivery Receipt, dimana Delivery Receipt Detail by default dibentuk dari Quotation Barang
     * @param $id
     * @return Response|string
     * @throws InvalidConfigException
@@ -453,9 +454,21 @@ class QuotationController extends Controller
     */
    public function actionCreateDeliveryReceipt($id): Response|string
    {
+
+      $quotationBarangs = QuotationBarang::find()->forCreateDeliveryReceipt($id);
+
+      if (!$quotationBarangs) {
+         Yii::$app->session->setFlash('danger', [[
+            'title' => 'Pesan Sistem',
+            'message' => 'Tidak dapat membuat Delivery Receipt. Sistem mendeteksi masing-masing quantity barang sudah dikirim semua.'
+         ]]);
+         return $this->redirect(['quotation/view', 'id' => $id]);
+      }
+
       $component = Yii::createObject([
          'class' => DeliveryReceiptQuotation::class,
          'quotationId' => $id,
+         'quotationBarangs' => $quotationBarangs,
          'scenario' => QuotationDeliveryReceipt::SCENARIO_CREATE
       ]);
 

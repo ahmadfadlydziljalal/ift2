@@ -18,6 +18,8 @@ class QuotationBarang extends BaseQuotationBarang
 {
 
    public ?string $namaBarang = null;
+   public ?float $totalQuantityBarangDalamQuotation = null;
+   public ?float $totalQuantityBarangSudahDikirim = null;
 
    public function behaviors(): array
    {
@@ -104,6 +106,19 @@ class QuotationBarang extends BaseQuotationBarang
    public function getAmount(): float|int
    {
       return ($this->quantity * $this->unitPriceAfterDiscount);
+   }
+
+   /**
+    * @param int $quotationBarangId
+    * @return bool|int|mixed|string|null
+    */
+   public function totalQuantitySudahTerkirimSpecificQuotationBarang(int $quotationBarangId): mixed
+   {
+      return parent::getQuotationDeliveryReceiptDetails()
+         ->where([
+            'quotation_barang_id' => $quotationBarangId
+         ])
+         ->sum('quantity');
    }
 
 

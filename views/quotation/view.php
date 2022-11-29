@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                    'label' => 'Quotation',
                    'content' => $this->render('_view_quotation', ['model' => $model]),
-                   'active' => true
+
                 ],
                 [
                    'label' => 'Barang',
@@ -83,6 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                    'label' => 'Delivery Receipt',
                    'content' => $this->render('_view_delivery_receipt', ['model' => $model]),
+                   'active' => true
                 ],
                 [
                    'label' => 'Summary',

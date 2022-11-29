@@ -8,12 +8,14 @@
 /* @see \app\controllers\QuotationController::actionDeleteAllDeliveryReceipt() */
 /* @see \app\controllers\QuotationController::actionPrintDeliveryReceipt() */
 
-/* @var $model Quotation|string|ActiveRecord */
+/* @var $model Quotation */
 
 use app\enums\TextLinkEnum;
 use app\models\Quotation;
+use kartik\grid\DataColumn;
+use kartik\grid\GridView;
+use kartik\grid\SerialColumn;
 use yii\data\ActiveDataProvider;
-use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\ListView;
@@ -38,28 +40,99 @@ use yii\widgets\ListView;
     </div>
 
     <div class="card-body">
-        <div class="table-responsive">
-           <?php
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                <div class="table-responsive">
+                   <?php
 
-           if ($model->quotationDeliveryReceipts) {
-              echo ListView::widget([
-                 'dataProvider' => new ActiveDataProvider([
-                    'query' => $model->getQuotationDeliveryReceipts(),
-                    'pagination' => false,
-                    'sort' => false
-                 ]),
-                 'itemView' => '_item_quotation_deliver_receipt',
-                 'layout' => '{items}',
-                 'options' => [
-                    'class' => 'd-flex flex-column gap-3'
-                 ]
-              ]);
-           } else {
-              echo Html::tag('p', 'Belum ada form job', [
-                 'class' => 'text-danger font-weight-bold'
-              ]);
-           }
-           ?>
+                   if ($model->quotationDeliveryReceipts) {
+                      echo ListView::widget([
+                         'dataProvider' => new ActiveDataProvider([
+                            'query' => $model->getQuotationDeliveryReceipts(),
+                            'pagination' => false,
+                            'sort' => false
+                         ]),
+                         'itemView' => '_item_quotation_deliver_receipt',
+                         'layout' => '{items}',
+                         'options' => [
+                            'class' => 'd-flex flex-column gap-3'
+                         ]
+                      ]);
+                   } else {
+                      echo Html::tag('p', 'Belum ada form job', [
+                         'class' => 'text-danger font-weight-bold'
+                      ]);
+                   }
+                   ?>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                <div class="card border-1 rounded shadow">
+
+                    <div class="card-body border-bottom fw-bold">
+                        <i class="bi bi-file-pdf"></i> Summary Indent
+                    </div>
+
+                    <div class="card-body">
+                        <p class="font-weight-bold">
+                            Status: <?= $model->getGlobalStatusDeliveryReceiptInHtmlFormat() ?>
+                        </p>
+                        <div class="table-responsive">
+                           <?= GridView::widget([
+                              'dataProvider' => new ActiveDataProvider([
+                                 'query' => $model->getListDeliveryReceiptDetails(),
+                                 'pagination' => false,
+                                 'sort' => false
+                              ]),
+                              'columns' => [
+                                 [
+                                    'class' => SerialColumn::class
+                                 ],
+                                 [
+                                    'class' => DataColumn::class,
+                                    'attribute' => 'barangNama'
+                                 ],
+                                 [
+                                    'class' => DataColumn::class,
+                                    'attribute' => 'quotationBarangQuantity',
+                                    'header' => 'Quotation Qty',
+                                    'format' => ['decimal', 2],
+                                    'contentOptions' => [
+                                       'class' => 'text-end'
+                                    ]
+                                 ],
+                                 [
+                                    'class' => DataColumn::class,
+                                    'attribute' => 'quantity',
+                                    'header' => 'Qty Dikirim',
+                                    'format' => ['decimal', 2],
+                                    'contentOptions' => [
+                                       'class' => 'text-end'
+                                    ]
+                                 ],
+                                 [
+                                    'class' => DataColumn::class,
+                                    'attribute' => 'totalQuantityIndent',
+                                    'header' => 'Indent',
+                                    'format' => ['decimal', 2],
+                                    'contentOptions' => [
+                                       'class' => 'text-end'
+                                    ]
+                                 ],
+                              ],
+                              'layout' => '{items}',
+                              'rowOptions' => function ($model, $key, $index) {
+                                 if (!empty($model->totalQuantityIndent)) {
+                                    return [
+                                       'class' => 'table-danger'
+                                    ];
+                                 }
+                              }
+                           ]) ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

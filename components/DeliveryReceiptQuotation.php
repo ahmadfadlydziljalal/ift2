@@ -4,6 +4,7 @@ namespace app\components;
 
 use app\components\helpers\ArrayHelper;
 use app\models\Quotation;
+use app\models\QuotationBarang;
 use app\models\QuotationDeliveryReceipt;
 use app\models\QuotationDeliveryReceiptDetail;
 use app\models\Tabular;
@@ -25,10 +26,14 @@ class DeliveryReceiptQuotation extends Component implements CreateModelDetails, 
    public ?QuotationDeliveryReceipt $quotationDeliveryReceipt = null;
 
    /**
+    * @var QuotationBarang[]
+    * */
+   public ?array $quotationBarangs = null;
+
+   /**
     * @var QuotationDeliveryReceiptDetail[]
     * */
    public ?array $quotationDeliveryReceiptDetails = null;
-
 
    /**
     * @return void
@@ -43,33 +48,37 @@ class DeliveryReceiptQuotation extends Component implements CreateModelDetails, 
 
          case QuotationDeliveryReceipt::SCENARIO_CREATE :
 
-            $this->quotation = $this->findModel($this->quotationId);
-
-            $this->quotationDeliveryReceipt = new QuotationDeliveryReceipt([
-               'quotation_id' => $this->quotation->id,
-               'scenario' => QuotationDeliveryReceipt::SCENARIO_CREATE
-            ]);
-            $this->quotationDeliveryReceipt->scenario = $this->scenario;
-
-            $this->quotationDeliveryReceiptDetails = [new QuotationDeliveryReceiptDetail()];
+            $this->scenarioCreate();
             break;
 
          case QuotationDeliveryReceipt::SCENARIO_UPDATE:
 
-            $this->quotationDeliveryReceipt = QuotationDeliveryReceipt::findOne($this->quotationDeliveryReceiptId);
-            $this->quotationDeliveryReceipt->scenario = $this->scenario;
-
-            $this->quotation = $this->findModel($this->quotationDeliveryReceipt->quotation_id);
-
-            $this->quotationDeliveryReceiptDetails = empty($this->quotationDeliveryReceipt->quotationDeliveryReceiptDetails)
-               ? [new QuotationDeliveryReceiptDetail()]
-               : $this->quotationDeliveryReceipt->quotationDeliveryReceiptDetails;
-
+            $this->scenarioUpdate();
             break;
 
          default:
             break;
       endswitch;
+   }
+
+   /**
+    * @return void
+    * @throws NotFoundHttpException
+    */
+   private function scenarioCreate(): void
+   {
+
+      $this->quotation = $this->findModel($this->quotationId);
+      $this->quotationDeliveryReceipt = new QuotationDeliveryReceipt([
+         'quotation_id' => $this->quotation->id,
+         'scenario' => $this->scenario
+      ]);
+
+      foreach ($this->quotationBarangs as $k => $quotationBarang) {
+         $this->quotationDeliveryReceiptDetails[$k] = new QuotationDeliveryReceiptDetail([
+            'quotation_barang_id' => $quotationBarang->id
+         ]);
+      }
    }
 
    /**
@@ -82,6 +91,21 @@ class DeliveryReceiptQuotation extends Component implements CreateModelDetails, 
       } else {
          throw new NotFoundHttpException('The requested page does not exist.');
       }
+   }
+
+   /**
+    * @throws NotFoundHttpException
+    */
+   private function scenarioUpdate()
+   {
+      $this->quotationDeliveryReceipt = QuotationDeliveryReceipt::findOne($this->quotationDeliveryReceiptId);
+      $this->quotationDeliveryReceipt->scenario = $this->scenario;
+
+      $this->quotation = $this->findModel($this->quotationDeliveryReceipt->quotation_id);
+
+      $this->quotationDeliveryReceiptDetails = empty($this->quotationDeliveryReceipt->quotationDeliveryReceiptDetails)
+         ? [new QuotationDeliveryReceiptDetail()]
+         : $this->quotationDeliveryReceipt->quotationDeliveryReceiptDetails;
    }
 
    /**

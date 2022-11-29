@@ -107,11 +107,13 @@ use yii\web\View;
                 </tr>
                 </tbody>
             </table>
+            <p class="font-weight-bold">
+                Quotation Status: <?= $quotation->getGlobalStatusDeliveryReceiptInHtmlFormat() ?>
+            </p>
         </div>
     </div>
 
     <div style="clear: both"></div>
-
 
     <table class="table mt-1">
         <thead>
@@ -119,30 +121,34 @@ use yii\web\View;
             <td style="width: 2px">NO</td>
             <td>Mark | Part Number</td>
             <td>Description</td>
+            <td>Quotation</td>
             <td>Quantity</td>
             <td>UOM</td>
         </tr>
         </thead>
 
         <tbody>
-        <?php foreach ($quotation->quotationBarangs as $key => $quotationBarang) : ?>
+        <?php foreach ($model->quotationDeliveryReceiptDetails as $key => $detail) : ?>
             <tr>
                 <td><?= $key + 1 ?></td>
-                <td><?= $quotationBarang->barang->merk_part_number ?>
-                    | <?= $quotationBarang->barang->part_number ?>
+                <td><?= $detail->quotationBarang->barang->merk_part_number ?>
+                    | <?= $detail->quotationBarang->barang->part_number ?>
                 </td>
                 <td>
-                   <?= $quotationBarang->barang->nama ?>
-                   <?= !empty($quotationBarang->barang->keterangan)
-                      ? (' - ' . $quotationBarang->barang->keterangan)
+                   <?= $detail->quotationBarang->barang->nama ?>
+                   <?= !empty($detail->quotationBarang->barang->keterangan)
+                      ? (' - ' . $detail->quotationBarang->barang->keterangan)
                       : ''
                    ?>
                 </td>
                 <td class="text-end">
-                   <?= $quotationBarang->quantity ?>
+                   <?= $detail->quotationBarang->quantity ?>
                 </td>
                 <td class="text-end">
-                   <?= $quotationBarang->satuan->nama ?>
+                   <?= $detail->quantity ?>
+                </td>
+                <td class="text-end">
+                   <?= $detail->quotationBarang->satuan->nama ?>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -150,7 +156,26 @@ use yii\web\View;
     </table>
 
     <p>
-        Remarks:<br/>
+        Remarks:
+    </p>
+
+   <?php
+   $quotationDeliveryReceipts = $quotation->quotationDeliveryReceipts;
+   if (count($quotationDeliveryReceipts) > 1) : ?>
+    <p>By Sistem: Delivery Receipt diangsur beberapa kali:<br/>
+       <?php
+       /** @var QuotationDeliveryReceipt $quotationDeliveryReceipt */
+       foreach ($quotationDeliveryReceipts as $quotationDeliveryReceipt) {
+          $string = $quotationDeliveryReceipt->nomor;
+
+          if ($quotationDeliveryReceipt->id == $model->id) {
+             $string .= '<strong class="font-weight-bold"> (Dokumen Ini)</strong>';
+          }
+
+          echo $string . '<br/>';
+       }
+       ?>
+       <?php endif ?>
        <?= $model->remarks ?>
     </p>
 

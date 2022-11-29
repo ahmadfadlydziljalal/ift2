@@ -152,4 +152,13 @@ class QuotationDeliveryReceipt extends BaseQuotationDeliveryReceipt
 
       return false;
    }
+
+
+   public function beforeSave($insert)
+   {
+
+      // Hitung quantity indent disini
+
+      return parent::beforeSave($insert);
+   }
 }

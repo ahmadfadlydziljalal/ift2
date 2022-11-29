@@ -1,12 +1,14 @@
 <?php
 
-use app\models\QuotationBarang;
+use app\models\Quotation;
+use app\models\QuotationDeliveryReceiptDetail;
 use kartik\datecontrol\DateControl;
 use kartik\form\ActiveForm;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
+/* @var $quotation Quotation */
 /* @var $model app\models\QuotationDeliveryReceipt */
 /* @var $modelsDetail app\models\QuotationDeliveryReceiptDetail */
 /* @var $form yii\bootstrap5\ActiveForm */
@@ -16,25 +18,28 @@ use yii\helpers\Html;
 
    <?php $form = ActiveForm::begin([
       'id' => 'dynamic-form',
+
    ]); ?>
+
+   <?= $form->errorSummary($model) ?>
 
     <div class="card">
 
         <div class="card-body">
-            <div class="row row-cols-sm-1 row-cols-md-2 row-cols-lg-4">
-                <div class="col">
+            <div class="row">
+                <div class="col-12 col-sm-12 col-md-2 col-lg-4">
                    <?= $form->field($model, 'tanggal')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
 
                 </div>
-                <div class="col">
+                <div class="col-12 col-sm-12 col-md-2 col-lg-4">
                    <?= $form->field($model, 'purchase_order_number')->textInput(['maxlength' => true]) ?>
 
                 </div>
-                <div class="col">
+                <div class="col-12 col-sm-12 col-md-2 col-lg-4">
                    <?= $form->field($model, 'checker')->textInput(['maxlength' => true]) ?>
 
                 </div>
-                <div class="col">
+                <div class="col-12 col-sm-12 col-md-2 col-lg-4">
                    <?= $form->field($model, 'vehicle')->textInput(['maxlength' => true]) ?>
 
                 </div>
@@ -62,54 +67,49 @@ use yii\helpers\Html;
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Quotation barang</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col" style="width: 2px">Aksi</th>
+                        <th scope="col">Total Qty. sudah dikirim</th>
+                        <th scope="col">Total Qty. pengiriman dokumen ini</th>
                     </tr>
                     </thead>
 
                     <tbody class="container-items">
 
-                    <?php foreach ($modelsDetail as $i => $modelDetail): ?>
-                        <tr class="item">
+                    <?php /** @var QuotationDeliveryReceiptDetail $modelDetail */
+                    foreach ($modelsDetail as $i => $modelDetail): ?>
+                        <!--                        <tr>-->
+                        <!--                            <td colspan="4">-->
+                        <!--                               --><?php //Html::tag('pre', VarDumper::dumpAsString($modelDetail)) ?>
+                        <!--                            </td>-->
+                        <!--                        </tr>-->
+                        <tr class="item align-middle">
 
                             <td style="width: 2px;" class="align-middle">
                                <?php if (!$modelDetail->isNewRecord) {
                                   echo Html::activeHiddenInput($modelDetail, "[$i]id");
                                } ?>
+                               <?= Html::activeHiddenInput($modelDetail, "[$i]quotation_barang_id") ?>
+
                                 <i class="bi bi-arrow-right-short"></i>
                             </td>
 
-                            <td><?= $form->field($modelDetail, "[$i]quotation_barang_id", ['template' =>
-                                  '{input}{error}{hint}', 'options' => ['class' => null]])
-                                  ->dropDownList(QuotationBarang::find()->byQuotationId($quotation->id), [
-                                     'prompt' => '= Pilih salah satu ='
-                                  ]) ?>
+                            <td>
+                               <?= $modelDetail->quotationBarang->barang->nama ?> |
+                               <?= $modelDetail->quotationBarang->quantity ?> |
+                               <?= $modelDetail->quotationBarang->satuan->nama ?>
                             </td>
-                            <td><?= $form->field($modelDetail, "[$i]quantity", ['template' =>
-                                  '{input}{error}{hint}', 'options' => ['class' => null]])
-                                  ->textInput([
-                                     'type' => 'number',
-                                     'class' => 'form-control'
-                                  ]); ?></td>
 
                             <td>
-                                <button type="button" class="remove-item btn btn-link text-danger">
-                                    <i class="bi bi-trash"> </i>
-                                </button>
+                               <?= $modelDetail->quotationBarang->totalQuantitySudahTerkirimSpecificQuotationBarang($modelDetail->quotation_barang_id) ?? "0.00" ?>
+
+                            </td>
+
+                            <td><?= $form->field($modelDetail, "[$i]quantity", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->textInput(['type' => 'number', 'class' => 'form-control']); ?>
+
                             </td>
                         </tr>
                     <?php endforeach; ?>
 
                     </tbody>
-
-                    <tfoot>
-                    <tr>
-                        <td class="text-end" colspan="3">
-                           <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
-                        </td>
-                        <td></td>
-                    </tr>
-                    </tfoot>
                 </table>
             </div>
 
@@ -122,7 +122,7 @@ use yii\helpers\Html;
         </div>
 
     </div>
-   
+
    <?php ActiveForm::end(); ?>
 
 </div>

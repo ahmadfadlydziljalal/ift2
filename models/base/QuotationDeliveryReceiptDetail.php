@@ -14,6 +14,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $quotation_barang_id
  * @property integer $quotation_delivery_receipt_id
  * @property string $quantity
+ * @property string $quantity_indent
  *
  * @property \app\models\QuotationBarang $quotationBarang
  * @property \app\models\QuotationDeliveryReceipt $quotationDeliveryReceipt
@@ -40,7 +41,7 @@ abstract class QuotationDeliveryReceiptDetail extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::rules(), [
             [['quotation_barang_id', 'quantity'], 'required'],
             [['quotation_barang_id', 'quotation_delivery_receipt_id'], 'integer'],
-            [['quantity'], 'number'],
+            [['quantity', 'quantity_indent'], 'number'],
             [['quotation_barang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\QuotationBarang::class, 'targetAttribute' => ['quotation_barang_id' => 'id']],
             [['quotation_delivery_receipt_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\QuotationDeliveryReceipt::class, 'targetAttribute' => ['quotation_delivery_receipt_id' => 'id']]
         ]);
@@ -56,6 +57,7 @@ abstract class QuotationDeliveryReceiptDetail extends \yii\db\ActiveRecord
             'quotation_barang_id' => 'Quotation Barang ID',
             'quotation_delivery_receipt_id' => 'Quotation Delivery Receipt ID',
             'quantity' => 'Quantity',
+            'quantity_indent' => 'Quantity Indent',
         ];
     }
 

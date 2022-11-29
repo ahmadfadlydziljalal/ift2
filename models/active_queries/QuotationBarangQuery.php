@@ -24,7 +24,7 @@ class QuotationBarangQuery extends ActiveQuery
     * @inheritdoc
     * @return QuotationBarang|array|null
     */
-   public function one($db = null)
+   public function one($db = null): QuotationBarang|array|null
    {
       return parent::one($db);
    }
@@ -48,8 +48,31 @@ class QuotationBarangQuery extends ActiveQuery
     * @inheritdoc
     * @return QuotationBarang[]|array
     */
-   public function all($db = null)
+   public function all($db = null): array
    {
       return parent::all($db);
+   }
+
+   public function forCreateDeliveryReceipt(?int $quotationId): array
+   {
+
+      $expression = new Expression("
+         SUM(COALESCE(quotation_delivery_receipt_detail.quantity, 0))
+      ");
+      $data = parent::select([
+         'id' => 'quotation_barang.id',
+         'totalQuantityBarangDalamQuotation' => 'quotation_barang.quantity',
+         'totalQuantityBarangSudahDikirim' => $expression,
+      ])->joinWith('quotationDeliveryReceiptDetails', false)
+         ->where([
+            'quotation_barang.quotation_id' => $quotationId
+         ])
+         ->groupBy([
+            'quotation_barang.id',
+            'totalQuantityBarangDalamQuotation'
+         ])
+         ->having('totalQuantityBarangDalamQuotation != totalQuantityBarangSudahDikirim');
+
+      return $data->all();
    }
 }
