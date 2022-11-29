@@ -37,7 +37,7 @@ class QuotationDeliveryReceipt extends BaseQuotationDeliveryReceipt
             [
                'class' => 'mdm\autonumber\Behavior',
                'attribute' => 'nomor', // required
-               'value' => '?' . '/IFTJKT/FJ/' . date('m/Y'), // format auto number. '?' will be replaced with generated number
+               'value' => '?' . '/IFTJKT/DR/' . date('m/Y'), // format auto number. '?' will be replaced with generated number
                'digit' => 4
             ],
          ]
