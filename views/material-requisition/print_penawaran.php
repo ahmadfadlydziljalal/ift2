@@ -21,7 +21,7 @@ $settings = Yii::$app->settings;
         <div class="mb-1" style=" float: left; width: 49%;">
             <div class="border-1" style="min-height: 1.6cm; max-height: 1.6cm; padding: .5em">
                 To: <?= $model->vendor->nama ?><br/>
-                <?= nl2br($model->vendor->alamat) ?>
+               <?= nl2br($model->vendor->alamat) ?>
             </div>
         </div>
 
@@ -53,7 +53,7 @@ $settings = Yii::$app->settings;
 
     <div class="mb-1" style="width: 100%">
         <p>Silahkan centang barang yang di approve</p>
-        <?= $this->render('_item_penawaran_harga', ['model' => $model]) ?>
+       <?= $this->render('_item_penawaran_harga', ['model' => $model]) ?>
     </div>
 
     <div style="clear: both"></div>
@@ -69,18 +69,18 @@ $settings = Yii::$app->settings;
             </tr>
 
             <tr>
-                <td><?= $model->approvedBy->nama ?></td>
-                <td><?= $model->acknowledgeBy->nama ?></td>
-                <td><?= isset($model->userKaryawan) ?
-                        $model->userKaryawan['nama'] :
-                        User::findOne($model->created_by)->username
-                    ?>
+                <td class="text-nowrap"><?= $model->approvedBy->nama ?></td>
+                <td class="text-nowrap"><?= $model->acknowledgeBy->nama ?></td>
+                <td class="text-nowrap"><?= isset($model->userKaryawan) ?
+                      $model->userKaryawan['nama'] :
+                      User::findOne($model->created_by)->username
+                   ?>
                 </td>
             </tr>
             <tr>
-                <td><?= $settings->get('material_requisition.approved_by_jabatan') ?></td>
-                <td><?= $settings->get('material_requisition.acknowledge_by_jabatan') ?></td>
-                <td><?= $settings->get('material_requisition.request_jabatan') ?></td>
+                <td class="text-nowrap"><?= $settings->get('material_requisition.approved_by_jabatan') ?></td>
+                <td class="text-nowrap"><?= $settings->get('material_requisition.acknowledge_by_jabatan') ?></td>
+                <td class="text-nowrap"><?= $settings->get('material_requisition.request_jabatan') ?></td>
             </tr>
             </tbody>
         </table>

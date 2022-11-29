@@ -24,15 +24,12 @@ $settings = Yii::$app->settings;
 
     <head>
         <title><?= Html::encode($this->title) ?></title>
-        <?php $this->head() ?>
+       <?php $this->head() ?>
     </head>
 
     <body>
-
     <?php $this->beginBody() ?>
-
-
-    <table style="margin: 0; padding: 0">
+    <table style="margin: 0; padding: 0; width: 100%">
         <thead>
         <tr>
             <th>
@@ -40,17 +37,17 @@ $settings = Yii::$app->settings;
                     <table>
                         <tr>
                             <td>
-                                <?= Html::img(Yii::getAlias('@web') . '/images/logo.png', [
-                                    'width' => '128px',
-                                    'height' => 'auto'
-                                ]) ?>
+                               <?= Html::img(Yii::getAlias('@web') . '/images/logo.png', [
+                                  'width' => '128px',
+                                  'height' => 'auto'
+                               ]) ?>
                             </td>
                             <td>
                                 <h3 style="margin: 0; padding: 0">
-                                    <?= $settings->get('site.companyClient') ?>
+                                   <?= $settings->get('site.companyClient') ?>
                                 </h3>
                                 <p style="margin: 0; padding: 0; font-size: 10pt">
-                                    <?= $settings->get('site.alamat') ?><br/>
+                                   <?= $settings->get('site.alamat') ?><br/>
                                     Telp: <?= $settings->get('site.telepon') ?>,
                                     Email: <?php echo $settings->get('site.email') ?>
                                 </p>
@@ -66,16 +63,13 @@ $settings = Yii::$app->settings;
         <tr>
             <td>
                 <div id="content">
-                    <?= $this->render('_content', ['content' => $content]) ?>
+                   <?= $this->render('_content', ['content' => $content]) ?>
                 </div>
             </td>
         </tr>
         </tbody>
     </table>
-
-
     <?php $this->endBody() ?>
-
     </body>
 
     </html>
