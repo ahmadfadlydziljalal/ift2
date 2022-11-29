@@ -20,40 +20,22 @@ use yii\web\View;
                 <span class="badge bg-primary"><?= $model->nomor ?></span> | <span
                         class="badge bg-danger"><?= $model->customer->nama ?></span>
             </div>
-            <div>
-                <div class="d-flex flex-row gap-3">
-                   <?= Html::a(TextLinkEnum::VIEW->value, ['quotation/view', 'id' => $model->id], [
-                      'class' => 'text-decoration-none'
-                   ]) ?>
-                   <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update', 'id' => $model->id], [
-                      'class' => 'text-decoration-none'
-                   ]) ?>
-                   <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete', 'id' => $model->id], [
-                      'class' => 'text-decoration-none text-danger',
-                      'data' => [
-                         'confirm' => 'Apakah anda yakin menghapus service quotation ini ?',
-                         'method' => 'post'
-                      ]
-                   ]) ?>
-                </div>
-            </div>
+
         </div>
 
         <div class="card-body">
             <div class="row ">
-
-                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-0">
-
-                    <div class="border rounded h-100 w-100 p-3">
-                        <small class="text-muted">
-                            Valid dari <br/><?= Yii::$app->formatter->asDate($model->tanggal) ?>
-                            s/d <?= Yii::$app->formatter->asDate($model->tanggal_batas_valid) ?> <br/>
-                        </small>
+                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-1">
+                    <div class="card border shadow-sm rounded h-100 w-100">
+                        <div class="card-body">
+                            <small class="text-muted">
+                                Valid dari <br/><?= Yii::$app->formatter->asDate($model->tanggal) ?> s/d <br/>
+                               <?= Yii::$app->formatter->asDate($model->tanggal_batas_valid) ?> <br/>
+                            </small>
+                        </div>
                     </div>
                 </div>
-                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-0">
-
-
+                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-1">
                     <div class="card border shadow-sm rounded h-100 w-100">
                         <div class="card-body">
                             <div class="d-flex flex-column gap-1">
@@ -92,7 +74,7 @@ use yii\web\View;
                     </div>
 
                 </div>
-                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-0">
+                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-1">
                     <div class="card border shadow-sm rounded h-100 w-100">
                         <div class="card-body">
                             <div class="d-flex flex-column gap-1">
@@ -131,8 +113,7 @@ use yii\web\View;
                     </div>
 
                 </div>
-
-                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-0">
+                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-1">
                     <div class="card border shadow-sm rounded h-100 w-100">
                         <div class="card-body">
                             <div class="d-flex flex-column gap-1">
@@ -168,7 +149,7 @@ use yii\web\View;
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-0">
+                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-1">
                     <div class="card border shadow-sm rounded h-100 w-100">
                         <div class="card-body">
                             <div class="d-flex flex-column gap-1">
@@ -206,7 +187,7 @@ use yii\web\View;
 
                     </div>
                 </div>
-                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-0">
+                <div class="col-12 col-sm-12 col-md-4 col-lg-2 mb-3 mb-sm-3 mb-md-3 mb-lg-1">
                     <div class="card border shadow-sm rounded h-100 w-100">
                         <div class="card-body">
                             <div class="d-flex flex-column gap-1">
@@ -237,6 +218,25 @@ use yii\web\View;
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="card-footer border-top p-3">
+            <div class="d-flex flex-row-reverse gap-1">
+               <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete', 'id' => $model->id], [
+                  'class' => 'btn btn-danger',
+                  'data' => [
+                     'confirm' => 'Apakah anda yakin menghapus service quotation ini ?',
+                     'method' => 'post'
+                  ]
+               ]) ?>
+               <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update', 'id' => $model->id], [
+                  'class' => 'btn btn-primary'
+               ]) ?>
+               <?= Html::a(TextLinkEnum::VIEW->value, ['quotation/view', 'id' => $model->id], [
+                  'class' => 'btn btn-primary'
+               ]) ?>
+
 
             </div>
         </div>

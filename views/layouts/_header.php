@@ -19,9 +19,11 @@ $brandLabel =
     Html::button('<i class="bi bi-list"></i>', ['role' => 'button', 'type' => 'button', 'id' => 'btn-toggle-sidebar', 'class' => 'btn btn-link text-dark text-decoration-none rounded py-0 px-0 ']) .
     Html::a(
         "<div class='d-flex flex-row align-items-center' style='gap: .5rem'>" .
-        Yii::$app->settings->get('site.icon') . (!Yii::$app->settings->get('site.name') ? Yii::$app->name : Yii::$app->settings->get('site.name')) .
-        "</div>"
-        , Yii::$app->homeUrl, ['class' => 'text-decoration-none ']) .
+            Yii::$app->settings->get('site.icon') . (!Yii::$app->settings->get('site.name') ? Yii::$app->name : Yii::$app->settings->get('site.name')) .
+            "</div>",
+        Yii::$app->homeUrl,
+        ['class' => 'text-decoration-none ']
+    ) .
     Html::endTag('div');
 ?>
 
@@ -32,38 +34,38 @@ $brandLabel =
     'brandUrl' => null,
     'options' => [
         'id' => 'navbar',
-        'class' => 'navbar navbar-expand-md navbar-' . Yii::$app->params['theme'] . ' fixed-top' . ' bg-' . Yii::$app->params['theme'] . ' shadow-sm',
+        'class' => 'navbar navbar-expand-lg navbar-' . Yii::$app->params['theme'] . ' fixed-top' . ' bg-' . Yii::$app->params['theme'] . ' shadow-sm',
     ],
     'togglerContent' => '<span class="bi bi-arrow-down-circle"></span>',
 ]); ?>
 
-    <div class="search-navbar my-4 my-md-0 flex-sm-grow-1 flex-md-grow-0 float-md-end order-sm-0 order-md-0 order-lg-0">
-        <?php
-        try {
-            echo Select2::widget([
-                'id' => 'search-menu',
-                'name' => 'search-menu',
-                'data' => ArrayHelper::arrayValueRecursiveForSearchMenu('0', $leftItems),
-                'options' => [
-                    'placeholder' => 'Menu pencarian ... Ctrl + / ',
-                ],
-                'pluginOptions' => [
-                    'dropdownAutoWidth' => true,
-                    'width' => '100%'
-                ],
-                'pluginEvents' => [
-                    'change' => "function(e) {
+<div class="search-navbar my-4 my-md-0 flex-sm-grow-1 flex-md-grow-0 float-md-end order-sm-0 order-md-0 order-lg-0">
+    <?php
+    try {
+        echo Select2::widget([
+            'id' => 'search-menu',
+            'name' => 'search-menu',
+            'data' => ArrayHelper::arrayValueRecursiveForSearchMenu('0', $leftItems),
+            'options' => [
+                'placeholder' => 'Menu pencarian ... Ctrl + / ',
+            ],
+            'pluginOptions' => [
+                'dropdownAutoWidth' => true,
+                'width' => '100%'
+            ],
+            'pluginEvents' => [
+                'change' => "function(e) {
                     if($(this).val()){
                         window.location.replace($(this).val());
                     }
                 }"
-                ],
-            ]);
-        } catch (Exception $e) {
-            echo '';
-        }
-        ?>
-    </div>
+            ],
+        ]);
+    } catch (Exception $e) {
+        echo '';
+    }
+    ?>
+</div>
 
 <?php
 

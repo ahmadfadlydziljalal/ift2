@@ -6,6 +6,7 @@ use app\components\BarangQuotation;
 use app\components\DeliveryReceiptQuotation;
 use app\components\ServiceQuotation;
 use app\components\TermConditionQuotation;
+use app\models\form\LaporanOutgoingQuotation;
 use app\models\Quotation;
 use app\models\QuotationBarang;
 use app\models\QuotationDeliveryReceipt;
@@ -560,6 +561,32 @@ class QuotationController extends Controller
       $this->layout = 'print';
       return $this->render('preview_print_delivery_receipt', [
          'quotation' => $quotation,
+         'model' => $model
+      ]);
+   }
+
+   public function actionLaporanOutgoing(): Response|string
+   {
+      $model = new LaporanOutgoingQuotation();
+
+      if ($model->load($this->request->post()) && $model->validate()) {
+         return $this->redirect(['quotation/preview-laporan-outgoing',
+               'tanggal' => $model->tanggal]
+         );
+      }
+
+      return $this->render('_form_laporan_outgoing', [
+         'model' => $model
+      ]);
+
+   }
+
+   public function actionPreviewLaporanOutgoing($tanggal): string
+   {
+      $model = new LaporanOutgoingQuotation([
+         'tanggal' => $tanggal
+      ]);
+      return $this->render('_preview_laporan_outgoing', [
          'model' => $model
       ]);
    }
