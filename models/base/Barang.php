@@ -18,13 +18,16 @@ use yii\helpers\ArrayHelper;
  * @property string $ift_number
  * @property string $merk_part_number
  * @property integer $originalitas_id
+ * @property string $initialize_stock_quantity
+ * @property integer $default_satuan_id
  *
  * @property \app\models\BarangSatuan[] $barangSatuans
  * @property \app\models\ClaimPettyCashNotaDetail[] $claimPettyCashNotaDetails
+ * @property \app\models\Satuan $defaultSatuan
  * @property \app\models\FakturDetail[] $fakturDetails
  * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
  * @property \app\models\Originalitas $originalitas
- * @property \app\models\PurchaseOrderDetail[] $purchaseOrderDetails
+ * @property \app\models\QuotationBarang[] $quotationBarangs
  * @property \app\models\TipePembelian $tipePembelian
  * @property string $aliasModel
  */
@@ -48,12 +51,14 @@ abstract class Barang extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::rules(), [
             [['tipe_pembelian_id', 'nama', 'originalitas_id'], 'required'],
-            [['tipe_pembelian_id', 'originalitas_id'], 'integer'],
+            [['tipe_pembelian_id', 'originalitas_id', 'default_satuan_id'], 'integer'],
             [['keterangan'], 'string'],
+            [['initialize_stock_quantity'], 'number'],
             [['nama', 'merk_part_number'], 'string', 'max' => 255],
             [['part_number'], 'string', 'max' => 32],
             [['ift_number'], 'string', 'max' => 128],
             [['originalitas_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Originalitas::class, 'targetAttribute' => ['originalitas_id' => 'id']],
+            [['default_satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['default_satuan_id' => 'id']],
             [['tipe_pembelian_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\TipePembelian::class, 'targetAttribute' => ['tipe_pembelian_id' => 'id']]
         ]);
     }
@@ -72,7 +77,19 @@ abstract class Barang extends \yii\db\ActiveRecord
             'ift_number' => 'Ift Number',
             'merk_part_number' => 'Merk Part Number',
             'originalitas_id' => 'Originalitas ID',
+            'initialize_stock_quantity' => 'Initialize Stock Quantity',
+            'default_satuan_id' => 'Default Satuan ID',
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeHints()
+    {
+        return array_merge(parent::attributeHints(), [
+            'default_satuan_id' => 'Satuan utama yang dipakai dalam stock',
+        ]);
     }
 
     /**
@@ -89,6 +106,14 @@ abstract class Barang extends \yii\db\ActiveRecord
     public function getClaimPettyCashNotaDetails()
     {
         return $this->hasMany(\app\models\ClaimPettyCashNotaDetail::class, ['barang_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDefaultSatuan()
+    {
+        return $this->hasOne(\app\models\Satuan::class, ['id' => 'default_satuan_id']);
     }
 
     /**
@@ -118,9 +143,9 @@ abstract class Barang extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPurchaseOrderDetails()
+    public function getQuotationBarangs()
     {
-        return $this->hasMany(\app\models\PurchaseOrderDetail::class, ['barang_id' => 'id']);
+        return $this->hasMany(\app\models\QuotationBarang::class, ['barang_id' => 'id']);
     }
 
     /**

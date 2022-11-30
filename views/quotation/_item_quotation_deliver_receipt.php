@@ -16,7 +16,27 @@ use yii\web\View;
 
 <div class="card border-1 rounded shadow">
     <div class="card-body border-bottom fw-bold">
-        <i class="bi bi-file-pdf"></i> <?= $model->nomor ?>
+        <div class="d-flex justify-content-between">
+
+            <div>
+                <i class="bi bi-file-pdf"></i> <?= $model->nomor ?>
+            </div>
+
+           <?= Html::a(
+              TextLinkEnum::DELETE->value,
+              ['quotation/delete-delivery-receipt', 'id' => $model->id],
+              [
+                 'data' => [
+                    'confirm' => 'Hapus delivery receipt ini ?',
+                    'method' => 'post'
+                 ],
+                 'class' => 'btn btn-danger'
+              ]
+           ) ?>
+
+        </div>
+
+
     </div>
     <div class="card-body">
         <div class="row rows-col-sm-12 rows-col-md-2">
@@ -99,17 +119,20 @@ use yii\web\View;
                ]) ?>
             </div>
             <div class="ms-auto">
-               <?= Html::a(
-                  TextLinkEnum::DELETE->value,
-                  ['quotation/delete-delivery-receipt', 'id' => $model->id],
-                  [
-                     'data' => [
-                        'confirm' => 'Hapus delivery receipt ini ?',
-                        'method' => 'post'
-                     ],
-                     'class' => 'btn btn-danger'
-                  ]
-               ) ?>
+
+               <?php if (!$model->tanggal_konfirmasi_diterima_customer) : ?>
+                  <?= Html::a(
+                     "Konfirmasi Terima Customer",
+                     ['quotation/konfirmasi-diterima-customer', 'id' => $model->id],
+                     [
+                        'class' => 'btn btn-primary'
+                     ]
+                  ) ?>
+               <?php else : ?>
+                  <?= Html::tag('span', 'Terkonfirmasi; ' . Yii::$app->formatter->asDate($model->tanggal_konfirmasi_diterima_customer), [
+                     'class' => 'badge bg-success'
+                  ]) ?>
+               <?php endif ?>
             </div>
         </div>
     </div>

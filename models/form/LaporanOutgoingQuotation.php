@@ -9,7 +9,7 @@ use yii\db\Expression;
 use yii\db\Query;
 
 class LaporanOutgoingQuotation extends Model
-{
+{ 
 
    public ?string $tanggal = null;
 

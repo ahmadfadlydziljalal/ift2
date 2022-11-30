@@ -191,9 +191,14 @@ use yii\web\View;
                             'columns' => [
                                 [
                                     'content' =>
-                                        Html::tag('p', "Note:", ['class' => 'fw-bold']) .
-                                        Html::tag('p', nl2br($model->catatan_quotation_barang), ['class' => 'fw-normal'])
-                                    ,
+                                    Html::tag('p', "Note:", ['class' => 'fw-bold']) .
+                                        Html::tag(
+                                            'p',
+                                            !empty($model->catatan_quotation_barang)
+                                                ? nl2br($model->catatan_quotation_barang)
+                                                : '',
+                                            ['class' => 'fw-normal']
+                                        ),
                                     'options' => [
                                         'colspan' => 8,
                                         'rowspan' => 4,

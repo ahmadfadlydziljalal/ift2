@@ -17,6 +17,7 @@ class QuotationDeliveryReceipt extends BaseQuotationDeliveryReceipt
 
    const SCENARIO_CREATE = 'create';
    const SCENARIO_UPDATE = 'update';
+   const SCENARIO_KONFIRMASI_DITERIMA_CUSTOMER = 'konfirmasi-diterima-customer';
 
    /**
     * @var QuotationDeliveryReceiptDetail[] | null
@@ -53,6 +54,7 @@ class QuotationDeliveryReceipt extends BaseQuotationDeliveryReceipt
             [['modelsQuotationDeliveryReceiptDetail'], 'required', 'on' => self::SCENARIO_CREATE],
             [['modelsQuotationDeliveryReceiptDetail'], 'required', 'on' => self::SCENARIO_UPDATE],
             [['deletedQuotationDeliveryReceiptDetail'], 'safe', 'on' => self::SCENARIO_UPDATE],
+            [['tanggal_konfirmasi_diterima_customer'], 'required', 'on' => self::SCENARIO_KONFIRMASI_DITERIMA_CUSTOMER]
          ]
       );
    }
@@ -77,9 +79,11 @@ class QuotationDeliveryReceipt extends BaseQuotationDeliveryReceipt
          'modelsQuotationDeliveryReceiptDetail',
          'deletedQuotationDeliveryReceiptDetail'
       ];
+      $scenarios[self::SCENARIO_KONFIRMASI_DITERIMA_CUSTOMER] = [
+         'tanggal_konfirmasi_diterima_customer'
+      ];
       return $scenarios;
    }
-
 
    /**
     * @param array $modelsDetail

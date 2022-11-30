@@ -19,9 +19,12 @@ use yii\helpers\Html;
       'method' => 'get',
       'type' => ActiveForm::TYPE_INLINE,
       'tooltipStyleFeedback' => true, // shows tooltip styled validation error feedback
-      'fieldConfig' => ['options' => ['class' => 'form-group me-1']], // spacing field groups
+      'fieldConfig' => ['options' => ['class' => 'form-group me-0']], // spacing field groups
       'formConfig' => ['showErrors' => true],
-      'options' => ['style' => 'align-items: flex-start']
+      'options' => [
+         'class' => 'gap-0'
+      ]
+      //'options' => ['style' => 'align-items: flex-start']
    ]); ?>
 
 
@@ -33,32 +36,31 @@ use yii\helpers\Html;
       ],
    ]) ?>
 
-    <div class="form-group me-1">
-        <div class="d-flex flex-row gap-1">
-           <?= Html::submitButton(TextLinkEnum::SEARCH->value, ['class' => 'btn btn-primary']) ?>
-            <div class="ms-auto">
-
-               <?= ButtonDropdown::widget([
-                  'label' => TextLinkEnum::BUTTON_DROPDOWN_REPORTS->value,
-                  'dropdown' => [
-                     'items' => [
-                        [
-                           'label' => '<span class="bi bi-file"></span> Outgoing',
-                           'url' => ['quotation/laporan-outgoing']
-                        ],
+   <div class="form-group me-1">
+      <div class="d-flex flex-row gap-1">
+         <?= Html::submitButton(TextLinkEnum::SEARCH->value, ['class' => 'btn btn-primary']) ?>
+         <div class="ms-auto">
+            <?= ButtonDropdown::widget([
+               'label' => TextLinkEnum::BUTTON_DROPDOWN_REPORTS->value,
+               'dropdown' => [
+                  'items' => [
+                     [
+                        'label' => '<span class="bi bi-file"></span> Outgoing',
+                        'url' => ['quotation/laporan-outgoing']
                      ],
-                     'encodeLabels' => false,
                   ],
-                  'encodeLabel' => false,
-                  'buttonOptions' => [
-                     'class' => 'btn btn-outline-secondary'
-                  ]
-               ]) ?>
-               <?= Html::a('<i class="bi bi-repeat"></i>', ['index'], ['class' => 'btn btn-primary']) ?>
-               <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah', ['create'], ['class' => 'btn btn-success']) ?>
-            </div>
-        </div>
-    </div>
+                  'encodeLabels' => false,
+               ],
+               'encodeLabel' => false,
+               'buttonOptions' => [
+                  'class' => 'btn btn-secondary'
+               ]
+            ]) ?>
+            <?= Html::a('<i class="bi bi-repeat"></i>', ['index'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah', ['create'], ['class' => 'btn btn-success']) ?>
+         </div>
+      </div>
+   </div>
 
    <?php ActiveForm::end(); ?>
 

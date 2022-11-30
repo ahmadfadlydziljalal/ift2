@@ -62,6 +62,11 @@ use yii\helpers\Html;
                     <?= $form->field($model, 'part_number')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'merk_part_number')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'originalitas_id', ['inline' => true])->radioList(Originalitas::find()->map()) ?>
+                    <?= $form->field($model, 'initialize_stock_quantity')->textInput([
+                        'type' => 'number'
+                    ]) ?>
+
+                    <?= $form->field($model, 'default_satuan_id')->dropDownList(Satuan::find()->map()) ?>
                     <?= $form->field($model, 'keterangan')->textarea([
                         'rows' => '4'
                     ]) ?>
@@ -70,7 +75,7 @@ use yii\helpers\Html;
 
             </div>
         </div>
-    
+
     </div>
 
     <div class="form-detail">
@@ -93,87 +98,87 @@ use yii\helpers\Html;
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
-                <tr>
-                    <th colspan="6">Barang satuan</th>
-                </tr>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Satuan</th>
-                    <th scope="col">Vendor</th>
-                    <th scope="col">Harga Beli</th>
-                    <th scope="col">Harga Jual</th>
-                    <th scope="col" style="width: 2px">Aksi</th>
-                </tr>
+                    <tr>
+                        <th colspan="6">Barang satuan</th>
+                    </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Satuan</th>
+                        <th scope="col">Vendor</th>
+                        <th scope="col">Harga Beli</th>
+                        <th scope="col">Harga Jual</th>
+                        <th scope="col" style="width: 2px">Aksi</th>
+                    </tr>
                 </thead>
 
                 <tbody class="container-items">
 
-                <?php foreach ($modelsDetail as $i => $modelDetail): ?>
-                    <tr class="item">
+                    <?php foreach ($modelsDetail as $i => $modelDetail) : ?>
+                        <tr class="item">
 
-                        <td style="width: 2px;" class="align-middle">
-                            <?php if (!$modelDetail->isNewRecord) {
-                                echo Html::activeHiddenInput($modelDetail, "[$i]id");
-                            } ?>
-                            <i class="bi bi-arrow-right-short"></i>
-                        </td>
+                            <td style="width: 2px;" class="align-middle">
+                                <?php if (!$modelDetail->isNewRecord) {
+                                    echo Html::activeHiddenInput($modelDetail, "[$i]id");
+                                } ?>
+                                <i class="bi bi-arrow-right-short"></i>
+                            </td>
 
 
-                        <td>
-                            <?= $form->field($modelDetail, "[$i]satuan_id", ['template' =>
+                            <td>
+                                <?= $form->field($modelDetail, "[$i]satuan_id", ['template' =>
                                 '{input}{error}{hint}', 'options' => ['class' => null]])
-                                ->dropDownList(Satuan::find()->map(), [
-                                    'prompt' => '= Pilih Salah Satu ='
-                                ]);
-                            ?>
-                        </td>
-
-                        <td>
-                            <?= $form->field($modelDetail, "[$i]vendor_id", ['template' =>
-                                '{input}{error}{hint}', 'options' => ['class' => null]])
-                                ->widget(Select2::class, [
-                                    'data' => Card::find()->map(),
-                                    'options' => [
+                                    ->dropDownList(Satuan::find()->map(), [
                                         'prompt' => '= Pilih Salah Satu ='
-                                    ]
-                                ]);
-                            ?>
-                        </td>
+                                    ]);
+                                ?>
+                            </td>
 
-                        <td><?= $form->field($modelDetail, "[$i]harga_beli", ['template' =>
-                                '{input}{error}{hint}', 'options' => ['class' => null]])->widget(NumberControl::class, [
-                                'maskedInputOptions' => [
-                                    'prefix' => Yii::$app->getFormatter()->currencyCode,
-                                    'allowMinus' => false
-                                ],
-                            ]); ?>
-                        </td>
-                        <td><?= $form->field($modelDetail, "[$i]harga_jual", ['template' =>
-                                '{input}{error}{hint}', 'options' => ['class' => null]])->widget(NumberControl::class, [
-                                'maskedInputOptions' => [
-                                    'prefix' => Yii::$app->getFormatter()->currencyCode,
-                                    'allowMinus' => false
-                                ],
-                            ]); ?>
-                        </td>
+                            <td>
+                                <?= $form->field($modelDetail, "[$i]vendor_id", ['template' =>
+                                '{input}{error}{hint}', 'options' => ['class' => null]])
+                                    ->widget(Select2::class, [
+                                        'data' => Card::find()->map(),
+                                        'options' => [
+                                            'prompt' => '= Pilih Salah Satu ='
+                                        ]
+                                    ]);
+                                ?>
+                            </td>
 
-                        <td>
-                            <button type="button" class="remove-item btn btn-link text-danger">
-                                <i class="bi bi-trash"> </i>
-                            </button>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                            <td><?= $form->field($modelDetail, "[$i]harga_beli", ['template' =>
+                                '{input}{error}{hint}', 'options' => ['class' => null]])->widget(NumberControl::class, [
+                                    'maskedInputOptions' => [
+                                        'prefix' => Yii::$app->getFormatter()->currencyCode,
+                                        'allowMinus' => false
+                                    ],
+                                ]); ?>
+                            </td>
+                            <td><?= $form->field($modelDetail, "[$i]harga_jual", ['template' =>
+                                '{input}{error}{hint}', 'options' => ['class' => null]])->widget(NumberControl::class, [
+                                    'maskedInputOptions' => [
+                                        'prefix' => Yii::$app->getFormatter()->currencyCode,
+                                        'allowMinus' => false
+                                    ],
+                                ]); ?>
+                            </td>
+
+                            <td>
+                                <button type="button" class="remove-item btn btn-link text-danger">
+                                    <i class="bi bi-trash"> </i>
+                                </button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
 
                 </tbody>
 
                 <tfoot>
-                <tr>
-                    <td class="text-end" colspan="5">
-                        <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
-                    </td>
-                    <td></td>
-                </tr>
+                    <tr>
+                        <td class="text-end" colspan="5">
+                            <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
+                        </td>
+                        <td></td>
+                    </tr>
                 </tfoot>
             </table>
         </div>

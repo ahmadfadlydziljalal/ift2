@@ -56,6 +56,10 @@ class DeliveryReceiptQuotation extends Component implements CreateModelDetails, 
             $this->scenarioUpdate();
             break;
 
+         case QuotationDeliveryReceipt::SCENARIO_KONFIRMASI_DITERIMA_CUSTOMER:
+            $this->scenarioKonfirmasiDiterimaCustomer();
+            break;
+
          default:
             break;
       endswitch;
@@ -106,6 +110,17 @@ class DeliveryReceiptQuotation extends Component implements CreateModelDetails, 
       $this->quotationDeliveryReceiptDetails = empty($this->quotationDeliveryReceipt->quotationDeliveryReceiptDetails)
          ? [new QuotationDeliveryReceiptDetail()]
          : $this->quotationDeliveryReceipt->quotationDeliveryReceiptDetails;
+   }
+
+
+   /**
+    * @throws NotFoundHttpException
+    */
+   private function scenarioKonfirmasiDiterimaCustomer()
+   {
+      $this->quotationDeliveryReceipt = QuotationDeliveryReceipt::findOne($this->quotationDeliveryReceiptId);
+      $this->quotationDeliveryReceipt->scenario = $this->scenario;
+      $this->quotation = $this->findModel($this->quotationDeliveryReceipt->quotation_id);
    }
 
    /**
@@ -182,5 +197,22 @@ class DeliveryReceiptQuotation extends Component implements CreateModelDetails, 
          'title' => 'Pesan Sistem',
          'message' => 'Sukses menghapus delivery receipt ' . $this->quotationDeliveryReceipt->nomor,
       ]]);
+   }
+
+
+   public function konfirmasiDiterimaCustomer(): bool
+   {
+      if ($this->quotationDeliveryReceipt->save(false)) {
+         $this->quotationDeliveryReceipt->save(false);
+         Yii::$app->session->setFlash('success', [[
+            'title' => 'Pesan Sistem',
+            'message' => 'Konfirmasi sukses ' . $this->quotationDeliveryReceipt->nomor,
+         ]]);
+
+         return true;
+      }
+
+
+      return false;
    }
 }

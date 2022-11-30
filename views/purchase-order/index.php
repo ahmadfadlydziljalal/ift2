@@ -25,13 +25,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php try {
         echo GridView::widget([
+            'tableOptions' => [
+                'class' => 'table table-gridview table-fixes-last-column'
+            ],
             'dataProvider' => $dataProvider,
             'filterModel' => $searchModel,
             'columns' => require(__DIR__ . '/_columns.php'),
         ]);
     } catch (Exception $e) {
         echo
-            $e->getMessage() . '<br/>' .
+        $e->getMessage() . '<br/>' .
             $e->getTraceAsString();
     } catch (Throwable $e) {
         echo $e->getTraceAsString();

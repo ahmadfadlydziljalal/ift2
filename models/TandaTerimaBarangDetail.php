@@ -11,25 +11,29 @@ use yii\helpers\ArrayHelper;
 class TandaTerimaBarangDetail extends BaseTandaTerimaBarangDetail
 {
 
-    public function behaviors()
-    {
-        return ArrayHelper::merge(
-            parent::behaviors(),
-            [
-                # custom behaviors
-            ]
-        );
-    }
+   public ?int $barangId = null;
+   public ?string $barangNama = null;
+   public ?float $totalQuantityTerima = null;
 
-    public function rules()
-    {
-        return ArrayHelper::merge(
-            parent::rules(),
-            [
-                # custom validation rules
-            ]
-        );
-    }
+   public function behaviors()
+   {
+      return ArrayHelper::merge(
+         parent::behaviors(),
+         [
+            # custom behaviors
+         ]
+      );
+   }
+
+   public function rules()
+   {
+      return ArrayHelper::merge(
+         parent::rules(),
+         [
+            # custom validation rules
+         ]
+      );
+   }
 
 
 }

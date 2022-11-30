@@ -15,6 +15,7 @@ class QuotationDeliveryReceiptDetail extends BaseQuotationDeliveryReceiptDetail
 
    public ?float $quotationBarangQuantity = null;
    public ?float $totalQuantityIndent = null;
+   public ?int $barangId = null;
    public ?string $barangNama = null;
    public ?string $satuanNama = null;
 

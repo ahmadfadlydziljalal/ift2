@@ -23,7 +23,6 @@ use yii\widgets\DetailView;
 
        <?= Html::a(TextLinkEnum::UPDATE->value, ['update', 'id' => $model->id], ['class' => 'btn btn-primary mb-3']) ?>
 
-
        <?php try {
           echo DetailView::widget([
              'model' => $model,

@@ -18,6 +18,7 @@ use yii\helpers\ArrayHelper;
  * @property string $checker
  * @property string $vehicle
  * @property string $remarks
+ * @property string $tanggal_konfirmasi_diterima_customer
  *
  * @property \app\models\Quotation $quotation
  * @property \app\models\QuotationDeliveryReceiptDetail[] $quotationDeliveryReceiptDetails
@@ -44,10 +45,9 @@ abstract class QuotationDeliveryReceipt extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::rules(), [
             [['quotation_id'], 'integer'],
             [['tanggal'], 'required'],
-            [['tanggal'], 'safe'],
+            [['tanggal', 'tanggal_konfirmasi_diterima_customer'], 'safe'],
             [['remarks'], 'string'],
             [['nomor', 'purchase_order_number', 'checker', 'vehicle'], 'string', 'max' => 255],
-            [['quotation_id'], 'unique'],
             [['quotation_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Quotation::class, 'targetAttribute' => ['quotation_id' => 'id']]
         ]);
     }
@@ -66,6 +66,7 @@ abstract class QuotationDeliveryReceipt extends \yii\db\ActiveRecord
             'checker' => 'Checker',
             'vehicle' => 'Vehicle',
             'remarks' => 'Remarks',
+            'tanggal_konfirmasi_diterima_customer' => 'Tanggal Konfirmasi Diterima Customer',
         ];
     }
 

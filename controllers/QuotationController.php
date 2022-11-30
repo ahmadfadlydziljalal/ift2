@@ -126,7 +126,7 @@ class QuotationController extends Controller
 
       if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
          Yii::$app->session->setFlash('info', 'Quotation: ' . $model->nomor . ' berhasil dirubah.');
-         return $this->redirect(['quotation/view', 'id' => $id]);
+         return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab0']);
       }
 
       return $this->render('update', [
@@ -178,7 +178,7 @@ class QuotationController extends Controller
 
       if ($this->request->isPost && $component->quotation->load($this->request->post())) {
          if ($component->create()) {
-            return $this->redirect(['quotation/view', 'id' => $id]);
+            return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab0']);
          }
       }
 
@@ -203,7 +203,7 @@ class QuotationController extends Controller
 
       if ($this->request->isPost && $component->quotation->load($this->request->post())) {
          if ($component->update()) {
-            return $this->redirect(['quotation/view', 'id' => $id]);
+            return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab1']);
          }
       }
 
@@ -225,7 +225,7 @@ class QuotationController extends Controller
          'quotationId' => $id
       ]);
       $component->delete();
-      return $this->redirect(['quotation/view', 'id' => $id]);
+      return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab0']);
    }
 
    /**
@@ -243,7 +243,7 @@ class QuotationController extends Controller
       ]);
       if ($component->quotation->load($this->request->post())) {
          if ($component->create()) {
-            return $this->redirect(['quotation/view', 'id' => $component->quotation->id]);
+            return $this->redirect(['quotation/view', 'id' => $component->quotation->id, '#' => 'quotation-tab-tab2']);
          }
       }
       return $this->render('create_service_quotation', [
@@ -268,7 +268,7 @@ class QuotationController extends Controller
       ]);
       if ($this->request->isPost && $component->quotation->load($this->request->post())) {
          if ($component->update()) {
-            return $this->redirect(['quotation/view', 'id' => $id]);
+            return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab2']);
          }
       }
       return $this->render('update_service_quotation', [
@@ -289,7 +289,7 @@ class QuotationController extends Controller
          'quotationId' => $id
       ]);
       $component->delete();
-      return $this->redirect(['quotation/view', 'id' => $id]);
+      return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab2']);
    }
 
    /**
@@ -308,7 +308,7 @@ class QuotationController extends Controller
 
       if ($this->request->isPost) {
          if ($component->create()) {
-            return $this->redirect(['quotation/view', 'id' => $component->quotation->id]);
+            return $this->redirect(['quotation/view', 'id' => $component->quotation->id, '#' => 'quotation-tab-tab3']);
          }
       }
 
@@ -330,7 +330,7 @@ class QuotationController extends Controller
 
       if ($this->request->isPost) {
          if ($component->update()) {
-            return $this->redirect(['quotation/view', 'id' => $id]);
+            return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab3']);
          }
       }
 
@@ -349,7 +349,7 @@ class QuotationController extends Controller
    {
       $component = Yii::createObject(['class' => TermConditionQuotation::class, 'quotationId' => $id]);
       $component->delete();
-      return $this->redirect(['quotation/view', 'id' => $id]);
+      return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab3']);
    }
 
    /**
@@ -367,7 +367,7 @@ class QuotationController extends Controller
 
          if ($model->save(false)) {
             Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
-            return $this->redirect(['quotation/view', 'id' => $quotation->id]);
+            return $this->redirect(['quotation/view', 'id' => $quotation->id, '#' => 'quotation-tab-tab4']);
          }
 
          Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
@@ -395,7 +395,7 @@ class QuotationController extends Controller
 
          if ($model->save(false)) {
             Yii::$app->session->setFlash('success', 'Data sesuai dengan validasi yang ditetapkan');
-            return $this->redirect(['quotation/view', 'id' => $quotation->id]);
+            return $this->redirect(['quotation/view', 'id' => $quotation->id, '#' => 'quotation-tab-tab4']);
          }
 
          Yii::$app->session->setFlash('danger', 'Data tidak sesuai dengan validasi yang ditetapkan');
@@ -427,7 +427,7 @@ class QuotationController extends Controller
          'message' => 'Sukses menghapus form job ' . Quotation::findOne($id)->nomor,
       ]]);
 
-      return $this->redirect(['quotation/view', 'id' => $id]);
+      return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab4']);
    }
 
    /**
@@ -463,7 +463,7 @@ class QuotationController extends Controller
             'title' => 'Pesan Sistem',
             'message' => 'Tidak dapat membuat Delivery Receipt. Sistem mendeteksi masing-masing quantity barang sudah dikirim semua.'
          ]]);
-         return $this->redirect(['quotation/view', 'id' => $id]);
+         return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab5']);
       }
 
       $component = Yii::createObject([
@@ -475,7 +475,7 @@ class QuotationController extends Controller
 
       if ($this->request->isPost && $component->quotationDeliveryReceipt->load($this->request->post())) {
          if ($component->create()) {
-            return $this->redirect(['quotation/view', 'id' => $id]);
+            return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab5']);
          }
       }
 
@@ -503,7 +503,7 @@ class QuotationController extends Controller
 
       if ($this->request->isPost && $component->quotationDeliveryReceipt->load($this->request->post())) {
          if ($component->update()) {
-            return $this->redirect(['quotation/view', 'id' => $component->quotation->id]);
+            return $this->redirect(['quotation/view', 'id' => $component->quotation->id, '#' => 'quotation-tab-tab5']);
          }
       }
 
@@ -529,7 +529,7 @@ class QuotationController extends Controller
          'quotationDeliveryReceiptId' => $id
       ]);
       $component->delete();
-      return $this->redirect(['quotation/view', 'id' => $component->quotationDeliveryReceipt->quotation_id]);
+      return $this->redirect(['quotation/view', 'id' => $component->quotationDeliveryReceipt->quotation_id, '#' => 'quotation-tab-tab5']);
    }
 
    /**
@@ -545,9 +545,35 @@ class QuotationController extends Controller
          'quotationId' => $id
       ]);
       $component->deleteAll();
-      return $this->redirect(['quotation/view', 'id' => $id]);
+      return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab5']);
    }
 
+   /**
+    * @param $id
+    * @return Response|string
+    * @throws InvalidConfigException
+    */
+   public function actionKonfirmasiDiterimaCustomer($id): Response|string
+   {
+      $component = Yii::createObject([
+         'class' => DeliveryReceiptQuotation::class,
+         'quotationDeliveryReceiptId' => $id,
+         'scenario' => QuotationDeliveryReceipt::SCENARIO_KONFIRMASI_DITERIMA_CUSTOMER
+      ]);
+
+      if ($this->request->isPost && $component->quotationDeliveryReceipt->load($this->request->post())) {
+         if ($component->konfirmasiDiterimaCustomer()) {
+            return $this->redirect(['quotation/view', 'id' => $component->quotation->id, '#' => 'quotation-tab-tab5']);
+         }
+      }
+
+      return $this->render('konfirmasi_delivery_receipt_diterima_customer', [
+         'quotation' => $component->quotation,
+         'model' => $component->quotationDeliveryReceipt,
+      ]);
+
+   }
+   
    /**
     * Print HTML Delivery Receipt
     * @param $id
@@ -570,15 +596,17 @@ class QuotationController extends Controller
       $model = new LaporanOutgoingQuotation();
 
       if ($model->load($this->request->post()) && $model->validate()) {
-         return $this->redirect(['quotation/preview-laporan-outgoing',
-               'tanggal' => $model->tanggal]
+         return $this->redirect(
+            [
+               'quotation/preview-laporan-outgoing',
+               'tanggal' => $model->tanggal
+            ]
          );
       }
 
       return $this->render('_form_laporan_outgoing', [
          'model' => $model
       ]);
-
    }
 
    public function actionPreviewLaporanOutgoing($tanggal): string
@@ -590,5 +618,4 @@ class QuotationController extends Controller
          'model' => $model
       ]);
    }
-
 }

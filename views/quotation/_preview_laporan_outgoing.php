@@ -83,18 +83,18 @@ $this->params['breadcrumbs'][] = $this->title;
               ],
            ];
            ?>
-           <?php
-           echo ExportMenu::widget([
+
+           <?= ExportMenu::widget([
               'dataProvider' => $dataProvider,
               'columns' => $gridColumns,
-              'filename' => 'Laporan Outgoing Barang tanggal ' . $model->tanggal,
+              'filename' => 'Laporan Outgoing Barang Tanggal ' . $model->tanggal,
               'exportConfig' => [
                  ExportMenu::FORMAT_TEXT => false,
                  ExportMenu::FORMAT_HTML => false,
                  ExportMenu::FORMAT_PDF => [
                     'pdfConfig' => [
                        'methods' => [
-                          'SetHeader' => ['Laporan Outgoing Barang tanggal ' . $model->tanggal],
+                          'SetHeader' => ['Laporan Outgoing Barang Tanggal ' . $model->tanggal],
                           'SetFooter' => ['{PAGENO}'],
                        ]
                     ],
