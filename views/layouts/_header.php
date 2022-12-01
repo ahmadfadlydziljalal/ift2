@@ -39,33 +39,33 @@ $brandLabel =
     'togglerContent' => '<span class="bi bi-arrow-down-circle"></span>',
 ]); ?>
 
-<!-- <div class="search-navbar my-4 my-md-0 flex-sm-grow-1 flex-md-grow-0 float-md-end order-sm-0 order-md-0 order-lg-0">
+<div class="search-navbar my-4 my-md-0 flex-sm-grow-1 flex-md-grow-0 float-md-end order-sm-0 order-md-0 order-lg-0">
     <?php
-    // try {
-    //     echo Select2::widget([
-    //         'id' => 'search-menu',
-    //         'name' => 'search-menu',
-    //         'data' => ArrayHelper::arrayValueRecursiveForSearchMenu('0', $leftItems),
-    //         'options' => [
-    //             'placeholder' => 'Menu pencarian ... Ctrl + / ',
-    //         ],
-    //         'pluginOptions' => [
-    //             'dropdownAutoWidth' => true,
-    //             'width' => '100%'
-    //         ],
-    //         'pluginEvents' => [
-    //             'change' => "function(e) {
-    //                 if($(this).val()){
-    //                     window.location.replace($(this).val());
-    //                 }
-    //             }"
-    //         ],
-    //     ]);
-    // } catch (Exception $e) {
-    //     echo '';
-    // }
+    try {
+        echo Select2::widget([
+            'id' => 'search-menu',
+            'name' => 'search-menu',
+            'data' => ArrayHelper::arrayValueRecursiveForSearchMenu('0', $leftItems),
+            'options' => [
+                'placeholder' => 'Menu pencarian ... Ctrl + / ',
+            ],
+            'pluginOptions' => [
+                'dropdownAutoWidth' => true,
+                'width' => '100%'
+            ],
+            'pluginEvents' => [
+                'change' => "function(e) {
+                    if($(this).val()){
+                        window.location.replace($(this).val());
+                    }
+                }"
+            ],
+        ]);
+    } catch (Exception $e) {
+        echo '';
+    }
     ?>
-</div> -->
+</div>
 
 <?php
 

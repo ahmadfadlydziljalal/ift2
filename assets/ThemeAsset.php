@@ -23,9 +23,9 @@ class ThemeAsset extends AssetBundle
         'js/main.js',
     ];
     public $depends = [
-        'yii\web\YiiAsset',
         'yii\bootstrap5\BootstrapAsset',
         'yii\bootstrap5\BootstrapPluginAsset',
-        'yii\bootstrap5\BootstrapIconAsset'
+        'yii\bootstrap5\BootstrapIconAsset',
+        'yii\web\YiiAsset',
     ];
 }
