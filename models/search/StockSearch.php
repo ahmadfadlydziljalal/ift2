@@ -25,6 +25,8 @@ class StockSearch extends Stock
    public function search(array $params): ActiveDataProvider
    {
       $query = parent::getData();
+
+      //die($query->createCommand()->rawSql);
       $dataProvider = new ActiveDataProvider([
          'query' => $query,
          'key' => 'namaBarang',
@@ -35,7 +37,12 @@ class StockSearch extends Stock
       if (!$this->validate()) {
          return $dataProvider;
       }
-      $query->andFilterWhere(['like', 'nama', $this->namaBarang]);
+      $query
+         ->andFilterWhere(['like', 'nama', $this->namaBarang])
+         ->andFilterWhere(['like', 'part_number', $this->partNumber])
+         ->andFilterWhere(['like', 'ift_number', $this->kodeBarang])
+         ->andFilterWhere(['like', 'merk_part_number', $this->merk])
+         ->andFilterWhere(['like', 'nama', $this->namaBarang]);
 
       return $dataProvider;
    }

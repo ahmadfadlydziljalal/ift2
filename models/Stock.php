@@ -8,7 +8,13 @@ use yii\db\Query;
 
 class Stock extends Model
 {
+
+   public ?string $partNumber = null;
+   public ?string $kodeBarang = null;
    public ?string $namaBarang = null;
+   public ?string $merk = null;
+   public ?string $stockAwal = null;
+   public ?string $defaultSatuan = null;
    public ?string $qtyMasuk = null;
    public ?string $qtyKeluar = null;
    public ?string $stock = null;
@@ -16,7 +22,7 @@ class Stock extends Model
    public function rules(): array
    {
       return [
-         ['namaBarang', 'string'],
+         [['namaBarang', 'partNumber', 'kodeBarang', 'merk'], 'string'],
       ];
    }
 
@@ -25,7 +31,12 @@ class Stock extends Model
       return (new Query())
          ->select([
             'id' => 'init.id',
+            'partNumber' => 'init.part_number',
+            'kodeBarang' => 'init.ift_number',
             'namaBarang' => 'init.nama',
+            'merk' => 'init.merk_part_number',
+            'stockAwal' => 'init.initialize_stock_quantity',
+            'defaultSatuan' => 'init.satuanNama',
             'qtyMasuk' => new Expression("COALESCE(barangMasuk.totalQuantityTerima, 0)"),
             'qtyKeluar' => new Expression("COALESCE(barangKeluar.totalQuantityKeluar, 0)"),
             'stock' => new Expression(" (init.initialize_stock_quantity) + (COALESCE(barangMasuk.totalQuantityTerima, 0)) - (COALESCE(barangKeluar.totalQuantityKeluar, 0)) "),
@@ -43,8 +54,13 @@ class Stock extends Model
          ->select([
             'id' => 'b.id',
             'nama' => 'b.nama',
+            'part_number',
+            'ift_number',
+            'merk_part_number',
+            'satuanNama' => 's.nama',
             'initialize_stock_quantity' => 'b.initialize_stock_quantity',
          ])
+         ->leftJoin(['s' => 'satuan'], 'b.default_satuan_id = s.id')
          ->orderBy('nama');
    }
 
