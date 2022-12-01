@@ -38,8 +38,7 @@
     "pa3py6aka/yii2-modal-alert-widget": "^1.4",
     "creocoder/yii2-flysystem": "dev-master",
     "league/flysystem-aws-s3-v3": "~1.0",
-    "yiisoft/yii2-bootstrap5": "2.0.3",
-    "bower-asset/bootstrap": "5.1.1"
+    "yiisoft/yii2-bootstrap5": "2.0.3"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",
