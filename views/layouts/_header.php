@@ -48,7 +48,6 @@ $brandLabel =
              'data' => ArrayHelper::arrayValueRecursiveForSearchMenu('0', $leftItems),
              'options' => [
                 'placeholder' => 'Menu pencarian ... Ctrl + / ',
-
              ],
              'pluginOptions' => [
                 'dropdownAutoWidth' => true,

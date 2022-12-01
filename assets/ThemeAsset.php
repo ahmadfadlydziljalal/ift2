@@ -23,12 +23,12 @@ class ThemeAsset extends AssetBundle
       'css/site.css'
    ];
    public $js = [
-      'js/main.js',
+      //'js/main.js',
    ];
    public $depends = [
       YiiAsset::class,
       BootstrapAsset::class,
       BootstrapIconAsset::class,
-      BootstrapPluginAsset::class
+      BootstrapPluginAsset::class,
    ];
 }
