@@ -46,22 +46,15 @@ $this->params['breadcrumbs'][] = $this->title;
                ]);
                ?>
             </div>
-
         </div>
 
-
-       <?php try {
-          echo GridView::widget([
-             'tableOptions' => [
-                'class' => 'table table-gridview table-fixes-last-column'
-             ],
-             'dataProvider' => $dataProvider,
-             'filterModel' => $searchModel,
-             'columns' => require(__DIR__ . DIRECTORY_SEPARATOR . '_columns.php')
-          ]);
-       } catch (Throwable $e) {
-       } ?>
+       <?php echo GridView::widget([
+          'tableOptions' => [
+             'class' => 'table table-gridview table-fixes-last-column'
+          ],
+          'dataProvider' => $dataProvider,
+          'filterModel' => $searchModel,
+          'columns' => require(__DIR__ . DIRECTORY_SEPARATOR . '_columns.php')
+       ]); ?>
     </div>
-
-
 </div>

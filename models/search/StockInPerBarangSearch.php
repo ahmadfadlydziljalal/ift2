@@ -2,12 +2,13 @@
 
 namespace app\models\search;
 
-use app\models\Stock;
+use app\models\StockInPerBarang;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
-class StockSearch extends Stock
+class StockInPerBarangSearch extends StockInPerBarang
 {
+
    /**
     * @inheritdoc
     */
@@ -18,31 +19,24 @@ class StockSearch extends Stock
    }
 
    /**
-    * Creates data provider instance with search query applied
     * @param array $params
+    * @param int $id BarangId
     * @return ActiveDataProvider
     */
-   public function search(array $params): ActiveDataProvider
+   public function search(array $params, int $id): ActiveDataProvider
    {
       $query = parent::getData();
-      
       $dataProvider = new ActiveDataProvider([
          'query' => $query,
          'key' => 'id',
       ]);
-
       $this->load($params);
 
       if (!$this->validate()) {
          return $dataProvider;
       }
-      $query
-         ->andFilterWhere(['like', 'nama', $this->namaBarang])
-         ->andFilterWhere(['like', 'part_number', $this->partNumber])
-         ->andFilterWhere(['like', 'ift_number', $this->kodeBarang])
-         ->andFilterWhere(['like', 'merk_part_number', $this->merk])
-         ->andFilterWhere(['like', 'nama', $this->namaBarang]);
 
       return $dataProvider;
+
    }
 }
