@@ -8,12 +8,14 @@ return [
    'bundles' => [
       JqueryAsset::class => [
          'js' => [
-            //YII_ENV_DEV ? 'jquery.js' : 'jquery.min.js',
-            YII_ENV_DEV ? 'https://code.jquery.com/jquery-3.5.1.js' : 'https://code.jquery.com/jquery-3.5.1.min.js'
+            YII_ENV_DEV ? 'jquery.js' : 'jquery.min.js'
          ]
       ],
       BootstrapAsset::class => [
          'css' => [],
+         'depends' => [
+            JqueryAsset::class,
+         ]
       ],
    ],
    'appendTimestamp' => true,
