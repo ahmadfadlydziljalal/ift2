@@ -24,7 +24,6 @@ $config = [
             'options' => [
                 'Delimiter' => ''
             ],
-
         ],
         'authManager' => require __DIR__ . '/auth_manager.php',
         'cache' => require __DIR__ . '/cache.php',
