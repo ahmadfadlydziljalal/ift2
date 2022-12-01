@@ -14,6 +14,13 @@ return [
    'defaultSatuan',
    [
       'class' => DataColumn::class,
+      'attribute' => 'stockAwal',
+      'contentOptions' => [
+         'class' => 'text-end'
+      ]
+   ],
+   [
+      'class' => DataColumn::class,
       'attribute' => 'qtyMasuk',
       'contentOptions' => [
          'class' => 'text-end'
@@ -28,7 +35,7 @@ return [
    ],
    [
       'class' => DataColumn::class,
-      'attribute' => 'stock',
+      'attribute' => 'stockAkhir ',
       'contentOptions' => [
          'class' => 'text-end'
       ]

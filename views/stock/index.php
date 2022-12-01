@@ -52,7 +52,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
        <?php try {
           echo GridView::widget([
-             'id' => 'stock-gridview',
+             'tableOptions' => [
+                'class' => 'table table-gridview table-fixes-last-column'
+             ],
              'dataProvider' => $dataProvider,
              'filterModel' => $searchModel,
              'columns' => require(__DIR__ . DIRECTORY_SEPARATOR . '_columns.php')

@@ -17,7 +17,7 @@ class Stock extends Model
    public ?string $defaultSatuan = null;
    public ?string $qtyMasuk = null;
    public ?string $qtyKeluar = null;
-   public ?string $stock = null;
+   public ?string $stockAkhir = null;
 
    public function rules(): array
    {
@@ -39,7 +39,7 @@ class Stock extends Model
             'defaultSatuan' => 'init.satuanNama',
             'qtyMasuk' => new Expression("COALESCE(barangMasuk.totalQuantityTerima, 0)"),
             'qtyKeluar' => new Expression("COALESCE(barangKeluar.totalQuantityKeluar, 0)"),
-            'stock' => new Expression(" (init.initialize_stock_quantity) + (COALESCE(barangMasuk.totalQuantityTerima, 0)) - (COALESCE(barangKeluar.totalQuantityKeluar, 0)) "),
+            'stockAkhir ' => new Expression(" (init.initialize_stock_quantity) + (COALESCE(barangMasuk.totalQuantityTerima, 0)) - (COALESCE(barangKeluar.totalQuantityKeluar, 0)) "),
          ])
          ->from(['init' => $this->getBarang()])
          ->leftJoin(['barangMasuk' => $this->getBarangMasuk()], 'barangMasuk.barangId = init.id')
