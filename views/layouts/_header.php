@@ -34,7 +34,7 @@ $brandLabel =
     'brandUrl' => null,
     'options' => [
         'id' => 'navbar',
-        'class' => 'navbar navbar-expand-lg navbar-' . Yii::$app->params['theme'] . ' fixed-top' . ' bg-' . Yii::$app->params['theme'] . ' shadow-sm',
+        'class' => 'navbar navbar-expand-md navbar-' . Yii::$app->params['theme'] . ' fixed-top' . ' bg-' . Yii::$app->params['theme'] . ' shadow-sm',
     ],
     'togglerContent' => '<span class="bi bi-arrow-down-circle"></span>',
 ]); ?>
