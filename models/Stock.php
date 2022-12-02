@@ -89,15 +89,6 @@ class Stock extends Model
                      }]);
                }]);
          }])
-         ->joinWith(['historyLokasiBarangs' => function ($hlb) {
-            $hlb->joinWith('tipePergerakan');
-         }])
-         ->where([
-            'status.section' => 'set-lokasi-barang'
-         ])
-         ->andWhere([
-            'status.key' => Stock::TIPE_PERGERAKAN_IN
-         ])
          ->groupBy('b.id');
    }
 
