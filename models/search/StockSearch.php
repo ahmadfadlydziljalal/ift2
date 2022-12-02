@@ -25,7 +25,6 @@ class StockSearch extends Stock
    public function search(array $params): ActiveDataProvider
    {
       $query = parent::getData();
-      
       $dataProvider = new ActiveDataProvider([
          'query' => $query,
          'key' => 'id',

@@ -4,7 +4,6 @@
 use app\components\grid\ActionColumn;
 use kartik\grid\DataColumn;
 use kartik\grid\SerialColumn;
-use yii\helpers\Html;
 
 return [
    [
@@ -50,18 +49,6 @@ return [
    [
       'class' => ActionColumn::class,
       'mergeHeader' => false,
-      'template' => '{view-stock-in} {view-stock-out}',
-      'buttons' => [
-         'view-stock-in' => function ($url, $model, $key) {
-            return Html::a('<i class="bi bi-arrow-left-circle"></i> In ', ['stock/view-stock-in', 'id' => $key], [
-               'class' => 'text-primary text-decoration-none'
-            ]);
-         },
-         'view-stock-out' => function ($url, $model, $key) {
-            return Html::a('<i class="bi bi-arrow-right-circle"></i> Out', ['stock/view-stock-out', 'id' => $key], [
-               'class' => 'text-danger text-decoration-none'
-            ]);
-         }
-      ]
+      'template' => '{view}',
    ],
 ];

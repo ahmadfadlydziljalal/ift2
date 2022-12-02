@@ -7,6 +7,8 @@
 
 /* @var $dataProvider ActiveDataProvider */
 
+/* @var $dataProviderForExportMenu ActiveDataProvider */
+
 use app\models\search\StockSearch;
 use kartik\export\ExportMenu;
 use kartik\grid\GridView;
@@ -56,5 +58,6 @@ $this->params['breadcrumbs'][] = $this->title;
           'filterModel' => $searchModel,
           'columns' => require(__DIR__ . DIRECTORY_SEPARATOR . '_columns.php')
        ]); ?>
+
     </div>
 </div>

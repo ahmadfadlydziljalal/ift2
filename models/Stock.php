@@ -9,6 +9,10 @@ use yii\db\Query;
 class Stock extends Model
 {
 
+   const TIPE_PERGERAKAN_START_PERTAMA_KALI_PENERAPAN_SISTEM = 'start-pertama-kali-penerapan-sistem';
+   const TIPE_PERGERAKAN_MOVEMENT = 'movement';
+   const TIPE_PERGERAKAN_IN = 'in';
+
    public ?string $partNumber = null;
    public ?string $kodeBarang = null;
    public ?string $namaBarang = null;
@@ -85,6 +89,15 @@ class Stock extends Model
                      }]);
                }]);
          }])
+         ->joinWith(['historyLokasiBarangs' => function ($hlb) {
+            $hlb->joinWith('tipePergerakan');
+         }])
+         ->where([
+            'status.section' => 'set-lokasi-barang'
+         ])
+         ->andWhere([
+            'status.key' => Stock::TIPE_PERGERAKAN_IN
+         ])
          ->groupBy('b.id');
    }
 

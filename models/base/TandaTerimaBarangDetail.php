@@ -15,6 +15,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $material_requisition_detail_penawaran_id
  * @property string $quantity_terima
  *
+ * @property \app\models\HistoryLokasiBarang[] $historyLokasiBarangs
  * @property \app\models\MaterialRequisitionDetailPenawaran $materialRequisitionDetailPenawaran
  * @property \app\models\TandaTerimaBarang $tandaTerimaBarang
  * @property string $aliasModel
@@ -57,6 +58,14 @@ abstract class TandaTerimaBarangDetail extends \yii\db\ActiveRecord
             'material_requisition_detail_penawaran_id' => 'Material Requisition Detail Penawaran ID',
             'quantity_terima' => 'Quantity Terima',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHistoryLokasiBarangs()
+    {
+        return $this->hasMany(\app\models\HistoryLokasiBarang::class, ['tanda_terima_barang_detail_id' => 'id']);
     }
 
     /**
