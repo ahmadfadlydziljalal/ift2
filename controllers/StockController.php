@@ -4,6 +4,9 @@ namespace app\controllers;
 
 
 use app\models\Barang;
+use app\models\form\SetLokasiBarangInForm;
+use app\models\form\SetLokasiBarangMovementForm;
+use app\models\form\SetLokasiBarangMovementFromForm;
 use app\models\HistoryLokasiBarang;
 use app\models\search\StockInPerBarangSearch;
 use app\models\search\StockSearch;
@@ -12,10 +15,10 @@ use app\models\Tabular;
 use app\models\TandaTerimaBarangDetail;
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\db\Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\ServerErrorHttpException;
 
 class StockController extends Controller
 {
@@ -63,68 +66,53 @@ class StockController extends Controller
 
    /**
     * @throws NotFoundHttpException
+    * @throws ServerErrorHttpException
     */
    public function actionSetLokasi($id, string $type): Response|string
    {
       $modelType = $this->findStatusSetLokasi($type);
       $modelTandaTerimaBarangDetail = $this->findTandaTerimaBarangDetailModel($id);
-      $models = [new HistoryLokasiBarang()];
+
+      $model = new SetLokasiBarangInForm([
+         'tandaTerimaBarangDetail' => $modelTandaTerimaBarangDetail,
+         'tipePergerakan' => $modelType,
+      ]);
+      $modelsDetail = [new HistoryLokasiBarang()];
 
       if ($this->request->isPost) {
 
-         $models = Tabular::createMultiple(HistoryLokasiBarang::class);
-         Tabular::loadMultiple($models, $this->request->post());
+         $modelsDetail = Tabular::createMultiple(HistoryLokasiBarang::class);
+         Tabular::loadMultiple($modelsDetail, $this->request->post());
 
-         $error = '';
-         if (Tabular::validateMultiple($models)) {
+         $model->historyLokasiBarangs = $modelsDetail;
+         if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
 
-            $transaction = HistoryLokasiBarang::getDb()->beginTransaction();
-
-            try {
-
-               $flag = true;
-
-               /** @var HistoryLokasiBarang $model */
-               foreach ($models as $model) {
-
-                  $model->tanda_terima_barang_detail_id = $id;
-                  $model->tipe_pergerakan_id = $modelType->id;
-
-                  $flag = $model->save(false);
-                  if (!$flag) break;
-               }
-
-               if ($flag) {
-                  $transaction->commit();
-                  Yii::$app->session->setFlash('success', [[
-                     'title' => 'Lokasi in berhasil di record.',
-                     'message' => $error
-                  ]]);
-                  return $this->redirect(['stock/view', 'id' => $modelTandaTerimaBarangDetail->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang_id]);
-               }
-
-               $transaction->rollBack();
-
-            } catch (Exception $e) {
-               $transaction->rollBack();
-               $error = $e->getMessage();
+            if ($model->save()) {
+               Yii::$app->session->setFlash('success', [['title' => 'Lokasi in berhasil di record.', 'message' => 'Congratulation ...!']]);
+               return $this->redirect(['stock/view', 'id' => $modelTandaTerimaBarangDetail->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang_id]);
             }
+
          }
 
          Yii::$app->session->setFlash('error', [[
             'title' => 'Gagal insert lokasi',
-            'message' => $error
+            'message' => $model->errors
          ]]);
 
       }
 
       return $this->render('_form_set_lokasi', [
-         'models' => $models,
-         'modelTandaTerimaBarangDetail' => $modelTandaTerimaBarangDetail
+         'model' => $model,
+         'modelsDetail' => $modelsDetail,
       ]);
 
    }
 
+   /**
+    * @param $type
+    * @return Status|null
+    * @throws NotFoundHttpException
+    */
    protected function findStatusSetLokasi($type): ?Status
    {
       if (($model = Status::findOne(['section' => 'set-lokasi-barang', 'key' => $type])) !== null) {
@@ -146,6 +134,52 @@ class StockController extends Controller
       }
 
       throw new NotFoundHttpException();
+   }
+
+   public function actionSetMovementLokasi($id): Response|string
+   {
+      $modelTandaTerimaBarangDetail = $this->findTandaTerimaBarangDetailModel($id);
+      $historySebelumnya = HistoryLokasiBarang::findAll([
+         'tanda_terima_barang_detail_id' => $id
+      ]);
+
+      $movementBarangModel = new SetLokasiBarangMovementForm();
+      $movementBarangModel->tandaTerimaBarangDetail = $modelTandaTerimaBarangDetail;
+      $movementBarangModel->totalItemTandaTerimaBarangDetail = $modelTandaTerimaBarangDetail->quantity_terima;
+
+
+      $models = [];
+      foreach ($historySebelumnya as $sebelumnya) {
+         $models[] = new SetLokasiBarangMovementFromForm([
+            'tipePergerakanFromId' => 9,
+            'quantityFrom' => $sebelumnya->quantity,
+            'blockFrom' => $sebelumnya->block,
+            'rakFrom' => $sebelumnya->rak,
+            'tierFrom' => $sebelumnya->tier,
+            'rowFrom' => $sebelumnya->row,
+         ]);
+      }
+
+      if ($this->request->isPost) {
+
+
+         $models = Tabular::createMultiple(SetLokasiBarangMovementForm::class);
+         Tabular::loadMultiple($models, $this->request->post());
+
+         $movementBarangModel->movementBarangItems = $models;
+
+         if ($movementBarangModel->validate() && Tabular::validateMultiple($models)) {
+            return $this->redirect(['stock/view', 'id' => $modelTandaTerimaBarangDetail->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang_id]);
+         }
+
+
+      }
+
+      return $this->render('_form_set_movement', [
+         'models' => $models,
+         'modelTandaTerimaBarangDetail' => $modelTandaTerimaBarangDetail,
+         'movementBarangModel' => $movementBarangModel,
+      ]);
    }
 
 }

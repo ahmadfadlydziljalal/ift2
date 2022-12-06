@@ -14,61 +14,62 @@ use yii\helpers\StringHelper;
 class Card extends BaseCard
 {
 
-    const SCENARIO_CREATE_AND_UPDATE = 'create-and-update';
-    const GET_ALL = 'all';
-    const GET_ONLY_TOKO_SAYA = 'only-toko-saya';
-    const GET_APART_FROM_TOKO_SAYA = 'selain-toko-saya';
-    const GET_ONLY_VENDOR = 'only-vendor';
-    const GET_ONLY_PEJABAT_KANTOR = 'only-pejabat-kantor';
-    const GET_ONLY_MEKANIK = 'only-mekanik';
+   const SCENARIO_CREATE_AND_UPDATE = 'create-and-update';
+   const GET_ALL = 'all';
+   const GET_ONLY_TOKO_SAYA = 'only-toko-saya';
+   const GET_APART_FROM_TOKO_SAYA = 'selain-toko-saya';
+   const GET_ONLY_VENDOR = 'only-vendor';
+   const GET_ONLY_PEJABAT_KANTOR = 'only-pejabat-kantor';
+   const GET_ONLY_MEKANIK = 'only-mekanik';
+   const GET_ONLY_WAREHOUSE = 'warehouse';
 
-    public ?array $cardBelongsTypesForm = [];
-    public ?string $cardTypeName = null;
+   public ?array $cardBelongsTypesForm = [];
+   public ?string $cardTypeName = null;
 
-    public function behaviors()
-    {
-        return ArrayHelper::merge(
-            parent::behaviors(),
-            [
-                # custom behaviors
-            ]
-        );
-    }
+   public function behaviors()
+   {
+      return ArrayHelper::merge(
+         parent::behaviors(),
+         [
+            # custom behaviors
+         ]
+      );
+   }
 
-    public function rules()
-    {
-        return ArrayHelper::merge(
-            parent::rules(),
-            [
-                # custom validation rules
-                ['cardTypeName', 'safe'],
-                ['cardBelongsTypesForm', 'each', 'rule' => ['integer']],
-                [['cardBelongsTypesForm'], 'required', 'on' => self::SCENARIO_CREATE_AND_UPDATE],
-            ]
-        );
-    }
+   public function rules()
+   {
+      return ArrayHelper::merge(
+         parent::rules(),
+         [
+            # custom validation rules
+            ['cardTypeName', 'safe'],
+            ['cardBelongsTypesForm', 'each', 'rule' => ['integer']],
+            [['cardBelongsTypesForm'], 'required', 'on' => self::SCENARIO_CREATE_AND_UPDATE],
+         ]
+      );
+   }
 
-    public function getSingkatanNama(): string
-    {
-        return StringHelper::truncate($this->nama, 18);
-    }
+   public function getSingkatanNama(): string
+   {
+      return StringHelper::truncate($this->nama, 18);
+   }
 
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getCardTypes()
-    {
-        return $this->hasMany(CardType::class, ['id' => 'card_type_id'])
-            ->via('cardBelongsTypes');
-    }
+   /**
+    * @return ActiveQuery
+    */
+   public function getCardTypes()
+   {
+      return $this->hasMany(CardType::class, ['id' => 'card_type_id'])
+         ->via('cardBelongsTypes');
+   }
 
-    public function attributeLabels()
-    {
-        return ArrayHelper::merge(
-            parent::attributeLabels(), [
-                'mata_uang_id' => 'Mata Uang',
-            ]
-        );
-    }
+   public function attributeLabels()
+   {
+      return ArrayHelper::merge(
+         parent::attributeLabels(), [
+            'mata_uang_id' => 'Mata Uang',
+         ]
+      );
+   }
 }

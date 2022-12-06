@@ -11,26 +11,27 @@ use yii\helpers\ArrayHelper;
 class Status extends BaseStatus
 {
 
-    const MATERIAL_REQUISITION_DETAIL_PENAWARAN_STATUS = 'material-requisition-detail-penawaran-status';
+   const MATERIAL_REQUISITION_DETAIL_PENAWARAN_STATUS = 'material-requisition-detail-penawaran-status';
+   const SECTION_SET_LOKASI_BARANG = 'set-lokasi-barang';
 
 
-    public function behaviors()
-    {
-        return ArrayHelper::merge(
-            parent::behaviors(),
-            [
-                # custom behaviors
-            ]
-        );
-    }
+   public function behaviors()
+   {
+      return ArrayHelper::merge(
+         parent::behaviors(),
+         [
+            # custom behaviors
+         ]
+      );
+   }
 
-    public function rules()
-    {
-        return ArrayHelper::merge(
-            parent::rules(),
-            [
-                # custom validation rules
-            ]
-        );
-    }
+   public function rules()
+   {
+      return ArrayHelper::merge(
+         parent::rules(),
+         [
+            # custom validation rules
+         ]
+      );
+   }
 }

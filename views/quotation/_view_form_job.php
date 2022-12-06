@@ -12,73 +12,73 @@ use yii\widgets\DetailView;
 /* @see \app\controllers\QuotationController::actionDeleteFormJob() */
 
 ?>
-<div class="card rounded shadow border-0" id="form-job">
-    <div class="card-header">Form Jobs</div>
-    <div class="card-body">
-        <div class="d-flex flex-row gap-2">
-
-            <?php if (!$model->quotationFormJob) : ?>
-
-                <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-form-job', 'id' => $model->id], [
-                    'class' => 'btn btn-success'
-                ]) ?>
-
-            <?php else : ?>
-
-                <?= Html::a(TextLinkEnum::PRINT->value, ['quotation/print-form-job', 'id' => $model->id], [
-                    'class' => 'btn btn-success',
-                    'target' => '_blank',
-                    'rel' => 'noopener noreferrer'
-                ]) ?>
-
-                <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-form-job', 'id' => $model->id], [
-                    'class' => 'btn btn-primary'
-                ]) ?>
-
-                <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-form-job', 'id' => $model->id], [
-                    'class' => 'btn btn-danger',
-                    'data-method' => 'post',
-                    'data-confirm' => 'Apakah Anda akan menghapus detail quotation barang ini ?'
-                ]) ?>
-
-            <?php endif; ?>
-        </div>
-    </div>
+<div class="card bg-transparent" id="form-job">
 
     <div class="card-body">
-        <div class="table-responsive">
-            <?php
+        <div class="d-flex flex-column gap-3">
+            <div class="d-flex flex-row gap-2">
 
-            if ($model->quotationFormJob) {
-                echo DetailView::widget([
-                    'model' => $model->quotationFormJob,
-                    'attributes' => [
+               <?php if (!$model->quotationFormJob) : ?>
+
+                  <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-form-job', 'id' => $model->id], [
+                     'class' => 'btn btn-success'
+                  ]) ?>
+
+               <?php else : ?>
+
+                  <?= Html::a(TextLinkEnum::PRINT->value, ['quotation/print-form-job', 'id' => $model->id], [
+                     'class' => 'btn btn-success',
+                     'target' => '_blank',
+                     'rel' => 'noopener noreferrer'
+                  ]) ?>
+
+                  <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-form-job', 'id' => $model->id], [
+                     'class' => 'btn btn-primary'
+                  ]) ?>
+
+                  <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-form-job', 'id' => $model->id], [
+                     'class' => 'btn btn-danger',
+                     'data-method' => 'post',
+                     'data-confirm' => 'Apakah Anda akan menghapus detail quotation barang ini ?'
+                  ]) ?>
+
+               <?php endif; ?>
+            </div>
+            <div class="table-responsive">
+               <?php
+
+               if ($model->quotationFormJob) {
+                  echo DetailView::widget([
+                     'model' => $model->quotationFormJob,
+                     'attributes' => [
                         'nomor',
                         'tanggal',
                         [
-                            'attribute' => 'card_own_equipment_id',
-                            'value' => function ($model) {
-                                return $model->cardOwnEquipmentLabel;
-                            }
+                           'attribute' => 'card_own_equipment_id',
+                           'value' => function ($model) {
+                              return $model->cardOwnEquipmentLabel;
+                           }
                         ],
                         'hour_meter',
                         'person_in_charge',
                         [
-                            'attribute' => 'mekanik_id',
-                            'value' => function ($model) {
-                                return $model->namaMekanik;
-                            }
+                           'attribute' => 'mekanik_id',
+                           'value' => function ($model) {
+                              return $model->namaMekanik;
+                           }
                         ],
                         'issue',
                         'remarks'
-                    ]
-                ]);
-            } else {
-                echo Html::tag('p', 'Belum ada form job', [
-                    'class' => 'text-danger font-weight-bold'
-                ]);
-            }
-            ?>
+                     ]
+                  ]);
+               } else {
+                  echo Html::tag('p', 'Belum ada form job', [
+                     'class' => 'text-danger font-weight-bold'
+                  ]);
+               }
+               ?>
+            </div>
         </div>
     </div>
+    
 </div>

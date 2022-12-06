@@ -2,40 +2,46 @@
 
 
 /* @var $this View */
+/* @var $modelsDetail HistoryLokasiBarang[] */
+/* @see \app\controllers\StockController::actionSetLokasi() */
 
-/* @var $models HistoryLokasiBarang[] */
-
-/* @var $modelTandaTerimaBarangDetail TandaTerimaBarangDetail */
+/* @var $model SetLokasiBarangInForm */
 
 use app\enums\TextLinkEnum;
+use app\models\Card;
+use app\models\form\SetLokasiBarangInForm;
 use app\models\HistoryLokasiBarang;
-use app\models\TandaTerimaBarangDetail;
 use kartik\form\ActiveForm;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\bootstrap5\Html;
 use yii\web\View;
 
-$this->title = 'Set In ';
+$this->title = ucwords($model->tipePergerakan->key);
 $this->params['breadcrumbs'][] = ['label' => 'Stock', 'url' => ['index']];
+$this->params['breadcrumbs'][] = [
+   'label' => $model->tandaTerimaBarangDetail->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->nama,
+   'url' => ['stock/view', 'id' => $model->tandaTerimaBarangDetail->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang_id]];
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
 <div class="stock-form">
     <h1>Set <?= Yii::$app->request->queryParams['type'] ?>
-        : <?= $modelTandaTerimaBarangDetail->tandaTerimaBarang->nomor ?></h1>
+        : <?= $model->tandaTerimaBarangDetail->tandaTerimaBarang->nomor ?></h1>
 
     <div class="d-flex flex-column gap-3">
         <div>
-            <span class="badge bg-primary"><?= $modelTandaTerimaBarangDetail->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->nama ?></span>
-            <span class="badge bg-primary"><?= $modelTandaTerimaBarangDetail->quantity_terima ?></span>
-            <span class="badge bg-primary"><?= $modelTandaTerimaBarangDetail->materialRequisitionDetailPenawaran->materialRequisitionDetail->satuan->nama ?></span>
+            <span class="badge bg-primary"><?= $model->tandaTerimaBarangDetail->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->nama ?></span>
+            <span class="badge bg-primary"><?= $model->tandaTerimaBarangDetail->quantity_terima ?></span>
+            <span class="badge bg-primary"><?= $model->tandaTerimaBarangDetail->materialRequisitionDetailPenawaran->materialRequisitionDetail->satuan->nama ?></span>
         </div>
 
         <div>
            <?php $form = ActiveForm::begin([
               'id' => 'dynamic-form'
            ]) ?>
+
+           <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
 
            <?php
            DynamicFormWidget::begin([
@@ -46,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'min' => 1,
               'insertButton' => '.add-item',
               'deleteButton' => '.remove-item',
-              'model' => $models[0],
+              'model' => $modelsDetail[0],
               'formId' => 'dynamic-form',
               'formFields' => ['id', 'block', 'rak', 'tier', 'row'],
            ]);
@@ -57,6 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <thead>
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">Warehouse</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Block</th>
                         <th scope="col">Rak</th>
@@ -68,38 +75,43 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <tbody class="container-items">
 
-                    <?php /** @var HistoryLokasiBarang $model */
-                    foreach ($models as $i => $model): ?>
+                    <?php /** @var HistoryLokasiBarang $detail */
+                    foreach ($modelsDetail as $i => $detail): ?>
                         <tr class="item align-middle">
 
                             <td style="width: 2px;" class="align-middle">
-                               <?php if (!$model->isNewRecord) {
-                                  echo Html::activeHiddenInput($model, "[$i]id");
+                               <?php if (!$detail->isNewRecord) {
+                                  echo Html::activeHiddenInput($detail, "[$i]id");
                                } ?>
                                 <i class="bi bi-arrow-right-short"></i>
                             </td>
 
                             <td>
-                               <?= $form->field($model, "[$i]quantity", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->textInput([
+                               <?= $form->field($detail, "[$i]card_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                                  ->dropDownList(Card::find()->map(Card::GET_ONLY_WAREHOUSE)); ?>
+                            </td>
+
+                            <td>
+                               <?= $form->field($detail, "[$i]quantity", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->textInput([
                                   'type' => 'number',
                                   'class' => 'form-control'
                                ]); ?>
                             </td>
 
                             <td>
-                               <?= $form->field($model, "[$i]block", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
+                               <?= $form->field($detail, "[$i]block", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
                             </td>
 
                             <td>
-                               <?= $form->field($model, "[$i]rak", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
+                               <?= $form->field($detail, "[$i]rak", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
                             </td>
 
                             <td>
-                               <?= $form->field($model, "[$i]tier", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
+                               <?= $form->field($detail, "[$i]tier", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
                             </td>
 
                             <td>
-                               <?= $form->field($model, "[$i]row", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
+                               <?= $form->field($detail, "[$i]row", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
                             </td>
 
                             <td>
@@ -113,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <tfoot>
                     <tr>
                         <th></th>
-                        <th class="text-center" colspan="4">
+                        <th class="text-center" colspan="5">
                            <?php echo Html::button(TextLinkEnum::TAMBAH->value, ['class' => 'add-item btn btn-primary']); ?>
                         </th>
                         <th></th>
@@ -126,11 +138,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="d-flex justify-content-between">
                <?= Html::a(' Tutup', ['index'], ['class' => 'btn btn-secondary']) ?>
-               <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
+               <?= Html::submitButton(' Simpan Data', ['class' => 'btn btn-success']) ?>
             </div>
 
            <?php ActiveForm::end() ?>
         </div>
     </div>
-
 </div>

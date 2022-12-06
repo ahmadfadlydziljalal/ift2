@@ -10,7 +10,11 @@ return [
       'class' => SerialColumn::class
    ],
    'partNumber',
-   'kodeBarang',
+   [
+      'class' => DataColumn::class,
+      'attribute' => 'kodeBarang',
+      'header' => 'Kode'
+   ],
    'namaBarang',
    'merk',
    [

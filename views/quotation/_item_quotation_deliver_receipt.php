@@ -14,7 +14,7 @@ use yii\web\View;
 
 ?>
 
-<div class="card border-1 rounded shadow">
+<div class="card bg-transparent">
     <div class="card-body border-bottom fw-bold">
         <div class="d-flex justify-content-between">
 

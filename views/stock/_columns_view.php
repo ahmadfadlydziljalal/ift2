@@ -80,7 +80,7 @@ return [
             if (!$key || is_null($model['historyLokasiBarangIn'])) {
                return '';
             }
-            return Html::a('<i class="bi bi-arrow-left-right"></i> Movement', ['stock/set-lokasi', 'id' => $key, 'type' => Stock::TIPE_PERGERAKAN_MOVEMENT], [
+            return Html::a('<i class="bi bi-arrow-left-right"></i> Movement', ['stock/set-movement-lokasi', 'id' => $key], [
                'class' => 'btn btn-sm btn-success'
             ]);
          }

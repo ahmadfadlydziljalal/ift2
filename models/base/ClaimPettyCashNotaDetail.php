@@ -20,6 +20,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property \app\models\Barang $barang
  * @property \app\models\ClaimPettyCashNota $claimPettyCashNota
+ * @property \app\models\HistoryLokasiBarang[] $historyLokasiBarangs
  * @property \app\models\Satuan $satuan
  * @property string $aliasModel
  */
@@ -82,6 +83,14 @@ abstract class ClaimPettyCashNotaDetail extends \yii\db\ActiveRecord
     public function getClaimPettyCashNota()
     {
         return $this->hasOne(\app\models\ClaimPettyCashNota::class, ['id' => 'claim_petty_cash_nota_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHistoryLokasiBarangs()
+    {
+        return $this->hasMany(\app\models\HistoryLokasiBarang::class, ['claim_petty_cash_nota_detail_id' => 'id']);
     }
 
     /**

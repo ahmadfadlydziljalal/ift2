@@ -105,7 +105,7 @@ class StockInPerBarang extends Model
             'IS NOT', 'hlb.id', NULL
          ])
          ->andWhere([
-            's.section' => 'set-lokasi-barang'
+            's.section' => 'set-stock-per-gudang'
          ])
          ->andWhere([
             's.key' => Stock::TIPE_PERGERAKAN_IN

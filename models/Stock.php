@@ -10,7 +10,8 @@ class Stock extends Model
 {
 
    const TIPE_PERGERAKAN_START_PERTAMA_KALI_PENERAPAN_SISTEM = 'start-pertama-kali-penerapan-sistem';
-   const TIPE_PERGERAKAN_MOVEMENT = 'movement';
+   const TIPE_PERGERAKAN_MOVEMENT_FROM = 'movement-from';
+   const TIPE_PERGERAKAN_MOVEMENT_TO = 'movement-to';
    const TIPE_PERGERAKAN_IN = 'in';
 
    public ?string $partNumber = null;

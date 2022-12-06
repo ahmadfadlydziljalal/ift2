@@ -17,278 +17,270 @@ use yii\web\View;
 
 ?>
 
-<div class="card rounded shadow border-0" id="barang">
-    <div class="card-header">Barang</div>
+<div class="card bg-transparent" id="barang">
     <div class="card-body">
-        <div class="d-flex flex-row gap-2">
+        <div class="d-flex flex-column gap-3">
+            <div class="d-flex flex-row gap-2">
+               <?php if (!$model->quotationBarangs) : ?>
 
-            <?php if (!$model->quotationBarangs) : ?>
+                  <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-barang-quotation', 'id' => $model->id], [
+                     'class' => 'btn btn-success'
+                  ]) ?>
 
-                <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-barang-quotation', 'id' => $model->id], [
-                    'class' => 'btn btn-success'
-                ]) ?>
+               <?php else : ?>
 
-            <?php else : ?>
+                  <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-barang-quotation', 'id' => $model->id], [
+                     'class' => 'btn btn-primary'
+                  ]) ?>
 
-                <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-barang-quotation', 'id' => $model->id], [
-                    'class' => 'btn btn-primary'
-                ]) ?>
+                  <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-barang-quotation', 'id' => $model->id], [
+                     'class' => 'btn btn-danger',
+                     'data-method' => 'post',
+                     'data-confirm' => 'Apakah Anda akan menghapus detail quotation barang ini ?'
+                  ]) ?>
 
-                <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-barang-quotation', 'id' => $model->id], [
-                    'class' => 'btn btn-danger',
-                    'data-method' => 'post',
-                    'data-confirm' => 'Apakah Anda akan menghapus detail quotation barang ini ?'
-                ]) ?>
+               <?php endif; ?>
+            </div>
 
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <div class="card-body">
-        <div class="table-responsive">
-            <?php try {
-                echo GridView::widget(config: [
-                    'dataProvider' => new ActiveDataProvider([
+            <div class="table-responsive">
+               <?php try {
+                  echo GridView::widget(config: [
+                     'dataProvider' => new ActiveDataProvider([
                         'query' => $model->getQuotationBarangs(),
                         'pagination' => false,
                         'sort' => false
-                    ]),
-                    'showPageSummary' => false,
-                    'headerRowOptions' => [
+                     ]),
+                     'showPageSummary' => false,
+                     'headerRowOptions' => [
                         'class' => 'text-wrap text-center align-middle'
-                    ],
-                    'layout' => '{items}',
-                    'columns' => [
+                     ],
+                     'layout' => '{items}',
+                     'columns' => [
                         [
-                            'class' => SerialColumn::class,
-                            'footer' => '',
-                            'footerOptions' => [
-                                'colspan' => 8
-                            ]
+                           'class' => SerialColumn::class,
+                           'footer' => '',
+                           'footerOptions' => [
+                              'colspan' => 8
+                           ]
                         ],
                         [
-                            'class' => DataColumn::class,
-                            'attribute' => 'barang_id',
-                            'value' => 'barang.nama',
-                            'footerOptions' => [
-                                'hidden' => true
-                            ]
+                           'class' => DataColumn::class,
+                           'attribute' => 'barang_id',
+                           'value' => 'barang.nama',
+                           'footerOptions' => [
+                              'hidden' => true
+                           ]
                         ],
                         [
-                            'class' => DataColumn::class,
-                            'attribute' => 'satuan_id',
-                            'value' => 'satuan.nama',
-                            'footerOptions' => [
-                                'hidden' => true
-                            ]
+                           'class' => DataColumn::class,
+                           'attribute' => 'satuan_id',
+                           'value' => 'satuan.nama',
+                           'footerOptions' => [
+                              'hidden' => true
+                           ]
                         ],
                         [
-                            'class' => DataColumn::class,
-                            'attribute' => 'stock',
-                            'contentOptions' => [
-                                'class' => 'text-end'
-                            ],
-                            'footerOptions' => [
-                                'hidden' => true
-                            ]
+                           'class' => DataColumn::class,
+                           'attribute' => 'stock',
+                           'contentOptions' => [
+                              'class' => 'text-end'
+                           ],
+                           'footerOptions' => [
+                              'hidden' => true
+                           ]
                         ],
                         [
-                            'class' => DataColumn::class,
-                            'attribute' => 'quantity',
-                            'contentOptions' => [
-                                'class' => 'text-end'
-                            ],
-                            'footerOptions' => [
-                                'hidden' => true
-                            ]
+                           'class' => DataColumn::class,
+                           'attribute' => 'quantity',
+                           'contentOptions' => [
+                              'class' => 'text-end'
+                           ],
+                           'footerOptions' => [
+                              'hidden' => true
+                           ]
                         ],
                         [
-                            'class' => DataColumn::class,
-                            'header' => '',
-                            'contentOptions' => [
-                                'class' => 'text-end'
-                            ],
-                            'value' => 'quotation.mataUang.singkatan',
-                            'footerOptions' => [
-                                'hidden' => true
-                            ]
+                           'class' => DataColumn::class,
+                           'header' => '',
+                           'contentOptions' => [
+                              'class' => 'text-end'
+                           ],
+                           'value' => 'quotation.mataUang.singkatan',
+                           'footerOptions' => [
+                              'hidden' => true
+                           ]
                         ],
                         [
-                            'class' => DataColumn::class,
-                            'attribute' => 'unit_price',
-                            'format' => ['decimal', 2],
-                            'contentOptions' => [
-                                'class' => 'text-end'
-                            ],
-                            'footerOptions' => [
-                                'hidden' => true
-                            ]
+                           'class' => DataColumn::class,
+                           'attribute' => 'unit_price',
+                           'format' => ['decimal', 2],
+                           'contentOptions' => [
+                              'class' => 'text-end'
+                           ],
+                           'footerOptions' => [
+                              'hidden' => true
+                           ]
                         ],
                         [
-                            'class' => DataColumn::class,
-                            'attribute' => 'discount',
-                            'contentOptions' => [
-                                'class' => 'text-end'
-                            ],
-                            'footerOptions' => [
-                                'hidden' => true
-                            ]
+                           'class' => DataColumn::class,
+                           'attribute' => 'discount',
+                           'contentOptions' => [
+                              'class' => 'text-end'
+                           ],
+                           'footerOptions' => [
+                              'hidden' => true
+                           ]
                         ],
                         [
-                            'class' => DataColumn::class,
-                            'attribute' => 'discount_nominal',
-                            'contentOptions' => [
-                                'class' => 'text-end'
-                            ],
-                            'value' => function ($model) {
-                                /** @var QuotationBarang $model */
-                                /** @see QuotationBarang::getNominalDiscount() */
-                                return $model->nominalDiscount;
-                            },
-                            'format' => ['decimal', 2],
-                            'footer' => 'Total',
-                            'footerOptions' => [
-                                'colspan' => 2
-                            ]
+                           'class' => DataColumn::class,
+                           'attribute' => 'discount_nominal',
+                           'contentOptions' => [
+                              'class' => 'text-end'
+                           ],
+                           'value' => function ($model) {
+                              /** @var QuotationBarang $model */
+                              /** @see QuotationBarang::getNominalDiscount() */
+                              return $model->nominalDiscount;
+                           },
+                           'format' => ['decimal', 2],
+                           'footer' => 'Total',
+                           'footerOptions' => [
+                              'colspan' => 2
+                           ]
                         ],
                         [
-                            'class' => DataColumn::class,
-                            'attribute' => 'unit_price_after_discount',
-                            'contentOptions' => [
-                                'class' => 'text-end'
-                            ],
-                            'value' => function ($model) {
-                                /** @var QuotationBarang $model */
-                                /** @see QuotationBarang::getUnitPriceAfterDiscount() */
-                                return $model->unitPriceAfterDiscount;
-                            },
-                            'format' => ['decimal', 2],
-                            'footerOptions' => [
-                                'hidden' => true
-                            ]
+                           'class' => DataColumn::class,
+                           'attribute' => 'unit_price_after_discount',
+                           'contentOptions' => [
+                              'class' => 'text-end'
+                           ],
+                           'value' => function ($model) {
+                              /** @var QuotationBarang $model */
+                              /** @see QuotationBarang::getUnitPriceAfterDiscount() */
+                              return $model->unitPriceAfterDiscount;
+                           },
+                           'format' => ['decimal', 2],
+                           'footerOptions' => [
+                              'hidden' => true
+                           ]
                         ],
                         [
-                            'class' => DataColumn::class,
-                            'attribute' => 'amount',
-                            'contentOptions' => [
-                                'class' => 'text-end'
-                            ],
-                            'value' => function ($model) {
-                                /** @var QuotationBarang $model */
-                                /** @see QuotationBarang::getAmount() $model */
-                                return $model->amount;
-                            },
-                            'format' => ['decimal', 2],
-                            'footer' => Yii::$app->formatter->asDecimal($model->quotationBarangsTotal, 2), /* @see \app\models\Quotation::getQuotationBarangsTotal() */
-                            'footerOptions' => [
-                                'class' => 'text-end'
-                            ]
+                           'class' => DataColumn::class,
+                           'attribute' => 'amount',
+                           'contentOptions' => [
+                              'class' => 'text-end'
+                           ],
+                           'value' => function ($model) {
+                              /** @var QuotationBarang $model */
+                              /** @see QuotationBarang::getAmount() $model */
+                              return $model->amount;
+                           },
+                           'format' => ['decimal', 2],
+                           'footer' => Yii::$app->formatter->asDecimal($model->quotationBarangsTotal, 2), /* @see \app\models\Quotation::getQuotationBarangsTotal() */
+                           'footerOptions' => [
+                              'class' => 'text-end'
+                           ]
                         ],
-                    ],
-                    'showFooter' => true,
-                    'beforeFooter' => [
+                     ],
+                     'showFooter' => true,
+                     'beforeFooter' => [
                         [
-                            'columns' => [
-                                [
-                                    'content' =>
+                           'columns' => [
+                              [
+                                 'content' =>
                                     Html::tag('p', "Note:", ['class' => 'fw-bold']) .
-                                        Html::tag(
-                                            'p',
-                                            !empty($model->catatan_quotation_barang)
-                                                ? nl2br($model->catatan_quotation_barang)
-                                                : '',
-                                            ['class' => 'fw-normal']
-                                        ),
-                                    'options' => [
-                                        'colspan' => 8,
-                                        'rowspan' => 4,
-                                        'style' => [
-                                            'vertical-align' => 'top'
-                                        ]
+                                    Html::tag(
+                                       'p',
+                                       !empty($model->catatan_quotation_barang)
+                                          ? nl2br($model->catatan_quotation_barang)
+                                          : '',
+                                       ['class' => 'fw-normal']
+                                    ),
+                                 'options' => [
+                                    'colspan' => 8,
+                                    'rowspan' => 4,
+                                    'style' => [
+                                       'vertical-align' => 'top'
                                     ]
-                                ],
-                                [
-                                    'content' => 'Subtotal',
-                                    'options' => [
-                                        'colspan' => 2
-                                    ]
-                                ],
-                                [
-                                    'content' => Yii::$app->formatter->asDecimal($model->getQuotationBarangsSubtotal(), 2),
-                                    'options' => [
-                                        'class' => 'text-end',
-                                    ]
-                                ],
-                            ],
-                            'options' => [
-                                'class' => 'table-warning'
-                            ]
+                                 ]
+                              ],
+                              [
+                                 'content' => 'Subtotal',
+                                 'options' => [
+                                    'colspan' => 2
+                                 ]
+                              ],
+                              [
+                                 'content' => Yii::$app->formatter->asDecimal($model->getQuotationBarangsSubtotal(), 2),
+                                 'options' => [
+                                    'class' => 'text-end',
+                                 ]
+                              ],
+                           ],
                         ],
                         [
-                            'columns' => [
-                                [
-                                    'content' => 'Delivery Fee',
-                                    'options' => [
-                                        'colspan' => 2
-                                    ]
-                                ],
-                                [
-                                    'content' => Yii::$app->formatter->asDecimal($model->delivery_fee, 2),
-                                    'options' => [
-                                        'class' => 'text-end'
-                                    ]
-                                ],
-                            ],
-                            'options' => [
-                                'class' => 'table-warning'
-                            ]
+                           'columns' => [
+                              [
+                                 'content' => 'Delivery Fee',
+                                 'options' => [
+                                    'colspan' => 2
+                                 ]
+                              ],
+                              [
+                                 'content' => Yii::$app->formatter->asDecimal($model->delivery_fee, 2),
+                                 'options' => [
+                                    'class' => 'text-end'
+                                 ]
+                              ],
+                           ],
+
                         ],
                         [
-                            'columns' => [
-                                [
-                                    'content' => 'DPP',
-                                    'options' => [
-                                        'colspan' => 2
-                                    ]
-                                ],
-                                [
-                                    /* @see \app\models\Quotation::getQuotationBarangsDasarPengenaanPajak() */
-                                    'content' => Yii::$app->formatter->asDecimal($model->quotationBarangsDasarPengenaanPajak, 2),
-                                    'options' => [
-                                        'class' => 'text-end'
-                                    ]
-                                ],
-                            ],
-                            'options' => [
-                                'class' => 'table-warning'
-                            ]
+                           'columns' => [
+                              [
+                                 'content' => 'DPP',
+                                 'options' => [
+                                    'colspan' => 2
+                                 ]
+                              ],
+                              [
+                                 /* @see \app\models\Quotation::getQuotationBarangsDasarPengenaanPajak() */
+                                 'content' => Yii::$app->formatter->asDecimal($model->quotationBarangsDasarPengenaanPajak, 2),
+                                 'options' => [
+                                    'class' => 'text-end'
+                                 ]
+                              ],
+                           ],
+
                         ],
                         [
-                            'columns' => [
-                                [
-                                    'content' => 'PPN',
-                                    'options' => [
-                                        'colspan' => 2
-                                    ]
-                                ],
-                                [
-                                    /* @see \app\models\Quotation::getQuotationBarangsTotalVatNominal() */
-                                    'content' => Yii::$app->formatter->asDecimal($model->quotationBarangsTotalVatNominal, 2),
-                                    'options' => [
-                                        'class' => 'text-end'
-                                    ]
-                                ],
-                            ],
-                            'options' => [
-                                'class' => 'table-warning'
-                            ]
+                           'columns' => [
+                              [
+                                 'content' => 'PPN',
+                                 'options' => [
+                                    'colspan' => 2
+                                 ]
+                              ],
+                              [
+                                 /* @see \app\models\Quotation::getQuotationBarangsTotalVatNominal() */
+                                 'content' => Yii::$app->formatter->asDecimal($model->quotationBarangsTotalVatNominal, 2),
+                                 'options' => [
+                                    'class' => 'text-end'
+                                 ]
+                              ],
+                           ],
+                           
                         ],
 
-                    ],
-                ]);
-            } catch (Throwable $e) {
-                echo $e->getMessage();
-            } ?>
+                     ],
+                  ]);
+               } catch (Throwable $e) {
+                  echo $e->getMessage();
+               } ?>
+            </div>
         </div>
+
     </div>
+
+
 </div>

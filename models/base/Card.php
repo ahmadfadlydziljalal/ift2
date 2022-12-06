@@ -34,6 +34,7 @@ use yii\behaviors\TimestampBehavior;
  * @property \app\models\FakturDetail[] $fakturDetails
  * @property \app\models\Faktur[] $fakturs
  * @property \app\models\Faktur[] $fakturs0
+ * @property \app\models\HistoryLokasiBarang[] $historyLokasiBarangs
  * @property \app\models\MataUang $mataUang
  * @property \app\models\MaterialRequisitionDetailPenawaran[] $materialRequisitionDetailPenawarans
  * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
@@ -42,6 +43,10 @@ use yii\behaviors\TimestampBehavior;
  * @property \app\models\MaterialRequisition[] $materialRequisitions1
  * @property \app\models\PurchaseOrder[] $purchaseOrders
  * @property \app\models\PurchaseOrder[] $purchaseOrders0
+ * @property \app\models\QuotationFormJob[] $quotationFormJobs
+ * @property \app\models\Quotation[] $quotations
+ * @property \app\models\Quotation[] $quotations0
+ * @property \app\models\Rekening[] $rekenings
  * @property \app\models\TandaTerimaBarang[] $tandaTerimaBarangs
  * @property string $aliasModel
  */
@@ -198,6 +203,14 @@ abstract class Card extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getHistoryLokasiBarangs()
+    {
+        return $this->hasMany(\app\models\HistoryLokasiBarang::class, ['card_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getMataUang()
     {
         return $this->hasOne(\app\models\MataUang::class, ['id' => 'mata_uang_id']);
@@ -257,6 +270,38 @@ abstract class Card extends \yii\db\ActiveRecord
     public function getPurchaseOrders0()
     {
         return $this->hasMany(\app\models\PurchaseOrder::class, ['approved_by_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotationFormJobs()
+    {
+        return $this->hasMany(\app\models\QuotationFormJob::class, ['mekanik_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotations()
+    {
+        return $this->hasMany(\app\models\Quotation::class, ['signature_orang_kantor_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotations0()
+    {
+        return $this->hasMany(\app\models\Quotation::class, ['customer_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRekenings()
+    {
+        return $this->hasMany(\app\models\Rekening::class, ['card_id' => 'id']);
     }
 
     /**

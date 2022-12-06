@@ -18,195 +18,187 @@ use yii\web\View;
 ?>
 
 
-<div class="card rounded shadow border-0" id="service">
-    <div class="card-header">Service</div>
-
+<div class="card bg-transparent" id="service">
     <div class="card-body">
-        <div class="d-flex flex-row gap-2">
-            <?php if (!$model->quotationServices) : ?>
-                <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-service-quotation', 'id' => $model->id], [
-                    'class' => 'btn btn-success'
-                ]) ?>
+        <div class="d-flex flex-column gap-3">
+            <div class="d-flex flex-row gap-2">
+               <?php if (!$model->quotationServices) : ?>
+                  <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-service-quotation', 'id' => $model->id], [
+                     'class' => 'btn btn-success'
+                  ]) ?>
 
-            <?php else : ?>
-                <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-service-quotation', 'id' => $model->id], [
-                    'class' => 'btn btn-primary'
-                ]) ?>
+               <?php else : ?>
+                  <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-service-quotation', 'id' => $model->id], [
+                     'class' => 'btn btn-primary'
+                  ]) ?>
 
-                <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-service-quotation', 'id' => $model->id], [
-                    'class' => 'btn btn-danger',
-                    'data-method' => 'post',
-                    'data-confirm' => 'Apakah Anda akan menghapus detail quotation service ini ?'
-                ]) ?>
+                  <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-service-quotation', 'id' => $model->id], [
+                     'class' => 'btn btn-danger',
+                     'data-method' => 'post',
+                     'data-confirm' => 'Apakah Anda akan menghapus detail quotation service ini ?'
+                  ]) ?>
 
-            <?php endif; ?>
-        </div>
-    </div>
+               <?php endif; ?>
+            </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <?= GridView::widget([
-                'dataProvider' => new ActiveDataProvider([
-                    'query' => $model->getQuotationServices(),
-                    'pagination' => false,
-                    'sort' => false
-                ]),
-                'layout' => '{items}',
-                'headerRowOptions' => [
-                    'class' => 'text-wrap text-center align-middle'
-                ],
-                'columns' => [
-                    [
+            <div class="table-responsive">
+               <?= GridView::widget([
+                  'dataProvider' => new ActiveDataProvider([
+                     'query' => $model->getQuotationServices(),
+                     'pagination' => false,
+                     'sort' => false
+                  ]),
+                  'layout' => '{items}',
+                  'headerRowOptions' => [
+                     'class' => 'text-wrap text-center align-middle'
+                  ],
+                  'columns' => [
+                     [
                         'class' => SerialColumn::class,
                         'footer' => '',
                         'footerOptions' => [
-                            'colspan' => 7
+                           'colspan' => 7
                         ]
-                    ],
-                    [
+                     ],
+                     [
                         'attribute' => 'job_description',
                         'footerOptions' => [
-                            'hidden' => true
+                           'hidden' => true
                         ]
-                    ],
-                    [
+                     ],
+                     [
                         'attribute' => 'hours',
                         'contentOptions' => [
-                            'class' => 'text-end'
+                           'class' => 'text-end'
                         ],
                         'footerOptions' => [
-                            'hidden' => true
+                           'hidden' => true
                         ]
-                    ],
-                    [
+                     ],
+                     [
                         'header' => '',
                         'value' => function ($model) {
-                            /** @var QuotationService $model */
-                            return $model->quotation->mataUang->singkatan;
+                           /** @var QuotationService $model */
+                           return $model->quotation->mataUang->singkatan;
                         },
                         'footerOptions' => [
-                            'hidden' => true
+                           'hidden' => true
                         ]
-                    ],
-                    [
+                     ],
+                     [
                         'attribute' => 'rate_per_hour',
                         'format' => ['decimal', 2],
                         'contentOptions' => [
-                            'class' => 'text-end'
+                           'class' => 'text-end'
                         ],
                         'footerOptions' => [
-                            'hidden' => true
+                           'hidden' => true
                         ]
-                    ],
-                    [
+                     ],
+                     [
                         'attribute' => 'discount',
                         'footerOptions' => [
-                            'hidden' => true
+                           'hidden' => true
                         ]
-                    ],
-                    [
+                     ],
+                     [
                         'attribute' => 'discount_nominal',
                         'format' => ['decimal', 2],
                         'contentOptions' => [
-                            'class' => 'text-end'
+                           'class' => 'text-end'
                         ],
                         'value' => function ($model) {
-                            /** @var QuotationService $model */
-                            /** @see QuotationService::getNominalDiscount() */
-                            return $model->nominalDiscount;
+                           /** @var QuotationService $model */
+                           /** @see QuotationService::getNominalDiscount() */
+                           return $model->nominalDiscount;
                         },
                         'footerOptions' => [
-                            'hidden' => true
+                           'hidden' => true
                         ]
-                    ],
-                    [
+                     ],
+                     [
                         'class' => DataColumn::class,
                         'attribute' => 'rate_per_hour_after_discount',
                         'contentOptions' => [
-                            'class' => 'text-end'
+                           'class' => 'text-end'
                         ],
                         'value' => function ($model) {
-                            /** @var QuotationService $model */
-                            /** @see QuotationService::getRatePerHourAfterDiscount() */
-                            return $model->ratePerHourAfterDiscount;
+                           /** @var QuotationService $model */
+                           /** @see QuotationService::getRatePerHourAfterDiscount() */
+                           return $model->ratePerHourAfterDiscount;
                         },
                         'format' => ['decimal', 2],
                         'footer' => 'Total'
-                    ],
-                    [
+                     ],
+                     [
                         'class' => DataColumn::class,
                         'attribute' => 'amount',
                         'contentOptions' => [
-                            'class' => 'text-end'
+                           'class' => 'text-end'
                         ],
                         'value' => function ($model) {
-                            /** @var QuotationService $model */
-                            /** @see QuotationService::getAmount() $model */
-                            return $model->amount;
+                           /** @var QuotationService $model */
+                           /** @see QuotationService::getAmount() $model */
+                           return $model->amount;
                         },
                         'format' => ['decimal', 2],
                         'footer' => Yii::$app->formatter->asDecimal($model->quotationServicesTotal, 2),
                         'footerOptions' => [
-                            'class' => 'text-end'
+                           'class' => 'text-end'
                         ]
-                    ],
-                ],
-                'showFooter' => true,
-                'beforeFooter' => [
-                    [
+                     ],
+                  ],
+                  'showFooter' => true,
+                  'beforeFooter' => [
+                     [
                         'columns' => [
-                            [
-                                'content' =>
-                                    Html::tag('p', "Note:", ['class' => 'fw-bold']) .
-                                    Html::tag('p',
-                                        isset($model->catatan_quotation_service) ?
-                                            nl2br($model->catatan_quotation_service) : '',
-                                        ['class' => 'fw-normal']
-                                    )
-                                ,
-                                'options' => [
-                                    'colspan' => 7,
-                                    'rowspan' => 2,
-                                    'style' => [
-                                        'vertical-align' => 'top'
-                                    ]
-                                ]
-                            ],
-                            [
-                                'content' => 'DPP',
-                            ],
-                            [
-                                /* @var Quotation::getQuotationServicesDasarPengenaanPajak() */
-                                'content' => Yii::$app->formatter->asDecimal($model->quotationServicesDasarPengenaanPajak, 2),
-                                'options' => [
-                                    'class' => 'text-end',
-                                ]
-                            ],
+                           [
+                              'content' =>
+                                 Html::tag('p', "Note:", ['class' => 'fw-bold']) .
+                                 Html::tag('p',
+                                    isset($model->catatan_quotation_service) ?
+                                       nl2br($model->catatan_quotation_service) : '',
+                                    ['class' => 'fw-normal']
+                                 )
+                              ,
+                              'options' => [
+                                 'colspan' => 7,
+                                 'rowspan' => 2,
+                                 'style' => [
+                                    'vertical-align' => 'top'
+                                 ]
+                              ]
+                           ],
+                           [
+                              'content' => 'DPP',
+                           ],
+                           [
+                              /* @var Quotation::getQuotationServicesDasarPengenaanPajak() */
+                              'content' => Yii::$app->formatter->asDecimal($model->quotationServicesDasarPengenaanPajak, 2),
+                              'options' => [
+                                 'class' => 'text-end',
+                              ]
+                           ],
                         ],
-                        'options' => [
-                            'class' => 'table-warning'
-                        ]
-                    ],
-                    [
+                     ],
+                     [
                         'columns' => [
-                            [
-                                'content' => 'PPN',
-                            ],
-                            [
-                                /* @var Quotation::getQuotationServicesTotalVatNominal() */
-                                'content' => Yii::$app->formatter->asDecimal($model->quotationServicesTotalVatNominal, 2),
-                                'options' => [
-                                    'class' => 'text-end',
-                                ]
-                            ],
+                           [
+                              'content' => 'PPN',
+                           ],
+                           [
+                              /* @var Quotation::getQuotationServicesTotalVatNominal() */
+                              'content' => Yii::$app->formatter->asDecimal($model->quotationServicesTotalVatNominal, 2),
+                              'options' => [
+                                 'class' => 'text-end',
+                              ]
+                           ],
                         ],
-                        'options' => [
-                            'class' => 'table-warning'
-                        ]
-                    ],
-                ]
-            ]) ?>
+                      
+                     ],
+                  ]
+               ]) ?>
+            </div>
         </div>
     </div>
-
 </div>

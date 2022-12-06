@@ -14,10 +14,7 @@ use yii\widgets\DetailView;
 
 ?>
 
-<div class="card rounded shadow border-0" id="master">
-    <div class="card-header fw-bold">
-        <i class="bi bi-eye-fill"></i> Master Data
-    </div>
+<div class="card bg-transparent " id="master">
     <div class="card-body">
 
 

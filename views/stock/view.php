@@ -10,14 +10,14 @@ use yii\web\View;
 /* @var $searchModel StockInPerBarangSearch */
 /* @var $dataProvider */
 
-$this->title = 'View';
+$this->title = $searchModel->barang->nama;
 $this->params['breadcrumbs'][] = ['label' => 'Stock', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 
 <div class="stock-per-barang">
-    <h1>In Stock <?= Html::encode($searchModel->barang->nama) ?></h1>
+    <h1>Stock: <?= Html::encode($searchModel->barang->nama) ?></h1>
 
    <?= GridView::widget([
       'tableOptions' => [

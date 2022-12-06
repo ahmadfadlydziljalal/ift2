@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\ContactForm;
 use app\models\form\ChangePassword;
 use app\models\LoginForm;
+use JetBrains\PhpStorm\ArrayShape;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -16,7 +17,8 @@ class SiteController extends Controller
    /**
     * {@inheritdoc}
     */
-   public function behaviors()
+   #[ArrayShape(['access' => "array", 'verbs' => "array"])]
+   public function behaviors(): array
    {
       return [
          'access' => [
@@ -44,6 +46,7 @@ class SiteController extends Controller
    /**
     * {@inheritdoc}
     */
+   #[ArrayShape(['error' => "string[]", 'captcha' => "array"])]
    public function actions(): array
    {
       return [
