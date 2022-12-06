@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   'dropdown' => [
                      'items' => [
                         [
-                           'label' => 'Tanda Terima | Purchase Order',
+                           'label' => 'Tanda Terima',
                            'url' => ['barang-masuk-tanda-terima-po-step1']
                         ],
                         [
@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   'dropdown' => [
                      'items' => [
                         [
-                           'label' => 'Tanda Terima | Purchase Order',
+                           'label' => 'Tanda Terima',
                            'url' => ['create-report-barang-masuk', 'modelName' => StringHelper::basename(TandaTerimaBarang::class)]
                         ],
                         [
