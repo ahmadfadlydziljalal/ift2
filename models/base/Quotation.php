@@ -32,6 +32,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property \app\models\Card $customer
  * @property \app\models\MataUang $mataUang
+ * @property \app\models\ProformaDebitNote $proformaDebitNote
  * @property \app\models\ProformaInvoice $proformaInvoice
  * @property \app\models\QuotationAnotherFee[] $quotationAnotherFees
  * @property \app\models\QuotationBarang[] $quotationBarangs
@@ -133,6 +134,14 @@ abstract class Quotation extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getProformaDebitNote()
+    {
+        return $this->hasOne(\app\models\ProformaDebitNote::class, ['quotation_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getProformaInvoice()
     {
         return $this->hasOne(\app\models\ProformaInvoice::class, ['quotation_id' => 'id']);
@@ -203,15 +212,6 @@ abstract class Quotation extends \yii\db\ActiveRecord
     }
 
 
-    
-    /**
-     * @inheritdoc
-     * @return \app\models\active_queries\QuotationQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new \app\models\active_queries\QuotationQuery(get_called_class());
-    }
 
 
 }

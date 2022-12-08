@@ -1,6 +1,6 @@
 {
     "tablename": {
-        "value": "quotation",
+        "value": "proforma_debit_note",
         "name": "tableName"
     },
     "tableprefix": {
@@ -8,7 +8,7 @@
         "name": "tablePrefix"
     },
     "modelclass": {
-        "value": "Quotation",
+        "value": "ProformaDebitNote",
         "name": "modelClass"
     },
     "ns": {

@@ -247,6 +247,123 @@ use yii\web\View;
                 </tr>
                 </tbody>
             </table>
+
+            <hr/>
+            <h2>Proforma Debit Note (Sebelum Pph <?= $model->proformaDebitNote->getPph23Label() ?>)</h2>
+            <table class="table table-bordered">
+
+                <tbody>
+                <tr class="table-success">
+                    <th>No</th>
+                    <th>Fee (Sebelum Discount)</th>
+                    <th></th>
+                    <th class="text-end">Nominal</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Material (Barang) Fee</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($model->proformaDebitNote->proformaDebitNoteDetailBarangsBeforeDiscountSubtotal, 2) ?></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Delivery Fee</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($model->delivery_fee, 2) ?></td>
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td>Service Fee</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($model->proformaDebitNote->proformaDebitNoteDetailServicesBeforeDiscountDasarPengenaanPajak, 2) ?></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Materai Fee</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($model->materai_fee, 2) ?></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="text-end fw-bold">Total</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end fw-bold"><?= Yii::$app->formatter->asDecimal($model->proformaDebitNote->getproformaDebitNoteFeeTotal(), 2) ?></td>
+                </tr>
+                </tbody>
+
+                <!-- Tax -->
+                <tbody>
+                <tr class="table-warning">
+                    <th>No</th>
+                    <th>Tax</th>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <th class="text-end">Nominal</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Barang</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($model->proformaDebitNote->proformaDebitNoteDetailBarangsTotalVatNominal, 2) ?></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Service</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($model->proformaDebitNote->proformaDebitNoteDetailServicesTotalVatNominal, 2) ?></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="text-end fw-bold">Total</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end fw-bold"><?= Yii::$app->formatter->asDecimal($model->proformaDebitNote->proformaDebitNoteVatTotal, 2) ?></td>
+                </tr>
+
+
+                </tbody>
+
+                <!-- Discount -->
+                <tbody>
+                <tr class="table-info">
+                    <th>No</th>
+                    <th>Discount</th>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <th class="text-end">Nominal</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Barang</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end">
+                       <?= Yii::$app->formatter->asDecimal($model->proformaDebitNote->proformaDebitNoteDetailBarangsDiscount, 2) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Service</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end">
+                       <?= Yii::$app->formatter->asDecimal($model->proformaDebitNote->proformaDebitNoteDetailServicesDiscount, 2) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="text-end fw-bold">Total</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end fw-bold">
+                       <?= Yii::$app->formatter->asDecimal($model->proformaDebitNote->proformaDebitNoteDiscountTotal, 2) ?>
+                    </td>
+                </tr>
+                </tbody>
+                <tbody>
+                <tr class="table-primary">
+                    <td></td>
+                    <td class="text-end fw-bold">Grand Total</td>
+                    <td><?= $model->mataUang->singkatan ?></td>
+                    <td class="text-end fw-bold"><?= Yii::$app->formatter->asDecimal($model->proformaDebitNote->proformaDebitNoteGrandTotal, 2) ?></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 

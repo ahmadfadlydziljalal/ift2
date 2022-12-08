@@ -4,11 +4,14 @@ namespace app\controllers;
 
 use app\components\BarangQuotation;
 use app\components\DeliveryReceiptQuotation;
+use app\components\ProformaDebitNoteDetailBarangComponent;
+use app\components\ProformaDebitNoteDetailServiceComponent;
 use app\components\ProformaInvoiceDetailBarangComponent;
 use app\components\ProformaInvoiceDetailServiceComponent;
 use app\components\ServiceQuotation;
 use app\components\TermConditionQuotation;
 use app\models\form\LaporanOutgoingQuotation;
+use app\models\ProformaDebitNote;
 use app\models\ProformaInvoice;
 use app\models\Quotation;
 use app\models\QuotationBarang;
@@ -986,6 +989,7 @@ class QuotationController extends Controller
    }
 
    /**
+    * Print proforma invoice dari HTMl ke built in browser
     * @param $id
     * @return string
     * @throws NotFoundHttpException
@@ -1001,5 +1005,295 @@ class QuotationController extends Controller
          'model' => $model
       ]);
    }
+
+   /**
+    * Create master proforma debit note
+    * @param $id
+    * @return Response|string
+    * @throws NotFoundHttpException
+    */
+   public function actionCreateProformaDebitNote($id): Response|string
+   {
+      $quotation = $this->findModel($id);
+      $model = new ProformaDebitNote();
+      $model->quotation_id = $id;
+
+      if ($this->request->isPost) {
+         if ($model->load($this->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', [[
+               'title' => 'Pesan Sukses',
+               'message' => 'Proforma Debit Note berhasil dibuat dengan nomor ' . $model->nomor . '.'
+            ]]);
+            return $this->redirect([
+               'quotation/view',
+               'id' => $id,
+               '#' => 'quotation-tab-tab8'
+            ]);
+         } else {
+            $model->loadDefaultValues();
+         }
+      }
+
+      return $this->render('create_proforma_debit_note', [
+         'model' => $model,
+         'quotation' => $quotation,
+      ]);
+   }
+
+   /**
+    * Update master proforma debit note
+    * @param $id
+    * @return Response|string
+    * @throws NotFoundHttpException
+    */
+   public function actionUpdateProformaDebitNote($id): Response|string
+   {
+      $quotation = $this->findModel($id);
+      $model = $quotation->proformaDebitNote;
+
+      if ($this->request->isPost) {
+         if ($model->load($this->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', [[
+               'title' => 'Pesan Sukses',
+               'message' => 'Proforma Debit Note dengan nomor ' . $model->nomor . ' berhasil di update.'
+            ]]);
+            return $this->redirect([
+               'quotation/view',
+               'id' => $id,
+               '#' => 'quotation-tab-tab8'
+            ]);
+         } else {
+            $model->loadDefaultValues();
+         }
+      }
+
+      return $this->render('update_proforma_debit_note', [
+         'model' => $model,
+         'quotation' => $quotation,
+      ]);
+   }
+
+   /**
+    * Delete master proforma debit note
+    * @param $id
+    * @return Response
+    * @throws NotFoundHttpException
+    * @throws StaleObjectException
+    * @throws Throwable
+    */
+   public function actionDeleteProformaDebitNote($id): Response
+   {
+      $quotation = $this->findModel($id);
+      $quotation->proformaDebitNote->delete();
+      Yii::$app->session->setFlash('success', [[
+         'title' => 'Pesan Sukses',
+         'message' => 'Proforma Debit Note dengan nomor ' . $quotation->proformaDebitNote->nomor . ' berhasil di delete.'
+      ]]);
+      return $this->redirect([
+         'quotation/view',
+         'id' => $id,
+         '#' => 'quotation-tab-tab8'
+      ]);
+   }
+
+   /**
+    * Membuat proforma debit note dengan detail barang
+    * berdasarkan dari quotation dengan customer sebelumnya
+    * @param $id
+    * @return Response|string
+    * @throws InvalidConfigException
+    * @throws ServerErrorHttpException
+    */
+   public function actionCreateProformaDebitNoteDetailBarang($id): Response|string
+   {
+      $component = Yii::createObject([
+         'class' => ProformaDebitNoteDetailBarangComponent::class,
+         'proformaDebitNoteId' => $id,
+         'scenario' => ProformaDebitNote::SCENARIO_CREATE_PROFORMA_DEBIT_NOTE_DETAIL_BARANG
+      ]);
+
+      if ($component->checkThatProformaDebitNoteHasNotExist()) {
+         return $this->redirect([
+            'quotation/view',
+            'id' => $component->proformaDebitNote->quotation->id,
+            '#' => 'quotation-tab-tab8'
+         ]);
+      }
+
+      if ($this->request->isPost && $component->create()) return $this->redirect([
+         'quotation/view',
+         'id' => $component->proformaDebitNote->quotation->id,
+         '#' => 'quotation-tab-tab8'
+      ]);
+
+      return $this->render('create_proforma_debit_note_barang', [
+         'quotation' => $component->proformaDebitNote->quotation,
+         'model' => $component->proformaDebitNote,
+         'modelsDetail' => $component->proformaDebitNoteDetailBarangs
+      ]);
+
+   }
+
+   /**
+    * Update data proforma debit note detail barang.
+    * @param $id
+    * @return Response|string
+    * @throws InvalidConfigException
+    * @throws ServerErrorHttpException
+    */
+   public function actionUpdateProformaDebitNoteDetailBarang($id): Response|string
+   {
+      $component = Yii::createObject([
+         'class' => ProformaDebitNoteDetailBarangComponent::class,
+         'proformaDebitNoteId' => $id,
+         'scenario' => ProformaDebitNote::SCENARIO_UPDATE_PROFORMA_DEBIT_NOTE_DETAIL_BARANG
+      ]);
+
+      if ($this->request->isPost && $component->update())
+         return $this->redirect([
+            'quotation/view',
+            'id' => $component->proformaDebitNote->quotation->id,
+            '#' => 'quotation-tab-tab8'
+         ]);
+
+      return $this->render('update_proforma_debit_note_detail_barang', [
+         'quotation' => $component->proformaDebitNote->quotation,
+         'model' => $component->proformaDebitNote,
+         'modelsDetail' => $component->proformaDebitNoteDetailBarangs
+      ]);
+   }
+
+   /**
+    * Delete data proforma debit note detail barang
+    * @param $id
+    * @return Response
+    * @throws NotFoundHttpException
+    * @throws StaleObjectException
+    * @throws Throwable
+    */
+   public function actionDeleteProformaDebitNoteDetailBarang($id): Response
+   {
+      $component = Yii::createObject([
+         'class' => ProformaDebitNoteDetailBarangComponent::class,
+         'proformaDebitNoteId' => $id,
+      ]);
+
+      $component->delete();
+
+      return $this->redirect([
+         'quotation/view',
+         'id' => $component->proformaDebitNote->quotation->id,
+         '#' => 'quotation-tab-tab8'
+      ]);
+   }
+
+   /**
+    * Membuat proforma debit note dengan detail service
+    * berdasarkan dari quotation dengan customer sebelumnya
+    * @param $id
+    * @return Response|string
+    * @throws InvalidConfigException
+    * @throws ServerErrorHttpException
+    */
+   public function actionCreateProformaDebitNoteDetailService($id): Response|string
+   {
+      $component = Yii::createObject([
+         'class' => ProformaDebitNoteDetailServiceComponent::class,
+         'proformaDebitNoteId' => $id,
+         'scenario' => ProformaDebitNote::SCENARIO_CREATE_PROFORMA_DEBIT_NOTE_DETAIL_SERVICE
+      ]);
+
+      if ($component->checkThatProformaDebitNoteHasNotExist()) {
+         return $this->redirect([
+            'quotation/view',
+            'id' => $component->proformaDebitNote->quotation->id, '#' => 'quotation-tab-tab8'
+         ]);
+      }
+
+      if ($this->request->isPost && $component->create())
+         return $this->redirect([
+            'quotation/view',
+            'id' => $component->proformaDebitNote->quotation->id,
+            '#' => 'quotation-tab-tab8'
+         ]);
+
+      return $this->render('create_proforma_debit_note_service', [
+         'quotation' => $component->proformaDebitNote->quotation,
+         'model' => $component->proformaDebitNote,
+         'modelsDetail' => $component->proformaDebitNoteDetailServices
+      ]);
+   }
+
+   /**
+    * Update data proforma debit note detail service.
+    * @param $id
+    * @return Response|string
+    * @throws InvalidConfigException
+    * @throws ServerErrorHttpException
+    */
+   public function actionUpdateProformaDebitNoteDetailService($id): Response|string
+   {
+      $component = Yii::createObject([
+         'class' => ProformaDebitNoteDetailServiceComponent::class,
+         'proformaDebitNoteId' => $id,
+         'scenario' => ProformaDebitNote::SCENARIO_UPDATE_PROFORMA_DEBIT_NOTE_DETAIL_SERVICE
+      ]);
+
+      if ($this->request->isPost && $component->update())
+         return $this->redirect([
+            'quotation/view',
+            'id' => $component->proformaDebitNote->quotation->id,
+            '#' => 'quotation-tab-tab8'
+         ]);
+
+      return $this->render('update_proforma_debit_note_detail_service', [
+         'quotation' => $component->proformaDebitNote->quotation,
+         'model' => $component->proformaDebitNote,
+         'modelsDetail' => $component->proformaDebitNoteDetailServices
+      ]);
+   }
+
+   /**
+    * Delete data proforma invoice detail service
+    * @param $id
+    * @return Response
+    * @throws InvalidConfigException
+    * @throws StaleObjectException
+    */
+   public function actionDeleteProformaDebitNoteDetailService($id): Response
+   {
+      $component = Yii::createObject([
+         'class' => ProformaDebitNoteDetailServiceComponent::class,
+         'proformaDebitNoteId' => $id,
+      ]);
+
+      $component->delete();
+
+      return $this->redirect([
+         'quotation/view',
+         'id' => $component->proformaDebitNote->quotation->id,
+         '#' => 'quotation-tab-tab8'
+      ]);
+   }
+
+
+   /**
+    * Print proforma debit note dari HTMl ke built in browser
+    * @param $id
+    * @return string
+    * @throws NotFoundHttpException
+    */
+   public function actionPrintProformaDebitNote($id): string
+   {
+      $quotation = $this->findModel($id);
+      $model = $quotation->proformaDebitNote;
+
+      $this->layout = 'print';
+      return $this->render('preview_print_proforma_debit_note', [
+         'quotation' => $quotation,
+         'model' => $model
+      ]);
+   }
+
 
 }

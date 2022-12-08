@@ -149,7 +149,7 @@ $this->registerCssFile('https://cdn.jsdelivr.net/npm/bootstrap-5-vertical-tabs@2
                         ],
                         [
                            'label' => 'Proforma Debit Note',
-                           'content' => 'Fuck my life',
+                           'content' => $this->render('_view_proforma_debit_note', ['model' => $model]),
                         ],
                      ],
                   ]);

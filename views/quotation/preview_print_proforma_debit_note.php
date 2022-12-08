@@ -1,19 +1,19 @@
 <?php
 
-use app\models\ProformaInvoice;
+use app\models\ProformaDebitNote;
 use app\models\Quotation;
 use yii\web\View;
 
 
 /* @var $this View */
 /* @var $quotation Quotation */
-/* @var $model ProformaInvoice */
-/* @see \app\controllers\QuotationController::actionPrintProformaInvoice() */
+/* @var $model ProformaDebitNote */
+/* @see \app\controllers\QuotationController::actionPrintProformaDebitNote() */
 
 ?>
 
 <div class="content-section">
-    <h1 class="text-center">Proforma Invoice</h1>
+    <h1 class="text-center">Proforma Debit Note</h1>
 
     <div style="width: 100%; vertical-align: top">
 
@@ -27,7 +27,7 @@ use yii\web\View;
                     <td class="border-start-0"><?php echo $quotation->nomor ?></td>
                 </tr>
                 <tr>
-                    <td class="border-end-0">Invoice No</td>
+                    <td class="border-end-0">Debit Note`s No</td>
                     <td class="border-start-0 border-end-0">:</td>
                     <td class="border-start-0"><?php echo $model->nomor ?></td>
                 </tr>
@@ -46,7 +46,7 @@ use yii\web\View;
                 </tr>
 
                 <tr>
-                    <td class="border-end-0">Invoice`s Date</td>
+                    <td class="border-end-0">Debit Note`s Date</td>
                     <td class="border-start-0 border-end-0">:</td>
                     <td class="border-start-0"><?php echo Yii::$app->formatter->asDate($model->tanggal) ?></td>
                 </tr>
@@ -127,17 +127,17 @@ use yii\web\View;
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($model->proformaInvoiceDetailBarangs as $proformaInvoiceDetailBarang) : ?>
+        <?php foreach ($model->proformaDebitNoteDetailBarangs as $proformaDebitNoteDetailBarang) : ?>
             <tr>
-                <td><?php echo $proformaInvoiceDetailBarang->barang->part_number ?></td>
-                <td><?php echo $proformaInvoiceDetailBarang->barang->nama ?></td>
-                <td class="text-end"><?php echo $proformaInvoiceDetailBarang->stock ?></td>
-                <td class="text-end"><?php echo $proformaInvoiceDetailBarang->quantity ?></td>
-                <td><?php echo $proformaInvoiceDetailBarang->satuan->nama ?></td>
-                <td class="text-end"><?php echo Yii::$app->formatter->asDecimal($proformaInvoiceDetailBarang->unit_price) ?></td>
-                <td class="text-end"><?php echo $proformaInvoiceDetailBarang->discount ?> %</td>
-                <td class="text-end"><?php echo Yii::$app->formatter->asDecimal($proformaInvoiceDetailBarang->unitPriceAfterDiscount) ?></td>
-                <td class="text-end"><?php echo Yii::$app->formatter->asDecimal($proformaInvoiceDetailBarang->amount) ?></td>
+                <td><?php echo $proformaDebitNoteDetailBarang->barang->part_number ?></td>
+                <td><?php echo $proformaDebitNoteDetailBarang->barang->nama ?></td>
+                <td class="text-end"><?php echo $proformaDebitNoteDetailBarang->stock ?></td>
+                <td class="text-end"><?php echo $proformaDebitNoteDetailBarang->quantity ?></td>
+                <td><?php echo $proformaDebitNoteDetailBarang->satuan->nama ?></td>
+                <td class="text-end"><?php echo Yii::$app->formatter->asDecimal($proformaDebitNoteDetailBarang->unit_price) ?></td>
+                <td class="text-end"><?php echo $proformaDebitNoteDetailBarang->discount ?> %</td>
+                <td class="text-end"><?php echo Yii::$app->formatter->asDecimal($proformaDebitNoteDetailBarang->unitPriceAfterDiscount) ?></td>
+                <td class="text-end"><?php echo Yii::$app->formatter->asDecimal($proformaDebitNoteDetailBarang->amount) ?></td>
             </tr>
         <?php endforeach; ?>
         </tbody>
@@ -150,7 +150,7 @@ use yii\web\View;
             <td></td>
             <td></td>
             <td class="text-end">
-               <?php echo Yii::$app->formatter->asDecimal($model->proformaInvoiceDetailBarangsSubtotal) ?>
+               <?php echo Yii::$app->formatter->asDecimal($model->proformaDebitNoteDetailBarangsSubtotal) ?>
             </td>
         </tr>
         <tr>
@@ -171,7 +171,7 @@ use yii\web\View;
             <td></td>
             <td></td>
             <td class="text-end">
-               <?php echo Yii::$app->formatter->asDecimal($model->proformaInvoiceDetailBarangsDasarPengenaanPajak) ?>
+               <?php echo Yii::$app->formatter->asDecimal($model->proformaDebitNoteDetailBarangsDasarPengenaanPajak) ?>
             </td>
         </tr>
 
@@ -181,7 +181,7 @@ use yii\web\View;
             <td class="text-end"><?php echo $quotation->vatPercentageLabel ?> </td>
             <td></td>
             <td class="text-end">
-               <?php echo Yii::$app->formatter->asDecimal(round($model->proformaInvoiceDetailBarangsTotalVatNominal)) ?>
+               <?php echo Yii::$app->formatter->asDecimal(round($model->proformaDebitNoteDetailBarangsTotalVatNominal)) ?>
             </td>
         </tr>
 
@@ -193,7 +193,7 @@ use yii\web\View;
             <td></td>
             <td></td>
             <td class="text-end font-weight-bold">
-               <?php echo Yii::$app->formatter->asDecimal($model->proformaInvoiceDetailBarangsTotal, 2) ?>
+               <?php echo Yii::$app->formatter->asDecimal($model->proformaDebitNoteDetailBarangsTotal, 2) ?>
             </td>
 
 
@@ -223,18 +223,18 @@ use yii\web\View;
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($model->proformaInvoiceDetailServices as $key => $proformaInvoiceDetailService) : ?>
+            <?php foreach ($model->proformaDebitNoteDetailServices as $key => $proformaDebitNoteDetailService) : ?>
 
                 <tr>
                     <td><?= ($key + 1) ?></td>
-                    <td style="min-width: 17rem"><?= $proformaInvoiceDetailService->job_description ?></td>
-                    <td class="text-end"><?= $proformaInvoiceDetailService->hours ?></td>
-                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($proformaInvoiceDetailService->rate_per_hour) ?></td>
-                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($proformaInvoiceDetailService->discount) ?>
+                    <td style="min-width: 17rem"><?= $proformaDebitNoteDetailService->job_description ?></td>
+                    <td class="text-end"><?= $proformaDebitNoteDetailService->hours ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($proformaDebitNoteDetailService->rate_per_hour) ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($proformaDebitNoteDetailService->discount) ?>
                         %
                     </td>
-                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($proformaInvoiceDetailService->ratePerHourAfterDiscount) ?></td>
-                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($proformaInvoiceDetailService->amount) ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($proformaDebitNoteDetailService->ratePerHourAfterDiscount) ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($proformaDebitNoteDetailService->amount) ?></td>
                 </tr>
 
             <?php endforeach; ?>
@@ -249,7 +249,7 @@ use yii\web\View;
                 <td></td>
                 <td></td>
                 <td class="text-end">
-                   <?= Yii::$app->formatter->asDecimal($model->proformaInvoiceDetailServicesDasarPengenaanPajak) ?>
+                   <?= Yii::$app->formatter->asDecimal($model->proformaDebitNoteDetailServicesDasarPengenaanPajak) ?>
                 </td>
             </tr>
 
@@ -262,7 +262,7 @@ use yii\web\View;
                 <td class="text-end"><?= $quotation->vatPercentageLabel ?></td>
                 <td></td>
                 <td class="text-end">
-                   <?= Yii::$app->formatter->asDecimal($model->proformaInvoiceDetailServicesTotalVatNominal) ?>
+                   <?= Yii::$app->formatter->asDecimal($model->proformaDebitNoteDetailServicesTotalVatNominal) ?>
                 </td>
             </tr>
 
@@ -272,7 +272,7 @@ use yii\web\View;
                 <td></td>
                 <td></td>
                 <td class="text-end font-weight-bold">
-                   <?= Yii::$app->formatter->asDecimal($model->proformaInvoiceDetailServicesTotal) ?>
+                   <?= Yii::$app->formatter->asDecimal($model->proformaDebitNoteDetailServicesTotal) ?>
                 </td>
             </tr>
 
@@ -303,7 +303,7 @@ use yii\web\View;
                     <td class="border-start-0 border-end-0">:</td>
                     <td class="border-start-0 border-end-0 font-weight-bold"><?= $quotation->mataUang->singkatan ?></td>
                     <td class="text-end border-start-0 font-weight-bold">
-                       <?php echo Yii::$app->formatter->asDecimal(round($model->proformaInvoiceGrandTotal)) ?>
+                       <?php echo Yii::$app->formatter->asDecimal(round($model->proformaDebitNoteGrandTotal)) ?>
                     </td>
                 </tr>
                 </tbody>
