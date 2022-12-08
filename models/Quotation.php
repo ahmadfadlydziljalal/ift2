@@ -2,14 +2,9 @@
 
 namespace app\models;
 
-use app\enums\DeliveryReceiptEnum;
-use app\enums\SVGIconEnum;
 use app\models\base\Quotation as BaseQuotation;
-use yii\db\ActiveQuery;
 use yii\db\Exception;
-use yii\db\Expression;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 
 /**
  * This is the model class for table "quotation".
@@ -38,6 +33,9 @@ class Quotation extends BaseQuotation
 {
 
    use NomorSuratTrait;
+   use QuotationBarangTrait;
+   use QuotationServiceTrait;
+   use QuotationDeliveryReceiptTrait;
 
    const SCENARIO_CREATE_BARANG_QUOTATION = 'create-barang-quotation';
    const SCENARIO_UPDATE_BARANG_QUOTATION = 'update-barang-quotation';
@@ -83,7 +81,7 @@ class Quotation extends BaseQuotation
 
 
    /**
-    * @var QuotationFormJob | null
+    * @var QuotationFormJob[] | null
     * */
    public ?array $modelFormJob = null;
 
@@ -433,182 +431,6 @@ class Quotation extends BaseQuotation
 
 
    /**
-    * @return bool
-    * @throws Exception
-    */
-   public function updateModelsFormJob(): bool
-   {
-      $transaction = self::getDb()->beginTransaction();
-
-      try {
-
-         $flag = true;
-         if (!empty($this->deletedFormJob)) {
-            QuotationFormJob::deleteAll(['id' => $this->deletedFormJob]);
-         }
-
-         /** @var QuotationFormJob $formJob */
-         foreach ($this->modelsFormJob as $formJob) {
-
-            $formJob->quotation_id = $this->id;
-            $flag = $formJob->save(false);
-
-            if (!$flag) {
-               break;
-            }
-
-         }
-         if ($flag) {
-            $transaction->commit();
-            return true;
-         } else {
-            $transaction->rollBack();
-         }
-
-      } catch (Exception $e) {
-         $transaction->rollBack();
-         throw new Exception($e->getMessage());
-      }
-      return false;
-   }
-
-   /**
-    * @return float|int
-    */
-   public function getQuotationBarangsBeforeDiscountSubtotal(): float|int
-   {
-
-      $total = 0;
-      if (empty($this->quotationBarangs)) {
-         return $total;
-      }
-
-      foreach ($this->quotationBarangs as $quotationBarang) {
-         /* @see QuotationBarang::getAmountBeforeDiscount() */
-         $total += $quotationBarang->amountBeforeDiscount;
-      }
-
-      return $total;
-   }
-
-   /**
-    * @return float|int
-    */
-   public function getQuotationBarangsSubtotal(): float|int
-   {
-
-      $total = 0;
-      if (empty($this->quotationBarangs)) {
-         return $total;
-      }
-
-      foreach ($this->quotationBarangs as $quotationBarang) {
-         $total += $quotationBarang->amount;
-      }
-
-      return $total;
-   }
-
-   /**
-    * @return float|int
-    */
-   public function getQuotationBarangsDiscount(): float|int
-   {
-      if (empty($this->quotationBarangs)) {
-         return 0;
-      }
-
-      $total = 0;
-      foreach ($this->quotationBarangs as $quotationBarang) {
-         $total += $quotationBarang->quantity * $quotationBarang->nominalDiscount;
-      }
-
-      return $total;
-   }
-
-   /**
-    * @return float|int
-    */
-   public function getQuotationBarangsDasarPengenaanPajak(): float|int
-   {
-      return $this->quotationBarangsSubtotal + $this->delivery_fee;
-   }
-
-   /**
-    * @return float|int
-    */
-   public function getQuotationBarangsTotalVatNominal(): float|int
-   {
-      if (empty($this->quotationBarangs)) {
-         return 0;
-      }
-      return $this->quotationBarangsDasarPengenaanPajak * ($this->vat_percentage / 100);
-   }
-
-   /**
-    * @return float|int
-    */
-   public function getQuotationBarangsTotal(): float|int
-   {
-      return $this->quotationBarangsDasarPengenaanPajak + $this->quotationBarangsTotalVatNominal;
-   }
-
-
-   /**
-    * @return float|int
-    */
-   public function getQuotationServicesDiscount(): float|int
-   {
-
-      $total = 0;
-      if (empty($this->quotationServices)) {
-         return $total;
-      }
-
-      foreach ($this->quotationServices as $quotationService) {
-         $total += $quotationService->hours * $quotationService->nominalDiscount;
-      }
-
-      return $total;
-   }
-
-   public function getQuotationServicesDasarPengenaanPajak(): float|int
-   {
-      $total = 0;
-      if (empty($this->quotationServices)) {
-         return $total;
-      }
-
-      foreach ($this->quotationServices as $quotationService) {
-         $total += $quotationService->amount;
-      }
-
-      return $total;
-   }
-
-   /**
-    * @return float|int
-    */
-   public function getQuotationServicesTotalVatNominal(): float|int
-   {
-      if (empty($this->quotationServices)) {
-         return 0;
-      }
-
-      return $this->quotationServicesDasarPengenaanPajak * ($this->vat_percentage / 100);
-
-   }
-
-   /**
-    * @return float|int
-    */
-   public function getQuotationServicesTotal(): float|int
-   {
-      return $this->quotationServicesDasarPengenaanPajak
-         + $this->quotationServicesTotalVatNominal;
-   }
-
-   /**
     * @return float|int
     */
    public function getQuotationGrandTotal(): float|int
@@ -630,20 +452,6 @@ class Quotation extends BaseQuotation
          $this->materai_fee;
    }
 
-   public function getQuotationServicesBeforeDiscountDasarPengenaanPajak(): float|int
-   {
-      $total = 0;
-      if (empty($this->quotationServices)) {
-         return $total;
-      }
-
-      foreach ($this->quotationServices as $quotationService) {
-         $total += $quotationService->getAmountBeforeDiscount();
-      }
-
-      return $total;
-   }
-
    public function getQuotationDiscountTotal()
    {
       return
@@ -659,56 +467,5 @@ class Quotation extends BaseQuotation
       return $this->vat_percentage . ' %';
    }
 
-   public function getListDeliveryReceiptDetails(): ActiveQuery
-   {
-      return $this->getQuotationDeliveryReceiptDetails()
-         ->select([
-            'barangNama' => 'barang.nama',
-            'quotationBarangQuantity' => 'quotation_barang.quantity',
-            'quantity' => new Expression("SUM(quotation_delivery_receipt_detail.quantity)"),
-            'totalQuantityIndent' => new Expression("(quotation_barang.quantity) - (SUM(quotation_delivery_receipt_detail.quantity))"),
-         ])
-         ->joinWith(['quotationBarang' => function ($qb) {
-            $qb->joinWith('barang');
-         }], false)
-         ->groupBy('quotation_barang_id');
-   }
-
-   /**
-    * @return ActiveQuery
-    */
-   public function getQuotationDeliveryReceiptDetails(): ActiveQuery
-   {
-      return $this->hasMany(QuotationDeliveryReceiptDetail::class, ['quotation_delivery_receipt_id' => 'id'])
-         ->via('quotationDeliveryReceipts');
-   }
-
-   /**
-    * @return string
-    */
-   public function getGlobalStatusDeliveryReceiptInHtmlFormat(): string
-   {
-      return $this->getGlobalStatusDeliveryReceipt()
-         ? Html::tag('span', SVGIconEnum::CHECK->value . ' ' . DeliveryReceiptEnum::COMPLETED->value, [
-            'class' => 'badge bg-primary',
-            'title' => $this->nomor
-         ])
-         : Html::tag('span', SVGIconEnum::X->value . ' ' . DeliveryReceiptEnum::NOT_COMPLETED->value, [
-            'class' => 'badge bg-danger'
-         ]);
-   }
-
-   public function getGlobalStatusDeliveryReceipt()
-   {
-      $totalIndents = ArrayHelper::getColumn($this->listDeliveryReceiptDetails, 'totalQuantityIndent');
-
-      $status = true;
-      foreach ($totalIndents as $indent) {
-         if ($indent > 0) {
-            $status = false;
-         }
-      }
-      return $status;
-   }
 
 }

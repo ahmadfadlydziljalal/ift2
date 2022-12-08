@@ -16,9 +16,9 @@ use yii\helpers\Html;
 
     <div class="quotation-form">
 
-        <?php $form = ActiveForm::begin(); ?>
+       <?php $form = ActiveForm::begin(); ?>
 
-        <div class="card">
+        <div class="card bg-transparent">
             <div class="card-body">
 
                 <div class="d-flex flex-column gap-3">
@@ -34,31 +34,31 @@ use yii\helpers\Html;
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-3">
-                            <?= $form->field($model, 'mata_uang_id')->dropDownList(MataUang::find()->map()) ?>
+                           <?= $form->field($model, 'mata_uang_id')->dropDownList(MataUang::find()->map()) ?>
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
-                            <?= $form->field($model, 'tanggal')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
+                           <?= $form->field($model, 'tanggal')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
-                            <?= $form->field($model, 'tanggal_batas_valid')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
+                           <?= $form->field($model, 'tanggal_batas_valid')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
-                            <?= $form->field($model, "vat_percentage") ?>
+                           <?= $form->field($model, "vat_percentage") ?>
 
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-3">
-                            <?= $form->field($model, 'materai_fee')->widget(NumberControl::class, [
-                                'maskedInputOptions' => [
-                                    'allowMinus' => false
-                                ],
-                            ]); ?>
+                           <?= $form->field($model, 'materai_fee')->widget(NumberControl::class, [
+                              'maskedInputOptions' => [
+                                 'allowMinus' => false
+                              ],
+                           ]); ?>
                         </div>
 
 
                         <div class="col-12 col-md-6 col-lg-3">
-                            <?= $form->field($model, 'rekening_id')->dropDownList(Rekening::find()->mapOnlyTokoSaya()) ?>
+                           <?= $form->field($model, 'rekening_id')->dropDownList(Rekening::find()->mapOnlyTokoSaya()) ?>
                         </div>
                     </div>
                 </div>
@@ -75,39 +75,39 @@ use yii\helpers\Html;
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-4">
-                            <?= $form->field($model, 'customer_id')->widget(Select2::class, [
-                                'data' => Card::find()->map(),
-                                'options' => [
-                                    'prompt' => '= Pilih salah satu ='
-                                ]
-                            ]) ?>
+                           <?= $form->field($model, 'customer_id')->widget(Select2::class, [
+                              'data' => Card::find()->map(),
+                              'options' => [
+                                 'prompt' => '= Pilih salah satu ='
+                              ]
+                           ]) ?>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4 mt-4">
-                            <?= Html::a('Cari Attendant', ['card/find-pic-as-attendant'], [
-                                'class' => 'btn btn-primary find-attendant'
-                            ]) ?>
+                           <?= Html::a('Cari Attendant', ['card/find-pic-as-attendant'], [
+                              'class' => 'btn btn-primary find-attendant'
+                           ]) ?>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-4">
-                            <?= $form->field($model, 'attendant_1')->textInput(['maxlength' => true]) ?>
+                           <?= $form->field($model, 'attendant_1')->textInput(['maxlength' => true]) ?>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
-                            <?= $form->field($model, 'attendant_phone_1')->textInput(['maxlength' => true]) ?>
+                           <?= $form->field($model, 'attendant_phone_1')->textInput(['maxlength' => true]) ?>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
-                            <?= $form->field($model, 'attendant_email_1')->textInput(['maxlength' => true]) ?>
+                           <?= $form->field($model, 'attendant_email_1')->textInput(['maxlength' => true]) ?>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-4">
-                            <?= $form->field($model, 'attendant_2')->textInput(['maxlength' => true]) ?>
+                           <?= $form->field($model, 'attendant_2')->textInput(['maxlength' => true]) ?>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
-                            <?= $form->field($model, 'attendant_phone_2')->textInput(['maxlength' => true]) ?>
+                           <?= $form->field($model, 'attendant_phone_2')->textInput(['maxlength' => true]) ?>
                         </div>
                         <div class="col-12 col-md-6 col-lg-4">
-                            <?= $form->field($model, 'attendant_email_2')->textInput(['maxlength' => true]) ?>
+                           <?= $form->field($model, 'attendant_email_2')->textInput(['maxlength' => true]) ?>
                         </div>
                     </div>
                 </div>
@@ -124,12 +124,12 @@ use yii\helpers\Html;
                     </div>
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-4">
-                            <?= $form->field($model, 'signature_orang_kantor_id')->widget(Select2::class, [
-                                'data' => Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR),
-                                'options' => [
-                                    'prompt' => '= Pilih salah satu ='
-                                ]
-                            ]) ?>
+                           <?= $form->field($model, 'signature_orang_kantor_id')->widget(Select2::class, [
+                              'data' => Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR),
+                              'options' => [
+                                 'prompt' => '= Pilih salah satu ='
+                              ]
+                           ]) ?>
                         </div>
 
 
@@ -141,16 +141,16 @@ use yii\helpers\Html;
 
             <div class="card-footer border-top p-3">
                 <div class="d-flex justify-content-between">
-                    <?= Html::a(' Tutup', ['index'], [
-                        'class' => 'btn btn-secondary',
-                        'type' => 'button'
-                    ]) ?>
-                    <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
+                   <?= Html::a(' Tutup', ['index'], [
+                      'class' => 'btn btn-secondary',
+                      'type' => 'button'
+                   ]) ?>
+                   <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
                 </div>
             </div>
         </div>
 
-        <?php ActiveForm::end(); ?>
+       <?php ActiveForm::end(); ?>
 
     </div>
 

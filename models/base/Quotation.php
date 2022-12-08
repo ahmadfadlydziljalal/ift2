@@ -32,6 +32,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property \app\models\Card $customer
  * @property \app\models\MataUang $mataUang
+ * @property \app\models\ProformaInvoice $proformaInvoice
  * @property \app\models\QuotationAnotherFee[] $quotationAnotherFees
  * @property \app\models\QuotationBarang[] $quotationBarangs
  * @property \app\models\QuotationDeliveryReceipt[] $quotationDeliveryReceipts
@@ -127,6 +128,14 @@ abstract class Quotation extends \yii\db\ActiveRecord
     public function getMataUang()
     {
         return $this->hasOne(\app\models\MataUang::class, ['id' => 'mata_uang_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProformaInvoice()
+    {
+        return $this->hasOne(\app\models\ProformaInvoice::class, ['quotation_id' => 'id']);
     }
 
     /**

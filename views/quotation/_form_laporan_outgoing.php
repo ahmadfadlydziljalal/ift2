@@ -10,7 +10,7 @@ use yii\web\View;
 
 /* @var $this View */
 /* @var $model LaporanOutgoingQuotation */
-
+/* @see \app\controllers\QuotationController::actionLaporanOutgoing() */
 
 $this->title = 'Laporan Outgoing';
 $this->params['breadcrumbs'][] = ['label' => 'Quotation', 'url' => ['index']];

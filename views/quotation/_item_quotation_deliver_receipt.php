@@ -103,7 +103,7 @@ use yii\web\View;
     </div>
 
     <div class="card-footer border-top p-3">
-        <div class="d-flex flex-row gap-3">
+        <div class="d-flex justify-content-between flex-wrap gap-3">
             <div>
                <?= Html::a(
                   TextLinkEnum::UPDATE->value,
@@ -118,7 +118,7 @@ use yii\web\View;
                   'rel' => 'noopener noreferrer'
                ]) ?>
             </div>
-            <div class="ms-auto">
+            <div>
 
                <?php if (!$model->tanggal_konfirmasi_diterima_customer) : ?>
                   <?= Html::a(

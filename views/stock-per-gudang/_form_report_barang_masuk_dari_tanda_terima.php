@@ -5,8 +5,10 @@
 /* @var string $initValueText */
 /* @var string $urlPrint */
 /* @var string $urlFind */
-
+/* @var string $pagePrint */
 /* @var $model ReportStockPerGudangBarangMasukDariTandaTerima */
+
+/* @see \app\controllers\StockPerGudangController::actionCreateReportBarangMasuk() */
 
 use app\enums\TextLinkEnum;
 use app\models\form\ReportStockPerGudangBarangMasukDariTandaTerima;
@@ -80,8 +82,8 @@ $this->params['breadcrumbs'][] = $this->title;
                  'class' => 'btn btn-primary'
               ]) ?>
            </div>
-
        <?php endif ?>
+
     </div>
 
 

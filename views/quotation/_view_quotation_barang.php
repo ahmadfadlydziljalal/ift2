@@ -17,6 +17,7 @@ use yii\web\View;
 
 ?>
 
+
 <div class="card bg-transparent" id="barang">
     <div class="card-body">
         <div class="d-flex flex-column gap-3">
@@ -176,7 +177,7 @@ use yii\web\View;
                               return $model->amount;
                            },
                            'format' => ['decimal', 2],
-                           'footer' => Yii::$app->formatter->asDecimal($model->quotationBarangsTotal, 2), /* @see \app\models\Quotation::getQuotationBarangsTotal() */
+                           'footer' => Yii::$app->formatter->asDecimal($model->quotationBarangsTotal, 2), /* @see Quotation::getQuotationBarangsTotal */
                            'footerOptions' => [
                               'class' => 'text-end'
                            ]
@@ -244,7 +245,7 @@ use yii\web\View;
                                  ]
                               ],
                               [
-                                 /* @see \app\models\Quotation::getQuotationBarangsDasarPengenaanPajak() */
+                                 /* @see Quotation::getQuotationBarangsDasarPengenaanPajak */
                                  'content' => Yii::$app->formatter->asDecimal($model->quotationBarangsDasarPengenaanPajak, 2),
                                  'options' => [
                                     'class' => 'text-end'
@@ -262,14 +263,14 @@ use yii\web\View;
                                  ]
                               ],
                               [
-                                 /* @see \app\models\Quotation::getQuotationBarangsTotalVatNominal() */
+                                 /* @see Quotation::getQuotationBarangsTotalVatNominal */
                                  'content' => Yii::$app->formatter->asDecimal($model->quotationBarangsTotalVatNominal, 2),
                                  'options' => [
                                     'class' => 'text-end'
                                  ]
                               ],
                            ],
-                           
+
                         ],
 
                      ],

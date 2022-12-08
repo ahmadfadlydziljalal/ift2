@@ -40,7 +40,7 @@ use yii\widgets\ListView;
             </div>
 
             <div class="row">
-                <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                <div class="col-12 mb-3">
                     <div class="table-responsive">
                        <?php
 
@@ -65,7 +65,7 @@ use yii\widgets\ListView;
                        ?>
                     </div>
                 </div>
-                <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+                <div class="col-12 ">
                     <div class="card bg-transparent">
 
                         <div class="card-body border-bottom fw-bold">

@@ -12,6 +12,7 @@ use yii\web\View;
 
 /* @var $this View */
 /* @var $model LaporanOutgoingQuotation */
+/* @see \app\controllers\QuotationController::actionPreviewLaporanOutgoing() */
 
 $this->title = $model->tanggal;
 $this->params['breadcrumbs'][] = ['label' => 'Quotation', 'url' => ['index']];

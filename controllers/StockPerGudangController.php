@@ -381,7 +381,7 @@ class StockPerGudangController extends Controller
     * @param string $modelName
     * @return string
     */
-   public function actionCreateReportBarangMasuk($modelName): string
+   public function actionCreateReportBarangMasuk(string $modelName): string
    {
       $model = new ReportStockPerGudangBarangMasukDariTandaTerima();
       $model->classNameModel = 'app\\models\\' . $modelName;
