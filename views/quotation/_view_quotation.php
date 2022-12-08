@@ -18,7 +18,7 @@ use yii\widgets\DetailView;
     <div class="card-body">
         <div class="d-flex flex-column gap-3">
             <div class="d-flex flex-row gap-2">
-               <?= Html::a(TextLinkEnum::PRINT->value, ['print', 'id' => $model->id], [
+               <?= Html::a(TextLinkEnum::PRINT->value, ['quotation/print-to-pdf', 'id' => $model->id], [
                   'class' => 'btn btn-success',
                   'target' => '_blank',
                   'rel' => 'noopener noreferrer'

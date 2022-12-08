@@ -7,6 +7,7 @@ use app\models\ClaimPettyCashNota;
 use app\models\ClaimPettyCashNotaDetail;
 use app\models\search\ClaimPettyCashSearch;
 use app\models\Tabular;
+use kartik\mpdf\Pdf;
 use Throwable;
 use Yii;
 use yii\db\StaleObjectException;
@@ -23,248 +24,258 @@ use yii\web\Response;
  */
 class ClaimPettyCashController extends Controller
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors(): array
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
+   /**
+    * @inheritdoc
+    */
+   public function behaviors(): array
+   {
+      return [
+         'verbs' => [
+            'class' => VerbFilter::class,
+            'actions' => [
+               'delete' => ['POST'],
             ],
-        ];
-    }
+         ],
+      ];
+   }
 
-    /**
-     * Lists all ClaimPettyCash models.
-     * @return string
-     */
-    public function actionIndex(): string
-    {
-        $searchModel = new ClaimPettyCashSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+   /**
+    * Lists all ClaimPettyCash models.
+    * @return string
+    */
+   public function actionIndex(): string
+   {
+      $searchModel = new ClaimPettyCashSearch();
+      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+      return $this->render('index', [
+         'searchModel' => $searchModel,
+         'dataProvider' => $dataProvider,
+      ]);
+   }
 
 
-    /**
-     * Displays a single ClaimPettyCash model.
-     * @param integer $id
-     * @return string
-     * @throws HttpException
-     */
-    public function actionView(int $id): string
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+   /**
+    * Displays a single ClaimPettyCash model.
+    * @param integer $id
+    * @return string
+    * @throws HttpException
+    */
+   public function actionView(int $id): string
+   {
+      return $this->render('view', [
+         'model' => $this->findModel($id),
+      ]);
+   }
 
-    /**
-     * Finds the ClaimPettyCash model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return ClaimPettyCash the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel(int $id): ClaimPettyCash
-    {
-        if (($model = ClaimPettyCash::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
+   /**
+    * Finds the ClaimPettyCash model based on its primary key value.
+    * If the model is not found, a 404 HTTP exception will be thrown.
+    * @param integer $id
+    * @return ClaimPettyCash the loaded model
+    * @throws NotFoundHttpException if the model cannot be found
+    */
+   protected function findModel(int $id): ClaimPettyCash
+   {
+      if (($model = ClaimPettyCash::findOne($id)) !== null) {
+         return $model;
+      } else {
+         throw new NotFoundHttpException('The requested page does not exist.');
+      }
+   }
 
-    /**
-     * Creates a new ClaimPettyCash model.
-     * @return Response | string
-     */
-    public function actionCreate(): Response|string
-    {
-        $request = Yii::$app->request;
-        $model = new ClaimPettyCash();
-        $modelsDetail = [new ClaimPettyCashNota()];
-        $modelsDetailDetail = [[new ClaimPettyCashNotaDetail()]];
+   /**
+    * Creates a new ClaimPettyCash model.
+    * @return Response | string
+    */
+   public function actionCreate(): Response|string
+   {
+      $request = Yii::$app->request;
+      $model = new ClaimPettyCash();
+      $modelsDetail = [new ClaimPettyCashNota()];
+      $modelsDetailDetail = [[new ClaimPettyCashNotaDetail()]];
 
-        if ($model->load($request->post())) {
+      if ($model->load($request->post())) {
 
-            $modelsDetail = Tabular::createMultiple(ClaimPettyCashNota::class);
-            Tabular::loadMultiple($modelsDetail, $request->post());
+         $modelsDetail = Tabular::createMultiple(ClaimPettyCashNota::class);
+         Tabular::loadMultiple($modelsDetail, $request->post());
 
-            //validate models
-            $isValid = $model->validate();
-            $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
+         //validate models
+         $isValid = $model->validate();
+         $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
 
-            if (isset($_POST['ClaimPettyCashNotaDetail'][0][0])) {
-                foreach ($_POST['ClaimPettyCashNotaDetail'] as $i => $claimPettyCashNotaDetails) {
-                    foreach ($claimPettyCashNotaDetails as $j => $claimPettyCashNotaDetail) {
-                        $data['ClaimPettyCashNotaDetail'] = $claimPettyCashNotaDetail;
-                        $modelClaimPettyCashNotaDetail = new ClaimPettyCashNotaDetail();
-                        $modelClaimPettyCashNotaDetail->load($data);
-                        $modelsDetailDetail[$i][$j] = $modelClaimPettyCashNotaDetail;
-                        $isValid = $modelClaimPettyCashNotaDetail->validate() && $isValid;
-                    }
-                }
+         if (isset($_POST['ClaimPettyCashNotaDetail'][0][0])) {
+            foreach ($_POST['ClaimPettyCashNotaDetail'] as $i => $claimPettyCashNotaDetails) {
+               foreach ($claimPettyCashNotaDetails as $j => $claimPettyCashNotaDetail) {
+                  $data['ClaimPettyCashNotaDetail'] = $claimPettyCashNotaDetail;
+                  $modelClaimPettyCashNotaDetail = new ClaimPettyCashNotaDetail();
+                  $modelClaimPettyCashNotaDetail->load($data);
+                  $modelsDetailDetail[$i][$j] = $modelClaimPettyCashNotaDetail;
+                  $isValid = $modelClaimPettyCashNotaDetail->validate() && $isValid;
+               }
+            }
+         }
+
+         if ($isValid) {
+            $status = $model->saveWithDetails($modelsDetail, $modelsDetailDetail);
+            if ($status['code']) {
+               Yii::$app->session->setFlash('success', 'ClaimPettyCash: ' . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
+               return $this->redirect(['claim-petty-cash/view', 'id' => $model->id]);
             }
 
-            if ($isValid) {
-                $status = $model->saveWithDetails($modelsDetail, $modelsDetailDetail);
-                if ($status['code']) {
-                    Yii::$app->session->setFlash('success', 'ClaimPettyCash: ' . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil ditambahkan.");
-                    return $this->redirect(['claim-petty-cash/view', 'id' => $model->id]);
-                }
+            Yii::$app->session->setFlash('danger', " ClaimPettyCash is failed to insert. Info: " . $status['message']);
+         }
+      }
 
-                Yii::$app->session->setFlash('danger', " ClaimPettyCash is failed to insert. Info: " . $status['message']);
+      return $this->render('create', [
+         'model' => $model,
+         'modelsDetail' => empty($modelsDetail) ? [new ClaimPettyCashNota()] : $modelsDetail,
+         'modelsDetailDetail' => empty($modelsDetailDetail) ? [[new ClaimPettyCashNotaDetail()]] : $modelsDetailDetail,
+      ]);
+   }
+
+   /**
+    * Updates an existing ClaimPettyCash model.
+    * Only for ajax request will return json object
+    * @param integer $id
+    * @return Response | string
+    * @throws HttpException
+    * @throws NotFoundHttpException
+    */
+   public function actionUpdate(int $id): Response|string
+   {
+      $request = Yii::$app->request;
+      $model = $this->findModel($id);
+      $modelsDetail = !empty($model->claimPettyCashNotas) ? $model->claimPettyCashNotas : [new ClaimPettyCashNota()];
+
+      $modelsDetailDetail = [];
+      $oldDetailDetails = [];
+
+      if (!empty($modelsDetail)) {
+
+         foreach ($modelsDetail as $i => $modelDetail) {
+            $claimPettyCashNotaDetails = $modelDetail->claimPettyCashNotaDetails;
+            $modelsDetailDetail[$i] = $claimPettyCashNotaDetails;
+            $oldDetailDetails = ArrayHelper::merge(ArrayHelper::index($claimPettyCashNotaDetails, 'id'), $oldDetailDetails);
+         }
+      }
+
+
+      if ($model->load($request->post())) {
+
+         // reset
+         $modelsDetailDetail = [];
+
+         // GET OLD IDs
+         $oldDetailsID = ArrayHelper::map($modelsDetail, 'id', 'id');
+
+         $modelsDetail = Tabular::createMultiple(ClaimPettyCashNota::class, $modelsDetail);
+         Tabular::loadMultiple($modelsDetail, $request->post());
+
+         $deletedDetailsID = array_diff($oldDetailsID, array_filter(
+               ArrayHelper::map($modelsDetail, 'id', 'id')
+            )
+         );
+
+         //validate models
+         $isValid = $model->validate();
+         $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
+
+         $detailDetailIDs = [];
+         if (isset($_POST['ClaimPettyCashNotaDetail'][0][0])) {
+            foreach ($_POST['ClaimPettyCashNotaDetail'] as $i => $claimPettyCashNotaDetails) {
+
+               $detailDetailIDs = ArrayHelper::merge($detailDetailIDs, array_filter(ArrayHelper::getColumn($claimPettyCashNotaDetails, 'id')));
+
+               foreach ($claimPettyCashNotaDetails as $j => $claimPettyCashNotaDetail) {
+                  $data['ClaimPettyCashNotaDetail'] = $claimPettyCashNotaDetail;
+
+                  // Difference with actionCreate Here
+                  $modelClaimPettyCashNotaDetail =
+                     (isset($claimPettyCashNotaDetail['id']) && isset($oldDetailDetails[$claimPettyCashNotaDetail['id']]))
+                        ? $oldDetailDetails[$claimPettyCashNotaDetail['id']]
+                        : new ClaimPettyCashNotaDetail();
+
+                  $modelClaimPettyCashNotaDetail->load($data);
+                  $modelsDetailDetail[$i][$j] = $modelClaimPettyCashNotaDetail;
+                  $isValid = $modelClaimPettyCashNotaDetail->validate() && $isValid;
+               }
             }
-        }
+         }
 
-        return $this->render('create', [
-            'model' => $model,
-            'modelsDetail' => empty($modelsDetail) ? [new ClaimPettyCashNota()] : $modelsDetail,
-            'modelsDetailDetail' => empty($modelsDetailDetail) ? [[new ClaimPettyCashNotaDetail()]] : $modelsDetailDetail,
-        ]);
-    }
+         $oldDetailDetailsIDs = ArrayHelper::getColumn($oldDetailDetails, 'id');
+         $deletedDetailDetailsIDs = array_diff($oldDetailDetailsIDs, $detailDetailIDs);
 
-    /**
-     * Updates an existing ClaimPettyCash model.
-     * Only for ajax request will return json object
-     * @param integer $id
-     * @return Response | string
-     * @throws HttpException
-     * @throws NotFoundHttpException
-     */
-    public function actionUpdate(int $id): Response|string
-    {
-        $request = Yii::$app->request;
-        $model = $this->findModel($id);
-        $modelsDetail = !empty($model->claimPettyCashNotas) ? $model->claimPettyCashNotas : [new ClaimPettyCashNota()];
+         if ($isValid) {
 
-        $modelsDetailDetail = [];
-        $oldDetailDetails = [];
-
-        if (!empty($modelsDetail)) {
-
-            foreach ($modelsDetail as $i => $modelDetail) {
-                $claimPettyCashNotaDetails = $modelDetail->claimPettyCashNotaDetails;
-                $modelsDetailDetail[$i] = $claimPettyCashNotaDetails;
-                $oldDetailDetails = ArrayHelper::merge(ArrayHelper::index($claimPettyCashNotaDetails, 'id'), $oldDetailDetails);
-            }
-        }
-
-
-        if ($model->load($request->post())) {
-
-            // reset
-            $modelsDetailDetail = [];
-
-            // GET OLD IDs
-            $oldDetailsID = ArrayHelper::map($modelsDetail, 'id', 'id');
-
-            $modelsDetail = Tabular::createMultiple(ClaimPettyCashNota::class, $modelsDetail);
-            Tabular::loadMultiple($modelsDetail, $request->post());
-
-            $deletedDetailsID = array_diff($oldDetailsID, array_filter(
-                    ArrayHelper::map($modelsDetail, 'id', 'id')
-                )
-            );
-
-            //validate models
-            $isValid = $model->validate();
-            $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
-
-            $detailDetailIDs = [];
-            if (isset($_POST['ClaimPettyCashNotaDetail'][0][0])) {
-                foreach ($_POST['ClaimPettyCashNotaDetail'] as $i => $claimPettyCashNotaDetails) {
-
-                    $detailDetailIDs = ArrayHelper::merge($detailDetailIDs, array_filter(ArrayHelper::getColumn($claimPettyCashNotaDetails, 'id')));
-
-                    foreach ($claimPettyCashNotaDetails as $j => $claimPettyCashNotaDetail) {
-                        $data['ClaimPettyCashNotaDetail'] = $claimPettyCashNotaDetail;
-
-                        // Difference with actionCreate Here
-                        $modelClaimPettyCashNotaDetail =
-                            (isset($claimPettyCashNotaDetail['id']) && isset($oldDetailDetails[$claimPettyCashNotaDetail['id']]))
-                                ? $oldDetailDetails[$claimPettyCashNotaDetail['id']]
-                                : new ClaimPettyCashNotaDetail();
-
-                        $modelClaimPettyCashNotaDetail->load($data);
-                        $modelsDetailDetail[$i][$j] = $modelClaimPettyCashNotaDetail;
-                        $isValid = $modelClaimPettyCashNotaDetail->validate() && $isValid;
-                    }
-                }
+            $status = $model->updateWithDetails($modelsDetail, $modelsDetailDetail, $deletedDetailsID, $deletedDetailDetailsIDs);
+            if ($status['code']) {
+               Yii::$app->session->setFlash('info', "ClaimPettyCash: " . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil di update.");
+               return $this->redirect(['claim-petty-cash/view', 'id' => $id]);
             }
 
-            $oldDetailDetailsIDs = ArrayHelper::getColumn($oldDetailDetails, 'id');
-            $deletedDetailDetailsIDs = array_diff($oldDetailDetailsIDs, $detailDetailIDs);
+            Yii::$app->session->setFlash('danger', " ClaimPettyCash is failed to insert. Info: " . $status['message']);
+         }
+      }
 
-            if ($isValid) {
+      return $this->render('update', [
+         'model' => $model,
+         'modelsDetail' => $modelsDetail,
+         'modelsDetailDetail' => $modelsDetailDetail,
+      ]);
+   }
 
-                $status = $model->updateWithDetails($modelsDetail, $modelsDetailDetail, $deletedDetailsID, $deletedDetailDetailsIDs);
-                if ($status['code']) {
-                    Yii::$app->session->setFlash('info', "ClaimPettyCash: " . Html::a($model->nomor, ['view', 'id' => $model->id]) . " berhasil di update.");
-                    return $this->redirect(['claim-petty-cash/view', 'id' => $id]);
-                }
+   /**
+    * Delete an existing ClaimPettyCash model.
+    * Only for ajax request will return json object
+    * @param integer $id
+    * @return Response
+    * @throws HttpException
+    * @throws NotFoundHttpException
+    * @throws Throwable
+    * @throws StaleObjectException
+    */
+   public function actionDelete(int $id): Response
+   {
+      $model = $this->findModel($id);
+      $model->delete();
 
-                Yii::$app->session->setFlash('danger', " ClaimPettyCash is failed to insert. Info: " . $status['message']);
-            }
-        }
+      Yii::$app->session->setFlash('danger', 'ClaimPettyCash: ' . $model->nomor . ' berhasil dihapus.');
+      return $this->redirect(['index']);
+   }
 
-        return $this->render('update', [
-            'model' => $model,
-            'modelsDetail' => $modelsDetail,
-            'modelsDetailDetail' => $modelsDetailDetail,
-        ]);
-    }
+   /**
+    * @param $id
+    * @return string
+    * @throws NotFoundHttpException
+    */
+   public function actionPrint($id): string
+   {
+      $this->layout = 'print';
+      return $this->render('print', [
+         'model' => $this->findModel($id),
+      ]);
+   }
 
-    /**
-     * Delete an existing ClaimPettyCash model.
-     * Only for ajax request will return json object
-     * @param integer $id
-     * @return Response
-     * @throws HttpException
-     * @throws NotFoundHttpException
-     * @throws Throwable
-     * @throws StaleObjectException
-     */
-    public function actionDelete(int $id): Response
-    {
-        $model = $this->findModel($id);
-        $model->delete();
+   public function actionPrintToPdf($id): string
+   {
+      /** @var Pdf $pdf */
+      $pdf = Yii::$app->pdfWithLetterhead;
+      $pdf->content = $this->renderPartial('print', [
+         'model' => $this->findModel($id),
+      ]);
+      return $pdf->render();
+   }
 
-        Yii::$app->session->setFlash('danger', 'ClaimPettyCash: ' . $model->nomor . ' berhasil dihapus.');
-        return $this->redirect(['index']);
-    }
-
-    /**
-     * @param $id
-     * @return string
-     * @throws NotFoundHttpException
-     */
-    public function actionPrint($id): string
-    {
-        $this->layout = 'print';
-        return $this->render('print', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    public function actionExpandItem(): string
-    {
-        if (isset($_POST['expandRowKey'])) {
-            return $this->renderPartial('_item', [
-                'model' => $this->findModel($_POST['expandRowKey'])
-            ]);
-        } else {
-            return '<div class="alert alert-danger">No data found</div>';
-        }
-    }
+   public function actionExpandItem(): string
+   {
+      if (isset($_POST['expandRowKey'])) {
+         return $this->renderPartial('_item', [
+            'model' => $this->findModel($_POST['expandRowKey'])
+         ]);
+      } else {
+         return '<div class="alert alert-danger">No data found</div>';
+      }
+   }
 
 }

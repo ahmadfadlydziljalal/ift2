@@ -23,7 +23,7 @@ $settings = Yii::$app->settings;
         <div class="mb-1" style=" float: left; width: 49%;">
             <div class="border-1" style="min-height: 1.6cm; max-height: 1.6cm; padding: .5em">
                 To: <?= $model->vendor->nama ?><br/>
-                <?= nl2br($model->vendor->alamat) ?>
+               <?= nl2br($model->vendor->alamat) ?>
             </div>
         </div>
 
@@ -49,21 +49,21 @@ $settings = Yii::$app->settings;
     <div style="clear: both"></div>
 
     <div class="mb-1" style="width: 99.9%">
-        <?php echo ListView::widget([
-            'dataProvider' => new ActiveDataProvider([
-                'query' => $model->getClaimPettyCashNotas()
-            ]),
-            'itemView' => function ($model, $key, $index, $widget) {
-                return $this->render('_print_view_detail', [
-                    'model' => $model,
-                    'index' => $index
-                ]);
-            },
-            'itemOptions' => [
-                'class' => 'mb-3 p-0'
-            ],
-            'layout' => '{items}'
-        ]); ?>
+       <?php echo ListView::widget([
+          'dataProvider' => new ActiveDataProvider([
+             'query' => $model->getClaimPettyCashNotas()
+          ]),
+          'itemView' => function ($model, $key, $index, $widget) {
+             return $this->render('_print_view_detail', [
+                'model' => $model,
+                'index' => $index
+             ]);
+          },
+          'itemOptions' => [
+             'class' => 'mb-3 p-0'
+          ],
+          'layout' => '{items}'
+       ]); ?>
     </div>
 
     <div class="mb-1">
@@ -80,27 +80,27 @@ $settings = Yii::$app->settings;
         <table class="table table-grid-view table-bordered">
             <tbody>
             <tr>
-                <td rowspan="3" style="width: 40%">Remarks</td>
-                <td style="height: 100px">Approved By</td>
-                <td>Acknowledge By</td>
-                <td>Request By</td>
+                <td class="text-center" rowspan="3" style="width: 40%">Remarks</td>
+                <td class="text-center" style="height: 100px">Approved By</td>
+                <td class="text-center">Acknowledge By</td>
+                <td class="text-center">Request By</td>
             </tr>
 
             <tr>
 
-                <td><?= $model->approvedBy->nama ?></td>
-                <td><?= $model->acknowledgeBy->nama ?></td>
-                <td><?= isset($model->userKaryawan) ?
-                        $model->userKaryawan['nama'] :
-                        User::findOne($model->created_by)->username
-                    ?>
+                <td class="text-center"><?= $model->approvedBy->nama ?></td>
+                <td class="text-center"><?= $model->acknowledgeBy->nama ?></td>
+                <td class="text-center"><?= isset($model->userKaryawan) ?
+                      $model->userKaryawan['nama'] :
+                      User::findOne($model->created_by)->username
+                   ?>
                 </td>
             </tr>
             <tr>
 
-                <td><?= $settings->get('claim_petty_cash.approved_by_jabatan') ?></td>
-                <td><?= $settings->get('claim_petty_cash.acknowledge_by_jabatan') ?></td>
-                <td><?= $settings->get('claim_petty_cash.request_jabatan') ?></td>
+                <td class="text-center"><?= $settings->get('claim_petty_cash.approved_by_jabatan') ?></td>
+                <td class="text-center"><?= $settings->get('claim_petty_cash.acknowledge_by_jabatan') ?></td>
+                <td class="text-center"><?= $settings->get('claim_petty_cash.request_jabatan') ?></td>
             </tr>
             </tbody>
         </table>

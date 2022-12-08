@@ -16,12 +16,12 @@ use yii\widgets\ListView;
 
    <?php if ($this->context->action->id == 'expand-item'): ?>
        <div class="d-flex flex-row gap-2 mb-2">
-          <?= Html::a(TextLinkEnum::PRINT->value, ['material-requisition/print', 'id' => $model->id], [
+          <?= Html::a(TextLinkEnum::PRINT->value, ['material-requisition/print-to-pdf', 'id' => $model->id], [
              'class' => 'btn btn-success',
              'target' => '_blank',
              'rel' => 'noopener noreferrer'
           ]); ?>
-          <?= Html::a(Html::tag('div', TextLinkEnum::PRINT->value . ' Penawaran', ['class' => 'd-flex flex-row gap-1']), ['material-requisition/print-penawaran', 'id' => $model->id], [
+          <?= Html::a(Html::tag('div', TextLinkEnum::PRINT->value . ' Penawaran', ['class' => 'd-flex flex-row gap-1']), ['material-requisition/print-penawaran-to-pdf', 'id' => $model->id], [
              'class' => 'btn btn-success',
              'target' => '_blank',
              'rel' => 'noopener noreferrer'

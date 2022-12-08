@@ -19,6 +19,7 @@ use app\models\QuotationDeliveryReceipt;
 use app\models\QuotationFormJob;
 use app\models\search\QuotationSearch;
 use JetBrains\PhpStorm\ArrayShape;
+use kartik\mpdf\Pdf;
 use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -172,12 +173,14 @@ class QuotationController extends Controller
     * @return string
     * @throws NotFoundHttpException
     */
-   public function actionPrint($id): string
+   public function actionPrintToPdf($id): string
    {
-      $this->layout = 'print';
-      return $this->render('preview_print', [
+      /** @var Pdf $pdf */
+      $pdf = Yii::$app->pdfWithLetterhead;
+      $pdf->content = $this->renderPartial('preview_print', [
          'model' => $this->findModel($id),
       ]);
+      return $pdf->render();
    }
 
    /**
@@ -522,12 +525,13 @@ class QuotationController extends Controller
    public function actionPrintFormJob($id): string
    {
       $quotation = $this->findModel($id);
-
-      $this->layout = 'print';
-      return $this->render('preview_print_form_job', [
+      /** @var Pdf $pdf */
+      $pdf = Yii::$app->pdfWithLetterhead;
+      $pdf->content = $this->renderPartial('preview_print_form_job', [
          'quotation' => $quotation,
          'quotationFormJob' => $quotation->quotationFormJob
       ]);
+      return $pdf->render();
    }
 
    /**
@@ -696,11 +700,12 @@ class QuotationController extends Controller
       $model = QuotationDeliveryReceipt::findOne($id);
       $quotation = $model->quotation;
 
-      $this->layout = 'print';
-      return $this->render('preview_print_delivery_receipt', [
+      $pdf = Yii::$app->pdfWithLetterhead;
+      $pdf->content = $this->renderPartial('preview_print_delivery_receipt', [
          'quotation' => $quotation,
          'model' => $model
       ]);
+      return $pdf->render();
    }
 
    /**
@@ -999,11 +1004,12 @@ class QuotationController extends Controller
       $quotation = $this->findModel($id);
       $model = $quotation->proformaInvoice;
 
-      $this->layout = 'print';
-      return $this->render('preview_print_proforma_invoice', [
+      $pdf = Yii::$app->pdfWithLetterhead;
+      $pdf->content = $this->renderPartial('preview_print_proforma_invoice', [
          'quotation' => $quotation,
          'model' => $model
       ]);
+      return $pdf->render();
    }
 
    /**
@@ -1288,11 +1294,12 @@ class QuotationController extends Controller
       $quotation = $this->findModel($id);
       $model = $quotation->proformaDebitNote;
 
-      $this->layout = 'print';
-      return $this->render('preview_print_proforma_debit_note', [
+      $pdf = Yii::$app->pdfWithLetterhead;
+      $pdf->content = $this->renderPartial('preview_print_proforma_debit_note', [
          'quotation' => $quotation,
          'model' => $model
       ]);
+      return $pdf->render();
    }
 
 

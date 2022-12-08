@@ -115,7 +115,7 @@ use yii\web\View;
 
     <div style="clear: both"></div>
 
-    <table class="table mt-1">
+    <table class="table table-grid-view table-bordered mt-1">
         <thead>
         <tr>
             <td style="width: 2px">NO</td>
@@ -180,7 +180,7 @@ use yii\web\View;
     </p>
 
     <div style="width: 100%; position:fixed; bottom: 0; left: 0">
-        <table class="table">
+        <table class="table table-grid-view table-bordered">
             <tbody>
             <tr>
                 <td class="text-center" style="height: 6em"></td>

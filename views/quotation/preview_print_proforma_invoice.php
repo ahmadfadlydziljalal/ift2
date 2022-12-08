@@ -17,7 +17,7 @@ use yii\web\View;
 
     <div style="width: 100%; vertical-align: top">
 
-        <div class="mb-1" style=" float: left; width: 55%; padding-right: 2em">
+        <div class="mb-1" style=" float: left; width: 55%; padding-right: 1em">
 
             <table class="table">
                 <tbody>
@@ -60,7 +60,7 @@ use yii\web\View;
 
     <div style="width: 100%; vertical-align: top">
 
-        <div class="mb-1" style=" float: left; width: 55%; padding-right: 2em">
+        <div style=" float: left; width: 55%; padding-right: 2em">
             <div class="border-1" style="min-height: 1.6cm; max-height: 3.6cm; padding: .5em">
                 To: <?php echo $quotation->customer->nama ?> <br/>
                <?php echo nl2br($quotation->customer->alamat) ?>
@@ -106,7 +106,8 @@ use yii\web\View;
         </tbody>
     </table>
 
-    <table class="table mt-1">
+    <br/>
+    <table class="table">
         <thead>
         <tr>
             <th rowspan="2">Part Number</th>

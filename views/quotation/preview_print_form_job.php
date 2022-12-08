@@ -163,7 +163,7 @@ use yii\web\View;
     </p>
 
     <div style="color:red;width: 100%; position:fixed; bottom: 0; left: 0">
-        <table class="table">
+        <table class="table table-bordered">
             <tbody>
             <tr>
                 <td style="width: 20%" class="text-center">Admin</td>

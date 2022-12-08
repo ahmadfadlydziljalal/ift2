@@ -17,7 +17,7 @@ use yii\widgets\ListView;
 
 <div class="material-requisition-view">
     <div class="d-flex flex-row gap-1 mb-3">
-       <?= Html::a(TextLinkEnum::PRINT->value, ['material-requisition/print-penawaran', 'id' => $model->id], [
+       <?= Html::a(TextLinkEnum::PRINT->value, ['material-requisition/print-penawaran-to-pdf', 'id' => $model->id], [
           'class' => 'btn btn-success',
           'target' => '_blank',
           'rel' => 'noopener noreferrer'

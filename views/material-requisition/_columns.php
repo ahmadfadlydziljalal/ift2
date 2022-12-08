@@ -5,79 +5,79 @@ use yii\bootstrap5\Html;
 use yii\helpers\Url;
 
 return [
-    [
-        'class' => 'yii\grid\SerialColumn',
-    ],
-    // [
-    // 'class'=>'\yii\grid\DataColumn',
-    // 'attribute'=>'id',
-    // 'format'=>'text',
-    // ],
-    [
-        'class' => 'kartik\grid\ExpandRowColumn',
-        'width' => '50px',
-        'detailUrl' => Url::toRoute(['material-requisition/expand-item']),
-        'expandOneOnly' => true,
-        'header' => '',
-    ],
-    [
-        'class' => '\yii\grid\DataColumn',
-        'attribute' => 'nomor',
-        'format' => 'text',
-        'value' => function ($model) {
-            /** @var MaterialRequisition $model */
-            return $model->getNomorDisplay();
-        }
-    ],
-    [
-        'class' => '\yii\grid\DataColumn',
-        'attribute' => 'vendor_id',
-        'format' => 'text',
-        'value' => 'vendor.nama'
-    ],
-    [
-        'class' => '\yii\grid\DataColumn',
-        'attribute' => 'tanggal',
-        'format' => 'date',
-    ],
-    [
-        'class' => '\yii\grid\DataColumn',
-        'attribute' => 'remarks',
-        'format' => 'nText',
-    ],
-    [
-        'class' => '\yii\grid\DataColumn',
-        'attribute' => 'approved_by',
-        'format' => 'text',
-    ],
-    // [
-    // 'class'=>'\yii\grid\DataColumn',
-    // 'attribute'=>'acknowledge_by',
-    // 'format'=>'text',
-    // ],
-    // [
-    // 'class'=>'\yii\grid\DataColumn',
-    // 'attribute'=>'created_at',
-    // 'format'=>'text',
-    // ],
-    // [
-    // 'class'=>'\yii\grid\DataColumn',
-    // 'attribute'=>'updated_at',
-    // 'format'=>'text',
-    // ],
-    // [
-    // 'class'=>'\yii\grid\DataColumn',
-    // 'attribute'=>'created_by',
-    // 'format'=>'text',
-    // ],
-    // [
-    // 'class'=>'\yii\grid\DataColumn',
-    // 'attribute'=>'updated_by',
-    // 'format'=>'text',
-    // ],
-    [
-        'class' => 'yii\grid\ActionColumn',
-        //'template' => '{print}{view}{update}{delete}{actions}',
+   [
+      'class' => 'yii\grid\SerialColumn',
+   ],
+   // [
+   // 'class'=>'\yii\grid\DataColumn',
+   // 'attribute'=>'id',
+   // 'format'=>'text',
+   // ],
+   [
+      'class' => 'kartik\grid\ExpandRowColumn',
+      'width' => '50px',
+      'detailUrl' => Url::toRoute(['material-requisition/expand-item']),
+      'expandOneOnly' => true,
+      'header' => '',
+   ],
+   [
+      'class' => '\yii\grid\DataColumn',
+      'attribute' => 'nomor',
+      'format' => 'text',
+      'value' => function ($model) {
+         /** @var MaterialRequisition $model */
+         return $model->getNomorDisplay();
+      }
+   ],
+   [
+      'class' => '\yii\grid\DataColumn',
+      'attribute' => 'vendor_id',
+      'format' => 'text',
+      'value' => 'vendor.nama'
+   ],
+   [
+      'class' => '\yii\grid\DataColumn',
+      'attribute' => 'tanggal',
+      'format' => 'date',
+   ],
+   [
+      'class' => '\yii\grid\DataColumn',
+      'attribute' => 'remarks',
+      'format' => 'nText',
+   ],
+   [
+      'class' => '\yii\grid\DataColumn',
+      'attribute' => 'approved_by',
+      'format' => 'text',
+   ],
+   // [
+   // 'class'=>'\yii\grid\DataColumn',
+   // 'attribute'=>'acknowledge_by',
+   // 'format'=>'text',
+   // ],
+   // [
+   // 'class'=>'\yii\grid\DataColumn',
+   // 'attribute'=>'created_at',
+   // 'format'=>'text',
+   // ],
+   // [
+   // 'class'=>'\yii\grid\DataColumn',
+   // 'attribute'=>'updated_at',
+   // 'format'=>'text',
+   // ],
+   // [
+   // 'class'=>'\yii\grid\DataColumn',
+   // 'attribute'=>'created_by',
+   // 'format'=>'text',
+   // ],
+   // [
+   // 'class'=>'\yii\grid\DataColumn',
+   // 'attribute'=>'updated_by',
+   // 'format'=>'text',
+   // ],
+   [
+      'class' => 'yii\grid\ActionColumn',
+      //'template' => '{print}{view}{update}{delete}{actions}',
 //        'buttons' => [
 //            'actions' => function ($url, $model, $key) {
 //                return ButtonDropdown::widget([
@@ -150,15 +150,15 @@ return [
 //                ]);
 //            }
 //        ],
-        'template' => '{print} {view} {update} {delete}',
-        'buttons' => [
-            'print' => function ($url, $model) {
-                return Html::a('<i class="bi bi-printer-fill"></i>', ['print', 'id' => $model->id], [
-                    'class' => 'print text-success',
-                    'target' => '_blank',
-                    'rel' => 'noopener noreferrer'
-                ]);
-            },
-        ],
-    ],
+      'template' => '{print} {view} {update} {delete}',
+      'buttons' => [
+         'print' => function ($url, $model) {
+            return Html::a('<i class="bi bi-printer-fill"></i>', ['material-requisition/print-to-pdf', 'id' => $model->id], [
+               'class' => 'print text-success',
+               'target' => '_blank',
+               'rel' => 'noopener noreferrer'
+            ]);
+         },
+      ],
+   ],
 ];   

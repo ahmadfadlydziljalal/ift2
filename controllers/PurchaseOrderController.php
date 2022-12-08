@@ -11,6 +11,7 @@ use app\models\PurchaseOrder;
 use app\models\search\PurchaseOrderSearch;
 use app\models\Tabular;
 use JetBrains\PhpStorm\ArrayShape;
+use kartik\mpdf\Pdf;
 use Throwable;
 use Yii;
 use yii\db\StaleObjectException;
@@ -286,6 +287,21 @@ class PurchaseOrderController extends Controller
    }
 
    /**
+    * @param $id
+    * @return string
+    * @throws NotFoundHttpException
+    */
+   public function actionPrintToPdf($id): string
+   {
+      /** @var Pdf $pdf */
+      $pdf = Yii::$app->pdfWithLetterhead;
+      $pdf->content = $this->renderPartial('preview_print', [
+         'model' => $this->findModel($id),
+      ]);
+      return $pdf->render();
+   }
+
+   /**
     * @return bool
     */
    protected function checkUrlCreate(): bool
@@ -296,5 +312,4 @@ class PurchaseOrderController extends Controller
       }
       return true;
    }
-
 }

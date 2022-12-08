@@ -19,7 +19,7 @@ use yii\web\View;
     <h1 class="text-center">Tanda Terima Barang</h1>
 
     <div style="width: 100%">
-        <div class="mb-1" style=" float: left; width: 45%; padding-right: 2em">
+        <div class="mb-1" style=" float: left; width: 45%; padding-right: 1em">
             <div class="border-1" style="min-height: 1.6cm; max-height: 3.6cm; padding: .5em">
                 Telah terima dari: <br/>
                <?= $model->purchaseOrder->vendor->nama ?>
@@ -197,7 +197,7 @@ use yii\web\View;
         <table class="table table-grid-view table-bordered">
             <tbody>
             <tr class="text-center">
-                <td rowspan="3" style="width: 40%">
+                <td rowspan="3" style="width: 30%">
                     Remarks<br/>
                    <?php $dataAngsur = $model->purchaseOrder->nomorTandaTerimaColumns ?>
                    <?php if (count($dataAngsur) > 1) : ?>
@@ -209,15 +209,15 @@ use yii\web\View;
 
                    <?php endif ?>
                 </td>
-                <td style="height: 100px; white-space: nowrap">Received By</td>
-                <td style="height: 100px">Messenger</td>
-                <td style="white-space: nowrap">Acknowledge By</td>
-                <td style="white-space: nowrap">Vendor</td>
+                <td class="text-center text-nowrap" style="height: 100px; white-space: nowrap">Received By</td>
+                <td class="text-center text-nowrap" style="height: 100px">Messenger</td>
+                <td class="text-center text-nowrap">Acknowledge By</td>
+                <td class="text-center text-nowrap">Vendor</td>
             </tr>
 
             <tr class="text-center">
                 <td></td>
-                <td style="white-space: nowrap"><?= $model->acknowledgeBy->nama ?></td>
+                <td class="text-center text-nowrap"><?= $model->acknowledgeBy->nama ?></td>
                 <td></td>
                 <td></td>
             </tr>

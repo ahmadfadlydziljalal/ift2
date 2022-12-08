@@ -15,7 +15,7 @@ use yii\web\View;
 
     <div style="width: 100%; vertical-align: top">
 
-        <div class="mb-1" style=" float: left; width: 55%; padding-right: 2em">
+        <div class="mb-1" style=" float: left; width: 55%; padding-right: 1em">
             <div class="border-1" style="min-height: 1.6cm; max-height: 3.6cm; padding: .5em">
                 To: <?= $model->customer->nama ?> <br/>
                <?= nl2br($model->customer->alamat) ?>
@@ -80,7 +80,8 @@ use yii\web\View;
         </tbody>
     </table>
 
-    <table class="table mt-1">
+    <br/>
+    <table class="table table-bordered">
         <thead>
         <tr>
             <th rowspan="2">Part Number</th>
