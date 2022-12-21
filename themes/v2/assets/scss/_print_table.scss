@@ -42,12 +42,12 @@ table {
     }
 
     td {
-      letter-spacing: 0.05em;
+      //letter-spacing: 0.05em;
       vertical-align: top;
+    }
 
-      &.border-bottom {
-        border: 1px !important;
-      }
+    th, td {
+      padding: 1pt 2pt;
 
       &.border-0 {
         border: 0 !important;
@@ -61,18 +61,26 @@ table {
         border-right: 0 !important;
       }
 
+      &.border-end-1 {
+        border-right: 0.1em solid $dark !important;
+      }
+
       &.border-top-0 {
         border-top: 0 !important;
       }
 
+      &.border-top-1 {
+        border-top: 0.1em solid $dark !important;
+      }
+
+
       &.border-bottom-0 {
         border-bottom: 0 !important;
       }
-    }
 
-    th, td {
-      padding: 1pt 2pt;
-
+      &.border-bottom-1 {
+        border-bottom: 0.1em solid $dark !important;
+      }
     }
 
 

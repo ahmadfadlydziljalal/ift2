@@ -5,7 +5,7 @@
     main {
       aside {
         &.left-navigation {
-          width: 200px;
+          width: 206px;
           min-height: 100vh;
           z-index: 1;
           border-right: 1px solid vars.$gray-200;
@@ -17,8 +17,8 @@
 
 /* Mainstream tablet */
 @media (max-width: 767px) {
-  body{
-    main{
+  body {
+    main {
       aside {
         &.left-navigation {
           width: 0;
@@ -37,5 +37,5 @@
       margin-left: 0;
     }
   }
- 
+
 }

@@ -12,6 +12,7 @@ return [
    ],
    'marginTop' => '26.5',
    'marginHeader' => '5',
+   'marginRight' => '10',
    'options' => [
       'showWatermarkText' => true,
       'useSubstitutions' => false,

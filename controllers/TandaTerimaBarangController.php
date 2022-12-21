@@ -65,10 +65,24 @@ class TandaTerimaBarangController extends Controller
     * @return string
     * @throws HttpException
     */
-   public function actionView(int $id): string
+   public function actionView(int $id): string|array
    {
+      $model = $this->findModel($id);
+
+      if ($this->request->isAjax) {
+         Yii::$app->response->format = Response::FORMAT_JSON;
+         return [
+            'title' => $model->nomor,
+            'content' => $this->renderAjax('view', ['model' => $model]),
+            'footer' => Html::a(TextLinkEnum::PRINT->value, ['tanda-terima-barang/print', 'id' => $model->id], [
+               'target' => '_blank',
+               'class' => 'btn btn-success'
+            ])
+         ];
+      }
+
       return $this->render('view', [
-         'model' => $this->findModel($id),
+         'model' => $model,
       ]);
    }
 

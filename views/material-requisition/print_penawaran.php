@@ -38,11 +38,6 @@ $settings = Yii::$app->settings;
                     <td>:</td>
                     <td><?= Yii::$app->formatter->asDate($model->tanggal) ?></td>
                 </tr>
-                <!--<tr>
-                    <td>Page</td>
-                    <td>:</td>
-                    <td><span id="page-number"></span></td>
-                </tr>-->
                 </tbody>
             </table>
         </div>

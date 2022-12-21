@@ -10,7 +10,7 @@ use yii\db\Expression;
 /**
  * This is the ActiveQuery class for [[\app\models\Barang]].
  *
- * @see \app\models\Barang
+ * @see Barang
  */
 class BarangQuery extends ActiveQuery
 {
@@ -50,7 +50,7 @@ class BarangQuery extends ActiveQuery
       return parent::all($db);
    }
 
-   public function map(int $tipePembelian = 0)
+   public function map(int $tipePembelian = 0): array
    {
       $data = parent::orderBy('nama');
       if ($tipePembelian) {
@@ -59,11 +59,10 @@ class BarangQuery extends ActiveQuery
          ]);
       }
 
-
       return ArrayHelper::map($data->all(), 'id', function ($el) {
          return
-            $el->part_number . ' - ' .
-            $el->merk_part_number . ' - ' .
+            (!empty($el->part_number) ? $el->part_number : 'Unknown part number') . ' - ' .
+            (!empty($el->merk_part_number) ? $el->merk_part_number : 'Unknown merk') . ' - ' .
             $el->nama . ' - ' .
             $el->ift_number;
       });
@@ -83,11 +82,10 @@ class BarangQuery extends ActiveQuery
    public function byTipePembelian($tipePembelianId): array
    {
       return parent::select([
-//           'id,nama as name'
          'id' => 'id',
          'name' => new Expression("CONCAT(
-                                                   COALESCE(part_number, '') , ' - ' ,
-                                                   COALESCE(merk_part_number, '') , ' - ', 
+                                                   IF(part_number!='' OR part_number IS NULL , part_number, 'Unknown part number') , ' - ' ,
+                                                   IF(merk_part_number != '' OR merk_part_number IS NULL, merk_part_number , 'Unknown merk') , ' - ', 
                                                    COALESCE(nama, '') , ' - ' ,
                                                    COALESCE(ift_number, '')     
                                                 )")

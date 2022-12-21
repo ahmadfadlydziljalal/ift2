@@ -24,6 +24,7 @@ use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\ServerErrorHttpException;
 
 /**
  * MaterialRequisitionController implements the CRUD actions for MaterialRequisition model.
@@ -48,6 +49,7 @@ class MaterialRequisitionController extends Controller
    /**
     * Lists all MaterialRequisition models.
     * @return string
+    * @throws InvalidConfigException
     */
    public function actionIndex(): string
    {
@@ -64,13 +66,28 @@ class MaterialRequisitionController extends Controller
    /**
     * Displays a single MaterialRequisition model.
     * @param integer $id
-    * @return string
-    * @throws HttpException
+    * @return string|array
+    * @throws NotFoundHttpException
     */
-   public function actionView(int $id): string
+   public function actionView(int $id): string|array
    {
+
+      $model = $this->findModel($id);
+
+      if ($this->request->isAjax) {
+         Yii::$app->response->format = Response::FORMAT_JSON;
+         return [
+            'title' => $model->nomor,
+            'content' => $this->renderAjax('view', ['model' => $model]),
+            'footer' => Html::a(TextLinkEnum::PRINT->value, ['material-requisition/print-to-pdf', 'id' => $model->id], [
+               'target' => '_blank',
+               'class' => 'btn btn-success'
+            ])
+         ];
+      }
+
       return $this->render('view', [
-         'model' => $this->findModel($id),
+         'model' => $model,
       ]);
    }
 
@@ -93,10 +110,12 @@ class MaterialRequisitionController extends Controller
    /**
     * Creates a new MaterialRequisition model.
     * @return string|Response
+    * @throws ServerErrorHttpException
     */
    public function actionCreate(): Response|string
    {
       $request = Yii::$app->request;
+
       $model = new MaterialRequisition();
       $modelsDetail = [new MaterialRequisitionDetail([
          'scenario' => MaterialRequisitionDetail::SCENARIO_MR
@@ -108,26 +127,10 @@ class MaterialRequisitionController extends Controller
          Tabular::loadMultiple($modelsDetail, $request->post());
 
          //validate models
-         $isValid = $model->validate();
-         $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
-
-         if ($isValid) {
-            $status = $model->createWithDetails($modelsDetail);
-            if ($status['code']) {
-               Yii::$app->session->setFlash('success', [
-                  [
-                     'title' => 'Sukses membuat sebuah Material Request',
-                     'message' => 'Material Request: ' . $model->nomor . ' berhasil dibuat',
-                     'footer' =>
-                        Html::a(TextLinkEnum::PRINT->value, ['material-requisition/print', 'id' => $model->id], [
-                           'target' => '_blank',
-                           'class' => 'btn btn-success'
-                        ])
-                  ]
-               ]);
+         if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
+            if ($model->createWithDetails($modelsDetail)) {
                return $this->redirect(['material-requisition/view', 'id' => $model->id]);
             }
-            Yii::$app->session->setFlash('danger', " MaterialRequisition is failed to insert. Info: " . $status['message']);
          }
       }
 
@@ -150,7 +153,9 @@ class MaterialRequisitionController extends Controller
    {
       $request = Yii::$app->request;
       $model = $this->findModel($id);
-      $modelsDetail = !empty($model->materialRequisitionDetails) ? $model->materialRequisitionDetails : [new MaterialRequisitionDetail()];
+      $modelsDetail = !empty($model->materialRequisitionDetails)
+         ? $model->materialRequisitionDetails
+         : [new MaterialRequisitionDetail()];
 
       if ($model->load($request->post())) {
 
@@ -160,28 +165,12 @@ class MaterialRequisitionController extends Controller
          Tabular::loadMultiple($modelsDetail, $request->post());
          $deletedDetailsID = array_diff($oldDetailsID, array_filter(ArrayHelper::map($modelsDetail, 'id', 'id')));
 
-         $isValid = $model->validate();
-         $isValid = Tabular::validateMultiple($modelsDetail) && $isValid;
-
-         if ($isValid) {
-            $status = $model->updateWithDetails($modelsDetail, $deletedDetailsID);
-            if ($status['code']) {
-               Yii::$app->session->setFlash('info', [
-                     [
-                        'title' => 'Update berhasil',
-                        'message' => 'Material Requisition: ' . $model->nomor . ' berhasil di-update',
-                        'footer' =>
-                           Html::a(TextLinkEnum::PRINT->value, ['material-requisition/print', 'id' => $model->id], [
-                              'target' => '_blank',
-                              'class' => 'btn btn-success'
-                           ])
-                     ]
-                  ]
-               );
+         if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
+            if ($model->updateWithDetails($modelsDetail, $deletedDetailsID)) {
                return $this->redirect(['material-requisition/view', 'id' => $id]);
             }
-            Yii::$app->session->setFlash('danger', " MaterialRequisition is failed to updated. Info: " . $status['message']);
          }
+
       }
 
       return $this->render('update', [
@@ -221,7 +210,6 @@ class MaterialRequisitionController extends Controller
       ]);
    }
 
-
    /**
     * @param $id
     * @return string
@@ -243,36 +231,16 @@ class MaterialRequisitionController extends Controller
    }
 
    /**
-    * @throws MpdfException
-    * @throws CrossReferenceException
-    * @throws InvalidConfigException
-    * @throws PdfParserException
-    * @throws NotFoundHttpException
-    * @throws PdfTypeException
-    */
-   public function actionPrintPdf($id): string
-   {
-      /** @var Pdf $pdf */
-      $pdf = Yii::$app->pdfWithLetterhead;
-      $pdf->content = $this->renderPartial('print_pdf', [
-         'model' => $this->findModel($id),
-      ]);
-      return $pdf->render();
-   }
-
-   /**
     * @return string
     * @throws NotFoundHttpException
     */
    public function actionExpandItem(): string
    {
-      if (isset($_POST['expandRowKey'])) {
-         return $this->renderPartial('_item', [
-            'model' => $this->findModel($_POST['expandRowKey'])
-         ]);
-      } else {
-         return '<div class="alert alert-danger">No data found</div>';
-      }
+      return isset($_POST['expandRowKey']) ? $this->renderPartial('_item', [
+         'model' => $this->findModel($_POST['expandRowKey'])
+      ]) : Html::tag('div', 'No data found', [
+         'class' => 'alert alert-danger'
+      ]);
    }
 
    /**
@@ -304,7 +272,11 @@ class MaterialRequisitionController extends Controller
 
             if ($status['code']) {
                Yii::$app->session->setFlash('success', " Harga penawaran berhasil ditambahkan.");
-               return $this->redirect(['material-requisition/view', 'id' => $modelMaterialRequisition->id]);
+               return $this->redirect([
+                  'material-requisition/view',
+                  'id' => $modelMaterialRequisition->id,
+                  '#' => 'material-requisition-tab-tab1'
+               ]);
             }
 
             Yii::$app->session->setFlash('danger', " Harga penawaran is failed to insert. Info: " . $status['message']);
@@ -365,7 +337,11 @@ class MaterialRequisitionController extends Controller
 
             if ($status['code']) {
                Yii::$app->session->setFlash('success', " Harga penawaran berhasil di-update.");
-               return $this->redirect(['material-requisition/view', 'id' => $modelMaterialRequisition->id]);
+               return $this->redirect([
+                  'material-requisition/view',
+                  'id' => $modelMaterialRequisition->id,
+                  '#' => 'material-requisition-tab-tab1'
+               ]);
             }
 
             Yii::$app->session->setFlash('danger', " Harga penawaran is failed to insert. Info: " . $status['message']);
@@ -393,7 +369,11 @@ class MaterialRequisitionController extends Controller
       ]);
 
       Yii::$app->session->setFlash('success', $count . ' records penawaran berhasil dibatalkan.');
-      return $this->redirect(['material-requisition/view', 'id' => $modelMaterialRequisitionDetail->material_requisition_id]);
+      return $this->redirect([
+         'material-requisition/view',
+         'id' => $modelMaterialRequisitionDetail->material_requisition_id,
+         '#' => 'material-requisition-tab-tab1'
+      ]);
    }
 
    /**
@@ -412,19 +392,21 @@ class MaterialRequisitionController extends Controller
    /**
     * @param $id
     * @return string
+    * @throws CrossReferenceException
+    * @throws InvalidConfigException
+    * @throws MpdfException
     * @throws NotFoundHttpException
+    * @throws PdfParserException
+    * @throws PdfTypeException
     */
    public function actionPrintPenawaranToPdf($id): string
    {
-
       /** @var Pdf $pdf */
       $pdf = Yii::$app->pdfWithLetterhead;
       $pdf->content = $this->renderPartial('print_penawaran', [
          'model' => $this->findModel($id),
       ]);
       return $pdf->render();
-
-     
    }
 
 

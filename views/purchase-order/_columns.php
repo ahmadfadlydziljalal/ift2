@@ -56,11 +56,18 @@ return [
       'class' => '\yii\grid\DataColumn',
       'attribute' => 'nomorMaterialRequest',
       'header' => 'M.R',
-      'format' => 'text',
+      'format' => 'raw',
       //'value' => 'materialRequisition.nomor'
       'value' => function ($model) {
          /** @var PurchaseOrder $model */
-         return $model->materialRequisition->getNomorDisplay();
+         return \yii\helpers\Html::a($model->materialRequisition->nomor, ['material-requisition/view', 'id' => $model->materialRequisition->id], [
+            'class' => 'badge bg-info',
+            'data' => [
+               'bs-toggle' => 'modal',
+               'bs-target' => '#ajax-modal'
+            ]
+         ]);
+
       }
    ],
    [

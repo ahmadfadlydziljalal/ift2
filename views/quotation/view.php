@@ -1,5 +1,6 @@
 <?php
 
+use app\assets\Bootstrap5VerticalTabs;
 use app\enums\TextLinkEnum;
 use mdm\admin\components\Helper;
 use yii\bootstrap5\Tabs;
@@ -14,10 +15,12 @@ $this->title = $model->nomor;
 $this->params['breadcrumbs'][] = ['label' => 'Quotation', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->registerCssFile('https://cdn.jsdelivr.net/npm/bootstrap-5-vertical-tabs@2.0.0/dist/b5vtabs.min.css', [
-   'integrity' => 'sha384-AsoWNxsuu73eGp2MPWHa77155fyqP9rueKOeG4t2d/AD4eyBqL20TClzfbAkrul4',
-   'crossorigin' => 'anonymous'
-]);
+//$this->registerCssFile('https://cdn.jsdelivr.net/npm/bootstrap-5-vertical-tabs@2.0.0/dist/b5vtabs.min.css', [
+//   'integrity' => 'sha384-AsoWNxsuu73eGp2MPWHa77155fyqP9rueKOeG4t2d/AD4eyBqL20TClzfbAkrul4',
+//   'crossorigin' => 'anonymous'
+//]);
+
+Bootstrap5VerticalTabs::register($this);
 ?>
 
     <div class="quotation-view">
@@ -27,8 +30,6 @@ $this->registerCssFile('https://cdn.jsdelivr.net/npm/bootstrap-5-vertical-tabs@2
                 <h1><?= Html::encode($model->getNomorDisplay()) ?></h1>
                 <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
                    <?= Html::a(TextLinkEnum::KEMBALI->value, Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
-
-
                    <?php
                    if (Helper::checkRoute('delete')) :
                       echo Html::a(TextLinkEnum::HAPUS->value, ['delete', 'id' => $model->id], [
@@ -163,21 +164,17 @@ $this->registerCssFile('https://cdn.jsdelivr.net/npm/bootstrap-5-vertical-tabs@2
     </div>
 
 <?php
-
-$js = <<<JS
-jQuery(document).ready(function() {
-
-  
-  var hash = window.location.hash;
-  hash && $('ul.nav.nav-pills a[href="' + hash + '"]').tab('show'); 
-  $('ul.nav.nav-pills a').click(function (e) {
-     $(this).tab('show');
-     var scrollmem = $('body').scrollTop() || $('html').scrollTop();
-     window.location.hash = this.hash;
-     $('html,body').scrollTop(scrollmem);
-  });
-
-  
-});
-JS;
-$this->registerJs($js);
+//
+//$js = <<<JS
+//jQuery(document).ready(function() {
+//  var hash = window.location.hash;
+//  hash && $('ul.nav.nav-pills a[href="' + hash + '"]').tab('show');
+//  $('ul.nav.nav-pills a').click(function (e) {
+//     $(this).tab('show');
+//     var scrollmem = $('body').scrollTop() || $('html').scrollTop();
+//     window.location.hash = this.hash;
+//     $('html,body').scrollTop(scrollmem);
+//  });
+//});
+//JS;
+//$this->registerJs($js);

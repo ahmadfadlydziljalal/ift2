@@ -2,7 +2,7 @@
 
 section.content {
   padding: 1rem 1rem 0 1rem;
-  margin-left: 200px;
+  margin-left: 206px;
   transition: all .1s;
 }
 
@@ -125,6 +125,13 @@ ul {
 
 .kv-table-footer {
   background: transparent;
+}
+
+
+div.modal {
+  h5.modal-title {
+    font-size: 1.25rem;
+  }
 }
 
 /*

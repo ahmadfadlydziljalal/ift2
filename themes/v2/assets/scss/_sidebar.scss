@@ -1,3 +1,4 @@
+@use "sass:meta";
 @use "vars";
 
 aside {
@@ -25,8 +26,7 @@ aside {
         margin-bottom: .25rem;
 
         &:hover {
-          color:vars.$info
-        ;
+          color: vars.$info;
           border-radius: 8px;
         }
 

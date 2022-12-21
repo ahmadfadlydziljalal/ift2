@@ -95,6 +95,12 @@ use yii\web\View;
                    'class' => DataColumn::class,
                    'vAlign' => 'middle',
                    'header' => 'Merk',
+                   'headerOptions' => [
+                      'class' => 'border-end-1 '
+                   ],
+                   'contentOptions' => [
+                      'class' => 'border-top-1 border-end-1'
+                   ],
                    'value' => function ($model) {
                       /** @var TandaTerimaBarangDetail $model */
                       return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->merk_part_number;
@@ -104,6 +110,12 @@ use yii\web\View;
                    'class' => DataColumn::class,
                    'vAlign' => 'middle',
                    'header' => 'Description',
+                   'contentOptions' => [
+                      'class' => 'border-top-1'
+                   ],
+                   'headerOptions' => [
+                      'class' => 'border-0'
+                   ],
                    'value' => function ($model) {
                       /** @var TandaTerimaBarangDetail $model */
                       return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->barang->nama;
@@ -133,10 +145,10 @@ use yii\web\View;
                       return $model->materialRequisitionDetailPenawaran->materialRequisitionDetail->satuan->nama;
                    },
                    'contentOptions' => [
-                      'class' => 'text-end border-start-0'
+                      'class' => 'text-end border-top-1 border-start-0'
                    ],
                    'headerOptions' => [
-                      'class' => 'text-end border-start-0'
+                      'class' => 'text-end border-0'
                    ],
                 ],
                 [

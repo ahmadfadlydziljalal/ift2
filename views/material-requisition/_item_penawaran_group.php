@@ -4,13 +4,13 @@
 
 /* @var $model array */
 
+use app\models\MaterialRequisitionDetail;
 use app\models\MaterialRequisitionDetailPenawaran;
 use kartik\grid\DataColumn;
 use kartik\grid\GridView;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\grid\SerialColumn;
-use yii\helpers\Html;
 
 ?>
 
@@ -38,7 +38,10 @@ use yii\helpers\Html;
                      'content' => $key,
                      'options' => [
                         'colspan' => 3,
-                        'class' => 'text-start border-0'
+                        'class' => 'border-0',
+                        'style' => [
+                           'text-align' => 'left !important'
+                        ]
                      ],
                   ],
                ],
@@ -59,14 +62,12 @@ use yii\helpers\Html;
                'format' => 'raw',
                'contentOptions' => [
                   'style' => [
-                     'padding' => '0 1em 1em 1em'
+                     'padding' => '1em 0 1em 1em'
                   ]
                ],
                'value' => function ($model) {
+                  /** @var MaterialRequisitionDetail $model */
                   return
-                     Html::tag('p', $model->quantity . ' ' . $model->satuanNama . ', ' .
-                        $model->barangPartNumber . ' - ' . $model->barangMerkPartNumber . '(' . $model->barangIftNumber . ')')
-                     .
                      GridView::widget([
                         'tableOptions' => [
                            'class' => 'table table-grid-view',
@@ -78,6 +79,26 @@ use yii\helpers\Html;
                            'pagination' => false,
                         ]),
                         'layout' => '{items}',
+                        'beforeHeader' => [
+                           [
+                              'columns' => [
+                                 [
+                                    'content' => $model->quantity . ' ' . $model->satuanNama . ': ' .
+                                       $model->barang->nama . '; ' .
+                                       (empty($model->barang->part_number) ? 'Unknown part number' : $model->barang->part_number) . ' - ' .
+                                       (empty($model->barang->merk_part_number) ? 'Unknown merk' : $model->barang->merk_part_number) . ' - ' .
+                                       '(' . $model->barangIftNumber . ')',
+                                    'options' => [
+                                       'colspan' => 7,
+                                       'class' => 'border-0',
+                                       'style' => [
+                                          'text-align' => 'left !important'
+                                       ]
+                                    ],
+                                 ],
+                              ],
+                           ],
+                        ],
                         'columns' => [
                            [
                               'class' => SerialColumn::class

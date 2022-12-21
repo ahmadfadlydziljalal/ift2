@@ -64,13 +64,26 @@ class PurchaseOrderController extends Controller
    /**
     * Displays a single PurchaseOrder model.
     * @param integer $id
-    * @return string
-    * @throws HttpException
+    * @return array|string
+    * @throws NotFoundHttpException
     */
-   public function actionView(int $id): string
+   public function actionView(int $id): array|string
    {
+
+      $model = $this->findModel($id);
+      if (Yii::$app->request->isAjax) {
+         Yii::$app->response->format = Response::FORMAT_JSON;
+         return [
+            'title' => $model->nomor,
+            'content' => $this->renderAjax('view', ['model' => $model]),
+            'footer' => Html::a(TextLinkEnum::PRINT->value, ['purchase-order/print-to-pdf', 'id' => $model->id], [
+               'target' => '_blank',
+               'class' => 'btn btn-success'
+            ])
+         ];
+      }
       return $this->render('view', [
-         'model' => $this->findModel($id),
+         'model' => $model,
       ]);
    }
 
@@ -170,7 +183,7 @@ class PurchaseOrderController extends Controller
                   'title' => 'Sukses membuat sebuah Purchase Order',
                   'message' => 'Purchase Order: ' . Html::tag('strong', $model->nomor) . " berhasil ditambahkan.",
                   'footer' =>
-                     Html::a(TextLinkEnum::PRINT->value, ['purchase-order/print', 'id' => $model->id], [
+                     Html::a(TextLinkEnum::PRINT->value, ['purchase-order/print-to-pdf', 'id' => $model->id], [
                         'class' => 'btn btn-success',
                         'target' => '_blank',
                         'rel' => 'noopener noreferrer'
