@@ -2,8 +2,6 @@
 
 use kartik\grid\DataColumn;
 use kartik\grid\SerialColumn;
-use yii\helpers\Html;
-use yii\helpers\Json;
 
 return [
    [
@@ -30,7 +28,7 @@ return [
          'class' => 'text-end'
       ]
    ],
-   [
+   /*[
       'class' => DataColumn::class,
       'attribute' => 'historyLokasiBarangIn',
       'header' => 'History In',
@@ -54,7 +52,7 @@ return [
          return $string;
       }
 
-   ],
+   ],*/
    /*   [
          'class' => ActionColumn::class,
          'mergeHeader' => false,

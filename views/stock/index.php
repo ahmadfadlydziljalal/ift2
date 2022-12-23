@@ -54,6 +54,9 @@ $this->params['breadcrumbs'][] = $this->title;
           'tableOptions' => [
              'class' => 'table table-gridview table-fixes-last-column'
           ],
+          'rowOptions' => [
+             'class' => 'align-middle'
+          ],
           'dataProvider' => $dataProvider,
           'filterModel' => $searchModel,
           'columns' => require(__DIR__ . DIRECTORY_SEPARATOR . '_columns.php')

@@ -4,10 +4,27 @@
 use app\components\grid\ActionColumn;
 use kartik\grid\DataColumn;
 use kartik\grid\SerialColumn;
+use yii\helpers\Html;
 
 return [
    [
       'class' => SerialColumn::class
+   ],
+   [
+      'class' => DataColumn::class,
+      'attribute' => 'photo_thumbnail',
+      'header' => 'Photo',
+      'format' => 'raw',
+      'value' => function ($model) {
+         if ($model['photo_thumbnail']) {
+            return Html::img($model['photo_thumbnail'], [
+               'width' => 'auto',
+               'height' => 'auto'
+            ]);
+         }
+
+         return null;
+      }
    ],
    'partNumber',
    [
@@ -50,6 +67,7 @@ return [
          'class' => 'text-end'
       ]
    ],
+
    [
       'class' => ActionColumn::class,
       'mergeHeader' => false,
