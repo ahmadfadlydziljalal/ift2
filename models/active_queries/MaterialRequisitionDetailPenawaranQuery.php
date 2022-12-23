@@ -81,6 +81,9 @@ class MaterialRequisitionDetailPenawaranQuery extends ActiveQuery
 
    }
 
+   /**
+    * @return array
+    */
    public function forInventaris(): array
    {
       $status = Status::findOne([
@@ -123,10 +126,6 @@ class MaterialRequisitionDetailPenawaranQuery extends ActiveQuery
          ->groupBy('material_requisition_detail_penawaran.id')
          ->having('quantityMrdpBelumMasukDiInventaris > 0')
          ->all();
-
-      /*die(
-      Html::tag('pre', VarDumper::dumpAsString($parent))
-      );*/
 
       return ArrayHelper::map($parent, 'id', function ($model) {
          return $model->namaBarang

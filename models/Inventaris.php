@@ -73,11 +73,13 @@ class Inventaris extends BaseInventaris
       return parent::beforeSave($insert);
    }
 
-   public function attributeLabels()
+   public function attributeLabels(): array
    {
       return ArrayHelper::merge(parent::attributeLabels(), [
          'namaSatuan' => 'Unit',
          'quantity' => 'Qty',
+         'location_id' => 'Location (Card Warehouse)',
+         'material_requisition_detail_penawaran_id' => 'P.O / Material Requisition Detail Penawaran',
       ]);
    }
 }

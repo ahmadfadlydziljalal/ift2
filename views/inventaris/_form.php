@@ -36,7 +36,7 @@ use yii\helpers\Html;
    ]); ?>
 
    <?= $form->field($model, 'material_requisition_detail_penawaran_id')->dropDownList($mrdp) ?>
-   <?= $form->field($model, 'location_id')->dropDownList(Card::find()->map(Card::GET_ONLY_WAREHOUSE)) ?>
+   <?= $form->field($model, 'location_id')->dropDownList(Card::find()->map(Card::GET_ONLY_WAREHOUSE))->hint(false) ?>
    <?= $form->field($model, 'quantity')->textInput(['maxlength' => true]) ?>
 
     <div class="d-flex mt-3 justify-content-between">
