@@ -1,18 +1,19 @@
 <?php
 
+use app\models\Card;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Barang */
-/* @var $modelsDetail app\models\BarangSatuan */
+/* @var $model app\models\Inventaris */
 /* @var $form yii\bootstrap5\ActiveForm */
+/* @var $mrdp array */
 ?>
 
-<div class="barang-form">
+<div class="inventaris-form">
 
    <?php $form = ActiveForm::begin([
-      'id' => 'dynamic-form',
+
       'layout' => ActiveForm::LAYOUT_HORIZONTAL,
       'fieldConfig' => [
          'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
@@ -26,27 +27,27 @@ use yii\helpers\Html;
       ],
 
       /*'layout' => ActiveForm::LAYOUT_FLOATING,
-      'fieldConfig' => [
+          'fieldConfig' => [
           'options' => [
           'class' => 'form-floating'
           ]
       ]*/
+
    ]); ?>
 
-   <?= $this->render('_form_master', [
-      'form' => $form,
-      'model' => $model
-   ]) ?>
+   <?= $form->field($model, 'material_requisition_detail_penawaran_id')->dropDownList($mrdp) ?>
+   <?= $form->field($model, 'location_id')->dropDownList(Card::find()->map(Card::GET_ONLY_WAREHOUSE)) ?>
+   <?= $form->field($model, 'quantity')->textInput(['maxlength' => true]) ?>
 
-   <?= $this->render('_form_detail', [
-      'form' => $form,
-      'modelsDetail' => $modelsDetail
-   ]) ?>
-
-    <div class="d-flex justify-content-between">
-       <?= Html::a(' Tutup', ['index'], ['class' => 'btn btn-secondary']) ?>
+    <div class="d-flex mt-3 justify-content-between">
+       <?= Html::a(' Tutup', ['index'], [
+          'class' => 'btn btn-secondary',
+          'type' => 'button'
+       ]) ?>
        <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
+
     </div>
+
 
    <?php ActiveForm::end(); ?>
 

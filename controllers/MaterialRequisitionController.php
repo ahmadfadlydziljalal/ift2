@@ -126,7 +126,6 @@ class MaterialRequisitionController extends Controller
          $modelsDetail = Tabular::createMultiple(MaterialRequisitionDetail::class);
          Tabular::loadMultiple($modelsDetail, $request->post());
 
-         //validate models
          if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
             if ($model->createWithDetails($modelsDetail)) {
                return $this->redirect(['material-requisition/view', 'id' => $model->id]);

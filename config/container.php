@@ -1,6 +1,7 @@
 <?php
 
 use kartik\date\DatePicker;
+use kartik\datetime\DateTimePicker;
 use kartik\export\ExportMenu;
 use kartik\grid\GridViewInterface;
 use yii\bootstrap5\LinkPager as Bs5LinkPager;
@@ -144,6 +145,19 @@ return [
             'todayBtn' => true,
             'autoclose' => true,
             'format' => 'dd-mm-yyyy'
+         ]
+      ],
+      DateTimePicker::class => [
+         'type' => DateTimePicker::TYPE_INPUT,
+         'options' => [
+            'class' => 'date-time-picker'
+         ],
+         'pluginOptions' => [
+            'autoclose' => true,
+            'minuteStep' => 1,
+            'position' => 'top',
+            'todayHighlight' => true,
+            'format' => 'dd-mm-yyyy hh:ii',
          ]
       ],
       ExportMenu::class => [

@@ -20,6 +20,8 @@ use yii\helpers\ArrayHelper;
  * @property integer $originalitas_id
  * @property string $initialize_stock_quantity
  * @property integer $default_satuan_id
+ * @property string $photo
+ * @property string $photo_thumbnail
  *
  * @property \app\models\BarangSatuan[] $barangSatuans
  * @property \app\models\ClaimPettyCashNotaDetail[] $claimPettyCashNotaDetails
@@ -27,6 +29,8 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\FakturDetail[] $fakturDetails
  * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
  * @property \app\models\Originalitas $originalitas
+ * @property \app\models\ProformaDebitNoteDetailBarang[] $proformaDebitNoteDetailBarangs
+ * @property \app\models\ProformaInvoiceDetailBarang[] $proformaInvoiceDetailBarangs
  * @property \app\models\QuotationBarang[] $quotationBarangs
  * @property \app\models\TipePembelian $tipePembelian
  * @property string $aliasModel
@@ -52,7 +56,7 @@ abstract class Barang extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::rules(), [
             [['tipe_pembelian_id', 'nama', 'originalitas_id'], 'required'],
             [['tipe_pembelian_id', 'originalitas_id', 'default_satuan_id'], 'integer'],
-            [['keterangan'], 'string'],
+            [['keterangan', 'photo', 'photo_thumbnail'], 'string'],
             [['initialize_stock_quantity'], 'number'],
             [['nama', 'merk_part_number'], 'string', 'max' => 255],
             [['part_number'], 'string', 'max' => 32],
@@ -79,6 +83,8 @@ abstract class Barang extends \yii\db\ActiveRecord
             'originalitas_id' => 'Originalitas ID',
             'initialize_stock_quantity' => 'Initialize Stock Quantity',
             'default_satuan_id' => 'Default Satuan ID',
+            'photo' => 'Photo',
+            'photo_thumbnail' => 'Photo Thumbnail',
         ];
     }
 
@@ -138,6 +144,22 @@ abstract class Barang extends \yii\db\ActiveRecord
     public function getOriginalitas()
     {
         return $this->hasOne(\app\models\Originalitas::class, ['id' => 'originalitas_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProformaDebitNoteDetailBarangs()
+    {
+        return $this->hasMany(\app\models\ProformaDebitNoteDetailBarang::class, ['barang_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProformaInvoiceDetailBarangs()
+    {
+        return $this->hasMany(\app\models\ProformaInvoiceDetailBarang::class, ['barang_id' => 'id']);
     }
 
     /**

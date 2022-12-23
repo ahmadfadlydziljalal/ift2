@@ -4,12 +4,10 @@
 
 namespace app\models\base;
 
-use app\models\active_queries\MaterialRequisitionDetailPenawaranQuery;
+use Yii;
+use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 
 /**
  * This is the base-model class for table "material_requisition_detail_penawaran".
@@ -27,6 +25,7 @@ use yii\helpers\ArrayHelper;
  * @property string $created_by
  * @property string $updated_by
  *
+ * @property \app\models\Inventaris[] $inventaris
  * @property \app\models\MataUang $mataUang
  * @property \app\models\MaterialRequisitionDetail $materialRequisitionDetail
  * @property \app\models\PurchaseOrder $purchaseOrder
@@ -35,8 +34,9 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\Card $vendor
  * @property string $aliasModel
  */
-abstract class MaterialRequisitionDetailPenawaran extends ActiveRecord
+abstract class MaterialRequisitionDetailPenawaran extends \yii\db\ActiveRecord
 {
+
 
 
     /**
@@ -45,15 +45,6 @@ abstract class MaterialRequisitionDetailPenawaran extends ActiveRecord
     public static function tableName()
     {
         return 'material_requisition_detail_penawaran';
-    }
-
-    /**
-     * @inheritdoc
-     * @return MaterialRequisitionDetailPenawaranQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new MaterialRequisitionDetailPenawaranQuery(get_called_class());
     }
 
     /**
@@ -110,7 +101,15 @@ abstract class MaterialRequisitionDetailPenawaran extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInventaris()
+    {
+        return $this->hasMany(\app\models\Inventaris::class, ['material_requisition_detail_penawaran_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
      */
     public function getMataUang()
     {
@@ -118,7 +117,7 @@ abstract class MaterialRequisitionDetailPenawaran extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getMaterialRequisitionDetail()
     {
@@ -126,7 +125,7 @@ abstract class MaterialRequisitionDetailPenawaran extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getPurchaseOrder()
     {
@@ -134,7 +133,7 @@ abstract class MaterialRequisitionDetailPenawaran extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getStatus()
     {
@@ -142,7 +141,7 @@ abstract class MaterialRequisitionDetailPenawaran extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getTandaTerimaBarangDetails()
     {
@@ -150,11 +149,22 @@ abstract class MaterialRequisitionDetailPenawaran extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery
+     * @return \yii\db\ActiveQuery
      */
     public function getVendor()
     {
         return $this->hasOne(\app\models\Card::class, ['id' => 'vendor_id']);
+    }
+
+
+    
+    /**
+     * @inheritdoc
+     * @return \app\models\active_queries\MaterialRequisitionDetailPenawaranQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new \app\models\active_queries\MaterialRequisitionDetailPenawaranQuery(get_called_class());
     }
 
 

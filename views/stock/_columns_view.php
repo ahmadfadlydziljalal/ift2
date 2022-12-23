@@ -1,7 +1,5 @@
 <?php
 
-use app\components\grid\ActionColumn;
-use app\models\Stock;
 use kartik\grid\DataColumn;
 use kartik\grid\SerialColumn;
 use yii\helpers\Html;
@@ -57,33 +55,33 @@ return [
       }
 
    ],
-   [
-      'class' => ActionColumn::class,
-      'mergeHeader' => false,
-      'header' => 'Set Lokasi',
-      'template' => '{set-lokasi-in} {set-lokasi-movement}',
-      'buttons' => [
+   /*   [
+         'class' => ActionColumn::class,
+         'mergeHeader' => false,
+         'header' => 'Set Lokasi',
+         'template' => '{set-lokasi-in} {set-lokasi-movement}',
+         'buttons' => [
 
-         'set-lokasi-in' => function ($url, $model, $key) {
+            'set-lokasi-in' => function ($url, $model, $key) {
 
-            if (!$key || !is_null($model['historyLokasiBarangIn'])) {
-               return '';
+               if (!$key || !is_null($model['historyLokasiBarangIn'])) {
+                  return '';
+               }
+
+               return Html::a('<i class="bi bi-box-arrow-down"></i> In', ['stock/set-lokasi', 'id' => $key, 'type' => Stock::TIPE_PERGERAKAN_IN], [
+                  'class' => 'btn btn-sm btn-primary'
+               ]);
+            },
+
+            'set-lokasi-movement' => function ($url, $model, $key) {
+
+               if (!$key || is_null($model['historyLokasiBarangIn'])) {
+                  return '';
+               }
+               return Html::a('<i class="bi bi-arrow-left-right"></i> Movement', ['stock/set-movement-lokasi', 'id' => $key], [
+                  'class' => 'btn btn-sm btn-success'
+               ]);
             }
-
-            return Html::a('<i class="bi bi-box-arrow-down"></i> In', ['stock/set-lokasi', 'id' => $key, 'type' => Stock::TIPE_PERGERAKAN_IN], [
-               'class' => 'btn btn-sm btn-primary'
-            ]);
-         },
-
-         'set-lokasi-movement' => function ($url, $model, $key) {
-
-            if (!$key || is_null($model['historyLokasiBarangIn'])) {
-               return '';
-            }
-            return Html::a('<i class="bi bi-arrow-left-right"></i> Movement', ['stock/set-movement-lokasi', 'id' => $key], [
-               'class' => 'btn btn-sm btn-success'
-            ]);
-         }
-      ],
-   ]
+         ],
+      ]*/
 ];

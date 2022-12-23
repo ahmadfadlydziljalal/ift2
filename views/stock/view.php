@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
    <?= GridView::widget([
       'tableOptions' => [
-         'class' => 'table table-gridview table-fixes-last-column'
+         'class' => 'table table-gridview' // table-fixes-last-column
       ],
       'dataProvider' => $dataProvider,
       'filterModel' => $searchModel,

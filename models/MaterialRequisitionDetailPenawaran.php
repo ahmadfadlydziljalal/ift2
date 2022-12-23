@@ -20,6 +20,12 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
    public float|int|null $totalQuantitySudahDiterima = null;
 
    public ?string $asOptionList = null;
+   public ?string $namaBarang = null;
+   public ?string $namaSatuan = null;
+   public ?string $namaVendor = null;
+   public ?string $nomorPurchaseOrder = null;
+   public ?string $quantityInventaris = null;
+   public ?string $quantityMrdpBelumMasukDiInventaris = null;
 
    public function behaviors(): array
    {
@@ -37,6 +43,7 @@ class MaterialRequisitionDetailPenawaran extends BaseMaterialRequisitionDetailPe
          parent::rules(),
          [
             # custom validation rules
+            [['namaBarang', 'namaSatuan', 'nomorPurchaseOrder', 'quantityInventaris'], 'safe']
          ]
       );
    }

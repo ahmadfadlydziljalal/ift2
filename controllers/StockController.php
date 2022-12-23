@@ -35,6 +35,7 @@ class StockController extends Controller
       $dataProviderForExportMenu->pagination = false;
 
       $today = Yii::$app->formatter->asDate(date('Y-m-d H:i'), 'php:d-m-Y H:i');
+
       return $this->render('index', [
          'searchModel' => $searchModel,
          'dataProvider' => $dataProvider,

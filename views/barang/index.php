@@ -15,13 +15,13 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="barang-index">
 
-   <div class="d-flex justify-content-between align-items-center mb-2">
-      <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
-      <div class="ms-md-auto ms-lg-auto">
-         <?= Html::a('<i class="bi bi-repeat"></i>' . ' Reset Filter', ['index'], ['class' => 'btn btn-primary']) ?>
-         <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah', ['create'], ['class' => 'btn btn-success']) ?>
-      </div>
-   </div>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
+        <div class="ms-md-auto ms-lg-auto">
+           <?= Html::a('<i class="bi bi-repeat"></i>' . ' Reset Filter', ['index'], ['class' => 'btn btn-primary']) ?>
+           <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah', ['create'], ['class' => 'btn btn-success']) ?>
+        </div>
+    </div>
 
    <?php
    /* try {
@@ -43,8 +43,12 @@ $this->params['breadcrumbs'][] = $this->title;
          'tableOptions' => [
             'class' => 'table table-bordered table-grid-view table-fixes-last-column'
          ],
+         'pjax' => true,
          'dataProvider' => $dataProvider,
          'filterModel' => $searchModel,
+         'rowOptions' => [
+            'class' => 'align-middle'
+         ],
          'columns' => require(__DIR__ . '/_columns.php'),
       ]);
    } catch (Exception $e) {

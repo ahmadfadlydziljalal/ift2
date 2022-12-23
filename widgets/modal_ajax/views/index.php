@@ -7,7 +7,7 @@ use yii\web\View;
 
 Modal::begin([
    'id' => 'ajax-modal',
-   'size' => Modal::SIZE_LARGE,
+   'size' => Modal::SIZE_EXTRA_LARGE,
    'titleOptions' => [
       'id' => 'ajax-modal-title'
    ],

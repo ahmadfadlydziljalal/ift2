@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\enums\TipePembelianEnum;
 use yii\base\Model;
 use yii\db\Expression;
 use yii\db\Query;
@@ -54,6 +55,7 @@ class Stock extends Model
 
    public function getBarang(): active_queries\BarangQuery
    {
+
       return Barang::find()
          ->alias('b')
          ->select([
@@ -66,6 +68,7 @@ class Stock extends Model
             'initialize_stock_quantity' => 'b.initialize_stock_quantity',
          ])
          ->leftJoin(['s' => 'satuan'], 'b.default_satuan_id = s.id')
+         ->where('tipe_pembelian_id != :tipePembelianId', [':tipePembelianId' => TipePembelianEnum::INVENTARIS->value])
          ->orderBy('nama');
    }
 

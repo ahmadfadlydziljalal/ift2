@@ -12,7 +12,12 @@ class Status extends BaseStatus
 {
 
    const MATERIAL_REQUISITION_DETAIL_PENAWARAN_STATUS = 'material-requisition-detail-penawaran-status';
+
    const SECTION_SET_LOKASI_BARANG = 'set-lokasi-barang';
+
+   const SECTION_STATUS_EQUIPMENT_TOOL_REPAIR_REQUEST = 'status-equipment-tool-repair-request';
+
+   const SECTION_KONDISI_EQUIPMENT_TOOL_REPAIR_REQUEST = 'kondisi-equipment-tool-repair-request';
 
 
    public function behaviors()
