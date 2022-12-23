@@ -105,8 +105,9 @@ table {
 
     td:last-child, th:last-child {
 
-      background-color: transparent;
-      border: 1px solid $gray-300;
+      background-color: $page;
+      border-right: 2px solid $gray-300;
+      border-bottom: 2px solid $gray-300;
 
       position: sticky;
       right: 0;

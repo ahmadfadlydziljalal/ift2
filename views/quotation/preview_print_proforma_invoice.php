@@ -101,17 +101,17 @@ use yii\web\View;
 
             <td class="border-end-0">Email 2</td>
             <td class="border-start-0 border-end-0">:</td>
-            <td class="border-start-0"><?php echo $quotation->attendant_email_2 ?></td>
+            <td class="border-start-0"><?php echo !empty($quotation->attendant_email_2) ? $quotation->attendant_email_2 : ' - ' ?></td>
         </tr>
         </tbody>
     </table>
 
     <br/>
-    <table class="table">
+    <table class="table table-bordered">
         <thead>
         <tr>
             <th rowspan="2">Part Number</th>
-            <th rowspan="2">Description of Goods</th>
+            <th rowspan="2" class="text-nowrap">Description of Goods</th>
             <th rowspan="2">Stock</th>
             <th rowspan="2" colspan="2">Quantity</th>
             <th>Unit Price</th>
@@ -145,8 +145,11 @@ use yii\web\View;
 
         <tfoot>
         <tr>
-            <td class="border-start-0 border-end-0" colspan="3"></td>
-            <td class="border-start-0 border-bottom-0"></td>
+            <td class="border-start-0 border-end-0" colspan="4" rowspan="5">
+                <span class="font-weight-bold">Note</span>: <br/>
+               <?php echo $model->quotation->catatan_quotation_barang ?>
+            </td>
+
             <td colspan="2">SubTotal</td>
             <td></td>
             <td></td>
@@ -155,10 +158,7 @@ use yii\web\View;
             </td>
         </tr>
         <tr>
-            <td rowspan="4" colspan="3"><span class="font-weight-bold">Note</span>: <br/>
-               <?php echo $model->quotation->catatan_quotation_barang ?>
-            </td>
-            <td class="border-top-0 border-bottom-0"></td>
+
             <td colspan="2">Delivery Fee</td>
             <td></td>
             <td></td>
@@ -167,7 +167,7 @@ use yii\web\View;
             </td>
         </tr>
         <tr>
-            <td class="border-top-0 border-bottom-0"></td>
+
             <td colspan="2">DPP</td>
             <td></td>
             <td></td>
@@ -177,7 +177,7 @@ use yii\web\View;
         </tr>
 
         <tr>
-            <td class="border-top-0 border-bottom-0"></td>
+
             <td colspan="2">PPN</td>
             <td class="text-end"><?php echo $quotation->vatPercentageLabel ?> </td>
             <td></td>
@@ -187,7 +187,6 @@ use yii\web\View;
         </tr>
 
         <tr>
-            <td class="border-top-0 border-bottom-0"></td>
             <td colspan="2" class="font-weight-bold">Total
                 (A)
             </td>
@@ -205,13 +204,13 @@ use yii\web\View;
 
     <div class="mt-1">
         <span class="font-weight-bold">Service</span>
-        <table class="table">
+        <table class="table table-bordered">
             <thead>
             <tr>
                 <th rowspan="2">No</th>
                 <th rowspan="2">Job Description</th>
                 <th rowspan="2">Hours</th>
-                <th>Rate / Hours</th>
+                <th class="text-nowrap">Rate / Hours</th>
                 <th>Discount</th>
                 <th>Rate / Hours After Discount</th>
                 <th>Amount</th>
@@ -244,8 +243,11 @@ use yii\web\View;
             <tfoot>
             <tr>
 
-                <td colspan="2" class="border-start-0 border-end-0"></td>
-                <td class="border-start-0 border-bottom-0"></td>
+                <td rowspan="3" colspan="3" class="border-start-0 border-end-0">
+                    <span class="font-weight-bold">Note</span><br/>
+                   <?= $quotation->catatan_quotation_service ?>
+                </td>
+
                 <td>DPP</td>
                 <td></td>
                 <td></td>
@@ -255,10 +257,7 @@ use yii\web\View;
             </tr>
 
             <tr>
-                <td colspan="2" rowspan="2"><span class="font-weight-bold">Note</span><br/>
-                   <?= $quotation->catatan_quotation_service ?>
-                </td>
-                <td class="border-top-0 border-bottom-0"></td>
+
                 <td>PPN</td>
                 <td class="text-end"><?= $quotation->vatPercentageLabel ?></td>
                 <td></td>
@@ -268,7 +267,7 @@ use yii\web\View;
             </tr>
 
             <tr>
-                <td class="border-top-0 border-bottom-0"></td>
+
                 <td style="width: 6em" class="font-weight-bold">TOTAL (B)</td>
                 <td></td>
                 <td></td>

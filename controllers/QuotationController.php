@@ -20,6 +20,10 @@ use app\models\QuotationFormJob;
 use app\models\search\QuotationSearch;
 use JetBrains\PhpStorm\ArrayShape;
 use kartik\mpdf\Pdf;
+use Mpdf\MpdfException;
+use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
+use setasign\Fpdi\PdfParser\PdfParserException;
+use setasign\Fpdi\PdfParser\Type\PdfTypeException;
 use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -168,10 +172,16 @@ class QuotationController extends Controller
       return $this->redirect(['index']);
    }
 
+
    /**
     * @param $id
     * @return string
+    * @throws InvalidConfigException
     * @throws NotFoundHttpException
+    * @throws MpdfException
+    * @throws CrossReferenceException
+    * @throws PdfParserException
+    * @throws PdfTypeException
     */
    public function actionPrintToPdf($id): string
    {

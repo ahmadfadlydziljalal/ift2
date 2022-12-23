@@ -8,6 +8,7 @@ use app\models\MaterialRequisitionDetailPenawaran;
 use app\models\search\InventarisSearch;
 use Throwable;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -37,6 +38,7 @@ class InventarisController extends Controller
    /**
     * Lists all Inventaris models.
     * @return string
+    * @throws InvalidConfigException
     */
    public function actionIndex(): string
    {

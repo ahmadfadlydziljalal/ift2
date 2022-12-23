@@ -4,11 +4,11 @@
 body {
 
   overflow-x: hidden;
-  //background-color: vars.$page;
-  background-image: linear-gradient(to bottom,
-          vars.$page 0%,
-          vars.$pastel-100 90%
-  );
+  background-color: vars.$page;
+  //background-image: linear-gradient(to bottom,
+  //        vars.$page 0%,
+  //        vars.$pastel-100 90%
+  //);
   @include meta.load-css("header"); // top navigation
   main {
     padding-top: 56px;

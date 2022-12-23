@@ -1,7 +1,6 @@
 <?php
 
 use app\enums\TextLinkEnum;
-use app\models\User;
 use mdm\admin\components\Helper;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
@@ -70,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                'attribute' => 'known_by_id',
                'value' => $model->knownBy->nama,
             ],
-            [
+            /*[
                'attribute' => 'created_at',
                'format' => 'datetime',
             ],
@@ -89,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                'value' => function ($model) {
                   return User::findOne($model->updated_by)->username ?? null;
                }
-            ],
+            ],*/
          ],
       ]);
 

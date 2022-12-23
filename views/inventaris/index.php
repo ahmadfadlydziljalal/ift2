@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
                  ExportMenu::FORMAT_PDF => [
                     'pdfConfig' => [
                        'methods' => [
-                          'SetHeader' => ['Laporan Updated Stock ' . $today],
+                          'SetHeader' => ['Laporan Inventaris ' . $today],
                           'SetFooter' => ['{PAGENO}'],
                        ]
                     ],
