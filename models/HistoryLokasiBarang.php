@@ -6,11 +6,10 @@ use app\enums\TipePergerakanBarangEnum;
 use app\models\base\HistoryLokasiBarang as BaseHistoryLokasiBarang;
 use mdm\autonumber\AutoNumber;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
-use yii\helpers\VarDumper;
 
 /**
  * This is the model class for table "history_lokasi_barang".
+ * @property $nomorDokumenPendukung string
  */
 class HistoryLokasiBarang extends BaseHistoryLokasiBarang
 {
@@ -91,14 +90,10 @@ class HistoryLokasiBarang extends BaseHistoryLokasiBarang
    /**
     * @return string
     */
-   public function getNomorDokumenPendukung()
+   public function getNomorDokumenPendukung(): string
    {
       if (!empty($this->tanda_terima_barang_detail_id)):
-
-         if ($this->tandaTerimaBarangDetail->tandaTerimaBarang) {
-            return Html::tag('pre', VarDumper::dumpAsString(ArrayHelper::toArray($this->tandaTerimaBarangDetail)));
-         }
-         return $this->tandaTerimaBarangDetail->tandaTerima->nomor;
+         return $this->tandaTerimaBarangDetail->tandaTerimaBarang->nomor;
       endif;
 
       if (!empty($this->claim_petty_cash_nota_detail_id)):

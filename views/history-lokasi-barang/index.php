@@ -25,6 +25,9 @@ $this->params['breadcrumbs'][] = $this->title;
       echo GridView::widget([
          'dataProvider' => $dataProvider,
          'filterModel' => $searchModel,
+         'rowOptions' => [
+            'class' => 'align-middle'
+         ],
          'columns' => require(__DIR__ . '/_columns.php'),
       ]);
    } catch (Exception $e) {

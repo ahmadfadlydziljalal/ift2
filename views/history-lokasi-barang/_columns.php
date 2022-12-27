@@ -1,10 +1,14 @@
 <?php
 
 use app\models\HistoryLokasiBarang;
+use kartik\grid\SerialColumn;
 
 return [
    [
-      'class' => 'yii\grid\SerialColumn',
+      'class' => SerialColumn::class,
+      'contentOptions' => [
+         'class' => 'align-middle text-end'
+      ],
    ],
    // [
    // 'class'=>'\yii\grid\DataColumn',
@@ -24,6 +28,7 @@ return [
    [
       'class' => '\yii\grid\DataColumn',
       'attribute' => 'dokumenPendukung',
+      'format' => 'raw',
       'value' => function ($model) {
          /** @var HistoryLokasiBarang $model */
          return $model->nomorDokumenPendukung;

@@ -103,7 +103,9 @@ table {
 
   &.table-fixes-last-column {
 
-    td:last-child, th:last-child {
+
+    tr:not(.kv-expand-detail-row) th:last-child,
+    tr:not(.kv-expand-detail-row) td:last-child {
 
       background-color: $page;
       border-right: 2px solid $gray-300;
@@ -114,6 +116,30 @@ table {
       z-index: 2;
 
     }
+
+    thead tr.kv-expand-detail-row table tr th:last-child,
+    thead tr.kv-expand-detail-row table tr td:last-child,
+    tbody tr.kv-expand-detail-row table tr th:last-child,
+    tbody tr.kv-expand-detail-row table tr td:last-child {
+      background-color: $white;
+      position: static;
+      border-top: none;
+      border-bottom: none;
+      border-right: 1.45px solid $gray-300;
+    }
+
+
+    //tr td:last-child, tr th:last-child {
+    //
+    //  background-color: $page;
+    //  border-right: 2px solid $gray-300;
+    //  border-bottom: 2px solid $gray-300;
+    //
+    //  position: sticky;
+    //  right: 0;
+    //  z-index: 2;
+    //
+    //}
 
   }
 }

@@ -3,11 +3,15 @@
 use app\enums\TipePembelianEnum;
 use app\models\Originalitas;
 use app\models\TipePembelian;
+use kartik\grid\SerialColumn;
 use yii\helpers\Html;
 
 return [
    [
-      'class' => 'yii\grid\SerialColumn',
+      'class' => SerialColumn::class,
+      'contentOptions' => [
+         'class' => 'align-middle text-end'
+      ],
    ],
    // [
    // 'class'=>'\yii\grid\DataColumn',
@@ -58,7 +62,10 @@ return [
       'filter' => Originalitas::find()->map(),
       'value' => function ($model) {
          return $model->originalitasNama;
-      }
+      },
+      'contentOptions' => [
+         'class' => 'text-nowrap'
+      ]
    ],
    [
       'class' => '\yii\grid\DataColumn',

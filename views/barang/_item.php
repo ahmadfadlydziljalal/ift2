@@ -15,45 +15,45 @@ $items = (Json::decode($model->satuanHarga));
 $string = '';
 
 if ($items) {
-    ArrayHelper::multisort($items, 'vendor');
-    $string .= GridView::widget([
-        'tableOptions' => [
-            'class' => 'table bg-white p-0 m-0'
-        ],
-        'dataProvider' => new ArrayDataProvider([
-            'allModels' => $items,
-            'pagination' => false
-        ]),
-        'layout' => '{items}',
-        'columns' => [
-            [
-                'class' => SerialColumn::class
-            ],
-            'vendor',
-            'satuan',
-            [
-                'attribute' => 'harga_beli',
-                'format' => ['decimal', 2],
-                'contentOptions' => [
-                    'class' => 'text-end'
-                ]
-            ],
-            [
-                'attribute' => 'harga_jual',
-                'format' => ['decimal', 2],
-                'contentOptions' => [
-                    'class' => 'text-end'
-                ]
-            ],
-        ],
-    ]);
+   ArrayHelper::multisort($items, 'vendor');
+   $string .= GridView::widget([
+      'tableOptions' => [
+         'class' => 'table p-0 m-0'
+      ],
+      'dataProvider' => new ArrayDataProvider([
+         'allModels' => $items,
+         'pagination' => false
+      ]),
+      'layout' => '{items}',
+      'columns' => [
+         [
+            'class' => SerialColumn::class
+         ],
+         'satuan',
+         /* 'vendor',
+          [
+             'attribute' => 'harga_beli',
+             'format' => ['decimal', 2],
+             'contentOptions' => [
+                'class' => 'text-end'
+             ]
+          ],
+          [
+             'attribute' => 'harga_jual',
+             'format' => ['decimal', 2],
+             'contentOptions' => [
+                'class' => 'text-end'
+             ]
+          ],*/
+      ],
+   ]);
 } ?>
 
 <div class="d-flex flex-column align-items-center-center" style="gap: .5rem">
-    <?php echo $string; ?>
-    <div class="card">
+   <?php echo $string; ?>
+    <div class="card bg-transparent">
         <div class="card-body">
-            <?php echo Html::tag('span', "Keterangan: " . (!empty($model->keterangan) ? $model->keterangan : "-")); ?>
+           <?php echo Html::tag('span', "Keterangan: " . (!empty($model->keterangan) ? $model->keterangan : "-")); ?>
         </div>
     </div>
 </div>
