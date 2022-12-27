@@ -192,7 +192,7 @@ class StockPerGudangController extends Controller
     * @return TandaTerimaBarang|Response
     * @throws NotFoundHttpException
     */
-   protected function findTandaTerimaBarangHistoryLokasiBarangs($id)
+   protected function findTandaTerimaBarangHistoryLokasiBarangs($id): Response|TandaTerimaBarang
    {
       $tandaTerimaBarang = TandaTerimaBarang::findOne($id);
 

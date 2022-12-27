@@ -14,10 +14,21 @@ use yii\widgets\DetailView;
 /** @var $model StockPerGudangBarangKeluarDariDeliveryReceiptForm */
 /** @var $modelsDetail QuotationDeliveryReceiptDetail[] */
 /** @var $modelsDetailDetail HistoryLokasiBarang[] */
+
+$this->title = 'Step 2. Set Lokasi Delivery Receipt';
+$this->params['breadcrumbs'][] = ['label' => 'Stock Per Gudang', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Step 1', 'url' => ['barang-keluar-delivery-receipt-step1']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="stock-per-gudang-form">
-
+    <div class="d-flex justify-content-between mb-3">
+        <h1><?= Html::encode($this->title) ?></h1>
+       <?= Html::a($model->quotationDeliveryReceipt->nomor, ['quotation/print-delivery-receipt', 'id' => $model->quotationDeliveryReceipt->id], [
+          'class' => 'btn btn-primary',
+          'target' => '_blank'
+       ]) ?>
+    </div>
    <?php $form = ActiveForm::begin([
       'id' => 'dynamic-form'
    ]) ?>
@@ -50,7 +61,7 @@ use yii\widgets\DetailView;
                   <?php echo DetailView::widget([
                      'model' => $modelDetail,
                      'attributes' => [
-                        'id',
+                        //'id',
                         [
                            'attribute' => 'quotation_barang_id',
                            'value' => $modelDetail->quotationBarang->quotation->nomor
@@ -58,6 +69,10 @@ use yii\widgets\DetailView;
                         [
                            'attribute' => 'quotation_delivery_receipt_id',
                            'value' => $modelDetail->quotationDeliveryReceipt->nomor
+                        ],
+                        [
+                           'label' => 'Barang / Satuan',
+                           'value' => $modelDetail->quotationBarang->barang->nama . ' / ' . $modelDetail->quotationBarang->satuan->nama
                         ],
                         'quantity',
                         'quantity_indent',

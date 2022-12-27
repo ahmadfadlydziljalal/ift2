@@ -80,9 +80,40 @@ class HistoryLokasiBarang extends BaseHistoryLokasiBarang
    {
       return ArrayHelper::merge(parent::attributeLabels(), [
          'id' => 'ID',
-         'card_id' => 'Gudang | Warehouse',
+         'card_id' => 'Warehouse',
          'tanda_terima_barang_detail_id' => 'Tanda Terima Barang Detail',
          'tipe_pergerakan_id' => 'Tipe Pergerakan',
       ]);
+   }
+
+   /**
+    * @return string
+    */
+   public function getNomorDokumenPendukung()
+   {
+      if (!empty($this->tanda_terima_barang_detail_id)):
+         return $this->tandaTerimaBarangDetail->tandaTerima->nomor;
+      endif;
+
+      if (!empty($this->claim_petty_cash_nota_detail_id)):
+         return $this->claimPettyCashNotaDetail->claimPettyCashNota->claimPettyCash->nomor;
+      endif;
+
+      if (!empty($this->quotation_delivery_receipt_detail_id)):
+         return $this->quotationDeliveryReceiptDetail->quotationDeliveryReceipt->nomor;
+      endif;
+
+      if (!empty($this->depend_id)):
+         return $this->depend->nomor;
+      endif;
+
+      if ($this->tipe_pergerakan_id = Status::findOne([
+         'section' => Status::SECTION_SET_LOKASI_BARANG,
+         'key' => 'movement-from'
+      ])->id) :
+         return $this->nomor;
+      endif;
+
+      return '';
    }
 }
