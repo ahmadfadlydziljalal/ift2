@@ -2,7 +2,9 @@
 
 namespace app\models;
 
+use app\enums\TipePergerakanBarangEnum;
 use app\models\base\HistoryLokasiBarang as BaseHistoryLokasiBarang;
+use mdm\autonumber\AutoNumber;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -10,6 +12,46 @@ use yii\helpers\ArrayHelper;
  */
 class HistoryLokasiBarang extends BaseHistoryLokasiBarang
 {
+
+   /**
+    * @param $tipePergerakanId
+    * @return string
+    */
+   public static function generateNomor($tipePergerakanId)
+   {
+      $nomor = '';
+      $date = date('Y-m-d');
+
+      switch ($tipePergerakanId):
+         case TipePergerakanBarangEnum::START_PERTAMA_KALI_PENERAPAN_SISTEM->value:
+            $nomor = AutoNumber::generate('START-' . $date . '-' . "?", false, 3);
+            break;
+
+         case TipePergerakanBarangEnum::IN->value:
+            $nomor = AutoNumber::generate('IN-' . $date . '-' . "?", false, 3);
+            break;
+
+         case TipePergerakanBarangEnum::MOVEMENT->value:
+            $nomor = AutoNumber::generate('MOVEMENT-' . $date . '-' . "?", false, 3);
+            break;
+
+         case TipePergerakanBarangEnum::PEMBATALAN->value :
+            $nomor = AutoNumber::generate('BATAL-' . $date . '-' . "?", false, 3);
+            break;
+
+         case TipePergerakanBarangEnum::OUT->value :
+
+            $nomor = AutoNumber::generate('OUT-' . $date . '-' . "?", false, 3);
+            break;
+
+         default:
+            break;
+      endswitch;
+
+      return $nomor;
+
+
+   }
 
    public function behaviors()
    {

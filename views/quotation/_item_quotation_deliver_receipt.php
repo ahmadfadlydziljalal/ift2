@@ -80,7 +80,7 @@ use yii\web\View;
              [
                 'class' => SerialColumn::class
              ],
-             //'id',
+             'id',
              [
                 'class' => DataColumn::class,
                 'header' => 'Barang',

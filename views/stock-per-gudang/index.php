@@ -61,9 +61,22 @@ $this->params['breadcrumbs'][] = $this->title;
                   'buttonOptions' => ['class' => 'btn-primary']
                ]);
                ?>
+               <?= Html::a('<i class="bi bi-plus"></i> Transfer Barang', ['stock-per-gudang/transfer-barang-antar-gudang'], ['class' => 'btn btn-primary']) ?>
+               <?php
+               echo ButtonDropdown::widget([
+                  'label' => 'Keluar Barang',
+                  'dropdown' => [
+                     'items' => [
+                        [
+                           'label' => 'Quotation | Delivery Receipt',
+                           'url' => ['stock-per-gudang/barang-keluar-delivery-receipt-step1']
+                        ],
+                     ],
+                  ],
+                  'buttonOptions' => ['class' => 'btn-primary']
+               ]);
+               ?>
 
-               <?= Html::a('<i class="bi bi-plus"></i> Transfer Barang', ['index'], ['class' => 'btn btn-primary']) ?>
-               <?= Html::a('<i class="bi bi-plus"></i> Keluar Barang', ['index'], ['class' => 'btn btn-primary']) ?>
                <?php
                echo ButtonDropdown::widget([
                   'label' => 'Laporan',

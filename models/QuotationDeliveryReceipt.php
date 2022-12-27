@@ -3,12 +3,14 @@
 namespace app\models;
 
 use app\models\base\QuotationDeliveryReceipt as BaseQuotationDeliveryReceipt;
+use yii\db\ActiveQuery;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use yii\web\ServerErrorHttpException;
 
 /**
  * This is the model class for table "quotation_delivery_receipt".
+ * @property $historyLokasiBarangs HistoryLokasiBarang[]
  */
 class QuotationDeliveryReceipt extends BaseQuotationDeliveryReceipt
 {
@@ -164,5 +166,14 @@ class QuotationDeliveryReceipt extends BaseQuotationDeliveryReceipt
       // Hitung quantity indent disini
 
       return parent::beforeSave($insert);
+   }
+
+   /**
+    * @return ActiveQuery
+    */
+   public function getHistoryLokasiBarangs()
+   {
+      return $this->hasMany(HistoryLokasiBarang::class, ['quotation_delivery_receipt_detail_id' => 'id'])
+         ->via('quotationDeliveryReceiptDetails');
    }
 }

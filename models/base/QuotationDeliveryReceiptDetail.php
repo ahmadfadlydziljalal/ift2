@@ -16,6 +16,7 @@ use yii\helpers\ArrayHelper;
  * @property string $quantity
  * @property string $quantity_indent
  *
+ * @property \app\models\HistoryLokasiBarang[] $historyLokasiBarangs
  * @property \app\models\QuotationBarang $quotationBarang
  * @property \app\models\QuotationDeliveryReceipt $quotationDeliveryReceipt
  * @property string $aliasModel
@@ -59,6 +60,14 @@ abstract class QuotationDeliveryReceiptDetail extends \yii\db\ActiveRecord
             'quantity' => 'Quantity',
             'quantity_indent' => 'Quantity Indent',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHistoryLokasiBarangs()
+    {
+        return $this->hasMany(\app\models\HistoryLokasiBarang::class, ['quotation_delivery_receipt_detail_id' => 'id']);
     }
 
     /**

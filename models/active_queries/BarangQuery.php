@@ -79,20 +79,43 @@ class BarangQuery extends ActiveQuery
          ->all();
    }
 
-   public function byTipePembelian($tipePembelianId): array
+   /**
+    * Mengembalikan list barang sesuai dengan tipe pembelian. Nama Barang bersifat opsional
+    * @param $tipePembelianId
+    * @param string $namaBarang
+    * @return array
+    */
+   public function byTipePembelian($tipePembelianId, $namaBarang = ''): array
    {
-      return parent::select([
-         'id' => 'id',
-         'name' => new Expression("CONCAT(
+
+      $expression = new Expression("CONCAT(
                                                    IF(part_number!='' OR part_number IS NULL , part_number, 'Unknown part number') , ' - ' ,
                                                    IF(merk_part_number != '' OR merk_part_number IS NULL, merk_part_number , 'Unknown merk') , ' - ', 
                                                    COALESCE(nama, '') , ' - ' ,
                                                    COALESCE(ift_number, '')     
-                                                )")
-      ])
+                                                )");
+      if (!empty($namaBarang)) {
+         $select = [
+            'id' => 'id',
+            'text' => $expression
+         ];
+      } else {
+         $select = [
+            'id' => 'id',
+            'name' => $expression
+         ];
+      }
+
+      $parent = parent::select($select)
          ->where([
             'tipe_pembelian_id' => $tipePembelianId
-         ])
+         ]);
+
+      if (!empty($namaBarang)) {
+         $parent->andWhere(['LIKE', 'nama', $namaBarang]);
+      }
+
+      return $parent
          ->orderBy('barang.nama')
          ->asArray()
          ->all();

@@ -140,6 +140,9 @@ class Barang extends BaseBarang
 
          if ($flag) {
             $transaction->commit();
+            Yii::$app->session->setFlash('success',
+               'Barang: ' . Html::a($this->nama, ['view', 'id' => $this->id]) . " berhasil ditambahkan."
+            );
             return true;
          } else {
             $transaction->rollBack();
@@ -150,6 +153,7 @@ class Barang extends BaseBarang
          throw new ServerErrorHttpException($e->getMessage());
       }
 
+      Yii::$app->session->setFlash('danger', " Barang is failed to insert.");
       return false;
    }
 

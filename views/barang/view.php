@@ -1,9 +1,6 @@
 <?php
 
 use mdm\admin\components\Helper;
-use yii\data\ArrayDataProvider;
-use yii\grid\GridView;
-use yii\grid\SerialColumn;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -14,6 +11,7 @@ $this->title = $model->nama;
 $this->params['breadcrumbs'][] = ['label' => 'Barangs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="barang-view">
 
     <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3" style="gap: .5rem">
@@ -40,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <div class="row">
+
         <div class="col-12 col-lg-8">
            <?php
            echo DetailView::widget([
@@ -76,74 +75,39 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <div>
                    <?php if ($model->photo) : ?>
-                      <?= Html::img($model->photo_thumbnail, [
-                         'alt' => 'No image available',
-                         'loading' => 'lazy'
-                      ]) ?>
+                       <div class="d-flex flex-column gap-3">
+
+                           <div>
+                              <?= Html::img($model->photo_thumbnail, [
+                                 'alt' => 'No image available',
+                                 'loading' => 'lazy'
+                              ]) ?>
+                           </div>
+
+
+                          <?php /** @see \app\controllers\BarangController::actionDeletePhoto() */ ?>
+                           <div>
+                              <?= Html::a('<i class="bi bi-trash-fill"></i> Hapus', ['barang/delete-photo',
+                                 'id' => $model->id
+                              ], [
+                                 'class' => 'btn btn-danger',
+                                 'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                 'data-method' => 'post',
+                              ]); ?>
+                           </div>
+
+                       </div>
+
                    <?php endif; ?>
                 </div>
 
             </div>
 
         </div>
+
     </div>
 
-    <h2>Barang Satuan</h2>
-   <?php
-   try {
-      echo !empty($model->barangSatuans) ?
-         GridView::widget([
-            'dataProvider' => new ArrayDataProvider([
-               'allModels' => $model->barangSatuans
-            ]),
-            'columns' => [
-               // [
-               // 'class'=>'\yii\grid\DataColumn',
-               // 'attribute'=>'id',
-               // ],
-               // [
-               // 'class'=>'\yii\grid\DataColumn',
-               // 'attribute'=>'barang_id',
-               // ],
-               [
-                  'class' => SerialColumn::class
-               ],
-               [
-                  'class' => '\yii\grid\DataColumn',
-                  'attribute' => 'vendor_id',
-                  'value' => 'vendor.nama'
-               ],
-               [
-                  'class' => '\yii\grid\DataColumn',
-                  'attribute' => 'satuan_id',
-                  'value' => 'satuan.nama'
-               ],
-               [
-                  'class' => '\yii\grid\DataColumn',
-                  'attribute' => 'harga_beli',
-                  'format' => ['decimal', 2],
-                  'contentOptions' => [
-                     'class' => 'text-end'
-                  ]
-               ],
-               [
-                  'class' => '\yii\grid\DataColumn',
-                  'attribute' => 'harga_jual',
-                  'format' => ['decimal', 2],
-                  'contentOptions' => [
-                     'class' => 'text-end'
-                  ]
-               ],
-            ]
-         ]) :
-         Html::tag("p", 'Barang Satuan tidak tersedia', [
-            'class' => 'text-warning font-weight-bold p-3'
-         ]);
-   } catch (Exception $e) {
-      echo $e->getMessage();
-   } catch (Throwable $e) {
-      echo $e->getMessage();
-   }
-   ?>
+   <?= $this->render('_view_detail', ['model' => $model]) ?>
+
 
 </div>

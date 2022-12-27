@@ -22,7 +22,6 @@ return [
                'height' => 'auto'
             ]);
          }
-
          return null;
       }
    ],
@@ -32,7 +31,13 @@ return [
       'attribute' => 'kodeBarang',
       'header' => 'Kode'
    ],
-   'namaBarang',
+   [
+      'class' => DataColumn::class,
+      'attribute' => 'namaBarang',
+      'contentOptions' => [
+         'class' => 'text-nowrap'
+      ]
+   ],
    'merk',
    [
       'class' => DataColumn::class,
@@ -67,7 +72,6 @@ return [
          'class' => 'text-end'
       ]
    ],
-
    [
       'class' => ActionColumn::class,
       'mergeHeader' => false,

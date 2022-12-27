@@ -4,85 +4,63 @@ namespace app\models\form;
 
 use app\enums\TipePergerakanBarangEnum;
 use app\models\HistoryLokasiBarang;
-use app\models\TandaTerimaBarang;
-use app\models\TandaTerimaBarangDetail;
+use app\models\QuotationDeliveryReceipt;
 use yii\base\Model;
 use yii\db\Exception;
 use yii\web\ServerErrorHttpException;
 
-class StockPerGudangBarangMasukDariTandaTerimaPoForm extends Model
+class StockPerGudangBarangKeluarDariDeliveryReceiptForm extends Model
 {
-
    const SCENARIO_STEP_1 = 'step-1';
    const SCENARIO_STEP_2 = 'step-2';
 
-   public ?int $nomorTandaTerimaId = null;
-   public ?float $quantityTerima = null;
-   public ?TandaTerimaBarang $tandaTerimaBarang = null;
+   public ?int $nomorDeliveryReceiptId = null;
+   public ?QuotationDeliveryReceipt $quotationDeliveryReceipt = null;
 
-   public ?array $tandaTerimaBarangDetails = null;
+   public ?array $quotationDeliveryReceiptDetails = null;
+
    /**
     * @var HistoryLokasiBarang[] | null;
     */
    public ?array $historyLokasiBarangs = null;
-   protected $nomorHistoryLokasiBarang;
+   protected string $nomorHistoryLokasiBarang;
 
    public function rules(): array
    {
       return [
-         [['nomorTandaTerimaId'], 'required', 'on' => self::SCENARIO_STEP_1],
-         [['historyLokasiBarangs'], 'required', 'on' => self::SCENARIO_STEP_2],
-         [['tandaTerimaBarangDetails'], 'required', 'on' => self::SCENARIO_STEP_2],
-         ['quantityTerima', 'validateTotalMasterDenganTotalDetail']
-         //[['historyLokasiBarangs'], 'validateTotalMasterDenganTotalDetail', 'on' => self::SCENARIO_STEP_2]
+         ['nomorDeliveryReceiptId', 'required', 'on' => self::SCENARIO_STEP_1]
       ];
-   }
-
-   public function validateTotalMasterDenganTotalDetail($attribute, $params, $validator)
-   {
-      /** @var TandaTerimaBarangDetail $tandaTerimaBarangDetail */
-      foreach ($this->tandaTerimaBarangDetails as $i => $tandaTerimaBarangDetail) {
-
-         //$tandaTerimaBarangDetail->validate();
-         $this->addError(
-            $attribute,
-            'Errornya harus tampil disini sih'
-         );
-      }
    }
 
    public function scenarios(): array
    {
       $scenarios = parent::scenarios();
       $scenarios[self::SCENARIO_STEP_1] = [
-         'nomorTandaTerimaId'
+         'nomorDeliveryReceiptId'
       ];
       $scenarios[self::SCENARIO_STEP_2] = [
-         'nomorTandaTerimaId',
-         'tandaTerimaBarangDetails',
+         'nomorDeliveryReceiptId',
+         'quotationDeliveryReceiptDetails',
          'historyLokasiBarangs',
       ];
       return $scenarios;
    }
 
-   /**
-    * @throws ServerErrorHttpException
-    */
-   public function save(): bool
+   public function save()
    {
       $transaction = HistoryLokasiBarang::getDb()->beginTransaction();
       try {
 
          $flag = true;
 
-         $nomor = HistoryLokasiBarang::generateNomor(TipePergerakanBarangEnum::IN->value);
+         $nomor = HistoryLokasiBarang::generateNomor(TipePergerakanBarangEnum::OUT->value);
 
-         foreach ($this->tandaTerimaBarangDetails as $i => $tandaTerimaBarangDetail) :
+         foreach ($this->quotationDeliveryReceiptDetails as $i => $item) :
             if (isset($this->historyLokasiBarangs[$i]) && is_array($this->historyLokasiBarangs[$i])) {
                if ($flag === false) break;
                foreach ($this->historyLokasiBarangs[$i] as $modelDetailDetail) {
                   $modelDetailDetail->nomor = $nomor;
-                  $modelDetailDetail->tanda_terima_barang_detail_id = $tandaTerimaBarangDetail->id;
+                  $modelDetailDetail->quotation_delivery_receipt_detail_id = $item->id;
                   if (!($flag = $modelDetailDetail->save(false))) {
                      break;
                   }
@@ -94,6 +72,7 @@ class StockPerGudangBarangMasukDariTandaTerimaPoForm extends Model
 
          if ($flag) {
             $transaction->commit();
+
             $this->nomorHistoryLokasiBarang = $nomor;
             return true;
          }
@@ -107,6 +86,9 @@ class StockPerGudangBarangMasukDariTandaTerimaPoForm extends Model
       return false;
    }
 
+   /**
+    * @return mixed
+    */
    public function getNomorHistoryLokasiBarang()
    {
       return $this->nomorHistoryLokasiBarang;

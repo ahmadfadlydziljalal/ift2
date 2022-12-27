@@ -15,7 +15,7 @@ use yii\web\View;
 /* @var $searchModel LokasiBarangPerCardSearch */
 /* @var $dataProvider ActiveDataProvider */
 
-$this->title = 'Stock Persediaan di: ' . $card->nama;
+$this->title = 'History di gudang ' . $card->nama;
 $this->params['breadcrumbs'][] = ['label' => 'Stock Per Gudang', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $card->nama;
 
@@ -33,6 +33,7 @@ $this->params['breadcrumbs'][] = $card->nama;
             [
                'class' => SerialColumn::class
             ],
+            'nomor',
             /*[
                'class' => DataColumn::class,
                'attribute' => 'cardId',

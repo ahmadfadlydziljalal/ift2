@@ -2,6 +2,7 @@
 
 namespace app\models\form;
 
+use app\enums\TipePergerakanBarangEnum;
 use app\models\ClaimPettyCash;
 use app\models\ClaimPettyCashNotaDetail;
 use app\models\HistoryLokasiBarang;
@@ -27,6 +28,14 @@ class StockPerGudangBarangMasukDariClaimPettyCashForm extends Model
     */
    public ?array $historyLokasiBarangs = null;
 
+   protected string $nomorHistoryLokasiBarang;
+
+   public function getNomorHistoryLokasiBarang()
+   {
+      return $this->nomorHistoryLokasiBarang;
+   }
+
+
    public function rules(): array
    {
       return [
@@ -44,31 +53,42 @@ class StockPerGudangBarangMasukDariClaimPettyCashForm extends Model
    {
       $transaction = HistoryLokasiBarang::getDb()->beginTransaction();
       try {
+
          $flag = true;
+         $nomor = HistoryLokasiBarang::generateNomor(TipePergerakanBarangEnum::IN->value);
+
          /** @var ClaimPettyCashNotaDetail $claimPettyCashDetail */
          foreach ($this->claimPettyCashNotaDetails as $i => $claimPettyCashDetail) :
+
             if ($flag === false) break;
+
             if (isset($this->historyLokasiBarangs[$i]) && is_array($this->historyLokasiBarangs[$i])) {
                foreach ($this->historyLokasiBarangs[$i] as $modelDetailDetail) {
+                  $modelDetailDetail->nomor = $nomor;
                   $modelDetailDetail->claim_petty_cash_nota_detail_id = $claimPettyCashDetail->id;
                   if (!($flag = $modelDetailDetail->save(false))) {
                      break;
                   }
                }
             }
+
          endforeach;
 
          if ($flag) {
             $transaction->commit();
+            $this->nomorHistoryLokasiBarang = $nomor;
             return true;
          }
-
          $transaction->rollBack();
+
       } catch (Exception $e) {
+
          $transaction->rollBack();
          throw new ServerErrorHttpException("Database tidak bisa menyimpan data karena " . $e->getMessage());
       }
 
       return false;
    }
+
+
 }

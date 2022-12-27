@@ -10,6 +10,7 @@ use yii\data\ActiveDataProvider;
 class LokasiBarangPerCardSearch extends LokasiBarang
 {
 
+   public ?string $nomor = null;
    public ?string $cardId = null;
    public ?string $tandaTerimaBarangDetailId = null;
    public ?string $claimPettyCashNotaDetailId = null;
@@ -19,7 +20,7 @@ class LokasiBarangPerCardSearch extends LokasiBarang
    {
       return ArrayHelper::merge(
          HistoryLokasiBarang::$attributes, [
-            'cardId' => 'card'
+            'cardId' => 'card',
          ]
 
       );
@@ -28,7 +29,8 @@ class LokasiBarangPerCardSearch extends LokasiBarang
    public function rules(): array
    {
       return [
-         [['cardId', 'tandaTerimaBarangDetailId', 'tipePergerakanId', 'claimPettyCashNotaDetailId'], 'integer']
+         [['cardId', 'tandaTerimaBarangDetailId', 'tipePergerakanId', 'claimPettyCashNotaDetailId'], 'integer'],
+         [['nomor'], 'safe']
       ];
    }
 
@@ -52,6 +54,7 @@ class LokasiBarangPerCardSearch extends LokasiBarang
          'tipe_pergerakan_id' => $this->tipePergerakanId,
       ]);
 
+      $query->andFilterWhere(['LIKE', 'history_lokasi_barang.nomor', $this->nomor]);
       $query->andFilterWhere(['LIKE', 'tanda_terima_barang.nomor', $this->tandaTerimaBarangDetailId]);
       $query->andFilterWhere(['LIKE', 'claim_petty_cash.nomor', $this->claimPettyCashNotaDetailId]);
       return $dataProvider;

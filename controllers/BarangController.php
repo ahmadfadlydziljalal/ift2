@@ -2,14 +2,19 @@
 
 namespace app\controllers;
 
+use app\enums\TipePembelianEnum;
 use app\models\Barang;
 use app\models\BarangSatuan;
+use app\models\MaterialRequisition;
+use app\models\MaterialRequisitionDetail;
 use app\models\Satuan;
 use app\models\search\BarangSearch;
 use app\models\Tabular;
+use bilberrry\spaces\Service;
 use Exception;
 use Throwable;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -28,9 +33,7 @@ use yii\web\ServerErrorHttpException;
  */
 class BarangController extends Controller
 {
-   /**
-    * @inheritdoc
-    */
+
    public function behaviors(): array
    {
       return [
@@ -43,10 +46,6 @@ class BarangController extends Controller
       ];
    }
 
-   /**
-    * Lists all Barang models.
-    * @return string
-    */
    public function actionIndex(): string
    {
       $searchModel = new BarangSearch();
@@ -58,11 +57,6 @@ class BarangController extends Controller
       ]);
    }
 
-   /**
-    * Creates a new Barang model.
-    * @return string|Response
-    * @throws ServerErrorHttpException
-    */
    public function actionCreate(): Response|string
    {
       $request = Yii::$app->request;
@@ -71,22 +65,15 @@ class BarangController extends Controller
 
       if ($model->load($request->post())) {
 
-         // Re-create modelsDetail
+         # Re-create models detail
          $modelsDetail = Tabular::createMultiple(BarangSatuan::class);
          Tabular::loadMultiple($modelsDetail, $request->post());
 
-         // Validate models
+         # Validate models
          if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
-
-            if ($model->createWithDetails($modelsDetail)) {
-               Yii::$app->session->setFlash('success', 'Barang: '
-                  . Html::a($model->nama, ['view', 'id' => $model->id]) . " berhasil ditambahkan."
-               );
-               return $this->redirect(['index']);
-            }
-
-            Yii::$app->session->setFlash('danger', " Barang is failed to insert.");
+            if ($model->createWithDetails($modelsDetail)) return $this->redirect(['index']);
          }
+
       }
 
       return $this->render('create', [
@@ -97,10 +84,9 @@ class BarangController extends Controller
    }
 
    /**
-    * Displays a single Barang model.
-    * @param integer $id
+    * @param int $id
     * @return string
-    * @throws HttpException
+    * @throws NotFoundHttpException
     */
    public function actionView(int $id): string
    {
@@ -127,12 +113,37 @@ class BarangController extends Controller
    }
 
    /**
-    * Updates an existing Barang model.
-    * If update is successful, the browser will be redirected to the 'index' page with pagination URL
-    * @param integer $id
-    * @return Response|string
-    * @throws HttpException
+    * @param $q
+    * @param $id
+    * @return array[]
+    */
+   public function actionFindTypeStock($q = null, $id = null)
+   {
+      Yii::$app->response->format = Response::FORMAT_JSON;
+      $out = ['results' => ['id' => '', 'text' => '']];
+
+      if (!is_null($q)) {
+
+         $data = Barang::find()
+            ->byTipePembelian(TipePembelianEnum::STOCK->value, $q);
+
+         $out['results'] = array_values($data);
+
+      } elseif ($id > 0) {
+
+         $out['results'] = [
+            'id' => $id,
+            'text' => Barang::find($id)->nama
+         ];
+
+      }
+
+      return $out;
+   }
+
+   /**
     * @throws NotFoundHttpException
+    * @throws ServerErrorHttpException
     */
    public function actionUpdate(int $id): Response|string
    {
@@ -277,6 +288,28 @@ class BarangController extends Controller
       return empty($error)
          ? ['success', $_FILES['file_data']]
          : ['error', 'Error While uploading image, contact the system administrator' . $error];
+   }
+
+
+   /**
+    * @param $id
+    * @return Response
+    * @throws InvalidConfigException
+    * @throws NotFoundHttpException
+    */
+   public function actionDeletePhoto($id): Response
+   {
+      $model = $this->findModel($id);
+      $storage = Yii::$app->get('spaces');
+
+      $storage->commands()->delete($model->photo)->execute();
+      $storage->commands()->delete($model->photo_thumbnail)->execute();
+
+      $model->photo = null;
+      $model->photo_thumbnail = null;
+      $model->save(false);
+
+      return $this->redirect(['barang/view', 'id' => $id]);
    }
 
    /**

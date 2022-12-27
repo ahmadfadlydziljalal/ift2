@@ -13,11 +13,14 @@ use yii\helpers\ArrayHelper;
 class QuotationDeliveryReceiptDetail extends BaseQuotationDeliveryReceiptDetail
 {
 
+   const SCENARIO_INPUT_KE_GUDANG = 'input-ke-gudang';
+   public ?string $nomorQuotationDeliveryReceipt = null;
    public ?float $quotationBarangQuantity = null;
    public ?float $totalQuantityIndent = null;
    public ?int $barangId = null;
    public ?string $barangNama = null;
    public ?string $satuanNama = null;
+   public ?float $totalQuantityTerimaPerbandiganLokasi = null;
 
    public function behaviors()
    {
@@ -35,10 +38,29 @@ class QuotationDeliveryReceiptDetail extends BaseQuotationDeliveryReceiptDetail
          parent::rules(),
          [
             # custom validation rules
-            /* @see \app\models\QuotationDeliveryReceiptDetail::validateQuantityBetweenQuotationBarangAndReceiptDetail */
-            ['quantity', 'validateQuantityBetweenQuotationBarangAndReceiptDetail']
+            /* @see QuotationDeliveryReceiptDetail::validateQuantityBetweenQuotationBarangAndReceiptDetail */
+            ['quantity', 'validateQuantityBetweenQuotationBarangAndReceiptDetail'],
+            ['nomorQuotationDeliveryReceipt', 'safe'],
+            //['quantity', 'safe'],
+            [['quantity', 'totalQuantityTerimaPerbandiganLokasi'], 'required', 'on' => self::SCENARIO_INPUT_KE_GUDANG],
+            ['quantity', 'validateInputKeGudang', 'on' => self::SCENARIO_INPUT_KE_GUDANG]
          ]
       );
+   }
+
+   /**
+    * @param $attribute
+    * @param $params
+    * @param $validator
+    * @return void
+    */
+   public function validateInputKeGudang($attribute, $params, $validator): void
+   {
+
+      $seharusnya = round($this->quantity, 2);
+      $perbandinganLokasi = round(floatval($this->totalQuantityTerimaPerbandiganLokasi), 2);
+
+      if ($seharusnya != $perbandinganLokasi) $this->addError($attribute, ' Not match antara total terima ' . $seharusnya . ' dengan total quantity lokasi ' . $perbandinganLokasi);
    }
 
    /**
