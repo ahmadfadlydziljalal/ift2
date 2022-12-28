@@ -27,9 +27,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h1><?= Html::encode($this->title) ?></h1>
             </div>
             <div>
+               <?= Html::a('<i class="bi bi-plus"></i> Start', ['stock-per-gudang/start-location'], ['class' => 'btn btn-primary']) ?>
                <?php
                echo ButtonDropdown::widget([
-                  'label' => 'Masuk Barang',
+                  'label' => 'Masuk',
                   'dropdown' => [
                      'items' => [
                         [
@@ -61,10 +62,10 @@ $this->params['breadcrumbs'][] = $this->title;
                   'buttonOptions' => ['class' => 'btn-primary']
                ]);
                ?>
-               <?= Html::a('<i class="bi bi-plus"></i> Transfer Barang', ['stock-per-gudang/transfer-barang-antar-gudang'], ['class' => 'btn btn-primary']) ?>
+               <?= Html::a('<i class="bi bi-plus"></i> Transfer', ['stock-per-gudang/transfer-barang-antar-gudang'], ['class' => 'btn btn-primary']) ?>
                <?php
                echo ButtonDropdown::widget([
-                  'label' => 'Keluar Barang',
+                  'label' => 'Keluar',
                   'dropdown' => [
                      'items' => [
                         [

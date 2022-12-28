@@ -27,6 +27,7 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\ClaimPettyCashNotaDetail[] $claimPettyCashNotaDetails
  * @property \app\models\Satuan $defaultSatuan
  * @property \app\models\FakturDetail[] $fakturDetails
+ * @property \app\models\HistoryLokasiBarang[] $historyLokasiBarangs
  * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
  * @property \app\models\Originalitas $originalitas
  * @property \app\models\ProformaDebitNoteDetailBarang[] $proformaDebitNoteDetailBarangs
@@ -128,6 +129,14 @@ abstract class Barang extends \yii\db\ActiveRecord
     public function getFakturDetails()
     {
         return $this->hasMany(\app\models\FakturDetail::class, ['barang_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHistoryLokasiBarangs()
+    {
+        return $this->hasMany(\app\models\HistoryLokasiBarang::class, ['barang_id' => 'id']);
     }
 
     /**

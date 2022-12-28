@@ -11,6 +11,7 @@ use yii\helpers\ArrayHelper;
  * This is the base-model class for table "history_lokasi_barang".
  *
  * @property integer $id
+ * @property integer $barang_id
  * @property string $nomor
  * @property integer $card_id
  * @property integer $tanda_terima_barang_detail_id
@@ -26,6 +27,7 @@ use yii\helpers\ArrayHelper;
  * @property string $catatan
  * @property integer $depend_id
  *
+ * @property \app\models\Barang $barang
  * @property \app\models\Card $card
  * @property \app\models\ClaimPettyCashNotaDetail $claimPettyCashNotaDetail
  * @property \app\models\HistoryLokasiBarang $depend
@@ -54,12 +56,13 @@ abstract class HistoryLokasiBarang extends \yii\db\ActiveRecord
     public function rules()
     {
         return ArrayHelper::merge(parent::rules(), [
+            [['barang_id', 'card_id', 'tanda_terima_barang_detail_id', 'claim_petty_cash_nota_detail_id', 'quotation_delivery_receipt_detail_id', 'tipe_pergerakan_id', 'step', 'depend_id'], 'integer'],
             [['card_id', 'quantity', 'block', 'rak', 'tier', 'row'], 'required'],
-            [['card_id', 'tanda_terima_barang_detail_id', 'claim_petty_cash_nota_detail_id', 'quotation_delivery_receipt_detail_id', 'tipe_pergerakan_id', 'step', 'depend_id'], 'integer'],
             [['quantity'], 'number'],
             [['catatan'], 'string'],
             [['nomor'], 'string', 'max' => 255],
             [['block', 'rak', 'tier', 'row'], 'string', 'max' => 8],
+            [['barang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Barang::class, 'targetAttribute' => ['barang_id' => 'id']],
             [['card_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['card_id' => 'id']],
             [['depend_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\HistoryLokasiBarang::class, 'targetAttribute' => ['depend_id' => 'id']],
             [['quotation_delivery_receipt_detail_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\QuotationDeliveryReceiptDetail::class, 'targetAttribute' => ['quotation_delivery_receipt_detail_id' => 'id']],
@@ -76,6 +79,7 @@ abstract class HistoryLokasiBarang extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'barang_id' => 'Barang ID',
             'nomor' => 'Nomor',
             'card_id' => 'Card ID',
             'tanda_terima_barang_detail_id' => 'Tanda Terima Barang Detail ID',
@@ -99,8 +103,17 @@ abstract class HistoryLokasiBarang extends \yii\db\ActiveRecord
     public function attributeHints()
     {
         return array_merge(parent::attributeHints(), [
+            'barang_id' => 'Barang ID difungsikan hanya untuk meng-handle saat pertama kali sistem diterapkan',
             'card_id' => 'Card yang bertindak sebagai warehouse',
         ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBarang()
+    {
+        return $this->hasOne(\app\models\Barang::class, ['id' => 'barang_id']);
     }
 
     /**

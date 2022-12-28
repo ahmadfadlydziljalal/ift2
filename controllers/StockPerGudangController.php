@@ -11,6 +11,7 @@ use app\models\form\ReportStockPerGudangBarangMasukDariTandaTerima;
 use app\models\form\StockPerGudangBarangKeluarDariDeliveryReceiptForm;
 use app\models\form\StockPerGudangBarangMasukDariClaimPettyCashForm;
 use app\models\form\StockPerGudangBarangMasukDariTandaTerimaPoForm;
+use app\models\form\StockPerGudangStartLocation;
 use app\models\form\StockPerGudangTransferBarangAntarGudang;
 use app\models\form\StockPerGudangTransferBarangAntarGudangDetail;
 use app\models\HistoryLokasiBarang;
@@ -71,6 +72,30 @@ class StockPerGudangController extends Controller
          return $model;
       }
       throw new NotFoundHttpException('The requested page does not exist.');
+   }
+
+   # Barang masuk dari start project #########################################################################################################################################
+
+   /**
+    * @return Response|string
+    * @throws ServerErrorHttpException
+    */
+   public function actionStartLocation(): Response|string
+   {
+      $model = new StockPerGudangStartLocation();
+
+      if ($this->request->isPost && $model->load($this->request->post()) && $model->validate()) :
+         if ($model->save()) {
+            if ($this->request->post('Continue')) {
+               return $this->redirect(['stock-per-gudang/start-location']);
+            }
+            return $this->redirect(['stock-per-gudang/index']);
+         }
+      endif;
+
+      return $this->render('_form_start_location', [
+         'model' => $model
+      ]);
    }
 
    # Barang masuk dari tanda terima purchase order #########################################################################################################################################
