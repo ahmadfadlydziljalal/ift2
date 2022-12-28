@@ -1,7 +1,7 @@
 <?php
 
 use app\models\Card;
-use app\models\search\LokasiBarangPerCardSearch;
+use app\models\search\HistoryLokasiBarangPerCardWarehouseSearch;
 use app\models\Status;
 use kartik\grid\DataColumn;
 use kartik\grid\GridView;
@@ -12,7 +12,7 @@ use yii\web\View;
 
 /* @var $this View */
 /* @var $card Card|null */
-/* @var $searchModel LokasiBarangPerCardSearch */
+/* @var $searchModel HistoryLokasiBarangPerCardWarehouseSearch */
 /* @var $dataProvider ActiveDataProvider */
 
 $this->title = 'History di gudang ' . $card->nama;

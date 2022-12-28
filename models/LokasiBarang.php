@@ -11,7 +11,7 @@ class LokasiBarang extends Model
    public ?string $nama = '';
    public ?Card $card = null;
 
-   public function getListLokasiBarangPerCard(): ActiveQuery
+   public function getHistoryLokasiBarangPerCard(): ActiveQuery
    {
       return HistoryLokasiBarang::find()
          ->joinWith('card')

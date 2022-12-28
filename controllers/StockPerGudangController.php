@@ -16,8 +16,8 @@ use app\models\form\StockPerGudangTransferBarangAntarGudang;
 use app\models\form\StockPerGudangTransferBarangAntarGudangDetail;
 use app\models\HistoryLokasiBarang;
 use app\models\QuotationDeliveryReceipt;
-use app\models\search\LokasiBarangPerCardSearch;
-use app\models\search\LokasiBarangSearch;
+use app\models\search\HistoryLokasiBarangPerCardWarehouseSearch;
+use app\models\search\StockPerGudangSearch;
 use app\models\Tabular;
 use app\models\TandaTerimaBarang;
 use JetBrains\PhpStorm\ArrayShape;
@@ -37,7 +37,7 @@ class StockPerGudangController extends Controller
     */
    public function actionIndex(): string
    {
-      $searchModel = new LokasiBarangSearch();
+      $searchModel = new StockPerGudangSearch();
       $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
       $dataProvider->pagination = false;
 
@@ -49,14 +49,14 @@ class StockPerGudangController extends Controller
    /**
     * @throws NotFoundHttpException
     */
-   public function actionView($id): string
+   public function actionViewHistoryLokasiBarangPerCard($id): string
    {
       $card = $this->findModel($id);
-      $searchModel = new LokasiBarangPerCardSearch([
+      $searchModel = new HistoryLokasiBarangPerCardWarehouseSearch([
          'card' => $card
       ]);
 
-      return $this->render('view', [
+      return $this->render('view_history_lokasi_barang_per_card', [
          'card' => $card,
          'searchModel' => $searchModel,
          'dataProvider' => $searchModel->search(Yii::$app->request->queryParams)
@@ -229,6 +229,7 @@ class StockPerGudangController extends Controller
     * @param $id
     * @return Response|string
     * @throws ServerErrorHttpException
+    * @throws NotFoundHttpException
     */
    public function actionBarangMasukClaimPettyCashStep2($id): Response|string
    {

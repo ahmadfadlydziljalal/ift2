@@ -7,7 +7,7 @@ use app\models\HistoryLokasiBarang;
 use app\models\LokasiBarang;
 use yii\data\ActiveDataProvider;
 
-class LokasiBarangPerCardSearch extends LokasiBarang
+class HistoryLokasiBarangPerCardWarehouseSearch extends LokasiBarang
 {
 
    public ?string $nomor = null;
@@ -37,7 +37,7 @@ class LokasiBarangPerCardSearch extends LokasiBarang
    public function search(array $params): ActiveDataProvider
    {
 
-      $query = parent::getListLokasiBarangPerCard();
+      $query = parent::getHistoryLokasiBarangPerCard();
       $dataProvider = new ActiveDataProvider([
          'query' => $query,
          'key' => 'id',

@@ -6,7 +6,7 @@ use app\models\LokasiBarang;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
-class LokasiBarangSearch extends LokasiBarang
+class StockPerGudangSearch extends LokasiBarang
 {
    /**
     * @inheritdoc
