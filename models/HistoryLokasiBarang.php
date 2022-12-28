@@ -25,7 +25,7 @@ class HistoryLokasiBarang extends BaseHistoryLokasiBarang
 
       switch ($tipePergerakanId):
          case TipePergerakanBarangEnum::START_PERTAMA_KALI_PENERAPAN_SISTEM->value:
-            $nomor = AutoNumber::generate('START-' . $date . '-' . "?", false, 3);
+            $nomor = AutoNumber::generate('ST-' . $date . '-' . "?", false, 3);
             break;
 
          case TipePergerakanBarangEnum::IN->value:
@@ -33,11 +33,11 @@ class HistoryLokasiBarang extends BaseHistoryLokasiBarang
             break;
 
          case TipePergerakanBarangEnum::MOVEMENT->value:
-            $nomor = AutoNumber::generate('MOVEMENT-' . $date . '-' . "?", false, 3);
+            $nomor = AutoNumber::generate('MV-' . $date . '-' . "?", false, 3);
             break;
 
          case TipePergerakanBarangEnum::PEMBATALAN->value :
-            $nomor = AutoNumber::generate('BATAL-' . $date . '-' . "?", false, 3);
+            $nomor = AutoNumber::generate('BT-' . $date . '-' . "?", false, 3);
             break;
 
          case TipePergerakanBarangEnum::OUT->value :
