@@ -206,15 +206,9 @@ class QuotationController extends Controller
          'scenario' => Quotation::SCENARIO_CREATE_BARANG_QUOTATION,
       ]);
 
-      if ($this->request->isPost
-         && $component->quotation->load($this->request->post())
-      ) {
+      if ($this->request->isPost && $component->quotation->load($this->request->post())) {
          if ($component->create()) {
-            return $this->redirect([
-               'quotation/view',
-               'id' => $id,
-               '#' => 'quotation-tab-tab0'
-            ]);
+            return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab0']);
          }
       }
 

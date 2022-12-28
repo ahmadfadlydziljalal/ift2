@@ -6,7 +6,9 @@ use app\enums\TipePergerakanBarangEnum;
 use app\models\HistoryLokasiBarang;
 use app\models\Status;
 use Exception;
+use Yii;
 use yii\base\Model;
+use yii\helpers\Html;
 use yii\web\ServerErrorHttpException;
 
 class StockPerGudangTransferBarangAntarGudang extends Model
@@ -64,9 +66,10 @@ class StockPerGudangTransferBarangAntarGudang extends Model
          if ($flag = $model->save(false)) {
 
             foreach ($this->modelsDetail as $detail) :
-               if (!$flag) :
+
+               if (!$flag) {
                   break;
-               endif;
+               }
 
                $detailSavedStatus = (new HistoryLokasiBarang([
                   'nomor' => $nomor,
@@ -92,6 +95,11 @@ class StockPerGudangTransferBarangAntarGudang extends Model
          if ($flag) {
             $transaction->commit();
             $this->nomorHistoryLokasiBarang = $nomor;
+
+            Yii::$app->session->setFlash('success', [[
+               'title' => 'Pesan sukses',
+               'message' => 'Transfer berhasil dengan nomor referensi ' . Html::tag('span', $this->getNomorHistoryLokasiBarang(), ['class' => 'badge bg-primary']),
+            ]]);
             return true;
          } else {
             $transaction->rollBack();
@@ -100,6 +108,10 @@ class StockPerGudangTransferBarangAntarGudang extends Model
          throw new ServerErrorHttpException($e->getMessage());
       }
 
+      Yii::$app->session->setFlash('danger', [[
+         'title' => 'Pesan gagal',
+         'message' => 'Transfer gagal.'
+      ]]);
       return false;
    }
 

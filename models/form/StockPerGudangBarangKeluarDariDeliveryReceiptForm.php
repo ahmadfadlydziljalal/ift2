@@ -2,11 +2,15 @@
 
 namespace app\models\form;
 
+use app\enums\SessionSetFlashEnum;
+use app\enums\TextLinkEnum;
 use app\enums\TipePergerakanBarangEnum;
 use app\models\HistoryLokasiBarang;
 use app\models\QuotationDeliveryReceipt;
+use Yii;
 use yii\base\Model;
 use yii\db\Exception;
+use yii\helpers\Html;
 use yii\web\ServerErrorHttpException;
 
 class StockPerGudangBarangKeluarDariDeliveryReceiptForm extends Model
@@ -46,6 +50,9 @@ class StockPerGudangBarangKeluarDariDeliveryReceiptForm extends Model
       return $scenarios;
    }
 
+   /**
+    * @throws ServerErrorHttpException
+    */
    public function save()
    {
       $transaction = HistoryLokasiBarang::getDb()->beginTransaction();
@@ -74,6 +81,7 @@ class StockPerGudangBarangKeluarDariDeliveryReceiptForm extends Model
             $transaction->commit();
 
             $this->nomorHistoryLokasiBarang = $nomor;
+            $this->flashMessage(SessionSetFlashEnum::SUCCESS->value);
             return true;
          }
 
@@ -83,13 +91,52 @@ class StockPerGudangBarangKeluarDariDeliveryReceiptForm extends Model
          throw new ServerErrorHttpException("Database tidak bisa menyimpan data karena " . $e->getMessage());
       }
 
+      $this->flashMessage(SessionSetFlashEnum::DANGER->value);
       return false;
    }
 
    /**
-    * @return mixed
+    * @param string $key
+    * @return void
+    * @throws ServerErrorHttpException
     */
-   public function getNomorHistoryLokasiBarang()
+   protected function flashMessage(string $key = ''): void
+   {
+      switch ($key) :
+
+         case SessionSetFlashEnum::SUCCESS->value:
+            Yii::$app->session->setFlash('success', [[
+               'title' => 'Lokasi in berhasil di record.',
+               'message' => 'Lokasi Delivery Receipt berhasil disimpan dengan nomor referensi ' . Html::tag('span', $this->getNomorHistoryLokasiBarang(), ['class' => 'badge bg-primary']),
+               'footer' => Html::a(
+                  TextLinkEnum::PRINT->value,
+                  ['stock-per-gudang/print-barang-keluar-quotation-delivery-receipt', 'id' => $this->quotationDeliveryReceipt->id],
+                  [
+                     'target' => '_blank',
+                     'class' => 'btn btn-primary'
+                  ]
+               )
+            ]]);
+            break;
+
+         case SessionSetFlashEnum::DANGER->value:
+            Yii::$app->session->setFlash('error', [[
+               'title' => 'Gagal',
+               'message' => 'Please check again ...!'
+            ]]);
+            break;
+
+         default:
+            throw new ServerErrorHttpException($key . ' tidak ada di setFlash.');
+
+      endswitch;
+
+   }
+
+   /**
+    * @return string
+    */
+   public function getNomorHistoryLokasiBarang(): string
    {
       return $this->nomorHistoryLokasiBarang;
    }

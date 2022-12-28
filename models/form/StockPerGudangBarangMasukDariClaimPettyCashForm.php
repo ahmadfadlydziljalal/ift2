@@ -2,12 +2,16 @@
 
 namespace app\models\form;
 
+use app\enums\SessionSetFlashEnum;
+use app\enums\TextLinkEnum;
 use app\enums\TipePergerakanBarangEnum;
 use app\models\ClaimPettyCash;
 use app\models\ClaimPettyCashNotaDetail;
 use app\models\HistoryLokasiBarang;
+use Yii;
 use yii\base\Model;
 use yii\db\Exception;
+use yii\helpers\Html;
 use yii\web\ServerErrorHttpException;
 
 class StockPerGudangBarangMasukDariClaimPettyCashForm extends Model
@@ -28,13 +32,8 @@ class StockPerGudangBarangMasukDariClaimPettyCashForm extends Model
     */
    public ?array $historyLokasiBarangs = null;
 
+   # string
    protected string $nomorHistoryLokasiBarang;
-
-   public function getNomorHistoryLokasiBarang()
-   {
-      return $this->nomorHistoryLokasiBarang;
-   }
-
 
    public function rules(): array
    {
@@ -76,7 +75,10 @@ class StockPerGudangBarangMasukDariClaimPettyCashForm extends Model
 
          if ($flag) {
             $transaction->commit();
+
             $this->nomorHistoryLokasiBarang = $nomor;
+            $this->flashMessage(SessionSetFlashEnum::SUCCESS->value);
+
             return true;
          }
          $transaction->rollBack();
@@ -87,7 +89,53 @@ class StockPerGudangBarangMasukDariClaimPettyCashForm extends Model
          throw new ServerErrorHttpException("Database tidak bisa menyimpan data karena " . $e->getMessage());
       }
 
+      $this->flashMessage(SessionSetFlashEnum::DANGER->value);
       return false;
+   }
+
+   /**
+    * @param string $key
+    * @return void
+    * @throws ServerErrorHttpException
+    */
+   protected function flashMessage(string $key = ''): void
+   {
+      switch ($key) :
+
+         case SessionSetFlashEnum::SUCCESS->value:
+            Yii::$app->session->setFlash($key, [[
+               'title' => 'Lokasi in berhasil di record.',
+               'message' => 'Lokasi Claim Petty Cash berhasil disimpan dengan nomor referensi ' . Html::tag('span', $this->nomorHistoryLokasiBarang, ['class' => 'badge bg-primary']),
+               'footer' => Html::a(TextLinkEnum::PRINT->value,
+                  ['stock-per-gudang/print-barang-masuk-claim-petty-cash', 'id' => $this->claimPettyCash->id],
+                  [
+                     'target' => '_blank',
+                     'class' => 'btn btn-primary'
+                  ]
+               )
+            ]]);
+            break;
+
+         case SessionSetFlashEnum::DANGER->value:
+            Yii::$app->session->setFlash('error', [[
+               'title' => 'Gagal',
+               'message' => 'Please check again ...!'
+            ]]);
+            break;
+
+         default:
+            throw new ServerErrorHttpException($key . ' tidak ada di setFlash.');
+
+      endswitch;
+
+   }
+
+   /**
+    * @return string
+    */
+   public function getNomorHistoryLokasiBarang(): string
+   {
+      return $this->nomorHistoryLokasiBarang;
    }
 
 

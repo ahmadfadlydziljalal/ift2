@@ -31,14 +31,10 @@ $this->params['breadcrumbs'][] = $this->title;
           'target' => '_blank'
        ]) ?>
     </div>
-
-
+   
    <?php $form = ActiveForm::begin([
       'id' => 'dynamic-form'
    ]); ?>
-
-   <?= $form->errorSummary($model, ['class' => 'alert alert-danger']) ?>
-
 
    <?php
    DynamicFormWidget::begin([

@@ -2,12 +2,16 @@
 
 namespace app\models\form;
 
+use app\enums\SessionSetFlashEnum;
+use app\enums\TextLinkEnum;
 use app\enums\TipePergerakanBarangEnum;
 use app\models\HistoryLokasiBarang;
 use app\models\TandaTerimaBarang;
 use app\models\TandaTerimaBarangDetail;
+use Yii;
 use yii\base\Model;
 use yii\db\Exception;
+use yii\helpers\Html;
 use yii\web\ServerErrorHttpException;
 
 class StockPerGudangBarangMasukDariTandaTerimaPoForm extends Model
@@ -95,6 +99,7 @@ class StockPerGudangBarangMasukDariTandaTerimaPoForm extends Model
          if ($flag) {
             $transaction->commit();
             $this->nomorHistoryLokasiBarang = $nomor;
+            $this->flashMessage(SessionSetFlashEnum::SUCCESS->value);
             return true;
          }
 
@@ -104,7 +109,44 @@ class StockPerGudangBarangMasukDariTandaTerimaPoForm extends Model
          throw new ServerErrorHttpException("Database tidak bisa menyimpan data karena " . $e->getMessage());
       }
 
+      $this->flashMessage(SessionSetFlashEnum::DANGER->value);
       return false;
+   }
+
+
+   /**
+    * @param string $key
+    * @return void
+    * @throws ServerErrorHttpException
+    */
+   protected function flashMessage(string $key = ''): void
+   {
+      switch ($key) :
+
+         case SessionSetFlashEnum::SUCCESS->value:
+            Yii::$app->session->setFlash('success', [[
+               'title' => 'Lokasi in berhasil di record.',
+               'message' => 'Lokasi tanda terima berhasil disimpan dengan nomor referensi ' .
+                  Html::tag('span', $this->getNomorHistoryLokasiBarang(), ['class' => 'badge bg-primary']),
+               'footer' => Html::a(TextLinkEnum::PRINT->value,
+                  ['stock-per-gudang/print-barang-masuk-tanda-terima-po', 'id' => $this->tandaTerimaBarang->id],
+                  [
+                     'target' => '_blank',
+                     'class' => 'btn btn-primary'
+                  ]
+               )
+            ]]);
+            break;
+
+         case SessionSetFlashEnum::DANGER->value:
+            Yii::$app->session->setFlash('error', [['title' => 'Gagal', 'message' => 'Please check again ...!']]);
+            break;
+
+         default:
+            throw new ServerErrorHttpException($key . ' tidak ada di setFlash.');
+
+      endswitch;
+
    }
 
    public function getNomorHistoryLokasiBarang()
