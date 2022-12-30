@@ -27,6 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div>
                 <h1><?= Html::encode($this->title) ?></h1>
             </div>
+
             <div>
                <?= Html::a('<i class="bi bi-repeat"></i>', ['index'], ['class' => 'btn btn-primary']) ?>
                <?= ExportMenu::widget([

@@ -3,6 +3,10 @@
 namespace app\models;
 
 use app\enums\TipePembelianEnum;
+use app\models\active_queries\BarangQuery;
+use app\models\active_queries\ClaimPettyCashNotaDetailQuery;
+use app\models\active_queries\QuotationDeliveryReceiptDetailQuery;
+use app\models\active_queries\TandaTerimaBarangDetailQuery;
 use yii\base\Model;
 use yii\db\Expression;
 use yii\db\Query;
@@ -32,6 +36,9 @@ class Stock extends Model
       ];
    }
 
+   /**
+    * @return Query
+    */
    public function getData(): Query
    {
       return (new Query())
@@ -50,13 +57,16 @@ class Stock extends Model
          ])
          ->from(['init' => $this->getBarang()])
          ->leftJoin(['barangMasuk' => $this->getBarangMasuk()], 'barangMasuk.barangId = init.id')
-         ->leftJoin(['barangKeluar' => $this->getBarangKeluar()], 'barangKeluar.barangId = init.id')
+         ->leftJoin(['barangKeluar' => $this->getBarangKeluarDariQuotationDeliveryReceiptDetail()], 'barangKeluar.barangId = init.id')
          ->orderBy('namaBarang');
    }
 
+   /**
+    * Get Master Barang
+    * @return BarangQuery
+    */
    public function getBarang(): active_queries\BarangQuery
    {
-
       return Barang::find()
          ->alias('b')
          ->select([
@@ -74,7 +84,39 @@ class Stock extends Model
          ->orderBy('nama');
    }
 
-   public function getBarangMasuk(): active_queries\TandaTerimaBarangDetailQuery
+   /**
+    * Calculate barang masuk dari beberapa prosedur proses bisnis:
+    * 1. Tanda terima barang
+    * 2. Claim petty cash
+    *
+    * @return Query
+    */
+   public function getBarangMasuk(): Query
+   {
+      $q1 = (new Query())
+         ->select('*')
+         ->from(['q1' => $this->getBarangMasukDariTandaTerimaBarangDetail()]);
+
+      $q2 = (new Query())
+         ->select('*')
+         ->from(['q2' => $this->getBarangMasukDariClaimPettyCashNotaDetail()]);
+
+      $q1->union($q2);
+      return (new Query())
+         ->select([
+            'barangId' => 'barangId',
+            'barangNama' => 'barangNama',
+            'totalQuantityTerima' => new Expression('SUM(totalQuantityTerima)'),
+         ])
+         ->from(['barangMasuk' => $q1])
+         ->groupBy('barangId, barangNama')
+         ->orderBy('barangId');
+   }
+
+   /**
+    * @return TandaTerimaBarangDetailQuery
+    */
+   public function getBarangMasukDariTandaTerimaBarangDetail(): active_queries\TandaTerimaBarangDetailQuery
    {
       return TandaTerimaBarangDetail::find()
          ->select([
@@ -98,7 +140,37 @@ class Stock extends Model
          ->groupBy('b.id');
    }
 
-   public function getBarangKeluar(): active_queries\QuotationDeliveryReceiptDetailQuery
+   /**
+    * @return ClaimPettyCashNotaDetailQuery
+    */
+   public function getBarangMasukDariClaimPettyCashNotaDetail(): active_queries\ClaimPettyCashNotaDetailQuery
+   {
+      return ClaimPettyCashNotaDetail::find()
+         ->select([
+            'barangId' => 'b.id',
+            'barangNama' => 'b.nama',
+            'totalQuantityTerima' => new Expression("COALESCE(SUM(cpcnd.quantity), 0) "),
+         ])
+         ->alias('cpcnd')
+         ->joinWith(['claimPettyCashNota' => function ($claimPettyCashNota) {
+            $claimPettyCashNota->joinWith('claimPettyCash');
+         }])
+         ->joinWith(['barang' => function ($barang) {
+            $barang
+               ->alias('b')
+               ->joinWith('tipePembelian');
+         }])
+         ->where([
+            'b.tipe_pembelian_id' => TipePembelianEnum::STOCK->value
+         ])
+         ->groupBy('b.id')
+         ->orderBy('b.id');
+   }
+
+   /**
+    * @return QuotationDeliveryReceiptDetailQuery
+    */
+   public function getBarangKeluarDariQuotationDeliveryReceiptDetail(): active_queries\QuotationDeliveryReceiptDetailQuery
    {
       return QuotationDeliveryReceiptDetail::find()
          ->select([
@@ -120,5 +192,6 @@ class Stock extends Model
          ])
          ->groupBy('b.id');
    }
+
 
 }

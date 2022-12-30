@@ -18,6 +18,7 @@ use app\models\HistoryLokasiBarang;
 use app\models\QuotationDeliveryReceipt;
 use app\models\search\HistoryLokasiBarangPerCardWarehouseSearch;
 use app\models\search\StockPerGudangSearch;
+use app\models\StockPerGudangByCardSearch;
 use app\models\Tabular;
 use app\models\TandaTerimaBarang;
 use JetBrains\PhpStorm\ArrayShape;
@@ -47,19 +48,41 @@ class StockPerGudangController extends Controller
    }
 
    /**
+    * @param $id
+    * @return string
+    * @throws NotFoundHttpException
+    */
+   public function actionView($id): string
+   {
+      $searchModel = new StockPerGudangByCardSearch([
+         'card' => $this->findModel($id)
+      ]);
+      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+      return $this->render('view', [
+         'card' => $searchModel->card,
+         'searchModel' => $searchModel,
+         'dataProvider' => $dataProvider
+      ]);
+
+   }
+
+   /**
+    * @param $id
+    * @return string
     * @throws NotFoundHttpException
     */
    public function actionViewHistoryLokasiBarangPerCard($id): string
    {
-      $card = $this->findModel($id);
       $searchModel = new HistoryLokasiBarangPerCardWarehouseSearch([
-         'card' => $card
+         'card' => $this->findModel($id)
       ]);
+      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
       return $this->render('view_history_lokasi_barang_per_card', [
-         'card' => $card,
+         'card' => $searchModel->card,
          'searchModel' => $searchModel,
-         'dataProvider' => $searchModel->search(Yii::$app->request->queryParams)
+         'dataProvider' => $dataProvider
       ]);
    }
 
@@ -73,6 +96,7 @@ class StockPerGudangController extends Controller
       }
       throw new NotFoundHttpException('The requested page does not exist.');
    }
+
 
    # Barang masuk dari start project #########################################################################################################################################
 
