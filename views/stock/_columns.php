@@ -18,8 +18,10 @@ return [
       'value' => function ($model) {
          if ($model['photo_thumbnail']) {
             return Html::img($model['photo_thumbnail'], [
+               'alt' => 'No image available',
+               'loading' => 'lazy',
+               'height' => '32rem',
                'width' => 'auto',
-               'height' => 'auto'
             ]);
          }
          return null;
