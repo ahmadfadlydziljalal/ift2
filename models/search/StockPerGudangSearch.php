@@ -2,12 +2,17 @@
 
 namespace app\models\search;
 
-use app\models\LokasiBarang;
+use app\models\active_queries\CardQuery;
+use app\models\Card;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
-class StockPerGudangSearch extends LokasiBarang
+class StockPerGudangSearch extends Model
 {
+
+   public ?string $nama = '';
+
+
    /**
     * @inheritdoc
     */
@@ -24,7 +29,7 @@ class StockPerGudangSearch extends LokasiBarang
     */
    public function search(array $params): ActiveDataProvider
    {
-      $query = parent::getData();
+      $query = $this->getData();
       $dataProvider = new ActiveDataProvider([
          'query' => $query,
          'key' => 'id',
@@ -38,5 +43,14 @@ class StockPerGudangSearch extends LokasiBarang
 
       $query->andFilterWhere(['like', 'nama', $this->nama]);
       return $dataProvider;
+   }
+
+   public function getData(): CardQuery
+   {
+      return Card::find()
+         ->joinWith('cardTypes')
+         ->where([
+            'card_type.kode' => Card::GET_ONLY_WAREHOUSE
+         ]);
    }
 }

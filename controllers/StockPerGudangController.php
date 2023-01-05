@@ -16,9 +16,9 @@ use app\models\form\StockPerGudangTransferBarangAntarGudang;
 use app\models\form\StockPerGudangTransferBarangAntarGudangDetail;
 use app\models\HistoryLokasiBarang;
 use app\models\QuotationDeliveryReceipt;
-use app\models\search\HistoryLokasiBarangPerCardWarehouseSearch;
+use app\models\search\HistoryLokasiBarangSearchPerCardWarehouseSearch;
+use app\models\search\StockPerGudangByCardSearch;
 use app\models\search\StockPerGudangSearch;
-use app\models\StockPerGudangByCardSearch;
 use app\models\Tabular;
 use app\models\TandaTerimaBarang;
 use JetBrains\PhpStorm\ArrayShape;
@@ -52,7 +52,7 @@ class StockPerGudangController extends Controller
     * @return string
     * @throws NotFoundHttpException
     */
-   public function actionView($id): string
+   public function actionViewPerCard($id): string
    {
       $searchModel = new StockPerGudangByCardSearch([
          'card' => $this->findModel($id)
@@ -67,6 +67,16 @@ class StockPerGudangController extends Controller
 
    }
 
+
+   /*
+    * @TODO berikan display posisi terakhir barang per card gudang
+    * */
+   public function actionViewPerCardPerBarang($cardId, $barangId)
+   {
+
+   }
+
+
    /**
     * @param $id
     * @return string
@@ -74,7 +84,7 @@ class StockPerGudangController extends Controller
     */
    public function actionViewHistoryLokasiBarangPerCard($id): string
    {
-      $searchModel = new HistoryLokasiBarangPerCardWarehouseSearch([
+      $searchModel = new HistoryLokasiBarangSearchPerCardWarehouseSearch([
          'card' => $this->findModel($id)
       ]);
       $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -96,7 +106,6 @@ class StockPerGudangController extends Controller
       }
       throw new NotFoundHttpException('The requested page does not exist.');
    }
-
 
    # Barang masuk dari start project #########################################################################################################################################
 
@@ -569,6 +578,5 @@ class StockPerGudangController extends Controller
          'model' => ClaimPettyCash::findOne($id)
       ]);
    }
-
 
 }

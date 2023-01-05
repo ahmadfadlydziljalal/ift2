@@ -14,7 +14,7 @@ use yii\helpers\Html;
              style="height: 12em">
             <i class="bi bi-building-check fs-1"></i>
             <h2>
-               <?= Html::a($model->nama, ['stock-per-gudang/view', 'id' => $model->id], [
+               <?= Html::a($model->nama, ['stock-per-gudang/view-per-card', 'id' => $model->id], [
                   'class' => 'stretched-link text-decoration-none'
                ]) ?>
             </h2>

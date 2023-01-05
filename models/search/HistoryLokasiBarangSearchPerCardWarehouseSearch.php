@@ -4,10 +4,12 @@ namespace app\models\search;
 
 use app\components\helpers\ArrayHelper;
 use app\models\HistoryLokasiBarang;
-use app\models\LokasiBarang;
+use app\models\LokasiBarangSearch;
+use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\db\ActiveQuery;
 
-class HistoryLokasiBarangPerCardWarehouseSearch extends LokasiBarang
+class HistoryLokasiBarangSearchPerCardWarehouseSearch extends Model
 {
 
    public ?string $nomor = null;
@@ -37,7 +39,7 @@ class HistoryLokasiBarangPerCardWarehouseSearch extends LokasiBarang
    public function search(array $params): ActiveDataProvider
    {
 
-      $query = parent::getHistoryLokasiBarangPerCard();
+      $query = $this->getHistoryLokasiBarangPerCard();
       $dataProvider = new ActiveDataProvider([
          'query' => $query,
          'key' => 'id',
@@ -59,5 +61,21 @@ class HistoryLokasiBarangPerCardWarehouseSearch extends LokasiBarang
       $query->andFilterWhere(['LIKE', 'claim_petty_cash.nomor', $this->claimPettyCashNotaDetailId]);
       return $dataProvider;
 
+   }
+
+   public function getHistoryLokasiBarangPerCard(): ActiveQuery
+   {
+      return HistoryLokasiBarang::find()
+         ->joinWith('card')
+         ->joinWith('tipePergerakan')
+         ->joinWith(['tandaTerimaBarangDetail' => function ($ttbd) {
+            return $ttbd->joinWith('tandaTerimaBarang');
+         }])
+         ->joinWith(['claimPettyCashNotaDetail' => function ($cpcnd) {
+            return $cpcnd->joinWith(['claimPettyCashNota' => function ($cpcn) {
+               return $cpcn->joinWith('claimPettyCash');
+            }]);
+         }])
+         ->where(['history_lokasi_barang.card_id' => $this->card->id]);
    }
 }

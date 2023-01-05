@@ -3,9 +3,13 @@
 namespace app\models;
 
 use app\models\base\Card as BaseCard;
+use Yii;
 use yii\db\ActiveQuery;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\helpers\StringHelper;
+use yii\web\ServerErrorHttpException;
 
 /**
  * This is the model class for table "card".
@@ -71,5 +75,112 @@ class Card extends BaseCard
             'mata_uang_id' => 'Mata Uang',
          ]
       );
+   }
+
+   /**
+    * @throws ServerErrorHttpException
+    */
+   public function createWithCardBelongsType(): bool
+   {
+      $transaction = self::getDb()->beginTransaction();
+
+      try {
+
+         if ($flag = $this->save(false)) :
+
+            foreach ($this->cardBelongsTypesForm as $cardType) :
+               if (!$flag) break;
+
+               $flag = (new CardBelongsType([
+                  'card_id' => $this->id,
+                  'card_type_id' => $cardType
+               ]))->save(false);
+
+            endforeach;
+
+         endif;
+
+         if ($flag) {
+
+            $transaction->commit();
+            Yii::$app->session->setFlash('success', 'Card: ' . $this->nama . ' berhasil ditambahkan.');
+
+            return true;
+         } else {
+
+            $transaction->rollBack();
+
+         }
+      } catch (Exception $e) {
+         $transaction->rollBack();
+         throw new ServerErrorHttpException($e->getMessage());
+      }
+      return false;
+
+   }
+
+   /**
+    * @param $deletedCardBelongsTypeID
+    * @return bool
+    */
+   public function updateWithCardBelongsType($deletedCardBelongsTypeID): bool
+   {
+      $transaction = self::getDb()->beginTransaction();
+
+      try {
+         if ($flag = $this->save(false)) {
+
+            if (!empty($deletedCardBelongsTypeID)) {
+               CardBelongsType::deleteAll([
+                  'AND', 'card_id = :card_id',
+                  ['IN', 'card_type_id', $deletedCardBelongsTypeID]
+               ], [
+                  ':card_id' => $this->id
+               ]);
+            }
+
+            foreach ($this->cardBelongsTypesForm as $cardType) {
+
+               $exist = CardBelongsType::find()
+                  ->where([
+                     'card_id' => $this->id,
+                     'card_type_id' => $cardType
+                  ])
+                  ->exists();
+
+               if (!$exist) {
+
+                  $cbt = new CardBelongsType([
+                     'card_id' => $this->id,
+                     'card_type_id' => $cardType
+                  ]);
+
+                  $flag = $cbt->save(false) && $flag;
+               }
+
+               if (!$flag) {
+                  break;
+               }
+            }
+         }
+
+         if ($flag) {
+            $transaction->commit();
+            Yii::$app->session->setFlash('info',
+               'Card: ' . Html::a($this->nama, ['card/view', 'id' => $this->id, [
+                  'class' => 'btn btn-link'
+               ]]) . ' berhasil dirubah.');
+
+            return true;
+         } else {
+            $transaction->rollBack();
+            Yii::$app->session->setFlash('danger', "Rollback");
+         }
+      } catch (Exception $e) {
+         $transaction->rollBack();
+         Yii::$app->session->setFlash('danger', $e->getMessage());
+      }
+
+      return false;
    }
 }

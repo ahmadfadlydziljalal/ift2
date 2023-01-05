@@ -34,7 +34,7 @@ class StockPerGudangStartLocation extends Model
    public function rules(): array
    {
       return [
-         [['barangId', 'cardId', 'quantity', 'block', 'rak', 'tier', 'row', 'catatan'], 'required'],
+         [['barangId', 'cardId', 'quantity', 'block', 'rak', 'tier', 'row'], 'required'],
          [['barangId', 'cardId'], 'integer'],
          [['quantity ', 'block', 'rak', 'tier', 'row', 'catatan'], 'string'],
       ];

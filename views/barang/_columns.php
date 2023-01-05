@@ -1,10 +1,10 @@
 <?php
 
 use app\enums\TipePembelianEnum;
+use app\models\Barang;
 use app\models\Originalitas;
 use app\models\TipePembelian;
 use kartik\grid\SerialColumn;
-use yii\helpers\Html;
 
 return [
    [
@@ -75,14 +75,8 @@ return [
          'class' => 'text-center'
       ],
       'value' => function ($model) {
-         return empty($model->photo_thumbnail)
-            ? ''
-            : Html::img($model->photo_thumbnail, [
-               'alt' => 'No image available',
-               'loading' => 'lazy',
-               'height' => '32rem',
-               'width' => 'auto',
-            ]);
+         /** @var Barang $model */
+         return $model->photoThumbnailAsTagImgHtmlElement;
       }
    ],
    [

@@ -50,9 +50,11 @@ class StockPerGudangTransferBarangAntarGudang extends Model
          'key' => 'movement-to',
       ]);
 
+
       $model = new HistoryLokasiBarang();
       $model->nomor = $nomor;
       $model->card_id = $this->gudangAsal;
+      $model->barang_id = (int)$this->namaBarang;
       $model->tipe_pergerakan_id = $tipePergerakanFrom->id;
       $model->quantity = $this->quantityOut;
       $model->block = $this->block;
@@ -60,6 +62,7 @@ class StockPerGudangTransferBarangAntarGudang extends Model
       $model->tier = $this->tier;
       $model->row = $this->row;
       $model->catatan = $this->catatan;
+
 
       try {
          $transaction = HistoryLokasiBarang::getDb()->beginTransaction();

@@ -51,6 +51,7 @@ services:
       # - ./000-default.conf:/etc/apache2/sites-available/000-default.conf # UNTUK TESTING SAJA
     depends_on:
       - check-db-started
+      - db
     restart: on-failure
 
 # Docker Networks

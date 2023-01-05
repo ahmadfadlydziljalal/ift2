@@ -14,6 +14,7 @@ use yii\web\ServerErrorHttpException;
 
 /**
  * This is the model class for table "barang".
+ * @property string $photoThumbnailAsTagImgHtmlElement
  */
 class Barang extends BaseBarang
 {
@@ -24,6 +25,13 @@ class Barang extends BaseBarang
    public ?string $satuanNama = null;
    public ?string $originalitasNama = null;
    public ?string $tipePembelianNama = null;
+   public ?float $qtyInit = 0.0;
+   public ?float $qtyTandaTerimaBarang = 0.0;
+   public ?float $qtyClaimPettyCashNota = 0.0;
+   public ?float $qtyDeliveryReceipt = 0.0;
+   public ?float $qtyTransferMasuk = 0.0;
+   public ?float $qtyTransferKeluar = 0.0;
+   public ?float $availableStock = 0.0;
 
    public function behaviors()
    {
@@ -47,6 +55,7 @@ class Barang extends BaseBarang
          parent::rules(),
          [
             # custom validation rules
+            [['qtyInit'], 'safe']
          ]
       );
    }
@@ -63,6 +72,7 @@ class Barang extends BaseBarang
             'ift_number' => 'IFT Number',
             'merk_part_number' => 'Merk Part Number',
             'originalitas_id' => 'Originalitas',
+            'satuanNama' => 'U.O.M',
          ]
       );
    }
@@ -231,4 +241,20 @@ class Barang extends BaseBarang
          ->save($thumbnailFile, ['quality' => $quality]);
       return $thumbnailFile;
    }
+
+   /**
+    * @return string
+    */
+   public function getPhotoThumbnailAsTagImgHtmlElement(): string
+   {
+      return empty($this->photo_thumbnail)
+         ? ''
+         : Html::img($this->photo_thumbnail, [
+            'alt' => 'No image available',
+            'loading' => 'lazy',
+            'height' => '32rem',
+            'width' => 'auto',
+         ]);
+   }
+
 }
