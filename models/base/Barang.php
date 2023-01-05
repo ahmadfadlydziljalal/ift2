@@ -22,6 +22,8 @@ use yii\helpers\ArrayHelper;
  * @property integer $default_satuan_id
  * @property string $photo
  * @property string $photo_thumbnail
+ * @property string $price_per_item_in_usd
+ * @property string $price_per_item_in_idr
  *
  * @property \app\models\BarangSatuan[] $barangSatuans
  * @property \app\models\ClaimPettyCashNotaDetail[] $claimPettyCashNotaDetails
@@ -58,7 +60,7 @@ abstract class Barang extends \yii\db\ActiveRecord
             [['tipe_pembelian_id', 'nama', 'originalitas_id'], 'required'],
             [['tipe_pembelian_id', 'originalitas_id', 'default_satuan_id'], 'integer'],
             [['keterangan', 'photo', 'photo_thumbnail'], 'string'],
-            [['initialize_stock_quantity'], 'number'],
+            [['initialize_stock_quantity', 'price_per_item_in_usd', 'price_per_item_in_idr'], 'number'],
             [['nama', 'merk_part_number'], 'string', 'max' => 255],
             [['part_number'], 'string', 'max' => 32],
             [['ift_number'], 'string', 'max' => 128],
@@ -86,6 +88,8 @@ abstract class Barang extends \yii\db\ActiveRecord
             'default_satuan_id' => 'Default Satuan ID',
             'photo' => 'Photo',
             'photo_thumbnail' => 'Photo Thumbnail',
+            'price_per_item_in_usd' => 'Price Per Item In Usd',
+            'price_per_item_in_idr' => 'Price Per Item In Idr',
         ];
     }
 
@@ -96,6 +100,8 @@ abstract class Barang extends \yii\db\ActiveRecord
     {
         return array_merge(parent::attributeHints(), [
             'default_satuan_id' => 'Satuan utama yang dipakai dalam stock',
+            'price_per_item_in_usd' => 'Pertama kali penggunaan sistem. Karena based on time, nilai ini akan selalu berubah, contohnya melalui pembelian',
+            'price_per_item_in_idr' => 'Pertama kali penggunaan sistem. Karena based on time, nilai ini akan selalu berubah, contohnya melalui pembelian',
         ]);
     }
 
