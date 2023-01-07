@@ -84,12 +84,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                'class' => DataColumn::class,
                'attribute' => 'qtyTransferIn',
-               'header' => 'MV-OUT'
+               'header' => 'MV-O'
             ],
             [
                'class' => DataColumn::class,
                'attribute' => 'qtyFinal',
-               'header' => 'MV-IN'
+               'header' => 'MV-I'
             ],
          ]
       ]);

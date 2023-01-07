@@ -109,7 +109,7 @@ return [
    ],
    [
       'class' => DataColumn::class,
-      'header' => 'MV-OUT',
+      'header' => 'MV-O',
       'headerOptions' => [
          'title' => 'Movement Out'
       ],
@@ -121,7 +121,7 @@ return [
    ],
    [
       'class' => DataColumn::class,
-      'header' => 'MV-IN',
+      'header' => 'MV-I',
       'headerOptions' => [
          'title' => 'Movement In'
       ],
