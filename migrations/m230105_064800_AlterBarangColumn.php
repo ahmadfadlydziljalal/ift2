@@ -23,12 +23,12 @@ class m230105_064800_AlterBarangColumn extends Migration
    public function safeUp()
    {
       $this->addColumn($this->table, 'price_per_item_in_usd',
-         $this->decimal(10, 2)
+         $this->decimal(16, 2)
             ->defaultValue(0)
             ->comment('Pertama kali penggunaan sistem. Karena based on time, nilai ini akan selalu berubah, contohnya melalui pembelian')
       );
       $this->addColumn($this->table, 'price_per_item_in_idr',
-         $this->decimal(10, 2)
+         $this->decimal(16, 2)
             ->defaultValue(0)
             ->comment('Pertama kali penggunaan sistem. Karena based on time, nilai ini akan selalu berubah, contohnya melalui pembelian')
       );

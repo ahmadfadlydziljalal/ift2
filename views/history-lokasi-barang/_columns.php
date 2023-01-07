@@ -99,5 +99,8 @@ return [
 //   ],
    [
       'class' => 'yii\grid\ActionColumn',
+      'contentOptions' => [
+         'class' => 'text-nowrap'
+      ]
    ],
 ];   

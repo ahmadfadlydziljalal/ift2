@@ -19,16 +19,16 @@ use yii\widgets\MaskedInput;
 ?>
 
 <?php DynamicFormWidget::begin([
-    'widgetContainer' => 'dynamicform_inner',
-    'widgetBody' => '.container-rooms',
-    'widgetItem' => '.room-item',
-    'limit' => 99,
-    'min' => 1,
-    'insertButton' => '.add-room',
-    'deleteButton' => '.remove-room',
-    'model' => $modelsDetailDetail[0],
-    'formId' => 'dynamic-form',
-    'formFields' => ['id', 'claim_petty_cash_nota_id', 'tipe_pembelian_id', 'barang_id', 'description', 'quantity', 'satuan_id', 'harga',],
+   'widgetContainer' => 'dynamicform_inner',
+   'widgetBody' => '.container-rooms',
+   'widgetItem' => '.room-item',
+   'limit' => 99,
+   'min' => 1,
+   'insertButton' => '.add-room',
+   'deleteButton' => '.remove-room',
+   'model' => $modelsDetailDetail[0],
+   'formId' => 'dynamic-form',
+   'formFields' => ['id', 'claim_petty_cash_nota_id', 'tipe_pembelian_id', 'barang_id', 'description', 'quantity', 'satuan_id', 'harga',],
 ]); ?>
 
     <table class="table table-bordered">
@@ -58,121 +58,123 @@ use yii\widgets\MaskedInput;
 
                 <td class="column-tipe-pembelian">
 
-                    <?php if (!$modelDetailDetail->isNewRecord) {
-                        echo Html::activeHiddenInput($modelDetailDetail, "[$i][$j]id");
-                    } ?>
+                   <?php if (!$modelDetailDetail->isNewRecord) {
+                      echo Html::activeHiddenInput($modelDetailDetail, "[$i][$j]id");
+                   } ?>
 
-                    <?php try {
-                        if (!$modelDetailDetail->isNewRecord) {
+                   <?php try {
+                      if (!$modelDetailDetail->isNewRecord) {
 
-                            if (empty($modelDetailDetail->tipePembelian)) {
-                                if (!Yii::$app->request->isPost) {
-                                    $modelDetailDetail->tipePembelian = 3;
-                                }
+                         if (empty($modelDetailDetail->tipePembelian)) {
+                            if (!Yii::$app->request->isPost) {
+                               $modelDetailDetail->tipePembelian = 3;
                             }
+                         }
 
-                        }
-                        echo $form->field($modelDetailDetail, "[$i][$j]tipePembelian", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                            ->dropDownList(TipePembelian::find()->map(), [
-                                'prompt' => '-',
-                                'class' => 'tipe-pembelian',
-                                'id' => 'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-tipe_pembelian_id'
-                            ]);
-                    } catch (InvalidConfigException $e) {
-                        echo $e->getMessage();
-                    }
-                    ?>
+                      }
+                      echo $form->field($modelDetailDetail, "[$i][$j]tipePembelian", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                         ->dropDownList(TipePembelian::find()->map(), [
+                            'prompt' => '-',
+                            'class' => 'tipe-pembelian',
+                            'id' => 'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-tipe_pembelian_id'
+                         ]);
+                   } catch (InvalidConfigException $e) {
+                      echo $e->getMessage();
+                   }
+                   ?>
 
                 </td>
 
                 <td class="column-barang">
-                    <?php
-                    $data = [];
+                   <?php
+                   $data = [];
 
-                    if (Yii::$app->request->isPost || !$modelDetailDetail->isNewRecord) {
-                        if ($modelDetailDetail->barang_id) {
-                            $data = Barang::find()->map($modelDetailDetail->tipePembelian);
-                        }
-                    }
+                   if (Yii::$app->request->isPost || !$modelDetailDetail->isNewRecord) {
+                      if ($modelDetailDetail->barang_id) {
+                         $data = Barang::find()->map($modelDetailDetail->tipePembelian);
+                      }
+                   }
 
-                    ?>
+                   ?>
 
-                    <?= $form->field($modelDetailDetail, "[$i][$j]barang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                        ->widget(DepDrop::class, [
-                            'data' => $data,
-                            'options' => [
-                                'id' => 'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-barang_id',
-                                'placeholder' => 'Select ...',
-                                'class' => 'form-control barang',
-                            ],
-                            'type' => DepDrop::TYPE_SELECT2,
-                            'select2Options' => ['pluginOptions' => ['allowClear' => true]],
-                            'pluginOptions' => [
-                                'depends' => ['claim-petty-cash-nota-detail-' . $i . '-' . $j . '-tipe_pembelian_id'],
-                                'placeholder' => 'Select...',
-                                'url' => Url::to(['barang/depdrop-find-barang-by-tipe-pembelian'])
-                            ]
-                        ]);
-                    ?>
+                   <?= $form->field($modelDetailDetail, "[$i][$j]barang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                      ->widget(DepDrop::class, [
+                         'data' => $data,
+                         'options' => [
+                            'id' => 'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-barang_id',
+                            'placeholder' => 'Select ...',
+                            'class' => 'form-control barang',
+                         ],
+                         'type' => DepDrop::TYPE_SELECT2,
+                         'select2Options' => ['pluginOptions' => ['allowClear' => true]],
+                         'pluginOptions' => [
+                            'depends' => ['claim-petty-cash-nota-detail-' . $i . '-' . $j . '-tipe_pembelian_id'],
+                            'placeholder' => 'Select...',
+                            'url' => Url::to(['barang/depdrop-find-barang-by-tipe-pembelian'])
+                         ]
+                      ]);
+                   ?>
                 </td>
 
                 <td class="column-description">
-                    <?= $form->field($modelDetailDetail, "[$i][$j]description", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                        ->textInput([
-                            'class' => 'form-control description'
-                        ]);
-                    ?>
+                   <?= $form->field($modelDetailDetail, "[$i][$j]description", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                      ->textInput([
+                         'class' => 'form-control description'
+                      ]);
+                   ?>
                 </td>
+
                 <td style="width: 12px">
-                    <?= $form->field($modelDetailDetail, "[$i][$j]quantity", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                        ->textInput([
-                            'class' => 'form-control quantity',
-                            'type' => 'number'
-                        ]);
-                    ?>
+                   <?= $form->field($modelDetailDetail, "[$i][$j]quantity", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                      ->textInput([
+                         'class' => 'form-control quantity',
+                         'type' => 'number'
+                      ]);
+                   ?>
                 </td>
+
                 <td>
-                    <?php
-                    $data2 = [];
-                    if (Yii::$app->request->isPost || !$modelDetailDetail->isNewRecord) {
-                        $data2 = BarangSatuan::find()->mapSatuan($modelDetailDetail->barang_id);
-                    }
+                   <?php
+                   $data2 = [];
+                   if (Yii::$app->request->isPost || !$modelDetailDetail->isNewRecord) {
+                      $data2 = BarangSatuan::find()->mapSatuan($modelDetailDetail->barang_id);
+                   }
 
-                    ?>
-                    <?= $form->field($modelDetailDetail, "[$i][$j]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                        ->widget(DepDrop::class, [
-                            'data' => $data2,
-                            'pluginOptions' => [
-                                'depends' => [
-                                    'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-tipe_pembelian_id',
-                                    'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-barang_id',
-                                ],
-                                'placeholder' => 'Select...',
-                                'url' => Url::to(['barang/depdrop-find-satuan-by-barang'])
+                   ?>
+                   <?= $form->field($modelDetailDetail, "[$i][$j]satuan_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                      ->widget(DepDrop::class, [
+                         'data' => $data2,
+                         'pluginOptions' => [
+                            'depends' => [
+                               # 'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-tipe_pembelian_id',
+                               'claim-petty-cash-nota-detail-' . $i . '-' . $j . '-barang_id',
                             ],
-                            'options' => [
-                                'class' => 'form-control satuan-id'
-                            ]
-                        ]);
-
-                    ?>
+                            'placeholder' => 'Select...',
+                            'url' => Url::to(['barang/depdrop-find-satuan-by-barang'])
+                         ],
+                         'options' => [
+                            'class' => 'form-control satuan-id'
+                         ]
+                      ]);
+                   ?>
                 </td>
+
                 <td><?= $form->field($modelDetailDetail, "[$i][$j]harga", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                        ->widget(MaskedInput::class, [
-                            'clientOptions' => [
-                                'alias' => 'numeric',
-                                'digits' => 2,
-                                'groupSeparator' => ',',
-                                'radixPoint' => '.',
-                                'autoGroup' => true,
-                                'autoUnmask' => true,
-                                'removeMaskOnSubmit' => true
-                            ],
-                            'options' => [
-                                'class' => 'form-control harga'
-                            ]
-                        ]);
-                    ?>
+                      ->widget(MaskedInput::class, [
+                         'clientOptions' => [
+                            'alias' => 'numeric',
+                            'digits' => 2,
+                            'groupSeparator' => ',',
+                            'radixPoint' => '.',
+                            'autoGroup' => true,
+                            'autoUnmask' => true,
+                            'removeMaskOnSubmit' => true
+                         ],
+                         'options' => [
+                            'class' => 'form-control harga'
+                         ]
+                      ]);
+                   ?>
                 </td>
 
                 <td class="text-center" style="width: 2px;">
@@ -180,6 +182,7 @@ use yii\widgets\MaskedInput;
                         <i class="bi bi-trash"> </i>
                     </button>
                 </td>
+
             </tr>
         <?php endforeach; ?>
         </tbody>

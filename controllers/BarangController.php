@@ -21,6 +21,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\VarDumper;
 use yii\imagine\Image;
 use yii\web\Controller;
 use yii\web\HttpException;

@@ -1,12 +1,31 @@
 <?php
 
+use app\components\grid\ActionColumn;
 use app\models\Barang;
 use kartik\grid\DataColumn;
 use kartik\grid\SerialColumn;
+use yii\helpers\Html;
 
 return [
    [
       'class' => SerialColumn::class
+   ],
+   [
+      'class' => ActionColumn::class,
+      'template' => '{view-per-card-per-barang}',
+      'buttons' => [
+         'view-per-card-per-barang' => function ($url, $model) {
+            return Html::a('<i class="bi bi-eye-fill"></i>',
+               ['stock-per-gudang/view-per-card-per-barang',
+                  'barangId' => $model->id,
+                  'cardId' => Yii::$app->request->queryParams['id']
+               ],
+               [
+                  'class' => 'text-primary'
+               ]
+            );
+         }
+      ],
    ],
    [
       'class' => DataColumn::class,

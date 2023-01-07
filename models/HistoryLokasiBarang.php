@@ -15,10 +15,16 @@ class HistoryLokasiBarang extends BaseHistoryLokasiBarang
 {
 
    /**
+    * @var string | null $type
+    * property untuk menampung nilai tipe pergerakan lokasi
+    * */
+   public ?string $type = null;
+
+   /**
     * @param $tipePergerakanId
     * @return string
     */
-   public static function generateNomor($tipePergerakanId)
+   public static function generateNomor($tipePergerakanId): string
    {
       $nomor = '';
       $date = date('Y-m-d');

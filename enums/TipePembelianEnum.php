@@ -8,4 +8,6 @@ enum TipePembelianEnum: int
    case PERLENGKAPAN = 2;
    case LAIN_LAIN = 3;
    case INVENTARIS = 4;
+
+
 }

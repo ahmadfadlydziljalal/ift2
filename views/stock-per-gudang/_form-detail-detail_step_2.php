@@ -1,7 +1,8 @@
 <?php
 
-use app\models\Card;
+use app\enums\CaraPenulisanLokasiEnum;
 use kartik\form\ActiveForm;
+use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\base\Widget;
 use yii\bootstrap5\Html;
@@ -33,8 +34,8 @@ use yii\web\View;
         <thead class="thead-light">
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Warehouse</th>
             <th scope="col">Quantity</th>
+            <th scope="col">Warehouse</th>
             <th scope="col">Block</th>
             <th scope="col">Rak</th>
             <th scope="col">Tier</th>
@@ -57,11 +58,6 @@ use yii\web\View;
                 </td>
 
                 <td>
-                   <?= $form->field($modelDetailDetail, "[$i][$j]card_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
-                      ->dropDownList(Card::find()->map(Card::GET_ONLY_WAREHOUSE)); ?>
-                </td>
-
-                <td>
                    <?= $form->field($modelDetailDetail, "[$i][$j]quantity", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])->textInput([
                       'type' => 'number',
                       'class' => 'form-control'
@@ -69,19 +65,58 @@ use yii\web\View;
                 </td>
 
                 <td>
-                   <?= $form->field($modelDetailDetail, "[$i][$j]block", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
+                   <?= $form->field($modelDetailDetail, "[$i][$j]card_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                      ->widget(Select2::class, [
+                         'data' => CaraPenulisanLokasiEnum::getDropdown(CaraPenulisanLokasiEnum::GUDANG),
+                         'options' => [
+                            'prompt' => '= Pilih ='
+                         ]
+                      ]) ?>
+                </td>
+
+
+                <td>
+                   <?= $form->field($modelDetailDetail, "[$i][$j]block", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                      ->widget(Select2::class, [
+                         'data' => CaraPenulisanLokasiEnum::getDropdown(CaraPenulisanLokasiEnum::BLOCK),
+                         'options' => [
+                            'prompt' => '= Pilih ='
+                         ]
+                      ]);
+                   ?>
                 </td>
 
                 <td>
-                   <?= $form->field($modelDetailDetail, "[$i][$j]rak", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
+                   <?= $form->field($modelDetailDetail, "[$i][$j]rak", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                      ->widget(Select2::class, [
+                         'data' => CaraPenulisanLokasiEnum::getDropdown(CaraPenulisanLokasiEnum::RAK),
+                         'options' => [
+                            'prompt' => '= Pilih ='
+                         ]
+                      ]);
+                   ?>
                 </td>
 
                 <td>
-                   <?= $form->field($modelDetailDetail, "[$i][$j]tier", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
+                   <?= $form->field($modelDetailDetail, "[$i][$j]tier", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                      ->widget(Select2::class, [
+                         'data' => CaraPenulisanLokasiEnum::getDropdown(CaraPenulisanLokasiEnum::TIER),
+                         'options' => [
+                            'prompt' => '= Pilih ='
+                         ]
+                      ]);
+                   ?>
                 </td>
 
                 <td>
-                   <?= $form->field($modelDetailDetail, "[$i][$j]row", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>
+                   <?= $form->field($modelDetailDetail, "[$i][$j]row", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
+                      ->widget(Select2::class, [
+                         'data' => CaraPenulisanLokasiEnum::getDropdown(CaraPenulisanLokasiEnum::ROW),
+                         'options' => [
+                            'prompt' => '= Pilih ='
+                         ]
+                      ]);
+                   ?>
                 </td>
                 <td>
                    <?= $form->field($modelDetailDetail, "[$i][$j]catatan", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]]); ?>

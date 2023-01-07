@@ -1,8 +1,8 @@
 <?php
 
+use app\enums\CaraPenulisanLokasiEnum;
 use app\enums\TipePembelianEnum;
 use app\models\Barang;
-use app\models\Card;
 use app\models\form\StockPerGudangStartLocation;
 use kartik\form\ActiveForm;
 use kartik\select2\Select2;
@@ -38,18 +38,15 @@ $this->params['breadcrumbs'][] = $this->title;
            ]) ?>
         </div>
         <div class="col-sm-12 col-md-4 col-lg-4">
-           <?= $form->field($model, 'cardId')->widget(Select2::class, [
-              'data' => Card::find()->map(Card::GET_ONLY_WAREHOUSE),
-              'options' => [
-                 'prompt' => '= Pilih Salah Satu ='
-              ]
-           ]) ?>
-        </div>
-        <div class="col-sm-12 col-md-4 col-lg-4">
            <?= $form->field($model, 'quantity')->textInput([
               'type' => 'number'
            ]) ?>
         </div>
+
+        <div class="col-sm-12 col-md-4 col-lg-4">
+
+        </div>
+
     </div>
 
     <div class="d-flex justify-content-center">
@@ -58,30 +55,61 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="row row-cols-1 row-cols-md-3 row-cols-3">
         <div class="col">
+           <?= $form->field($model, 'cardId')->widget(Select2::class, [
+              'data' => CaraPenulisanLokasiEnum::getDropdown(CaraPenulisanLokasiEnum::GUDANG),
+              'options' => [
+                 'prompt' => '= Pilih Salah Satu ='
+              ]
+           ]) ?>
+        </div>
+        <div class="col">
             <div class="row row-cols-1 row-cols-md-2">
                 <div class="col">
-                   <?= $form->field($model, 'block') ?>
+                   <?= $form->field($model, 'block')
+                      ->widget(Select2::class, [
+                         'data' => CaraPenulisanLokasiEnum::getDropdown(CaraPenulisanLokasiEnum::BLOCK),
+                         'options' => [
+                            'prompt' => '= Pilih Salah Satu ='
+                         ]
+                      ]);
+                   ?>
                 </div>
                 <div class="col">
-                   <?= $form->field($model, 'rak') ?>
+                   <?= $form->field($model, 'rak')->widget(Select2::class, [
+                      'data' => CaraPenulisanLokasiEnum::getDropdown(CaraPenulisanLokasiEnum::RAK),
+                      'options' => [
+                         'prompt' => '= Pilih Salah Satu ='
+                      ]
+                   ]) ?>
                 </div>
             </div>
         </div>
         <div class="col">
             <div class="row row-cols-1 row-cols-md-2">
                 <div class="col">
-                   <?= $form->field($model, 'tier') ?>
+                   <?= $form->field($model, 'tier')->widget(Select2::class, [
+                      'data' => CaraPenulisanLokasiEnum::getDropdown(CaraPenulisanLokasiEnum::TIER),
+                      'options' => [
+                         'prompt' => '= Pilih Salah Satu ='
+                      ]
+                   ]) ?>
                 </div>
                 <div class="col">
-                   <?= $form->field($model, 'row') ?>
+                   <?= $form->field($model, 'row')->widget(Select2::class, [
+                      'data' => CaraPenulisanLokasiEnum::getDropdown(CaraPenulisanLokasiEnum::ROW),
+                      'options' => [
+                         'prompt' => '= Pilih Salah Satu ='
+                      ]
+                   ]) ?>
                 </div>
             </div>
         </div>
-        <div class="col">
-           <?= $form->field($model, 'catatan') ?>
-        </div>
+
     </div>
 
+   <?= $form->field($model, 'catatan')->textarea([
+      'rows' => '4'
+   ]) ?>
 
     <div class="d-flex justify-content-between mt-3">
        <?= Html::a(' Tutup', ['index'], ['class' => 'btn btn-secondary']) ?>

@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\WizardStockPerGudangBarangKeluarDariDeliveryReceiptForm;
 use app\components\WizardStockPerGudangBarangMasukDariClaimPettyCashForm;
 use app\components\WizardStockPerGudangBarangMasukDariTandaTerimaPoForm;
+use app\models\Barang;
 use app\models\Card;
 use app\models\ClaimPettyCash;
 use app\models\form\ReportStockPerGudangBarangMasukDariTandaTerima;
@@ -18,6 +19,7 @@ use app\models\HistoryLokasiBarang;
 use app\models\QuotationDeliveryReceipt;
 use app\models\search\HistoryLokasiBarangSearchPerCardWarehouseSearch;
 use app\models\search\StockPerGudangByCardSearch;
+use app\models\search\StockPerGudangPerCardPerBarangSearch;
 use app\models\search\StockPerGudangSearch;
 use app\models\Tabular;
 use app\models\TandaTerimaBarang;
@@ -33,6 +35,8 @@ use yii\web\ServerErrorHttpException;
 
 class StockPerGudangController extends Controller
 {
+
+
    /**
     * @return string
     */
@@ -67,13 +71,34 @@ class StockPerGudangController extends Controller
 
    }
 
-
    /*
     * @TODO berikan display posisi terakhir barang per card gudang
     * */
    public function actionViewPerCardPerBarang($cardId, $barangId)
    {
+      $searchModel = new StockPerGudangPerCardPerBarangSearch([
+         'card' => $this->findModel($cardId),
+         'barang' => Barang::findOne($barangId)
+      ]);
+      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+      return $this->render('view_per_card_per_barang', [
+         'card' => $searchModel->card,
+         'barang' => $searchModel->barang,
+         'searchModel' => $searchModel,
+         'dataProvider' => $dataProvider
+      ]);
+   }
+
+   /**
+    * @throws NotFoundHttpException
+    */
+   protected function findModel($id): ?Card
+   {
+      if (($model = Card::findOne($id)) !== null) {
+         return $model;
+      }
+      throw new NotFoundHttpException('The requested page does not exist.');
    }
 
 
@@ -94,17 +119,6 @@ class StockPerGudangController extends Controller
          'searchModel' => $searchModel,
          'dataProvider' => $dataProvider
       ]);
-   }
-
-   /**
-    * @throws NotFoundHttpException
-    */
-   protected function findModel($id): ?Card
-   {
-      if (($model = Card::findOne($id)) !== null) {
-         return $model;
-      }
-      throw new NotFoundHttpException('The requested page does not exist.');
    }
 
    # Barang masuk dari start project #########################################################################################################################################
@@ -438,16 +452,19 @@ class StockPerGudangController extends Controller
     */
    public function actionTransferBarangAntarGudang(): Response|string
    {
-
       $model = new StockPerGudangTransferBarangAntarGudang();
       $modelsDetail = [new StockPerGudangTransferBarangAntarGudangDetail()];
 
       if ($this->request->isPost && $model->load($this->request->post())) {
 
-         $modelsDetail = Tabular::createMultiple(StockPerGudangTransferBarangAntarGudangDetail::class);
-         Tabular::loadMultiple($modelsDetail, $this->request->post());
-
+         $modelsDetail = Tabular::createMultiple(
+            StockPerGudangTransferBarangAntarGudangDetail::class
+         );
+         Tabular::loadMultiple(
+            $modelsDetail,
+            $this->request->post());
          $model->modelsDetail = $modelsDetail;
+
          if ($model->validate() && Tabular::validateMultiple($modelsDetail)) {
             if ($model->save()) return $this->redirect(['stock-per-gudang/index']);
          }

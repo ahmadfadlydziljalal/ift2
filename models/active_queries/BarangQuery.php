@@ -85,15 +85,17 @@ class BarangQuery extends ActiveQuery
     * @param string $namaBarang
     * @return array
     */
-   public function byTipePembelian($tipePembelianId, $namaBarang = ''): array
+   public function byTipePembelian($tipePembelianId, string $namaBarang = ''): array
    {
 
-      $expression = new Expression("CONCAT(
-                                                   IF(part_number!='' OR part_number IS NULL , part_number, 'Unknown part number') , ' - ' ,
-                                                   IF(merk_part_number != '' OR merk_part_number IS NULL, merk_part_number , 'Unknown merk') , ' - ', 
-                                                   COALESCE(nama, '') , ' - ' ,
-                                                   COALESCE(ift_number, '')     
-                                                )");
+      $expression = new Expression("
+                                    CONCAT(
+                                        COALESCE(part_number, 'No Part Number') , ' - ' ,
+                                        COALESCE(merk_part_number, 'No Merk') , ' - ' ,
+                                        COALESCE(nama, '') , ' - ' ,
+                                        COALESCE(ift_number, '')
+                                    )
+                                    ");
       if (!empty($namaBarang)) {
          $select = [
             'id' => 'id',

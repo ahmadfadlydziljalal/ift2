@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
           'target' => '_blank'
        ]) ?>
     </div>
-   
+
    <?php $form = ActiveForm::begin([
       'id' => 'dynamic-form'
    ]); ?>
@@ -100,8 +100,6 @@ $this->params['breadcrumbs'][] = $this->title;
                    </div>
 
                </div>
-
-
            </div>
        <?php endforeach; ?>
     </div>

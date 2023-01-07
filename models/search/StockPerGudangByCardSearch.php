@@ -22,6 +22,7 @@ use yii\helpers\Inflector;
 class StockPerGudangByCardSearch extends Barang
 {
 
+
    public ?Card $card = null;
 
    public function rules(): array
@@ -32,7 +33,6 @@ class StockPerGudangByCardSearch extends Barang
          ], 'safe']
       ];
    }
-
 
    /**
     * bypass scenarios() implementation in the parent class
@@ -81,13 +81,11 @@ class StockPerGudangByCardSearch extends Barang
       $query->andFilterWhere(['like', 'merk_part_number', $this->merk_part_number]);
       return $dataProvider;
 
-      /**
-       * */
-
-
-      # return $query->createCommand()->rawSql;
    }
 
+   /**
+    * @return BarangQuery
+    */
    protected function getQuery(): BarangQuery
    {
       $qtyInit = new Expression("(COALESCE(initStartProject.quantity, 0))");
