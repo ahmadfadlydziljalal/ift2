@@ -1,13 +1,13 @@
 <?php
 
-use app\models\search\StockInPerBarangSearch;
+use app\models\search\StockPerBarangSearch;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 use yii\web\View;
 
 
 /* @var $this View */
-/* @var $searchModel StockInPerBarangSearch */
+/* @var $searchModel StockPerBarangSearch */
 /* @var $dataProvider */
 
 $this->title = $searchModel->barang->nama;
@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="stock-per-barang">
     <h1>Stock: <?= Html::encode($searchModel->barang->nama) ?></h1>
 
-   <?= GridView::widget([
+   <?php echo GridView::widget([
       'tableOptions' => [
          'class' => 'table table-gridview' // table-fixes-last-column
       ],
@@ -27,9 +27,9 @@ $this->params['breadcrumbs'][] = $this->title;
       'filterModel' => $searchModel,
       'columns' => require __DIR__ . DIRECTORY_SEPARATOR . '_columns_view.php',
       'rowOptions' => [
-         'class' => 'align-middle'
+         'class' => 'align-middle text-nowrap'
       ]
-   ]) ?>
+   ]); ?>
 
 
 </div>

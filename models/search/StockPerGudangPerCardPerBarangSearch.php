@@ -15,13 +15,6 @@ use yii\db\Query;
 class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
 {
 
-   const HISTORY_INIT_TYPE = 'init_start_project';
-   const HISTORY_TANDA_TERIMA_BARANG_TYPE = 'tanda_terima_barang';
-   const HISTORY_CLAIM_PETTY_CASH_TYPE = 'claim_petty_cash';
-   const HISTORY_DELIVERY_RECEIPT_TYPE = 'delivery_receipt';
-   const HISTORY_TRANSFER_OUT_TYPE = 'transfer_out';
-   const HISTORY_TRANSFER_IN_TYPE = 'transfer_in';
-
    public ?Card $card = null;
    public ?Barang $barang = null;
 

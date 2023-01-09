@@ -6,6 +6,8 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the base-model class for table "history_lokasi_barang".
@@ -26,6 +28,10 @@ use yii\helpers\ArrayHelper;
  * @property string $row
  * @property string $catatan
  * @property integer $depend_id
+ * @property integer $created_at
+ * @property integer $updated_at
+ * @property string $created_by
+ * @property string $updated_by
  *
  * @property \app\models\Barang $barang
  * @property \app\models\Card $card
@@ -48,6 +54,21 @@ abstract class HistoryLokasiBarang extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'history_lokasi_barang';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => BlameableBehavior::className(),
+            ],
+            [
+                'class' => TimestampBehavior::className(),
+            ],
+        ];
     }
 
     /**
@@ -94,6 +115,10 @@ abstract class HistoryLokasiBarang extends \yii\db\ActiveRecord
             'row' => 'Row',
             'catatan' => 'Catatan',
             'depend_id' => 'Depend ID',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+            'created_by' => 'Created By',
+            'updated_by' => 'Updated By',
         ];
     }
 

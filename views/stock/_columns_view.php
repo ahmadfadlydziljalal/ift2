@@ -1,33 +1,44 @@
 <?php
 
+use app\models\Card;
+use app\models\HistoryLokasiBarang;
 use kartik\grid\DataColumn;
 use kartik\grid\SerialColumn;
+use yii\helpers\Inflector;
 
 return [
    [
       'class' => SerialColumn::class
    ],
-   'partNumber',
-   'kodeBarang',
-   'namaBarang',
-   'merk',
-   'nomorTandaTerima',
    [
       'class' => DataColumn::class,
-      'attribute' => 'tgl_tanda_terima',
-      'header' => 'Tgl',
-      'format' => 'date',
-      'contentOptions' => [
-         'class' => 'text-nowrap text-end'
-      ]
+      'attribute' => 'type',
+      'filter' => HistoryLokasiBarang::optsHistoryType(),
+      'value' => function ($model) {
+         return ucwords(Inflector::humanize($model['type']));
+      }
    ],
+   # 'partNumber',
+   # 'kodeBarang',
+   # 'namaBarang',
+   # 'merk',
    [
       'class' => DataColumn::class,
-      'attribute' => 'qty_terima',
-      'contentOptions' => [
-         'class' => 'text-end'
-      ]
+      'attribute' => 'nomorHistory',
    ],
+   'dependNomorDokumen',
+   [
+      'class' => DataColumn::class,
+      'filter' => Card::find()->map(Card::GET_ONLY_WAREHOUSE),
+      'attribute' => 'gudangId',
+      'value' => function ($model) {
+         return $model['gudang'];
+      }
+   ],
+   'block',
+   'rak',
+   'tier',
+   'row'
    /*[
       'class' => DataColumn::class,
       'attribute' => 'historyLokasiBarangIn',

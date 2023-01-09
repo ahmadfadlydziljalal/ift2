@@ -16,6 +16,7 @@ class ClaimPettyCashNotaDetail extends BaseClaimPettyCashNotaDetail
    const SCENARIO_INPUT_KE_GUDANG = 'input-ke-gudang';
    public ?string $tipePembelian = null;
    public ?float $totalQuantityTerimaPerbandiganLokasi = null;
+   public ?string $type;
 
    public function behaviors(): array
    {

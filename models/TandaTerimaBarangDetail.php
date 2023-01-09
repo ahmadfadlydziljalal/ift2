@@ -17,6 +17,7 @@ class TandaTerimaBarangDetail extends BaseTandaTerimaBarangDetail
    public ?string $barangNama = null;
    public ?float $totalQuantityTerima = null;
    public ?float $totalQuantityTerimaPerbandiganLokasi = null;
+   public ?string $type;
 
    public function behaviors()
    {

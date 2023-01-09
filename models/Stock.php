@@ -120,6 +120,7 @@ class Stock extends Model
    {
       return TandaTerimaBarangDetail::find()
          ->select([
+            'type' => new Expression('"from_ttb"'),
             'barangId' => 'b.id',
             'barangNama' => 'b.nama',
             'totalQuantityTerima' => new Expression("COALESCE(SUM(ttbd.quantity_terima), 0) "),
@@ -147,6 +148,7 @@ class Stock extends Model
    {
       return ClaimPettyCashNotaDetail::find()
          ->select([
+            'type' => new Expression('"from_cpc"'),
             'barangId' => 'b.id',
             'barangNama' => 'b.nama',
             'totalQuantityTerima' => new Expression("COALESCE(SUM(cpcnd.quantity), 0) "),

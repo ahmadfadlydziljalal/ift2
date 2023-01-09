@@ -8,7 +8,7 @@ use app\models\form\SetLokasiBarangInForm;
 use app\models\form\SetLokasiBarangMovementForm;
 use app\models\form\SetLokasiBarangMovementFromForm;
 use app\models\HistoryLokasiBarang;
-use app\models\search\StockInPerBarangSearch;
+use app\models\search\StockPerBarangSearch;
 use app\models\search\StockSearch;
 use app\models\Status;
 use app\models\Tabular;
@@ -50,14 +50,11 @@ class StockController extends Controller
     */
    public function actionView(int $id): string
    {
-      $searchModel = new StockInPerBarangSearch([
+      $searchModel = new StockPerBarangSearch([
          'barang' => Barang::findOne($id)
       ]);
 
-      $dataProvider = $searchModel->search(
-         Yii::$app->request->queryParams,
-         $id
-      );
+      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
       return $this->render('view', [
          'searchModel' => $searchModel,
