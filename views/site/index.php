@@ -15,10 +15,9 @@ $this->title = 'Dashboard';
 <div class="site-index d-flex flex-column">
 
    <?= $this->render('_alur_pembelian_barang') ?>
-
    <?= $this->render('_alur_pengeluaran_barang') ?>
-
    <?= $this->render('_alur_inventaris') ?>
+   <?= $this->render('_stock') ?>
 
 
 </div>

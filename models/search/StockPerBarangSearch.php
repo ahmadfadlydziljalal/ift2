@@ -35,6 +35,13 @@ class StockPerBarangSearch extends Model
    public ?string $gudangId = null;
    public ?string $gudang = null;
 
+   public function attributeLabels(): array
+   {
+      return [
+         'gudangId' => 'Gudang',
+      ];
+   }
+
    /**
     * @return array[]
     */
@@ -71,16 +78,24 @@ class StockPerBarangSearch extends Model
       if (!$this->validate()) {
          return $dataProvider;
       }
-      $query
-         ->andFilterWhere([
-            'type' => $this->type,
-            'gudangId' => $this->gudangId
-         ]);
+      $query->andFilterWhere([
+         'type' => $this->type,
+         'gudangId' => $this->gudangId
+      ]);
 
-      $query
-         ->andFilterWhere(['LIKE', 'nomorHistory', $this->nomorHistory])
+      $query->andFilterWhere(['LIKE', 'nomorHistory', $this->nomorHistory])
          ->andFilterWhere(['LIKE', 'dependNomorDokumen', $this->dependNomorDokumen]);
 
+      $query->addOrderBy([
+         'type' => SORT_ASC,
+         'nomorHistory' => SORT_ASC,
+         'dependNomorDokumen' => SORT_ASC,
+         'gudangId' => SORT_ASC,
+         'block' => SORT_ASC,
+         'rak' => SORT_ASC,
+         'tier' => SORT_ASC,
+         'row' => SORT_ASC,
+      ]);
 
       return $dataProvider;
 
