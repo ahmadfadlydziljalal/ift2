@@ -25,7 +25,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="stock-per-gudang-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="d-flex justify-content-between flex-wrap align-items-center">
+        <div>
+            <h1><?= Html::encode($this->title) ?></h1>
+        </div>
+
+        <div>
+           <?= Html::a('<i class="bi bi-repeat"></i>', ['index'], ['class' => 'btn btn-primary']) ?>
+        </div>
+    </div>
+
    <?php try {
       echo GridView::widget([
          'tableOptions' => [
@@ -59,37 +68,58 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                'class' => DataColumn::class,
                'attribute' => 'qtyInit',
-               'header' => 'INIT'
+               'header' => 'INIT',
+               'contentOptions' => [
+                  'class' => 'text-end'
+               ]
             ],
             [
                'class' => DataColumn::class,
                'attribute' => 'qtyTandaTerimaBarang',
-               'header' => 'TTB'
+               'header' => 'TTB',
+               'contentOptions' => [
+                  'class' => 'text-end'
+               ]
             ],
             [
                'class' => DataColumn::class,
                'attribute' => 'qtyClaimPettyCash',
-               'header' => 'CPC'
+               'header' => 'CPC',
+               'contentOptions' => [
+                  'class' => 'text-end'
+               ]
             ],
             [
                'class' => DataColumn::class,
                'attribute' => 'qtyDeliveryReceipt',
-               'header' => 'DR'
+               'header' => 'DR',
+               'contentOptions' => [
+                  'class' => 'text-end'
+               ]
             ],
             [
                'class' => DataColumn::class,
                'attribute' => 'qtyTransferOut',
-               'header' => 'TR-O'
+               'header' => 'TR-O',
+               'contentOptions' => [
+                  'class' => 'text-end'
+               ]
             ],
             [
                'class' => DataColumn::class,
                'attribute' => 'qtyTransferIn',
-               'header' => 'MV-O'
+               'header' => 'TR-I',
+               'contentOptions' => [
+                  'class' => 'text-end'
+               ]
             ],
             [
                'class' => DataColumn::class,
                'attribute' => 'qtyFinal',
-               'header' => 'MV-I'
+               'header' => 'Final',
+               'contentOptions' => [
+                  'class' => 'text-end'
+               ]
             ],
          ]
       ]);

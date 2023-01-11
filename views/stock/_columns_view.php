@@ -35,10 +35,31 @@ return [
          return $model['gudang'];
       }
    ],
-   'block',
-   'rak',
-   'tier',
-   'row'
+   [
+      'class' => DataColumn::class,
+      'attribute' => 'block',
+   ],
+   [
+      'class' => DataColumn::class,
+      'attribute' => 'rak',
+      'contentOptions' => [
+         'class' => 'text-end'
+      ]
+   ],
+   [
+      'class' => DataColumn::class,
+      'attribute' => 'tier',
+      'contentOptions' => [
+         'class' => 'text-end'
+      ]
+   ],
+   [
+      'class' => DataColumn::class,
+      'attribute' => 'row',
+      'contentOptions' => [
+         'class' => 'text-end'
+      ]
+   ],
    /*[
       'class' => DataColumn::class,
       'attribute' => 'historyLokasiBarangIn',

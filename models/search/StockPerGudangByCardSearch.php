@@ -77,7 +77,7 @@ class StockPerGudangByCardSearch extends Barang
 
       $query->andFilterWhere(['like', 'part_number', $this->part_number]);
       $query->andFilterWhere(['like', 'ift_number', $this->ift_number]);
-      $query->andFilterWhere(['like', 'nama', $this->nama]);
+      $query->andFilterWhere(['like', 'b.nama', $this->nama]);
       $query->andFilterWhere(['like', 'merk_part_number', $this->merk_part_number]);
       return $dataProvider;
 
@@ -86,7 +86,7 @@ class StockPerGudangByCardSearch extends Barang
    /**
     * @return BarangQuery
     */
-   protected function getQuery(): BarangQuery
+   public function getQuery(): BarangQuery
    {
       $qtyInit = new Expression("(COALESCE(initStartProject.quantity, 0))");
       $qtyTandaTerimaBarang = new Expression("(COALESCE(tandaTerimaBarangDetail.quantity, 0))");
@@ -171,7 +171,7 @@ class StockPerGudangByCardSearch extends Barang
          ->alias('b')
          ->leftJoin(['s' => 'satuan'], 'b.default_satuan_id = s.id')
          ->where('tipe_pembelian_id = :tipePembelianId', [':tipePembelianId' => TipePembelianEnum::STOCK->value])
-         ->orderBy('nama');
+         ->orderBy('b.nama');
    }
 
    /**

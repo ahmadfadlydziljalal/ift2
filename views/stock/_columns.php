@@ -11,6 +11,11 @@ return [
       'class' => SerialColumn::class
    ],
    [
+      'class' => ActionColumn::class,
+      'mergeHeader' => false,
+      'template' => '{view}',
+   ],
+   [
       'class' => DataColumn::class,
       'attribute' => 'photo_thumbnail',
       'header' => 'Photo',
@@ -73,10 +78,5 @@ return [
       'contentOptions' => [
          'class' => 'text-end'
       ]
-   ],
-   [
-      'class' => ActionColumn::class,
-      'mergeHeader' => false,
-      'template' => '{view}',
    ],
 ];

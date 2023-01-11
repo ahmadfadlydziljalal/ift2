@@ -19,5 +19,4 @@ $this->title = 'Dashboard';
    <?= $this->render('_alur_inventaris') ?>
    <?= $this->render('_stock') ?>
 
-
 </div>

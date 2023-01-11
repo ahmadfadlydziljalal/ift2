@@ -105,7 +105,7 @@ if (!Yii::$app->user->isGuest) :
       $dropdownItems[] =
          [
             'label' => '<div class="d-flex justify-content-start" style="gap: 1rem"> <i class="bi bi-box-arrow-right"></i> <span>Log Out</span></div>',
-            'url' => ['/site/logout'],
+            'url' => ['/site/logout'], /** @see \app\controllers\SiteController::actionLogout() */
             'linkOptions' => ['data-method' => 'post']
          ];
 

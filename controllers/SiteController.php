@@ -14,6 +14,7 @@ use yii\web\Response;
 
 class SiteController extends Controller
 {
+
    /**
     * {@inheritdoc}
     */
@@ -103,7 +104,6 @@ class SiteController extends Controller
    public function actionLogout(): Response
    {
       Yii::$app->user->logout();
-
       return $this->goHome();
    }
 
@@ -112,7 +112,7 @@ class SiteController extends Controller
     *
     * @return Response|string
     */
-   public function actionContact()
+   public function actionContact(): Response|string
    {
       $withBreadcrumb = true;
 
@@ -135,6 +135,7 @@ class SiteController extends Controller
    }
 
    /**
+    * Render account information
     * @return string
     */
    public function actionAccountInformation(): string
@@ -159,6 +160,7 @@ class SiteController extends Controller
    }
 
    /**
+    * Render about page
     * @return string
     */
    public function actionAbout(): string
@@ -170,7 +172,7 @@ class SiteController extends Controller
     * Reset password
     * @return string|Response
     */
-   public function actionChangePassword()
+   public function actionChangePassword(): Response|string
    {
       $model = new ChangePassword();
 
@@ -186,4 +188,5 @@ class SiteController extends Controller
          'model' => $model,
       ]);
    }
+   
 }

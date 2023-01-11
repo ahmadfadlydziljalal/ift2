@@ -18,6 +18,7 @@ use app\models\form\StockPerGudangTransferBarangAntarGudangDetail;
 use app\models\HistoryLokasiBarang;
 use app\models\QuotationDeliveryReceipt;
 use app\models\search\HistoryLokasiBarangSearchPerCardWarehouseSearch;
+use app\models\search\StockPerGudangByCardAsDiagramSearch;
 use app\models\search\StockPerGudangByCardSearch;
 use app\models\search\StockPerGudangPerCardPerBarangSearch;
 use app\models\search\StockPerGudangSearch;
@@ -36,8 +37,8 @@ use yii\web\ServerErrorHttpException;
 class StockPerGudangController extends Controller
 {
 
-
    /**
+    * Render halaman index yang menampilkan card yang bertipe gudang
     * @return string
     */
    public function actionIndex(): string
@@ -52,6 +53,7 @@ class StockPerGudangController extends Controller
    }
 
    /**
+    * Render halaman view yang menampilkan list barang pada satu Gudang Card
     * @param $id
     * @return string
     * @throws NotFoundHttpException
@@ -63,12 +65,33 @@ class StockPerGudangController extends Controller
       ]);
       $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-      return $this->render('view', [
+      return $this->render('view_per_card', [
          'card' => $searchModel->card,
          'searchModel' => $searchModel,
          'dataProvider' => $dataProvider
       ]);
 
+   }
+
+   public function actionViewPerCardAsDiagram($id)
+   {
+
+      $card = $this->findModel($id);
+      $stockPerGudangByCardSearch = new StockPerGudangByCardSearch([
+         'card' => $card
+      ]);
+      $stockPerGudangPerCardPerBarangSearch = new StockPerGudangPerCardPerBarangSearch([
+         'card' => $card,
+      ]);
+
+      $searchModel = new StockPerGudangByCardAsDiagramSearch();
+      $searchModel->stockPerGudangByCardSearch = $stockPerGudangByCardSearch;
+      $searchModel->stockPerGudangPerCardPerBarangSearch = $stockPerGudangPerCardPerBarangSearch;
+
+      return $this->render('view_per_card_as_diagram', [
+         'searchModel' => $searchModel,
+         'card' => $card,
+      ]);
    }
 
    /*

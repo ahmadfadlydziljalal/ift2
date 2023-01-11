@@ -19,7 +19,7 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
    public ?Barang $barang = null;
 
    /**
-    * bypass scenarios() implementation in the parent class
+    * Bypass scenarios() implementation in the parent class
     * @return array
     */
    public function scenarios(): array
@@ -27,6 +27,9 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
       return Model::scenarios();
    }
 
+   /**
+    * @return array[]
+    */
    public function rules(): array
    {
       return [
@@ -117,7 +120,7 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
    protected function getHistoryLokasiBarangInitStartProject(): ActiveQuery
    {
       $statusId = TipePergerakanBarangEnum::getStatus(TipePergerakanBarangEnum::START_PERTAMA_KALI_PENERAPAN_SISTEM)->id;
-      return HistoryLokasiBarang::find()
+      $query = HistoryLokasiBarang::find()
          ->select([
             'type' => new Expression(":typeInit", [':typeInit' => self::HISTORY_INIT_TYPE]),
             'barang_id',
@@ -130,10 +133,14 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
          ])
          ->alias('hlb')
          ->where('card_id = :cardId', [':cardId' => $this->card->id])
-         ->andWhere('barang_id = :barangId', [':barangId' => $this->barang->id])
          ->andWhere('hlb.tipe_pergerakan_id = :tipePergerakanId', [':tipePergerakanId' => $statusId])
-         ->andWhere(['IS', 'hlb.depend_id', NULL])
-         ->groupBy(['block', 'rak', 'tier', 'row',]);
+         ->andWhere(['IS', 'hlb.depend_id', NULL]);
+
+      if ($this->barang) {
+         $query->andWhere('barang_id = :barangId', [':barangId' => $this->barang->id]);
+         return $query->groupBy(['block', 'rak', 'tier', 'row',]);
+      }
+      return $query->groupBy(['barang_id', 'block', 'rak', 'tier', 'row',]);
    }
 
    /**
@@ -141,7 +148,7 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
     */
    protected function getHistoryLokasiBarangTandaTerimaBarang(): ActiveQuery
    {
-      return HistoryLokasiBarang::find()
+      $query = HistoryLokasiBarang::find()
          ->select([
             'type' => new Expression(":typeTandaTerima", [':typeTandaTerima' => self::HISTORY_TANDA_TERIMA_BARANG_TYPE]),
             'barang_id' => new Expression('mrd.barang_id'),
@@ -159,9 +166,14 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
             ])
          ])
          ->where(['hlb.card_id' => $this->card->id])
-         ->andWhere(['mrd.barang_id' => $this->barang->id])
-         ->andWhere(['IS NOT', 'ttbd.id', NULL])
-         ->groupBy(['block', 'rak', 'tier', 'row',]);
+         ->andWhere(['IS NOT', 'ttbd.id', NULL]);
+
+      if ($this->barang) {
+         $query->andWhere(['mrd.barang_id' => $this->barang->id]);
+         return $query->groupBy(['block', 'rak', 'tier', 'row',]);
+      }
+      return $query->groupBy(['barang_id', 'block', 'rak', 'tier', 'row',]);
+
    }
 
    /**
@@ -169,7 +181,7 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
     */
    protected function getHistoryLokasiBarangClaimPettyCash(): ActiveQuery
    {
-      return HistoryLokasiBarang::find()
+      $query = HistoryLokasiBarang::find()
          ->select([
             'type' => new Expression(":typeClaimPettyCash", [':typeClaimPettyCash' => self::HISTORY_CLAIM_PETTY_CASH_TYPE]),
             'barang_id' => new Expression('cpcnd.barang_id'),
@@ -183,9 +195,13 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
          ->alias('hlb')
          ->joinWith(['claimPettyCashNotaDetail' => fn($cpcnd) => $cpcnd->alias('cpcnd')])
          ->where(['hlb.card_id' => $this->card->id])
-         ->andWhere(['cpcnd.barang_id' => $this->barang->id])
-         ->andWhere(['IS NOT', 'cpcnd.id', NULL])
-         ->groupBy(['block', 'rak', 'tier', 'row',]);
+         ->andWhere(['IS NOT', 'cpcnd.id', NULL]);
+
+      if ($this->barang) {
+         $query->andWhere(['cpcnd.barang_id' => $this->barang->id]);
+         return $query->groupBy(['block', 'rak', 'tier', 'row',]);
+      }
+      return $query->groupBy(['barang_id', 'block', 'rak', 'tier', 'row',]);
    }
 
    /**
@@ -193,7 +209,7 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
     */
    protected function getHistoryLokasiBarangDeliveryReceipt(): ActiveQuery
    {
-      return HistoryLokasiBarang::find()
+      $query = HistoryLokasiBarang::find()
          ->select([
             'type' => new Expression(":typeDeliveryReceipt", [':typeDeliveryReceipt' => self::HISTORY_DELIVERY_RECEIPT_TYPE]),
             'barang_id' => new Expression('qb.barang_id'),
@@ -209,9 +225,14 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
             ->joinWith(['quotationBarang' => fn($qb) => $qb->alias('qb')])
          ])
          ->where(['hlb.card_id' => $this->card->id])
-         ->andWhere(['qb.barang_id' => $this->barang->id])
-         ->andWhere(['IS NOT', 'qdrd.id', NULL])
-         ->groupBy(['block', 'rak', 'tier', 'row',]);
+         ->andWhere(['IS NOT', 'qdrd.id', NULL]);
+
+      if ($this->barang) {
+         $query->andWhere(['qb.barang_id' => $this->barang->id]);
+         return $query->groupBy(['block', 'rak', 'tier', 'row',]);
+      }
+      return $query->groupBy(['barang_id', 'block', 'rak', 'tier', 'row',]);
+
    }
 
    /**
@@ -220,7 +241,7 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
    protected function getHistoryLokasiBarangTransferOut(): ActiveQuery
    {
       $statusId = TipePergerakanBarangEnum::getStatus(TipePergerakanBarangEnum::MOVEMENT_FROM)->id;
-      return HistoryLokasiBarang::find()
+      $query = HistoryLokasiBarang::find()
          ->alias('asalGudang')
          ->select([
             'type' => new Expression(":typeTransferOut", [':typeTransferOut' => self::HISTORY_TRANSFER_OUT_TYPE]),
@@ -235,14 +256,27 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
          ->where([
             'asalGudang.card_id' => $this->card->id,
             'asalGudang.tipe_pergerakan_id' => $statusId,
+         ]);
+
+      if ($this->barang) {
+         $query->andWhere([
             'asalGudang.barang_id' => $this->barang->id
-         ])
-         ->groupBy([
+         ]);
+         return $query->groupBy([
             'asalGudang.block',
             'asalGudang.rak',
             'asalGudang.tier',
             'asalGudang.row'
          ]);
+
+      }
+      return $query->groupBy([
+         'asalGudang.barang_id',
+         'asalGudang.block',
+         'asalGudang.rak',
+         'asalGudang.tier',
+         'asalGudang.row',
+      ]);
    }
 
    /**
@@ -251,7 +285,7 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
    protected function getHistoryLokasiBarangTransferIn(): ActiveQuery
    {
       $statusId = TipePergerakanBarangEnum::getStatus(TipePergerakanBarangEnum::MOVEMENT_TO)->id;
-      return HistoryLokasiBarang::find()
+      $query = HistoryLokasiBarang::find()
          ->alias('inGudang')
          ->select([
             'type' => new Expression(":typeTransferIn", [':typeTransferIn' => self::HISTORY_TRANSFER_IN_TYPE]),
@@ -266,19 +300,36 @@ class StockPerGudangPerCardPerBarangSearch extends HistoryLokasiBarang
          ->joinWith(['depend' => fn($asalGudang) => $asalGudang->alias('asalGudang')])
          ->where([
             'inGudang.card_id' => $this->card->id,
-
             'inGudang.tipe_pergerakan_id' => $statusId,
-            'asalGudang.barang_id' => $this->barang->id
          ])
          ->andWhere([
             'IS NOT', 'inGudang.depend_id', NULL,
-         ])
+         ]);
+
+      if ($this->barang) {
+         $query->andWhere([
+            'asalGudang.barang_id' => $this->barang->id
+         ]);
+         return $query
+            ->groupBy([
+               'inGudang.block',
+               'inGudang.rak',
+               'inGudang.tier',
+               'inGudang.row'
+            ]);
+
+
+      }
+
+      return $query
          ->groupBy([
+            'asalGudang.barang_id',
             'inGudang.block',
             'inGudang.rak',
             'inGudang.tier',
             'inGudang.row'
          ]);
+
 
    }
 
