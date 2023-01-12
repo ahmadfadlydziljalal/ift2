@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="stock-per-gudang-view">
         <div class="d-flex flex-column gap-2">
+
             <div class="d-flex justify-content-between flex-wrap align-items-center">
                 <div>
                     <h1><?= Html::encode($this->title) ?></h1>
@@ -32,73 +33,78 @@ $this->params['breadcrumbs'][] = $this->title;
 
            <?php
            $query = $searchModel->getQuery();
-           $data = $query->all(); ?>
-           <?php
-           $arrayKeys = array_keys($data[0]);
-           unset($arrayKeys[0]); // value Id
+           $data = $query->all();
+           ?>
+           <?php if (!empty($data)) : ?>
+              <?php
+              $arrayKeys = array_keys($data[0]);
+              unset($arrayKeys[0]); // value Id
 
-           $arrayKeyFirst = array_values(array_map(function ($el) {
-              return Inflector::humanize($el);
-           }, $arrayKeys));
+              $arrayKeyFirst = array_values(array_map(function ($el) {
+                 return Inflector::humanize($el);
+              }, $arrayKeys));
 
-           ?>
-           <?php
-           $maxColumn = max(array_column($data, 'block'));
-           $columns = range('A', $maxColumn);
-           ?>
-           <?php
-           $maxRow = max(array_column($data, 'row'));
-           $rows = range(1, $maxRow)
-           ?>
-           <?php
-           $data = ArrayHelper::index($data, 'id', [function ($element) {
-              return $element['block'];
-           }, 'row']);
-           ksort($data);
-           ?>
-            <table class="table table-sm table-bordered">
+              ?>
+              <?php
+              $maxColumn = max(array_column($data, 'block'));
+              $columns = range('A', $maxColumn);
+              ?>
+              <?php
+              $maxRow = max(array_column($data, 'row'));
+              $rows = range(1, $maxRow)
+              ?>
+              <?php
+              $data = ArrayHelper::index($data, 'id', [function ($element) {
+                 return $element['block'];
+              }, 'row']);
+              ksort($data);
+              ?>
+               <table class="table table-sm table-bordered">
 
-                <thead>
-                <tr class="text-center">
-                    <th></th>
-                   <?php foreach ($columns as $column) : ?>
-                       <th>
-                          <?= $column ?>
-                       </th>
+                   <thead>
+                   <tr class="text-center">
+                       <th></th>
+                      <?php foreach ($columns as $column) : ?>
+                          <th>
+                             <?= $column ?>
+                          </th>
+                      <?php endforeach; ?>
+                   </tr>
+                   </thead>
+
+                   <tbody>
+                   <?php $pad = ''; ?>
+                   <?php foreach ($rows as $key => $value) : ?>
+                      <?php $pad = (str_pad($value, 2, "0", STR_PAD_LEFT)); ?>
+                       <tr>
+                           <td class="text-end" style="width:2em"><?= $pad ?></td>
+                          <?php foreach ($columns as $column) : ?>
+                             <?php if (isset($data[$column][$pad]))  : ?>
+
+                                  <td class="text-center" style="width:6em">
+                                     <?= Html::button($column . '' . $pad, [
+                                        'class' => 'btn btn-primary btn-sm',
+                                        'data' => [
+                                           'bs-toggle' => 'modal',
+                                           'bs-target' => '#modal',
+                                           'bs-title' => $column . $pad,
+                                           'bs-key' => Json::encode($arrayKeyFirst),
+                                           'bs-data' => Json::encode($data[$column][$pad]),
+                                        ]
+                                     ]) ?>
+                                  </td>
+                             <?php else: ?>
+                                  <td class="text-center" style="width:6em"></td>
+                             <?php endif; ?>
+                          <?php endforeach; ?>
+                       </tr>
                    <?php endforeach; ?>
-                </tr>
-                </thead>
+                   </tbody>
 
-                <tbody>
-                <?php $pad = ''; ?>
-                <?php foreach ($rows as $key => $value) : ?>
-                   <?php $pad = (str_pad($value, 2, "0", STR_PAD_LEFT)); ?>
-                    <tr>
-                        <td class="text-end" style="width:2em"><?= $pad ?></td>
-                       <?php foreach ($columns as $column) : ?>
-                          <?php if (isset($data[$column][$pad]))  : ?>
-
-                               <td class="text-center" style="width:6em">
-                                  <?= Html::button($column . '' . $pad, [
-                                     'class' => 'btn btn-primary btn-sm',
-                                     'data' => [
-                                        'bs-toggle' => 'modal',
-                                        'bs-target' => '#modal',
-                                        'bs-title' => $column . $pad,
-                                        'bs-key' => Json::encode($arrayKeyFirst),
-                                        'bs-data' => Json::encode($data[$column][$pad]),
-                                     ]
-                                  ]) ?>
-                               </td>
-                          <?php else: ?>
-                               <td class="text-center" style="width:6em"></td>
-                          <?php endif; ?>
-                       <?php endforeach; ?>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-
-            </table>
+               </table>
+           <?php else : ?>
+               <p>Tidak ada atau belum ada barang yang masuk ke <?= $card->nama ?></p>
+           <?php endif; ?>
         </div>
     </div>
 

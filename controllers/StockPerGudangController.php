@@ -73,20 +73,34 @@ class StockPerGudangController extends Controller
 
    }
 
-   public function actionViewPerCardAsDiagram($id)
+   /**
+    * @throws NotFoundHttpException
+    */
+   protected function findModel($id): ?Card
    {
+      if (($model = Card::findOne($id)) !== null) {
+         return $model;
+      }
+      throw new NotFoundHttpException('The requested page does not exist.');
+   }
 
+   /**
+    * Menampilkan diagram stock barang yang ada di dalam satu card gudang
+    * @param $id
+    * @return string
+    * @throws NotFoundHttpException
+    */
+   public function actionViewPerCardAsDiagram($id): string
+   {
       $card = $this->findModel($id);
-      $stockPerGudangByCardSearch = new StockPerGudangByCardSearch([
-         'card' => $card
+      $searchModel = new StockPerGudangByCardAsDiagramSearch([
+         'stockPerGudangByCardSearch' => (new StockPerGudangByCardSearch([
+            'card' => $card
+         ])),
+         'stockPerGudangPerCardPerBarangSearch' => (new StockPerGudangPerCardPerBarangSearch([
+            'card' => $card,
+         ]))
       ]);
-      $stockPerGudangPerCardPerBarangSearch = new StockPerGudangPerCardPerBarangSearch([
-         'card' => $card,
-      ]);
-
-      $searchModel = new StockPerGudangByCardAsDiagramSearch();
-      $searchModel->stockPerGudangByCardSearch = $stockPerGudangByCardSearch;
-      $searchModel->stockPerGudangPerCardPerBarangSearch = $stockPerGudangPerCardPerBarangSearch;
 
       return $this->render('view_per_card_as_diagram', [
          'searchModel' => $searchModel,
@@ -94,9 +108,6 @@ class StockPerGudangController extends Controller
       ]);
    }
 
-   /*
-    * @TODO berikan display posisi terakhir barang per card gudang
-    * */
    public function actionViewPerCardPerBarang($cardId, $barangId)
    {
       $searchModel = new StockPerGudangPerCardPerBarangSearch([
@@ -112,18 +123,6 @@ class StockPerGudangController extends Controller
          'dataProvider' => $dataProvider
       ]);
    }
-
-   /**
-    * @throws NotFoundHttpException
-    */
-   protected function findModel($id): ?Card
-   {
-      if (($model = Card::findOne($id)) !== null) {
-         return $model;
-      }
-      throw new NotFoundHttpException('The requested page does not exist.');
-   }
-
 
    /**
     * @param $id
