@@ -1,8 +1,10 @@
 <?php
 
 use app\models\BarangSatuan;
+use app\models\Card;
 use app\models\Satuan;
 use kartik\form\ActiveForm;
+use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
 use yii\helpers\Html;
 use yii\web\View;
@@ -37,7 +39,7 @@ use yii\web\View;
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Satuan</th>
-                <!--                <th scope="col">Vendor</th>-->
+                <th scope="col">Vendor</th>
                 <!--                <th scope="col">Harga Beli</th>-->
                 <!--                <th scope="col">Harga Jual</th>-->
                 <th scope="col" style="width: 2px">Aksi</th>
@@ -66,17 +68,17 @@ use yii\web\View;
                        ?>
                     </td>
 
-                    <!--                    <td>-->
-                    <!--                       --><?php //$form->field($modelDetail, "[$i]vendor_id", ['template' =>
-                   //                          '{input}{error}{hint}', 'options' => ['class' => null]])
-                   //                          ->widget(Select2::class, [
-                   //                             'data' => Card::find()->map(),
-                   //                             'options' => [
-                   //                                'prompt' => '= Pilih Salah Satu ='
-                   //                             ]
-                   //                          ]);
-                   //                       ?>
-                    <!--                    </td>-->
+                    <td>
+                       <?php echo $form->field($modelDetail, "[$i]vendor_id", ['template' =>
+                          '{input}{error}{hint}', 'options' => ['class' => null]])
+                          ->widget(Select2::class, [
+                             'data' => Card::find()->map(),
+                             'options' => [
+                                'prompt' => '= Pilih Salah Satu ='
+                             ]
+                          ]);
+                       ?>
+                    </td>
 
                     <!--                    <td>--><?php //echo $form->field($modelDetail, "[$i]harga_beli", ['template' =>
                    //                          '{input}{error}{hint}', 'options' => ['class' => null]])->widget(NumberControl::class, [
@@ -107,7 +109,7 @@ use yii\web\View;
 
             <tfoot>
             <tr>
-                <td class="text-end" colspan="2">
+                <td class="text-end" colspan="3">
                    <?php echo Html::button('<span class="bi bi-plus-circle"></span> Tambah', ['class' => 'add-item btn btn-success',]); ?>
                 </td>
                 <td></td>

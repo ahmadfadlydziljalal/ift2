@@ -32,7 +32,7 @@ use yii\helpers\Html;
           ]
       ]*/
    ]); ?>
-
+   
    <?= $this->render('_form_master', [
       'form' => $form,
       'model' => $model
