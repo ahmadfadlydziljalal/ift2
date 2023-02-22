@@ -201,7 +201,7 @@ use yii\web\View;
 
                 <td colspan="3" rowspan="3" class="border-start-0 border-end-0">
                     <span class="font-weight-bold">Note</span><br/>
-                   <?= $model->catatan_quotation_service ?> dssfsf
+                   <?= $model->catatan_quotation_service ?>
                 </td>
                 <td>DPP</td>
                 <td></td>
