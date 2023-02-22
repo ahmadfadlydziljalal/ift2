@@ -119,25 +119,23 @@ use yii\web\View;
 
         <tfoot>
         <tr>
-            <td class="border-start-0 border-end-0" colspan="3"></td>
-            <td class="border-start-0 border-bottom-0"></td>
+            <td class="border-start-0 border-end-0" colspan="4" rowspan="5">
+                <span class="font-weight-bold">Note</span>: <br/>
+               <?= $model->catatan_quotation_barang ?>
+            </td>
             <td colspan="2">SubTotal</td>
             <td></td>
             <td></td>
             <td class="text-end"><?= Yii::$app->formatter->asDecimal($model->quotationBarangsSubtotal) ?></td>
         </tr>
         <tr>
-            <td rowspan="4" colspan="3"><span class="font-weight-bold">Note</span>: <br/>
-               <?= $model->catatan_quotation_barang ?>
-            </td>
-            <td class="border-top-0 border-bottom-0"></td>
             <td colspan="2">Delivery Fee</td>
             <td></td>
             <td></td>
             <td class="text-end"><?= Yii::$app->formatter->asDecimal($model->delivery_fee) ?></td>
         </tr>
         <tr>
-            <td class="border-top-0 border-bottom-0"></td>
+
             <td colspan="2">DPP</td>
             <td></td>
             <td></td>
@@ -145,7 +143,7 @@ use yii\web\View;
         </tr>
 
         <tr>
-            <td class="border-top-0 border-bottom-0"></td>
+
             <td colspan="2">PPN</td>
             <td class="text-end"><?= $model->vatPercentageLabel ?> </td>
             <td></td>
@@ -153,7 +151,6 @@ use yii\web\View;
         </tr>
 
         <tr>
-            <td class="border-top-0 border-bottom-0"></td>
             <td colspan="2" class="font-weight-bold">Total (A)</td>
             <td class="text-end"></td>
             <td></td>
@@ -165,7 +162,7 @@ use yii\web\View;
 
     <div class="mt-1">
         <span class="font-weight-bold">Service</span>
-        <table class="table">
+        <table class="table table-bordered">
             <thead>
             <tr>
                 <th rowspan="2">No</th>
@@ -202,8 +199,10 @@ use yii\web\View;
             <tfoot>
             <tr>
 
-                <td colspan="2" class="border-start-0 border-end-0"></td>
-                <td class="border-start-0 border-bottom-0"></td>
+                <td colspan="3" rowspan="3" class="border-start-0 border-end-0">
+                    <span class="font-weight-bold">Note</span><br/>
+                   <?= $model->catatan_quotation_service ?> dssfsf
+                </td>
                 <td>DPP</td>
                 <td></td>
                 <td></td>
@@ -211,10 +210,7 @@ use yii\web\View;
             </tr>
 
             <tr>
-                <td colspan="2" rowspan="2"><span class="font-weight-bold">Note</span><br/>
-                   <?= $model->catatan_quotation_service ?>
-                </td>
-                <td class="border-top-0 border-bottom-0"></td>
+
                 <td>PPN</td>
                 <td class="text-end"><?= $model->vatPercentageLabel ?></td>
                 <td></td>
@@ -223,7 +219,6 @@ use yii\web\View;
 
             <tr>
 
-                <td class="border-top-0 border-bottom-0"></td>
                 <td style="width: 6em" class="font-weight-bold">TOTAL (B)</td>
                 <td></td>
                 <td></td>
@@ -282,19 +277,21 @@ use yii\web\View;
 
     <div style="clear: both"></div>
 
-    <div class="mt-5">
-        <span class="font-weight-bold">Term and Condition</span> <br/>
-        <table class="table">
-            <tbody>
-            <?php foreach ($model->quotationTermAndConditions as $k => $termAndCondition) : ?>
-                <tr>
-                    <td><?= ($k + 1) ?></td>
-                    <td class="text-nowrap"><?= $termAndCondition->term_and_condition ?></td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
+   <?php if ($model->quotationTermAndConditions) : ?>
+       <div class="mt-5">
+           <span class="font-weight-bold">Term and Condition</span> <br/>
+           <table class="table">
+               <tbody>
+               <?php foreach ($model->quotationTermAndConditions as $k => $termAndCondition) : ?>
+                   <tr>
+                       <td><?= ($k + 1) ?></td>
+                       <td class="text-nowrap"><?= $termAndCondition->term_and_condition ?></td>
+                   </tr>
+               <?php endforeach; ?>
+               </tbody>
+           </table>
+       </div>
+   <?php endif ?>
 
     <table class="table table-borderless mt-1" style="page-break-inside: avoid">
         <thead>
