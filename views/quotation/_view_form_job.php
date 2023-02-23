@@ -1,6 +1,8 @@
 <?php
 
 use app\enums\TextLinkEnum;
+use app\models\Quotation;
+use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\DetailView;
@@ -44,10 +46,9 @@ use yii\widgets\DetailView;
 
                <?php endif; ?>
             </div>
-            <div class="table-responsive">
-               <?php
 
-               if ($model->quotationFormJob) {
+            <div class="table-responsive">
+               <?php if ($model->quotationFormJob) {
                   echo DetailView::widget([
                      'model' => $model->quotationFormJob,
                      'attributes' => [
@@ -62,10 +63,11 @@ use yii\widgets\DetailView;
                         'hour_meter',
                         'person_in_charge',
                         [
-                           'attribute' => 'mekanik_id',
-                           'value' => function ($model) {
-                              return $model->namaMekanik;
-                           }
+                           'attribute' => 'mekaniksId',
+                           'format' => 'raw',
+                           'value' => fn($model) => Html::ol($model->namaMekaniks, [
+                              'item' => fn($item, $index) => Html::tag('li', $item)
+                           ])
                         ],
                         'issue',
                         'remarks'
@@ -80,5 +82,5 @@ use yii\widgets\DetailView;
             </div>
         </div>
     </div>
-    
+
 </div>

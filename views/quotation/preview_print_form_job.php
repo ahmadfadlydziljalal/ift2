@@ -90,7 +90,7 @@ use yii\web\View;
                 <tr>
                     <td class="border-end-0">Mekanik</td>
                     <td class="border-start-0 border-end-0">:</td>
-                    <td class="border-start-0"><?= $quotationFormJob->mekanik->nama ?></td>
+                    <td class="border-start-0"><?= implode('; ', $quotationFormJob->namaMekaniks) ?></td>
                 </tr>
                 </tbody>
             </table>

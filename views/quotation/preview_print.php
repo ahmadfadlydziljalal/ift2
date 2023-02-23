@@ -14,7 +14,6 @@ use yii\web\View;
     <h1 class="text-center">Quotation</h1>
 
     <div style="width: 100%; vertical-align: top">
-
         <div class="mb-1" style=" float: left; width: 55%; padding-right: 1em">
             <div class="border-1" style="min-height: 1.6cm; max-height: 3.6cm; padding: .5em">
                 To: <?= $model->customer->nama ?> <br/>
@@ -120,7 +119,7 @@ use yii\web\View;
         <tfoot>
         <tr>
             <td class="border-start-0 border-end-0" colspan="4" rowspan="5">
-                <span class="font-weight-bold">Note</span>: <br/>
+                <span class="font-weight-bold">Note:</span><br/>
                <?= $model->catatan_quotation_barang ?>
             </td>
             <td colspan="2">SubTotal</td>
@@ -200,7 +199,7 @@ use yii\web\View;
             <tr>
 
                 <td colspan="3" rowspan="3" class="border-start-0 border-end-0">
-                    <span class="font-weight-bold">Note</span><br/>
+                    <span class="font-weight-bold">Note:</span><br/>
                    <?= $model->catatan_quotation_service ?>
                 </td>
                 <td>DPP</td>

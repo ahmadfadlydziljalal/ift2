@@ -41,13 +41,18 @@ use yii\web\View;
                    <?= $form->field($model, "tanggal")->widget(DatePicker::class); ?>
                 </div>
 
+                <!-- Person In Charge-->
                 <div class="col">
                    <?= $form->field($model, "person_in_charge"); ?>
                 </div>
+
+
             </div>
 
             <div class="row">
                 <div class="col-12 col-lg-3">
+
+                    <!-- Card Own Equipment -->
                    <?= $form->field($model, "card_own_equipment_id")
                       ->widget(Select2::class, [
                          'data' => CardOwnEquipment::find()->byCardId($quotation->customer_id),
@@ -57,20 +62,30 @@ use yii\web\View;
                       ]);
                    ?>
 
+                    <!-- Hour meter -->
                    <?= $form->field($model, "hour_meter"); ?>
 
-                   <?= $form->field($model, "mekanik_id")->widget(Select2::class, [
-                      'data' => Card::find()->map(Card::GET_ONLY_MEKANIK),
-                      'options' => [
-                         'placeholder' => '= Pilih unit (jika ada) ='
-                      ]
-                   ]); ?>
                 </div>
 
                 <div class="col-12 col-lg-9">
+
+                    <!-- Mekaniks ID -->
+                   <?= $form->field($model, 'mekaniksId')->widget(Select2::class, [
+                      'data' => Card::find()->map(Card::GET_ONLY_MEKANIK),
+                      'pluginOptions' => [
+                         'multiple' => true
+                      ],
+                      'options' => [
+                         'placeholder' => 'Pilih mekanik - mekanik'
+                      ]
+                   ]); ?>
+
+                    <!-- Issue -->
                    <?= $form->field($model, "issue")->textarea([
                       'rows' => 4
                    ]); ?>
+
+                    <!-- Remarks -->
                    <?= $form->field($model, "remarks")->textarea([
                       'rows' => 4
                    ]); ?>

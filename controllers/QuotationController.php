@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\BarangQuotation;
 use app\components\DeliveryReceiptQuotation;
+use app\components\helpers\ArrayHelper;
 use app\components\ProformaDebitNoteDetailBarangComponent;
 use app\components\ProformaDebitNoteDetailServiceComponent;
 use app\components\ProformaInvoiceDetailBarangComponent;
@@ -427,11 +428,11 @@ class QuotationController extends Controller
    {
       $quotation = $this->findModel($id);
       $model = new QuotationFormJob(['quotation_id' => $id]);
+      $model->scenario = $model::SCENARIO_CREATE_UPDATE;
 
-      if ($model->load($this->request->post())
-         && $model->validate()) {
+      if ($model->load($this->request->post()) && $model->validate()) {
 
-         if ($model->save(false)) {
+         if ($model->createFormJob()) {
             Yii::$app->session->setFlash(
                'success',
                'Data sesuai dengan validasi yang ditetapkan'
@@ -459,18 +460,22 @@ class QuotationController extends Controller
     * @param $id
     * @return Response|string
     * @throws NotFoundHttpException
+    * @throws Throwable
     */
    public function actionUpdateFormJob($id): Response|string
    {
-
       $quotation = $this->findModel($id);
-      $model = !empty($quotation->quotationFormJob)
-         ? $quotation->quotationFormJob
-         : new QuotationFormJob(['quotation_id' => $quotation->id]);
+      if (!empty($quotation->quotationFormJob)) {
+         $model = $quotation->quotationFormJob;
+         $model->mekaniksId = ArrayHelper::getColumn($model->quotationFormJobMekaniks, 'mekanik_id');
+      } else {
+         $model = new QuotationFormJob(['quotation_id' => $quotation->id]);
+      }
+      $model->scenario = $model::SCENARIO_CREATE_UPDATE;
 
       if ($model->load($this->request->post()) && $model->validate()) {
 
-         if ($model->save(false)) {
+         if ($model->updateFormJob()) {
             Yii::$app->session->setFlash(
                'success',
                'Data sesuai dengan validasi yang ditetapkan'
@@ -524,7 +529,12 @@ class QuotationController extends Controller
    /**
     * @param $id
     * @return string
+    * @throws CrossReferenceException
+    * @throws InvalidConfigException
+    * @throws MpdfException
     * @throws NotFoundHttpException
+    * @throws PdfParserException
+    * @throws PdfTypeException
     */
    public function actionPrintFormJob($id): string
    {

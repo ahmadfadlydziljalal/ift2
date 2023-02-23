@@ -24,6 +24,7 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\CardOwnEquipment $cardOwnEquipment
  * @property \app\models\Card $mekanik
  * @property \app\models\Quotation $quotation
+ * @property \app\models\QuotationFormJobMekanik[] $quotationFormJobMekaniks
  * @property string $aliasModel
  */
 abstract class QuotationFormJob extends \yii\db\ActiveRecord
@@ -109,6 +110,14 @@ abstract class QuotationFormJob extends \yii\db\ActiveRecord
     public function getQuotation()
     {
         return $this->hasOne(\app\models\Quotation::class, ['id' => 'quotation_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotationFormJobMekaniks()
+    {
+        return $this->hasMany(\app\models\QuotationFormJobMekanik::class, ['quotation_form_job_id' => 'id']);
     }
 
 
