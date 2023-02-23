@@ -12,6 +12,8 @@ use yii\helpers\Html;
 $this->title = 'Material Requisition';
 $this->params['breadcrumbs'][] = $this->title;
 
+$this->registerCss('.table-responsive{ min-height: 400px }');
+
 ?>
 <div class="material-requisition-index">
 

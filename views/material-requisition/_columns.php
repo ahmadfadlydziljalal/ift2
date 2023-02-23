@@ -120,7 +120,7 @@ return [
                            'target' => '_blank',
                            'rel' => 'noopener noreferrer'
                         ],
-                        'url' => ['print-pdf', 'id' => $model->id],
+                        'url' => ['print-to-pdf', 'id' => $model->id],
                         'visible' => true,   // same as above
                      ],
                      [

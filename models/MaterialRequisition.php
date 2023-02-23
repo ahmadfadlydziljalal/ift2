@@ -265,7 +265,7 @@ class MaterialRequisition extends BaseMaterialRequisition
                      'title' => 'Update berhasil',
                      'message' => 'Material Requisition: ' . $this->nomor . ' berhasil di-update',
                      'footer' =>
-                        Html::a(TextLinkEnum::PRINT->value, ['material-requisition/print', 'id' => $this->id], [
+                        Html::a(TextLinkEnum::PRINT->value, ['material-requisition/print-to-pdf', 'id' => $this->id], [
                            'target' => '_blank',
                            'class' => 'btn btn-success'
                         ])
