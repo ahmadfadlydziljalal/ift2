@@ -110,10 +110,7 @@ class QuotationController extends Controller
       $model = new Quotation();
       if ($this->request->isPost) {
          if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash(
-               'success',
-               'Quotation: ' . $model->nomor . ' berhasil ditambahkan.'
-            );
+            Yii::$app->session->setFlash('success', 'Quotation: ' . $model->nomor . ' berhasil ditambahkan.');
             return $this->redirect(['view', 'id' => $model->id]);
          } else {
             $model->loadDefaultValues();
