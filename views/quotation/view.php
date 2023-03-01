@@ -27,7 +27,7 @@ Bootstrap5VerticalTabs::register($this);
 
         <div class="d-flex flex-column gap-3">
             <div class="d-flex justify-content-between flex-wrap mb-3 mb-md-3 mb-lg-0" style="gap: .5rem">
-                <h1><?= Html::encode($model->getNomorDisplay()) ?></h1>
+                <h1><?= Html::encode($model->nomor) ?></h1>
                 <div class="d-flex flex-row flex-wrap align-items-center" style="gap: .5rem">
                    <?= Html::a(TextLinkEnum::KEMBALI->value, Yii::$app->request->referrer, ['class' => 'btn btn-outline-secondary']) ?>
                    <?php
