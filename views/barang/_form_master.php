@@ -27,7 +27,13 @@ use yii\web\View;
               ]
            ]) ?>
 
-           <?= $form->field($model, 'nama')->textInput(['maxlength' => true,]) ?>
+           <?= $form->field($model, 'nama')->textInput([
+              'maxlength' => true,
+              'style' => [
+                 'text-transform' => 'uppercase'
+              ]
+           ]) ?>
+           
            <?= $form->field($model, 'part_number')->textInput(['maxlength' => true]) ?>
            <?= $form->field($model, 'merk_part_number')->textInput(['maxlength' => true]) ?>
            <?= $form->field($model, 'originalitas_id', ['inline' => true])->radioList(Originalitas::find()->map()) ?>
