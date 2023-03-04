@@ -58,6 +58,10 @@ class BarangController extends Controller
       ]);
    }
 
+   /**
+    * @return Response|string
+    * @throws ServerErrorHttpException
+    */
    public function actionCreate(): Response|string
    {
       $request = Yii::$app->request;
