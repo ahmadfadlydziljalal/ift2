@@ -26,6 +26,7 @@ class Card extends BaseCard
    const GET_ONLY_PEJABAT_KANTOR = 'only-pejabat-kantor';
    const GET_ONLY_MEKANIK = 'only-mekanik';
    const GET_ONLY_WAREHOUSE = 'warehouse';
+   const GET_ONLY_CUSTOMER = 'only-customer';
 
    public ?array $cardBelongsTypesForm = [];
    public ?string $cardTypeName = null;

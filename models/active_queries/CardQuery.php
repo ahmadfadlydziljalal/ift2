@@ -10,7 +10,7 @@ use yii\web\NotFoundHttpException;
 /**
  * This is the ActiveQuery class for [[\app\models\Card]].
  *
- * @see \app\models\Card
+ * @see Card
  */
 class CardQuery extends ActiveQuery
 {
@@ -37,7 +37,7 @@ class CardQuery extends ActiveQuery
    public function map(string $mode = Card::GET_ALL): array
    {
 
-      $q = parent::select('card.id as id, card.nama as nama')
+      $q = parent::select('card.id as id, TRIM(card.nama) as nama')
          ->joinWith(['cardBelongsTypes' => function ($cbt) {
             $cbt->joinWith('cardType', false);
          }], false);
@@ -81,6 +81,12 @@ class CardQuery extends ActiveQuery
          case Card::GET_ONLY_WAREHOUSE:
             $q->where([
                '=', 'card_type.kode', Card::GET_ONLY_WAREHOUSE
+            ])->groupBy('card.id');
+            break;
+
+         case Card::GET_ONLY_CUSTOMER:
+            $q->where([
+               'card_type.kode' => 'customer'
             ])->groupBy('card.id');
             break;
 

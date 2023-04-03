@@ -8,7 +8,6 @@ use yii\helpers\Html;
 
 $this->title = 'Tambah Equipment';
 $this->params['breadcrumbs'][] = ['label' => 'Card', 'url' => ['/card/index']];
-$this->params['breadcrumbs'][] = ['label' => $model->card->nama, 'url' => ['/card/view', 'id' => $model->card->id]];
 $this->params['breadcrumbs'][] = 'Tambah Equipment';
 ?>
 
@@ -16,7 +15,7 @@ $this->params['breadcrumbs'][] = 'Tambah Equipment';
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
+   <?= $this->render('_form', [
+      'model' => $model,
+   ]) ?>
 </div>
