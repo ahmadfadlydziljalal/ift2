@@ -44,10 +44,10 @@ use yii\helpers\Html;
                  'placeholder' => 'Pilih sebuah card bertipe customer'
               ]
            ]) ?>
-           <?= $form->field($model, 'nama')->textInput(['maxlength' => true]) ?>
-           <?= $form->field($model, 'lokasi')->textarea(['rows' => 6]) ?>
-           <?= $form->field($model, 'tanggal_produk')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
-           <?= $form->field($model, 'serial_number')->textInput(['maxlength' => true]) ?>
+           <?= $form->field($model, 'nama')->textInput(['maxlength' => true])->hint(false) ?>
+           <?= $form->field($model, 'lokasi')->textarea(['rows' => 6])->hint(false) ?>
+           <?= $form->field($model, 'tanggal_produk')->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,])->hint(false) ?>
+           <?= $form->field($model, 'serial_number')->textInput(['maxlength' => true])->hint(false) ?>
 
             <div class="d-flex mt-3 justify-content-between">
                <?= Html::a(' Tutup', ['index'], [
@@ -55,8 +55,8 @@ use yii\helpers\Html;
                   'type' => 'button'
                ]) ?>
                <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
-
             </div>
+
         </div>
     </div>
 

@@ -9,6 +9,7 @@ use yii\data\Pagination;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\grid\SerialColumn;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 use yii\widgets\LinkPager;
 use yii\widgets\ListView;
@@ -171,6 +172,41 @@ return [
          'columnSelectorOptions' => [
             'icon' => '<i class="bi bi-list-columns"></i>',
             'label' => 'Kolom'
+         ],
+      ],
+      kartik\grid\ActionColumn::class => [
+         'dropdown' => false,
+         'mergeHeader' => false,
+         'vAlign' => 'middle',
+         'urlCreator' => function ($action, $model, $key, $index) {
+            return Url::to([$action, 'id' => $key]);
+         },
+         'contentOptions' => [
+            'class' => 'text-nowrap'
+         ],
+         'viewOptions' => [
+            'label' => '<i class="bi bi-eye-fill"></i>',
+            'role' => 'modal-remote',
+            'title' => 'View',
+            'data-toggle' => 'tooltip'
+         ],
+         'updateOptions' => [
+            'label' => '<i class="bi bi-pencil-fill"></i>',
+            'role' => 'modal-remote',
+            'title' => 'Update',
+            'data-toggle' => 'tooltip'
+         ],
+         'deleteOptions' => [
+            'label' => '<i class="bi bi-trash"></i>',
+            'class' => 'text-danger',
+            'role' => 'modal-remote',
+            'title' => 'Delete',
+            'data-confirm' => false,
+            'data-method' => false,// for overide yii data api
+            'data-request-method' => 'post',
+            'data-toggle' => 'tooltip',
+            'data-confirm-title' => 'Are you sure?',
+            'data-confirm-message' => 'Are you sure want to delete this item'
          ],
       ]
    ]

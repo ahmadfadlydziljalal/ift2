@@ -18,6 +18,8 @@ use yii\helpers\ArrayHelper;
  * @property string $serial_number
  *
  * @property \app\models\Card $card
+ * @property \app\models\CardOwnEquipmentHistory[] $cardOwnEquipmentHistories
+ * @property \app\models\QuotationFormJob[] $quotationFormJobs
  * @property string $aliasModel
  */
 abstract class CardOwnEquipment extends \yii\db\ActiveRecord
@@ -82,6 +84,22 @@ abstract class CardOwnEquipment extends \yii\db\ActiveRecord
     public function getCard()
     {
         return $this->hasOne(\app\models\Card::class, ['id' => 'card_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCardOwnEquipmentHistories()
+    {
+        return $this->hasMany(\app\models\CardOwnEquipmentHistory::class, ['card_own_equipment_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotationFormJobs()
+    {
+        return $this->hasMany(\app\models\QuotationFormJob::class, ['card_own_equipment_id' => 'id']);
     }
 
 

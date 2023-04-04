@@ -7,7 +7,7 @@
 use yii\helpers\Html;
 
 $this->title = 'Tambah Equipment';
-$this->params['breadcrumbs'][] = ['label' => 'Card', 'url' => ['/card/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Card Own Equipment', 'url' => ['/card-own-equipment/index']];
 $this->params['breadcrumbs'][] = 'Tambah Equipment';
 ?>
 
