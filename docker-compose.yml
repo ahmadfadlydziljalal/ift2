@@ -97,12 +97,12 @@ services:
       ADMINER_DEFAULT_DB_DRIVER: mysql
       ADMINER_DEFAULT_DB_HOST: mysql
       ADMINER_DEFAULT_DB_NAME: adminer
-      # ADMINER_DESIGN: nette
+      ADMINER_DESIGN: nette
       ADMINER_PLUGINS: tables-filter tinymce
     ports:
       - "${ADMINER_PORT}:8080"
-    volumes:
-      - ./.docker/adminer/adminer.css:/var/www/html/adminer.css
+    #    volumes:
+    #      - ./.docker/adminer/adminer.css:/var/www/html/adminer.css
     networks:
       - ${APP_NAME}-network
 
