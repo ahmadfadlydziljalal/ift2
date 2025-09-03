@@ -30,6 +30,7 @@ class SideMenu extends Menu
      * Recursively renders the menu items (without the container tag).
      * @param array $items the menu items to be rendered recursively
      * @return string the rendering result
+     * @throws Exception
      */
     protected function renderItems($items): string
     {
