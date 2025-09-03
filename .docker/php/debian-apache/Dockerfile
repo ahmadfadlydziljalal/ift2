@@ -1,21 +1,19 @@
 FROM --platform=linux/amd64 php:8.1.5-apache-buster AS development
 
-# Patch repository buster ke archive.debian.org (karena sudah EOL)
-RUN sed -i 's|deb.debian.org/debian|archive.debian.org/debian|g' /etc/apt/sources.list \
-    && sed -i '/security.debian.org/d' /etc/apt/sources.list \
-    && apt-get -o Acquire::Check-Valid-Until=false update \
-
 # Install dependencies & extensions
-RUN apt-get update && apt-get install -y \
+RUN sed -i 's|deb.debian.org/debian|archive.debian.org/debian|g' /etc/apt/sources.list \
+ && sed -i '/security.debian.org/d' /etc/apt/sources.list \
+ && apt-get -o Acquire::Check-Valid-Until=false update \
+ && apt-get install -y \
     libfreetype6-dev \
     libicu-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
     libzip-dev \
     libssl-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install -j$(nproc) gd
+ && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-configure intl \
+ && docker-php-ext-install -j$(nproc) gd
 
 # Install php extension
 RUN docker-php-ext-install \
