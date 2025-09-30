@@ -6,6 +6,7 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use \app\models\active_queries\QuotationServiceQuery;
 
 /**
  * This is the base-model class for table "quotation_service".
@@ -13,18 +14,17 @@ use yii\helpers\ArrayHelper;
  * @property integer $id
  * @property integer $quotation_id
  * @property string $job_description
- * @property string $hours
- * @property string $rate_per_hour
+ * @property string $quantity
+ * @property integer $satuan_id
+ * @property string $rate
  * @property integer $discount
  * @property integer $is_vat
  *
  * @property \app\models\Quotation $quotation
- * @property string $aliasModel
+ * @property \app\models\Satuan $satuan
  */
 abstract class QuotationService extends \yii\db\ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -39,12 +39,16 @@ abstract class QuotationService extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return ArrayHelper::merge(parent::rules(), [
-            [['quotation_id', 'discount', 'is_vat'], 'integer'],
+        $parentRules = parent::rules();
+        return ArrayHelper::merge($parentRules, [
+            [['quotation_id', 'quantity', 'satuan_id', 'rate', 'discount'], 'default', 'value' => null],
+            [['is_vat'], 'default', 'value' => 0],
+            [['quotation_id', 'satuan_id', 'discount', 'is_vat'], 'integer'],
             [['job_description'], 'required'],
-            [['hours', 'rate_per_hour'], 'number'],
+            [['quantity', 'rate'], 'number'],
             [['job_description'], 'string', 'max' => 255],
-            [['quotation_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Quotation::class, 'targetAttribute' => ['quotation_id' => 'id']]
+            [['quotation_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Quotation::class, 'targetAttribute' => ['quotation_id' => 'id']],
+            [['satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['satuan_id' => 'id']]
         ]);
     }
 
@@ -53,15 +57,16 @@ abstract class QuotationService extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
-        return [
+        return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'quotation_id' => 'Quotation ID',
             'job_description' => 'Job Description',
-            'hours' => 'Hours',
-            'rate_per_hour' => 'Rate Per Hour',
+            'quantity' => 'Quantity',
+            'satuan_id' => 'Satuan ID',
+            'rate' => 'Rate',
             'discount' => 'Discount',
             'is_vat' => 'Is Vat',
-        ];
+        ]);
     }
 
     /**
@@ -72,16 +77,20 @@ abstract class QuotationService extends \yii\db\ActiveRecord
         return $this->hasOne(\app\models\Quotation::class, ['id' => 'quotation_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSatuan()
+    {
+        return $this->hasOne(\app\models\Satuan::class, ['id' => 'satuan_id']);
+    }
 
-    
     /**
      * @inheritdoc
-     * @return \app\models\active_queries\QuotationServiceQuery the active query used by this AR class.
+     * @return QuotationServiceQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\models\active_queries\QuotationServiceQuery(get_called_class());
+        return new QuotationServiceQuery(static::class);
     }
-
-
 }
