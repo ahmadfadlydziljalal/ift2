@@ -2,8 +2,9 @@
 
 
 /* @var $this View */
-
 /* @var $model Quotation */
+
+/* @see */
 
 use app\models\Quotation;
 use yii\web\View;
@@ -17,7 +18,7 @@ use yii\web\View;
         <div class="mb-1" style=" float: left; width: 55%; padding-right: 1em">
             <div class="border-1" style="min-height: 1.6cm; max-height: 3.6cm; padding: .5em">
                 To: <?= $model->customer->nama ?> <br/>
-               <?= nl2br($model->customer->alamat) ?>
+                <?= nl2br($model->customer->alamat) ?>
             </div>
         </div>
 
@@ -120,7 +121,7 @@ use yii\web\View;
         <tr>
             <td class="border-start-0 border-end-0" colspan="4" rowspan="5">
                 <span class="font-weight-bold">Note:</span><br/>
-               <?= $model->catatan_quotation_barang ?>
+                <?= $model->catatan_quotation_barang ?>
             </td>
             <td colspan="2">SubTotal</td>
             <td></td>
@@ -166,10 +167,10 @@ use yii\web\View;
             <tr>
                 <th rowspan="2">No</th>
                 <th rowspan="2">Job Description</th>
-                <th rowspan="2">Hours</th>
-                <th>Rate / Hours</th>
+                <th rowspan="2" colspan="2">Quantity</th>
+                <th>Rate</th>
                 <th>Discount</th>
-                <th>Rate / Hours After Discount</th>
+                <th>Rate After Discount</th>
                 <th>Amount</th>
             </tr>
             <tr>
@@ -185,10 +186,11 @@ use yii\web\View;
                 <tr>
                     <td><?= ($key + 1) ?></td>
                     <td style="min-width: 17rem"><?= $quotationService->job_description ?></td>
-                    <td class="text-end"><?= $quotationService->hours ?></td>
-                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationService->rate_per_hour) ?></td>
+                    <td class="text-end"><?= $quotationService->quantity ?></td>
+                    <td class="text-end"><?= $quotationService->satuan->nama ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationService->rate) ?></td>
                     <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationService->discount) ?> %</td>
-                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationService->ratePerHourAfterDiscount) ?></td>
+                    <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationService->rateAfterDiscount) ?></td>
                     <td class="text-end"><?= Yii::$app->formatter->asDecimal($quotationService->amount) ?></td>
                 </tr>
 
@@ -198,9 +200,9 @@ use yii\web\View;
             <tfoot>
             <tr>
 
-                <td colspan="3" rowspan="3" class="border-start-0 border-end-0">
+                <td colspan="4" rowspan="3" class="border-start-0 border-end-0">
                     <span class="font-weight-bold">Note:</span><br/>
-                   <?= $model->catatan_quotation_service ?>
+                    <?= $model->catatan_quotation_service ?>
                 </td>
                 <td>DPP</td>
                 <td></td>
@@ -233,7 +235,7 @@ use yii\web\View;
         <div class="mb-1" style=" float: left; width: 50%; padding-right: 2em">
             <div class="border-1" style="min-height: 1.6cm; max-height: 3.6cm; padding: .5em">
                 <span>Bank Account Details</span> <br/>
-               <?= nl2br($model->rekening->atas_nama) ?>
+                <?= nl2br($model->rekening->atas_nama) ?>
             </div>
         </div>
 
@@ -255,20 +257,20 @@ use yii\web\View;
                 </tbody>
             </table>
 
-           <?php if ($model->quotationFormJob) : ?>
-               <div class="p0 mt-2">
+            <?php if ($model->quotationFormJob) : ?>
+                <div class="p0 mt-2">
 
                     <span>
                         <strong class="font-weight-bold">Unit: </strong>
                         <?php
                         if ($model->quotationFormJob->cardOwnEquipment) {
-                           echo $model->quotationFormJob->cardOwnEquipmentLabel;
+                            echo $model->quotationFormJob->cardOwnEquipmentLabel;
                         }
                         ?>
                     </span>
 
-               </div>
-           <?php endif; ?>
+                </div>
+            <?php endif; ?>
 
         </div>
 
@@ -276,21 +278,21 @@ use yii\web\View;
 
     <div style="clear: both"></div>
 
-   <?php if ($model->quotationTermAndConditions) : ?>
-       <div class="mt-5">
-           <span class="font-weight-bold">Term and Condition</span> <br/>
-           <table class="table">
-               <tbody>
-               <?php foreach ($model->quotationTermAndConditions as $k => $termAndCondition) : ?>
-                   <tr>
-                       <td><?= ($k + 1) ?></td>
-                       <td class="text-nowrap"><?= $termAndCondition->term_and_condition ?></td>
-                   </tr>
-               <?php endforeach; ?>
-               </tbody>
-           </table>
-       </div>
-   <?php endif ?>
+    <?php if ($model->quotationTermAndConditions) : ?>
+        <div class="mt-5">
+            <span class="font-weight-bold">Term and Condition</span> <br/>
+            <table class="table">
+                <tbody>
+                <?php foreach ($model->quotationTermAndConditions as $k => $termAndCondition) : ?>
+                    <tr>
+                        <td><?= ($k + 1) ?></td>
+                        <td class="text-nowrap"><?= $termAndCondition->term_and_condition ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif ?>
 
     <table class="table table-borderless mt-1" style="page-break-inside: avoid">
         <thead>

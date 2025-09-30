@@ -4,71 +4,71 @@ namespace app\models;
 
 trait QuotationServiceTrait
 {
-   /**
-    * @return float|int
-    */
-   public function getQuotationServicesDiscount(): float|int
-   {
+    /**
+     * @return float|int
+     */
+    public function getQuotationServicesDiscount(): float|int
+    {
 
-      $total = 0;
-      if (empty($this->quotationServices)) {
-         return $total;
-      }
+        $total = 0;
+        if (empty($this->quotationServices)) {
+            return $total;
+        }
 
-      foreach ($this->quotationServices as $quotationService) {
-         $total += $quotationService->hours * $quotationService->nominalDiscount;
-      }
+        foreach ($this->quotationServices as $quotationService) {
+            $total += $quotationService->quantity * $quotationService->nominalDiscount;
+        }
 
-      return $total;
-   }
+        return $total;
+    }
 
-   public function getQuotationServicesDasarPengenaanPajak(): float|int
-   {
-      $total = 0;
-      if (empty($this->quotationServices)) {
-         return $total;
-      }
+    public function getQuotationServicesDasarPengenaanPajak(): float|int
+    {
+        $total = 0;
+        if (empty($this->quotationServices)) {
+            return $total;
+        }
 
-      foreach ($this->quotationServices as $quotationService) {
-         $total += $quotationService->amount;
-      }
+        foreach ($this->quotationServices as $quotationService) {
+            $total += $quotationService->amount;
+        }
 
-      return $total;
-   }
+        return $total;
+    }
 
-   /**
-    * @return float|int
-    */
-   public function getQuotationServicesTotalVatNominal(): float|int
-   {
-      if (empty($this->quotationServices)) {
-         return 0;
-      }
+    /**
+     * @return float|int
+     */
+    public function getQuotationServicesTotalVatNominal(): float|int
+    {
+        if (empty($this->quotationServices)) {
+            return 0;
+        }
 
-      return $this->quotationServicesDasarPengenaanPajak * ($this->vat_percentage / 100);
+        return $this->quotationServicesDasarPengenaanPajak * ($this->vat_percentage / 100);
 
-   }
+    }
 
-   /**
-    * @return float|int
-    */
-   public function getQuotationServicesTotal(): float|int
-   {
-      return $this->quotationServicesDasarPengenaanPajak
-         + $this->quotationServicesTotalVatNominal;
-   }
+    /**
+     * @return float|int
+     */
+    public function getQuotationServicesTotal(): float|int
+    {
+        return $this->quotationServicesDasarPengenaanPajak
+            + $this->quotationServicesTotalVatNominal;
+    }
 
-   public function getQuotationServicesBeforeDiscountDasarPengenaanPajak(): float|int
-   {
-      $total = 0;
-      if (empty($this->quotationServices)) {
-         return $total;
-      }
+    public function getQuotationServicesBeforeDiscountDasarPengenaanPajak(): float|int
+    {
+        $total = 0;
+        if (empty($this->quotationServices)) {
+            return $total;
+        }
 
-      foreach ($this->quotationServices as $quotationService) {
-         $total += $quotationService->getAmountBeforeDiscount();
-      }
+        foreach ($this->quotationServices as $quotationService) {
+            $total += $quotationService->getAmountBeforeDiscount();
+        }
 
-      return $total;
-   }
+        return $total;
+    }
 }
