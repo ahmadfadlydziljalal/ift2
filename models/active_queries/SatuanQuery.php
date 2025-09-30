@@ -3,13 +3,14 @@
 namespace app\models\active_queries;
 
 use app\components\helpers\ArrayHelper;
+use app\enums\KategoriSatuanEnum;
 use app\models\Satuan;
 use yii\db\ActiveQuery;
 
 /**
  * This is the ActiveQuery class for [[\app\models\Satuan]].
  *
- * @see \app\models\Satuan
+ * @see Satuan
  */
 class SatuanQuery extends ActiveQuery
 {
@@ -51,5 +52,18 @@ class SatuanQuery extends ActiveQuery
         ])
             ->asArray()
             ->all();
+    }
+
+    public function mapForKategoriJasa(): array
+    {
+        $data = parent::select([
+            'id' => 'id',
+            'nama' => 'nama'
+        ])
+            ->where(['kategori' => KategoriSatuanEnum::tryFrom(KategoriSatuanEnum::JASA->value)])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($data, 'id', 'nama');
     }
 }

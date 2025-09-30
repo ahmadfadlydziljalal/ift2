@@ -2,8 +2,7 @@
 
 namespace app\models;
 
-use Yii;
-use \app\models\base\Satuan as BaseSatuan;
+use app\models\base\Satuan as BaseSatuan;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -12,7 +11,7 @@ use yii\helpers\ArrayHelper;
 class Satuan extends BaseSatuan
 {
 
-    public function behaviors()
+    public function behaviors(): array
     {
         return ArrayHelper::merge(
             parent::behaviors(),
@@ -22,7 +21,7 @@ class Satuan extends BaseSatuan
         );
     }
 
-    public function rules()
+    public function rules(): array
     {
         return ArrayHelper::merge(
             parent::rules(),
@@ -31,4 +30,6 @@ class Satuan extends BaseSatuan
             ]
         );
     }
+
+
 }

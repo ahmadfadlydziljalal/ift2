@@ -188,8 +188,8 @@ class LaporanQuotationPerPeriodForm extends Model
         SQL;
         $quotationServiceBaseSql = <<<SQL
             SELECT q.id AS quotation_penjulan_service_id,
-                   COALESCE(ROUND(SUM(qs.hours * qs.rate_per_hour), 2), 0) AS sum_service_before_discount,
-                   ROUND(SUM(qs.hours * (qs.rate_per_hour - (qs.rate_per_hour * qs.discount / 100))), 2) AS dpp_service,
+                   COALESCE(ROUND(SUM(qs.quantity * qs.rate), 2), 0) AS sum_service_before_discount,
+                   ROUND(SUM(qs.quantity * (qs.rate - (qs.rate * qs.discount / 100))), 2) AS dpp_service,
                    q.vat_percentage AS persentase_ppn_service
             FROM quotation q
             INNER JOIN ift.quotation_service qs ON q.id = qs.quotation_id

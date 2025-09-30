@@ -6,6 +6,7 @@ use Yii;
 use app\models\Satuan;
 use app\models\search\SatuanSearch;
 use Throwable;
+use yii\db\Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -13,7 +14,7 @@ use yii\db\StaleObjectException;
 use yii\web\Response;
 
 /**
-* SatuanController implements the CRUD actions for Satuan model.
+* SatuanController implements the CRUD actions for a Satuan model.
 */
 class SatuanController extends Controller
 {
@@ -60,11 +61,13 @@ class SatuanController extends Controller
     }
 
     /**
-    * Creates a new Satuan model.
-    * If creation is successful, the browser will be redirected to the 'index' page.
-    * @return Response|string
-    */
-    public function actionCreate(){
+     * Creates a new Satuan model.
+     * If creation is successful, the browser will be redirected to the 'index' page.
+     * @return Response|string
+     * @throws Exception
+     */
+    public function actionCreate(): Response|string
+    {
         $model = new Satuan();
 
         if ($this->request->isPost) {
@@ -83,12 +86,13 @@ class SatuanController extends Controller
 
     /**
     * Updates an existing Satuan model.
-    * If update is successful, the browser will be redirected to the 'index' page with pagination URL
+    * If the update is successful, the browser will be redirected to the 'index' page with pagination URL
     * @param integer $id
     * @return Response|string
-    * @throws NotFoundHttpException if the model cannot be found
+    * @throws NotFoundHttpException|Exception if the model cannot be found
     */
-    public function actionUpdate(int $id){
+    public function actionUpdate(int $id): Response|string
+    {
         $model = $this->findModel($id);
 
         if($this->request->isPost && $model->load($this->request->post()) && $model->save()){

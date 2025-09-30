@@ -10,7 +10,7 @@ use yii\helpers\Html;
  * This is the model class for table "quotation_service".
  * @property string $labelIsVat
  * @property float | int $nominalDiscount
- * @property float | int $ratePerHourAfterDiscount
+ * @property float | int $rateAfterDiscount
  * @property float | int $amount
  * @property $amountBeforeDiscount float | int
  */
@@ -62,16 +62,16 @@ class QuotationService extends BaseQuotationService
     public function getNominalDiscount(): float|int
     {
         if ($this->discount) {
-            return $this->rate_per_hour * ($this->discount / 100);
+            return $this->rate * ($this->discount / 100);
         }
 
         return 0;
     }
 
 
-    public function getRatePerHourAfterDiscount(): float
+    public function getRateAfterDiscount(): float
     {
-        return ((float)$this->rate_per_hour) - ((float)$this->nominalDiscount);
+        return ((float)$this->rate) - ((float)$this->nominalDiscount);
     }
 
 
@@ -80,7 +80,7 @@ class QuotationService extends BaseQuotationService
      */
     public function getAmountBeforeDiscount(): float|int
     {
-        return ($this->hours * $this->rate_per_hour);
+        return ($this->quantity * $this->rate);
     }
 
     /**
@@ -88,7 +88,7 @@ class QuotationService extends BaseQuotationService
      */
     public function getAmount(): float|int
     {
-        return ($this->hours * $this->ratePerHourAfterDiscount);
+        return ($this->quantity * $this->rateAfterDiscount);
     }
 
 }
