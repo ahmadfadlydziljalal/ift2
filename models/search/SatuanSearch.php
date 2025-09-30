@@ -2,9 +2,9 @@
 
 namespace app\models\search;
 
+use app\models\Satuan;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Satuan;
 
 /**
  * SatuanSearch represents the model behind the search form about `app\models\Satuan`.
@@ -14,18 +14,18 @@ class SatuanSearch extends Satuan
     /**
      * @inheritdoc
      */
-    public function rules() : array
+    public function rules(): array
     {
         return [
             [['id'], 'integer'],
-            [['nama'], 'safe'],
+            [['nama', 'kategori'], 'safe'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios() : array
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -36,7 +36,7 @@ class SatuanSearch extends Satuan
      * @param array $params
      * @return ActiveDataProvider
      */
-    public function search(array $params) : ActiveDataProvider
+    public function search(array $params): ActiveDataProvider
     {
         $query = Satuan::find();
 

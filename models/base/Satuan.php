@@ -5,20 +5,28 @@
 namespace app\models\base;
 
 use Yii;
+use yii\helpers\ArrayHelper;
+use \app\models\active_queries\SatuanQuery;
 
 /**
  * This is the base-model class for table "satuan".
  *
  * @property integer $id
  * @property string $nama
+ * @property integer $kategori
  *
+ * @property \app\models\BarangSatuan[] $barangSatuans
  * @property \app\models\Barang[] $barangs
- * @property string $aliasModel
+ * @property \app\models\ClaimPettyCashNotaDetail[] $claimPettyCashNotaDetails
+ * @property \app\models\FakturDetail[] $fakturDetails
+ * @property \app\models\MaterialRequisitionDetail[] $materialRequisitionDetails
+ * @property \app\models\ProformaDebitNoteDetailBarang[] $proformaDebitNoteDetailBarangs
+ * @property \app\models\ProformaInvoiceDetailBarang[] $proformaInvoiceDetailBarangs
+ * @property \app\models\QuotationBarang[] $quotationBarangs
+ * @property \app\models\QuotationService[] $quotationServices
  */
 abstract class Satuan extends \yii\db\ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -33,10 +41,13 @@ abstract class Satuan extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return [
+        $parentRules = parent::rules();
+        return ArrayHelper::merge($parentRules, [
+            [['kategori'], 'default', 'value' => 1],
             [['nama'], 'required'],
+            [['kategori'], 'integer'],
             [['nama'], 'string', 'max' => 255]
-        ];
+        ]);
     }
 
     /**
@@ -44,10 +55,29 @@ abstract class Satuan extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
-        return [
+        return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'nama' => 'Nama',
-        ];
+            'kategori' => 'Kategori',
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeHints()
+    {
+        return ArrayHelper::merge(parent::attributeHints(), [
+            'kategori' => '1=Barang, 2=Jasa, 3=Keduanya',
+        ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBarangSatuans()
+    {
+        return $this->hasMany(\app\models\BarangSatuan::class, ['satuan_id' => 'id']);
     }
 
     /**
@@ -55,19 +85,71 @@ abstract class Satuan extends \yii\db\ActiveRecord
      */
     public function getBarangs()
     {
-        return $this->hasMany(\app\models\Barang::class, ['satuan_id' => 'id']);
+        return $this->hasMany(\app\models\Barang::class, ['default_satuan_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getClaimPettyCashNotaDetails()
+    {
+        return $this->hasMany(\app\models\ClaimPettyCashNotaDetail::class, ['satuan_id' => 'id']);
+    }
 
-    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFakturDetails()
+    {
+        return $this->hasMany(\app\models\FakturDetail::class, ['satuan_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMaterialRequisitionDetails()
+    {
+        return $this->hasMany(\app\models\MaterialRequisitionDetail::class, ['satuan_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProformaDebitNoteDetailBarangs()
+    {
+        return $this->hasMany(\app\models\ProformaDebitNoteDetailBarang::class, ['satuan_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProformaInvoiceDetailBarangs()
+    {
+        return $this->hasMany(\app\models\ProformaInvoiceDetailBarang::class, ['satuan_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotationBarangs()
+    {
+        return $this->hasMany(\app\models\QuotationBarang::class, ['satuan_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotationServices()
+    {
+        return $this->hasMany(\app\models\QuotationService::class, ['satuan_id' => 'id']);
+    }
+
     /**
      * @inheritdoc
-     * @return \app\models\active_queries\SatuanQuery the active query used by this AR class.
+     * @return SatuanQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\models\active_queries\SatuanQuery(get_called_class());
+        return new SatuanQuery(static::class);
     }
-
-
 }
