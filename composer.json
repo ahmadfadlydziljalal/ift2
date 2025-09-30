@@ -17,7 +17,6 @@
     "yiisoft/yii2-symfonymailer": "~2.0.3",
     "yiisoft/yii2-jui": "^2.0",
     "yiisoft/yii2-httpclient": "*",
-    "wbraganca/yii2-dynamicform": "dev-dev-dzil",
     "pheme/yii2-settings": "*",
     "schmunk42/yii2-giiant": "@dev",
     "kartik-v/yii2-widget-select2": "dev-master",
@@ -41,7 +40,8 @@
     "yiisoft/yii2-bootstrap5": "2.0.3",
     "bower-asset/bootstrap": "5.2.0",
     "yiisoft/yii2-imagine": "^2.3",
-    "kartik-v/yii2-date-range": "dev-master"
+    "kartik-v/yii2-date-range": "dev-master",
+    "ahmadfadlydziljalal/yii2-dynamicform-v2": "~2.0.5"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",
