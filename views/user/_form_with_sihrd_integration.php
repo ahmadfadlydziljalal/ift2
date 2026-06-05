@@ -29,8 +29,8 @@ use yii\web\View;
                     <div class="input-group">
 
                         <span class="input-group-text" id="api-karyawan-url"
-                              data-url="<?= Yii::$app->params['hrdUrl'] . '/api/karyawans' ?>">
-                            <?= Yii::$app->params['hrdUrl'] . '/api/karyawans' ?>
+                              data-url="<?= Yii::$app->params['hrdUrl'] . '/karyawans' ?>">
+                            <?= Yii::$app->params['hrdUrl'] . '/karyawans' ?>
                         </span>
 
                         <input autofocus
@@ -60,14 +60,13 @@ use yii\web\View;
                 </div>
 
 
-
             </div>
         </div>
 
         <div class="row">
             <div class="col-12 col-lg-6">
                 <?php $form = ActiveForm::begin([
-                    'id' => 'user-form',
+                    'id'     => 'user-form',
                     'layout' => ActiveForm::LAYOUT_FLOATING
                 ]) ?>
 
@@ -102,7 +101,7 @@ use yii\web\View;
                     ) ?>
 
                     <?= Html::a(' Tutup', ['index'], [
-                        'class' => 'btn btn-secondary',
+                        'class'        => 'btn btn-secondary',
                         'data-confirm' => 'Anda akan meninggalkan halaman ini ?'
                     ]) ?>
                 </div>
@@ -141,7 +140,6 @@ let apiUrlKaryawan = jQuery('#api-karyawan-url').data('url');
 let apiUrlKaryawanParam = jQuery('#nama-karyawan');
 let apiKaryawanResult = jQuery('#api-karyawan-result');
 let buttonSearchKaryawan = jQuery('#button-search-karyawan');
-let password = null;
 
 buttonSearchKaryawan.click(function (){
     
@@ -150,37 +148,41 @@ buttonSearchKaryawan.click(function (){
     
     jQuery.ajax({
         type : 'GET',
-        url : apiUrlKaryawan + '?filter[nama][like]=' + apiUrlKaryawanParam.val(),
+        url : apiUrlKaryawan,
+        data : {
+            'filter[nama][like]': apiUrlKaryawanParam.val()
+        },
         dataType : 'json',
         beforeSend: function (xhr) {
-            xhr.setRequestHeader ("Authorization", "Basic " + btoa(token + ":" + password));
+            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
         },
         success: function(response) {
+         
             $("#user-form").trigger('reset');
-            let options = '';
-            if(response.length > 0){
-                for(let keyObject in response){
-                    if(response[keyObject].user !== null){
-                         options += 
-                    '<button class="btn btn-outline-success" ' +
-                            'data-id="'+response[keyObject].user.id+'"' + 
-                            'data-username="'+response[keyObject].user.username+'"' + 
-                            'data-auth_key="'+response[keyObject].user.auth_key+'"' + 
-                            'data-password_hash="'+response[keyObject].user.password_hash+'"' + 
-                            'data-password_reset_token="'+response[keyObject].user.password_reset_token+'"' + 
-                            'data-email="'+response[keyObject].user.email+'"' + 
-                            'data-status="'+response[keyObject].user.status+'"' + 
-                            'data-created_at="'+response[keyObject].user.created_at+'"' + 
-                            'data-updated_at="'+response[keyObject].user.updated_at+'"' + 
-                            'data-nama_karyawan="'+response[keyObject].nama+'"' + 
-                            'data-karyawan_id="'+response[keyObject].user.karyawan_id+'"> ' + 
-                        response[keyObject].nama + 
-                    ' </button>';
-                    }
-                }
-            }
-            
-            apiKaryawanResult.append(options);
+            // let options = '';
+            // if(response.length > 0){
+            //     for(let keyObject in response){
+            //         if(response[keyObject].user !== null){
+            //              options += 
+            //         '<button class="btn btn-outline-success" ' +
+            //                 // 'data-id="'+response[keyObject].user.id+'"' + 
+            //                 'data-username="'+response[keyObject].user.username+'"' + 
+            //                 'data-auth_key="'+response[keyObject].user.auth_key+'"' + 
+            //                 'data-password_hash="'+response[keyObject].user.password_hash+'"' + 
+            //                 'data-password_reset_token="'+response[keyObject].user.password_reset_token+'"' + 
+            //                 'data-email="'+response[keyObject].user.email+'"' + 
+            //                 'data-status="'+response[keyObject].user.status+'"' + 
+            //                 'data-created_at="'+response[keyObject].user.created_at+'"' + 
+            //                 'data-updated_at="'+response[keyObject].user.updated_at+'"' + 
+            //                 'data-nama_karyawan="'+response[keyObject].nama+'"' + 
+            //                 'data-karyawan_id="'+response[keyObject].user.karyawan_id+'"> ' + 
+            //             response[keyObject].nama + 
+            //         ' </button>';
+            //         }
+            //     }
+            // }
+            //
+            // apiKaryawanResult.append(options);
         },
         error : function(xhr, textStatus, errorThrown){
             console.log(errorThrown);
@@ -204,3 +206,8 @@ buttonSearchKaryawan.click(function (){
 
 JS;
 $this->registerJs($js);
+
+
+
+
+

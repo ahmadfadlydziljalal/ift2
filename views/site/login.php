@@ -23,9 +23,9 @@ $this->title = $title . ' - Log In';
         </h1>
 
         <?php $form = ActiveForm::begin([
-            'id' => 'login-form',
+            'id'                     => 'login-form',
             'enableClientValidation' => false,
-            'layout' => ActiveForm::LAYOUT_FLOATING,
+            'layout'                 => ActiveForm::LAYOUT_FLOATING,
         ]); ?>
         <div class="card rounded-2 shadow">
             <div class="card-body">
@@ -40,15 +40,6 @@ $this->title = $title . ' - Log In';
 
                 <div class="form-group d-grid gap-2 my-3 ">
                     <?= Html::submitButton('Log In', ['class' => 'btn btn-lg btn-primary', 'name' => 'login-button']) ?>
-                </div>
-
-                <div class="border-top py-2">
-                    <p class="text-muted text-center">Problem with your account?</p>
-                    <div class="form-group d-grid gap-2 mt-3">
-                        <?= Html::a('<i class="bi bi-envelope-heart"></i> Email Admin ', ['site/contact'], ['class' => 'btn btn-lg btn-outline-success']) ?>
-                    </div>
-
-
                 </div>
 
             </div>
