@@ -2,27 +2,22 @@
 
 namespace app\controllers;
 
-use app\components\helpers\ArrayHelper;
 use app\models\User;
 use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\filters\AccessControl;
-use yii\helpers\Html;
-use yii\helpers\VarDumper;
 use yii\httpclient\Client;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class UserController extends Controller
-{
+class UserController extends Controller {
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors(): array
-    {
+    public function behaviors(): array {
         return [
             'access' => [
                 'class' => AccessControl::class,
@@ -41,8 +36,7 @@ class UserController extends Controller
      * @return string|Response
      * @throws Exception
      */
-    public function actionCreate()
-    {
+    public function actionCreate() {
 
         $model = new User([
             'scenario' => User::SCENARIO_CREATE
@@ -73,8 +67,7 @@ class UserController extends Controller
      * @return string|Response
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id) {
         $model = $this->findModel($id);
         $model->scenario = User::SCENARIO_CREATE;
 
@@ -100,8 +93,7 @@ class UserController extends Controller
      * @return User|null
      * @throws NotFoundHttpException
      */
-    protected function findModel($id): ?User
-    {
+    protected function findModel($id): ?User {
         if (($model = User::findOne($id)) !== null) {
             return $model;
         } else {
@@ -112,8 +104,11 @@ class UserController extends Controller
     /**
      * @return string|Response
      */
-    public function actionCreateWithSihrdIntegration()
-    {
+    public function actionCreateWithSihrdIntegration() {
+
+        Yii::$app->session->setFlash('error', 'Method ini sudah deprecated, digantikan dengan OAuth2. Silahkan hubungi administrator untuk informasi lebih lanjut');
+        return $this->redirect(['index']);
+
         $model = new User();
         $model->scenario = User::SCENARIO_WITH_SIHRD_INTEGRATION;
         $model->detachBehaviors();
@@ -129,7 +124,7 @@ class UserController extends Controller
         }
 
         return $this->render('create_with_si_hrd_integration', [
-            'model' => $model,
+            'model'    => $model,
             'response' => null,
         ]);
     }
@@ -141,15 +136,14 @@ class UserController extends Controller
      * @throws InvalidConfigException
      * @throws \yii\httpclient\Exception
      */
-    public function actionUpdateWithSihrdIntegration($id)
-    {
+    public function actionUpdateWithSihrdIntegration($id) {
 
         $model = $this->findModel($id);
         $request = (new Client())
             ->createRequest()
             ->setMethod('GET')
             ->setUrl(Yii::$app->params['hrdUrl'] . '/api/users/' . $model->id);
-        $request->headers->set('Authorization', 'Basic ' . base64_encode($model->auth_key.":null"));
+        $request->headers->set('Authorization', 'Basic ' . base64_encode($model->auth_key . ":null"));
 
         $response = $request->send();
         if (!$response->isOk) {
@@ -171,11 +165,11 @@ class UserController extends Controller
         $model->detachBehaviors();
         if ($model->save()) {
             Yii::$app->session->setFlash('success', $model->username . ', SIHRD => SIPRC sudah sama datanya');
-        }else{
+        } else {
             Yii::$app->session->setFlash('error', 'Gagal meng-update sebuah user account');
         }
 
-        return $this->redirect(!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : ['/admin/user/index'] );
+        return $this->redirect(!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : ['/admin/user/index']);
 
     }
 

@@ -41,7 +41,8 @@
     "bower-asset/bootstrap": "5.2.0",
     "yiisoft/yii2-imagine": "^2.3",
     "kartik-v/yii2-date-range": "dev-master",
-    "ahmadfadlydziljalal/yii2-dynamicform-v2": "~2.0.5"
+    "ahmadfadlydziljalal/yii2-dynamicform-v2": "~2.0.5",
+    "yiisoft/yii2-authclient": "*"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

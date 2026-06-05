@@ -2,191 +2,217 @@
 
 namespace app\controllers;
 
+use app\components\SihrdAuthClient;
 use app\models\ContactForm;
 use app\models\form\ChangePassword;
 use app\models\LoginForm;
 use JetBrains\PhpStorm\ArrayShape;
 use Yii;
+use yii\authclient\ClientErrorResponseException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\Response;
 
-class SiteController extends Controller
-{
+class SiteController extends Controller {
 
-   /**
-    * {@inheritdoc}
-    */
-   #[ArrayShape(['access' => "array", 'verbs' => "array"])]
-   public function behaviors(): array
-   {
-      return [
-         'access' => [
-            'class' => AccessControl::class,
-            'rules' => [
-               [
-                  'allow' => true,
-                  'actions' => ['login', 'error', 'contact', 'captcha'],
-               ],
-               [
-                  'allow' => true,
-                  'roles' => ['@'],
-               ],
+    /**
+     * {@inheritdoc}
+     */
+    #[ArrayShape(['access' => "array", 'verbs' => "array"])]
+    public function behaviors(): array {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow'   => true,
+                        'actions' => ['login', 'error', 'contact', 'captcha'],
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
             ],
-         ],
-         'verbs' => [
-            'class' => VerbFilter::class,
-            'actions' => [
-               'logout' => ['post'],
+            'verbs'  => [
+                'class'   => VerbFilter::class,
+                'actions' => [
+                    'logout' => ['post'],
+                ],
             ],
-         ],
-      ];
-   }
+        ];
+    }
 
-   /**
-    * {@inheritdoc}
-    */
-   #[ArrayShape(['error' => "string[]", 'captcha' => "array"])]
-   public function actions(): array
-   {
-      return [
-         'error' => [
-            'layout' => 'error',
-            'class' => 'yii\web\ErrorAction',
-         ],
-         'captcha' => [
-            'class' => 'yii\captcha\CaptchaAction',
-            'fixedVerifyCode' => YII_ENV ? 'testme' : null,
-         ],
-      ];
-   }
+    /**
+     * {@inheritdoc}
+     */
+    #[ArrayShape(['error' => "string[]", 'captcha' => "array"])]
+    public function actions(): array {
+        return [
+            'error'   => [
+                'layout' => 'error',
+                'class'  => 'yii\web\ErrorAction',
+            ],
+            'captcha' => [
+                'class'           => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV ? 'testme' : null,
+            ],
+        ];
+    }
 
-   /**
-    * Displays homepage.
-    *
-    * @return string
-    */
-   public function actionIndex(): string
-   {
-      return $this->render('index');
-   }
+    /**
+     * Displays homepage.
+     *
+     * @return string
+     */
+    public function actionIndex(): string {
+        return $this->render('index');
+    }
 
-   /**
-    * Login action.
-    *
-    * @return Response|string
-    */
-   public function actionLogin(): Response|string
-   {
+    /**
+     * Login action.
+     *
+     * @return Response|string
+     */
+//   public function actionLogin(): Response|string
+//   {
+//
+//      $this->layout = 'login';
+//      if (!Yii::$app->user->isGuest) {
+//         return $this->goHome();
+//      }
+//
+//      $model = new LoginForm();
+//      if ($model->load(Yii::$app->request->post()) && $model->login()) {
+//         return $this->goBack();
+//      }
+//
+//      $model->password = '';
+//      return $this->render('login', [
+//         'model' => $model,
+//      ]);
+//   }
 
-      $this->layout = 'login';
-      if (!Yii::$app->user->isGuest) {
-         return $this->goHome();
-      }
 
-      $model = new LoginForm();
-      if ($model->load(Yii::$app->request->post()) && $model->login()) {
-         return $this->goBack();
-      }
+    public function actionLogin(): Response|string {
+        if (!Yii::$app->user->isGuest) return $this->goHome();
 
-      $model->password = '';
-      return $this->render('login', [
-         'model' => $model,
-      ]);
-   }
+        $this->layout = 'login';
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post())) {
 
-   /**
-    * Logout action.
-    *
-    * @return Response
-    */
-   public function actionLogout(): Response
-   {
-      Yii::$app->user->logout();
-      return $this->goHome();
-   }
+            /* @var $client SihrdAuthClient */
+            $client = Yii::$app->authClientCollection->getClient('sihrd');
+            try {
+                if ($client->authenticateUser($model->username, $model->password)) {
+                    $model->loginByOauth2ResourceOwnerPassword($client);
+                    return $this->goBack();
+                }
+            } catch (ClientErrorResponseException $e) {
+                Yii::error($e);
+                $errorMessage = 'Login failed.';
 
-   /**
-    * Displays contact page.
-    *
-    * @return Response|string
-    */
-   public function actionContact(): Response|string
-   {
-      $withBreadcrumb = true;
+                $data = $e->response->getData(); // langsung ambil array dari response JSON
+                if (is_array($data) && isset($data['message'])) {
+                    $errorMessage = $data['message'];
+                }
+                $model->addError('password', $errorMessage);
+            } catch (Exception $e) {
+                $model->addError('password', "\\Exception: " . $e->getMessage());
+            }
+        }
 
-      if (Yii::$app->user->isGuest) {
-         $this->layout = 'login';
-         $withBreadcrumb = false;
-      }
+        $model->password = '';
+        return $this->render('login', ['model' => $model]);
+    }
 
-      $model = new ContactForm();
+    /**
+     * Logout action.
+     *
+     * @return Response
+     */
+    public function actionLogout(): Response {
+        Yii::$app->user->logout();
+        return $this->goHome();
+    }
 
-      if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-         Yii::$app->session->setFlash('contactFormSubmitted');
-         return $this->refresh();
-      }
+    /**
+     * Displays contact page.
+     *
+     * @return Response|string
+     */
+    public function actionContact(): Response|string {
+        $withBreadcrumb = true;
 
-      return $this->render('contact', [
-         'withBreadcrumb' => $withBreadcrumb,
-         'model' => $model,
-      ]);
-   }
+        if (Yii::$app->user->isGuest) {
+            $this->layout = 'login';
+            $withBreadcrumb = false;
+        }
 
-   /**
-    * Render account information
-    * @return string
-    */
-   public function actionAccountInformation(): string
-   {
-      $image = Yii::$app->cache->get('sihrd-user-image' . Yii::$app->user->identity->id);
-      $dataKaryawan = Yii::$app->cache->get('sihrd-karyawan' . Yii::$app->user->identity->id);
+        $model = new ContactForm();
 
-      if (empty($image)) {
-         Yii::$app->user->identity->saveCacheForImage();
-         $image = Yii::$app->cache->get('sihrd-user-image' . Yii::$app->user->identity->id);
-      }
+        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
+            Yii::$app->session->setFlash('contactFormSubmitted');
+            return $this->refresh();
+        }
 
-      if (empty($dataKaryawan)) {
-         Yii::$app->user->identity->saveCacheForDataKaryawan();
-         $dataKaryawan = Yii::$app->cache->get('sihrd-karyawan' . Yii::$app->user->identity->id);
-      }
+        return $this->render('contact', [
+            'withBreadcrumb' => $withBreadcrumb,
+            'model'          => $model,
+        ]);
+    }
 
-      return $this->render('account_information', [
-         'dataKaryawan' => $dataKaryawan,
-         'image' => $image
-      ]);
-   }
+    /**
+     * Render account information
+     * @return string
+     */
+    public function actionAccountInformation(): string {
+        $image = Yii::$app->cache->get('sihrd-user-image' . Yii::$app->user->identity->id);
+        $dataKaryawan = Yii::$app->cache->get('sihrd-karyawan' . Yii::$app->user->identity->id);
 
-   /**
-    * Render about page
-    * @return string
-    */
-   public function actionAbout(): string
-   {
-      return $this->render('about', ['withBreadcrumb' => true]);
-   }
+        if (empty($image)) {
+            Yii::$app->user->identity->saveCacheForImage();
+            $image = Yii::$app->cache->get('sihrd-user-image' . Yii::$app->user->identity->id);
+        }
 
-   /**
-    * Reset password
-    * @return string|Response
-    */
-   public function actionChangePassword(): Response|string
-   {
-      $model = new ChangePassword();
+        if (empty($dataKaryawan)) {
+            Yii::$app->user->identity->saveCacheForDataKaryawan();
+            $dataKaryawan = Yii::$app->cache->get('sihrd-karyawan' . Yii::$app->user->identity->id);
+        }
 
-      if ($model->load(Yii::$app->getRequest()->post()) && $model->change()) {
+        return $this->render('account_information', [
+            'dataKaryawan' => $dataKaryawan,
+            'image'        => $image
+        ]);
+    }
 
-         Yii::$app->user->logout();
-         Yii::$app->session->setFlash('success', ' Password berhasil diganti, Silahkan Login dengan Password Baru');
+    /**
+     * Render about page
+     * @return string
+     */
+    public function actionAbout(): string {
+        return $this->render('about', ['withBreadcrumb' => true]);
+    }
 
-         return $this->redirect(['index']);
-      }
+    /**
+     * Reset password
+     * @return string|Response
+     */
+    public function actionChangePassword(): Response|string {
+        $model = new ChangePassword();
 
-      return $this->render('change-password', [
-         'model' => $model,
-      ]);
-   }
-   
+        if ($model->load(Yii::$app->getRequest()->post()) && $model->change()) {
+
+            Yii::$app->user->logout();
+            Yii::$app->session->setFlash('success', ' Password berhasil diganti, Silahkan Login dengan Password Baru');
+
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('change-password', [
+            'model' => $model,
+        ]);
+    }
+
 }
