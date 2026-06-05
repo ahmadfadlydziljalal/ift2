@@ -107,7 +107,7 @@ class UserController extends Controller {
     public function actionCreateWithSihrdIntegration() {
 
         Yii::$app->session->setFlash('error', 'Method ini sudah deprecated, digantikan dengan OAuth2. Silahkan hubungi administrator untuk informasi lebih lanjut');
-        return $this->redirect(['index']);
+        return $this->redirect(['/admin/user/index']);
 
         $model = new User();
         $model->scenario = User::SCENARIO_WITH_SIHRD_INTEGRATION;
