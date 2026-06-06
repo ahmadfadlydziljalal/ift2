@@ -4,19 +4,9 @@
 
 /** @var string $content */
 
-use app\assets\ThemeAsset;
 use mdm\admin\components\MenuHelper;
 use yii\bootstrap5\Html;
 use yii\helpers\Inflector;
-
-ThemeAsset::register($this);
-
-$this->registerCsrfMetaTags();
-$this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
-$this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
-$this->registerMetaTag(['name' => 'description', 'content' => $this->params['meta_description'] ?? '']);
-$this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
-$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
 
 $topItems = MenuHelper::getAssignedMenu(Yii::$app->user->id, 15, function ($item) {
     $data = eval($item['data']);
@@ -29,20 +19,20 @@ $topItems = MenuHelper::getAssignedMenu(Yii::$app->user->id, 15, function ($item
         return isset($data['controller'])
             ?
             [
-                'label' => $item['name'],
-                'url' => [$item['route']],
-                'items' => $item['children'],
-                'icon' => $data['icon'] ?? null,
+                'label'  => $item['name'],
+                'url'    => [$item['route']],
+                'items'  => $item['children'],
+                'icon'   => $data['icon'] ?? null,
                 'active' =>
                     Yii::$app->controller->module->id == $data['module'] &&
                     Yii::$app->controller->id == $data['controller']
             ]
             :
             [
-                'label' => $item['name'],
-                'url' => is_null($item['route']) ? "#" : [$item['route']],
-                'items' => $item['children'],
-                'icon' => $data['icon'] ?? null,
+                'label'  => $item['name'],
+                'url'    => is_null($item['route']) ? "#" : [$item['route']],
+                'items'  => $item['children'],
+                'icon'   => $data['icon'] ?? null,
                 'active' => null
             ];
     }
@@ -50,22 +40,21 @@ $topItems = MenuHelper::getAssignedMenu(Yii::$app->user->id, 15, function ($item
     return isset($data['controller'])
         ?
         [
-            'label' => $item['name'],
-            'url' => [$item['route']],
-            'items' => $item['children'],
-            'icon' => $data['icon'] ?? null,
+            'label'  => $item['name'],
+            'url'    => [$item['route']],
+            'items'  => $item['children'],
+            'icon'   => $data['icon'] ?? null,
             'active' => Yii::$app->controller->id == $data['controller']
         ]
         :
         [
-            'label' => $item['name'],
-            'url' => is_null($item['route']) ? "#" : [$item['route']],
-            'items' => $item['children'],
-            'icon' => $data['icon'] ?? null,
+            'label'  => $item['name'],
+            'url'    => is_null($item['route']) ? "#" : [$item['route']],
+            'items'  => $item['children'],
+            'icon'   => $data['icon'] ?? null,
             'active' => null
         ];
 });
-
 $leftItems = MenuHelper::getAssignedMenu(Yii::$app->user->id, 16, function ($item) {
 
     $data = eval($item['data']);
@@ -73,7 +62,7 @@ $leftItems = MenuHelper::getAssignedMenu(Yii::$app->user->id, 16, function ($ite
     # menu bersifat divider saja
     if (isset($data['divider'])) {
         return [
-            'label' => '',
+            'label'   => '',
             'options' => ['class' => 'dropdown-divider'],
         ];
     }
@@ -106,7 +95,7 @@ $leftItems = MenuHelper::getAssignedMenu(Yii::$app->user->id, 16, function ($ite
 
         $itemOptions = [
             'data-target' => '#' . $collapsedId,
-            'class' => 'collapsed'
+            'class'       => 'collapsed'
         ];
     }
 
@@ -114,10 +103,10 @@ $leftItems = MenuHelper::getAssignedMenu(Yii::$app->user->id, 16, function ($ite
         return isset($data['controller'])
             ?
             [
-                'label' => $label,
-                'url' => is_null($item['route']) ? "#" . $collapsedId : [$item['route']],
-                'items' => $item['children'],
-                'icon' => $data['icon'] ?? null,
+                'label'  => $label,
+                'url'    => is_null($item['route']) ? "#" . $collapsedId : [$item['route']],
+                'items'  => $item['children'],
+                'icon'   => $data['icon'] ?? null,
                 'active' =>
                     Yii::$app->controller->module->id == $data['module'] &&
                     Yii::$app->controller->id == $data['controller']
@@ -125,60 +114,50 @@ $leftItems = MenuHelper::getAssignedMenu(Yii::$app->user->id, 16, function ($ite
             :
             [
                 'label' => $label,
-                'url' => is_null($item['route']) ? "#" . $collapsedId : [$item['route']],
-                'icon' => $data['icon'],
+                'url'   => is_null($item['route']) ? "#" . $collapsedId : [$item['route']],
+                'icon'  => $data['icon'],
 
             ];
     }
 
     if (isset($data['controller'])) {
         return [
-            'label' => $label,
-            'url' => is_null($item['route']) ? "#" . $collapsedId : [$item['route']],
-            'items' => $item['children'],
-            'icon' => $data['icon'] ?? null,
-            'options' => $options,
+            'label'       => $label,
+            'url'         => is_null($item['route']) ? "#" . $collapsedId : [$item['route']],
+            'items'       => $item['children'],
+            'icon'        => $data['icon'] ?? null,
+            'options'     => $options,
             'itemOptions' => $itemOptions,
-            'active' => Yii::$app->controller->id == $data['controller']
+            'active'      => Yii::$app->controller->id == $data['controller']
         ];
     }
 
     return [
-        'label' => $label,
-        'url' => is_null($item['route']) ? "#" . $collapsedId : [$item['route']],
-        'items' => $item['children'],
-        'icon' => $data['icon'] ?? null,
-        'options' => $options,
+        'label'       => $label,
+        'url'         => is_null($item['route']) ? "#" . $collapsedId : [$item['route']],
+        'items'       => $item['children'],
+        'icon'        => $data['icon'] ?? null,
+        'options'     => $options,
         'itemOptions' => $itemOptions,
-        'active' => null
+        'active'      => null
     ];
 });
 
 ?>
-<?php $this->beginPage() ?>
-    <!DOCTYPE html>
-    <html lang="<?= Yii::$app->language ?>">
 
-    <head>
-        <title><?= Html::encode($this->title) ?></title>
-        <?php $this->head() ?>
-    </head>
-
-    <body class="d-flex flex-column min-vh-100 <?= Yii::$app->params['theme'] ?>">
-
-    <?php $this->beginBody() ?>
-
+<?php $this->beginContent('@app/views/layouts/clear.php') ?>
+<div class="d-flex flex-column min-vh-100">
     <!-- Render header  -->
     <header class="top-navigation">
         <?= $this->render('_header', [
-            'topItems' => $topItems,
+            'topItems'  => $topItems,
             'leftItems' => $leftItems,
         ])
         ?>
     </header>
 
     <!-- Render content -->
-    <main class="main">
+    <main class="main flex-grow-1">
 
         <!-- Render sidebar  -->
         <aside class="left-navigation">
@@ -186,7 +165,7 @@ $leftItems = MenuHelper::getAssignedMenu(Yii::$app->user->id, 16, function ($ite
         </aside>
 
         <!-- Render main content -->
-        <section class="content mb-3">
+        <section class="content mb-3" style="padding-top: 72px">
             <?= $this->render('_content', ['content' => $content]) ?>
         </section>
 
@@ -196,10 +175,6 @@ $leftItems = MenuHelper::getAssignedMenu(Yii::$app->user->id, 16, function ($ite
     <footer class="footer mt-auto shadow-sm">
         <?= $this->render('_footer') ?>
     </footer>
+</div>
 
-    <?php $this->endBody() ?>
-
-    </body>
-
-    </html>
-<?php $this->endPage() ?>
+<?php $this->endContent(); ?>
