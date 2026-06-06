@@ -157,26 +157,26 @@ buttonSearchKaryawan.click(function (){
             xhr.setRequestHeader('Authorization', 'Bearer ' + token);
         },
         success: function(response) {
-         
+
             $("#user-form").trigger('reset');
             // let options = '';
             // if(response.length > 0){
             //     for(let keyObject in response){
             //         if(response[keyObject].user !== null){
-            //              options += 
+            //              options +=
             //         '<button class="btn btn-outline-success" ' +
-            //                 // 'data-id="'+response[keyObject].user.id+'"' + 
-            //                 'data-username="'+response[keyObject].user.username+'"' + 
-            //                 'data-auth_key="'+response[keyObject].user.auth_key+'"' + 
-            //                 'data-password_hash="'+response[keyObject].user.password_hash+'"' + 
-            //                 'data-password_reset_token="'+response[keyObject].user.password_reset_token+'"' + 
-            //                 'data-email="'+response[keyObject].user.email+'"' + 
-            //                 'data-status="'+response[keyObject].user.status+'"' + 
-            //                 'data-created_at="'+response[keyObject].user.created_at+'"' + 
-            //                 'data-updated_at="'+response[keyObject].user.updated_at+'"' + 
-            //                 'data-nama_karyawan="'+response[keyObject].nama+'"' + 
-            //                 'data-karyawan_id="'+response[keyObject].user.karyawan_id+'"> ' + 
-            //             response[keyObject].nama + 
+            //                 // 'data-id="'+response[keyObject].user.id+'"' +
+            //                 'data-username="'+response[keyObject].user.username+'"' +
+            //                 'data-auth_key="'+response[keyObject].user.auth_key+'"' +
+            //                 'data-password_hash="'+response[keyObject].user.password_hash+'"' +
+            //                 'data-password_reset_token="'+response[keyObject].user.password_reset_token+'"' +
+            //                 'data-email="'+response[keyObject].user.email+'"' +
+            //                 'data-status="'+response[keyObject].user.status+'"' +
+            //                 'data-created_at="'+response[keyObject].user.created_at+'"' +
+            //                 'data-updated_at="'+response[keyObject].user.updated_at+'"' +
+            //                 'data-nama_karyawan="'+response[keyObject].nama+'"' +
+            //                 'data-karyawan_id="'+response[keyObject].user.karyawan_id+'"> ' +
+            //             response[keyObject].nama +
             //         ' </button>';
             //         }
             //     }
@@ -206,6 +206,8 @@ buttonSearchKaryawan.click(function (){
 
 JS;
 $this->registerJs($js);
+
+
 
 
 

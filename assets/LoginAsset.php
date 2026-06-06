@@ -16,13 +16,11 @@ use yii\web\AssetBundle;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class LoginAsset extends AssetBundle
-{
+class LoginAsset extends AssetBundle {
     public $sourcePath = '@themes/v2/dist';
     public $baseUrl = '@web';
     public $css = [
-        'css/main.css',
-        'css/login.css',
+        'css/site.css',
     ];
     public $js = [
         'js/main.js'

@@ -21,19 +21,10 @@ if ($withBreadcrumb) {
 
 ?>
 
-<div class="site-about" style="max-width: 48rem">
+<div class="site-about">
 
     <div class="d-flex flex-column flex-nowrap">
 
-        <div class="d-flex flex-row" style="gap: 1rem">
-            <h1><?= Yii::$app->settings->get('site.icon') ?></h1>
-            <h1>
-                <?php
-                $text = Yii::$app->settings->get('site.name');
-                echo empty($text) ? Yii::$app->name : $text
-                ?>
-            </h1>
-        </div>
 
         <div class="d-flex flex-column text-justify" style="gap: 1.5rem">
             <?= Yii::$app->settings->get('site.description') ?>
@@ -55,8 +46,8 @@ if ($withBreadcrumb) {
                     'class' => 'img-fluid',
                     'style' => [
                         'transform' => 'scaleX(-1)',
-                        'width' => '8rem',
-                        'height' => 'auto'
+                        'width'     => '8rem',
+                        'height'    => 'auto'
                     ]
                 ]) ?>
             </div>
