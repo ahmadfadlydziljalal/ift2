@@ -3,11 +3,12 @@ jQuery(document).ready(function () {
     // Handling toggle sidebar
     let content = jQuery('section.content');
     let leftNavigation = jQuery('aside.left-navigation');
+    const sidebarWidth = '224px';
     jQuery('#btn-toggle-sidebar').on('click', function () {
         let width = leftNavigation.css('width');
         if (width === '0px') {
-            content.css('margin-left', '206px');
-            leftNavigation.css('width', '206px');
+            content.css('margin-left', sidebarWidth);
+            leftNavigation.css('width', sidebarWidth);
             leftNavigation.css('border-right', '1px solid #e9ecef');
         } else {
             content.css('margin-left', 0);
@@ -18,7 +19,7 @@ jQuery(document).ready(function () {
     });
 
     // Handling click li sidebar : icon
-    jQuery('.sidebar-nav li').click(function (e) {
+    jQuery('.sidebar-nav li').click(function () {
         let i = jQuery(this).find('div.pe-1 i');
         if (i.hasClass('bi-arrow-right-circle')) {
             i.removeClass('bi-arrow-right-circle');
@@ -83,7 +84,7 @@ jQuery(document).ready(function () {
     });
 
     // Animation On Submit
-    jQuery(document).on('beforeSubmit', 'form', function (event) {
+    jQuery(document).on('beforeSubmit', 'form', function () {
         let buttonSubmit = jQuery(this).find('button[type=submit]');
         buttonSubmit.html('<i class="bi bi-arrow-repeat"></i> Memproses...');
         buttonSubmit.attr('disabled', true).addClass('disabled');

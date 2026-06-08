@@ -74,28 +74,19 @@ $leftItems = MenuHelper::getAssignedMenu(Yii::$app->user->id, 16, function ($ite
     if (isset($item['children']) and !empty($item['children'])) {
 
         $isChildrenActive = array_column($item['children'], 'active');
+        $hasActiveChildren = in_array(true, $isChildrenActive);
 
-        if (in_array(true, $isChildrenActive)) {
-            $label = Html::tag(
-                'div',
-                Html::tag('span', $item['name']) . '<i class="bi bi-arrow-down-circle"></i>',
-                [
-                    'class' => 'd-flex justify-content-between align-items-center pe-1',
-                ]
-            );
-        } else {
-            $label = Html::tag(
-                'div',
-                Html::tag('span', $item['name']) . '<i class="bi bi-arrow-right-circle"></i>',
-                [
-                    'class' => 'd-flex justify-content-between align-items-center pe-1',
-                ]
-            );
-        }
+        $label = Html::tag(
+            'div',
+            Html::tag('span', $item['name']) . Html::tag('i', '', ['class' => 'bi bi-chevron-right side-menu-chevron']),
+            [
+                'class' => 'd-flex justify-content-between align-items-center pe-1',
+            ]
+        );
 
         $itemOptions = [
             'data-target' => '#' . $collapsedId,
-            'class'       => 'collapsed'
+            'class'       => $hasActiveChildren ? '' : 'collapsed'
         ];
     }
 

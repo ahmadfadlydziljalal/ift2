@@ -12,11 +12,11 @@ $this->title = 'Dashboard';
 
 ?>
 
-<div class="site-index d-flex flex-column">
+<div class="site-index d-flex flex-column gap-2">
 
-   <?= $this->render('_alur_pembelian_barang') ?>
-   <?= $this->render('_alur_pengeluaran_barang') ?>
-   <?= $this->render('_alur_inventaris') ?>
-   <?= $this->render('_stock') ?>
+    <?= $this->render('_alur_pembelian_barang') ?>
+    <?= $this->render('_alur_pengeluaran_barang') ?>
+    <?= $this->render('_alur_inventaris') ?>
+    <?= $this->render('_stock') ?>
 
 </div>

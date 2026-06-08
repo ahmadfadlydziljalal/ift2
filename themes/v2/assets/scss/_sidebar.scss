@@ -17,32 +17,138 @@ aside {
     transition: all .25s;
     overflow-y: auto;
 
-    ul {
-      padding: .5em .5em 0;
+    .sidebar {
+      height: 100%;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: .375rem;
+      margin: 0;
+      padding: .25rem .25rem 1rem;
+
+      ul {
+        margin: 0;
+        padding: 0;
+      }
 
       li {
         list-style: none;
-        line-height: 2.5rem;
-        margin-bottom: .25rem;
+        line-height: 1.4;
+        margin-bottom: 0;
+      }
+
+      .side-menu-link {
+        display: flex;
+        align-items: center;
+        gap: .625rem;
+        min-height: 3rem;
+        padding: .75rem 1rem;
+        border-radius: 14px;
+        text-decoration: none;
+        color: vars.$black;
+        transition: background-color .2s ease, color .2s ease, box-shadow .2s ease;
 
         &:hover {
-          color: vars.$info;
-          border-radius: 8px;
+          background-color: rgba(vars.$primary, .06);
+          color: vars.$primary;
+        }
+      }
+
+      .side-menu-icon {
+        width: 1.5rem;
+        text-align: center;
+        font-size: 1.05rem;
+        flex-shrink: 0;
+      }
+
+      .side-menu-label {
+        display: block;
+        min-width: 0;
+        line-height: 1.35;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .side-menu-toggle {
+        .side-menu-chevron {
+          margin-left: auto;
+          flex-shrink: 0;
+          transition: transform .2s ease;
         }
 
-        a {
-          display: block;
-          text-decoration: none;
-          color: vars.$black;
+        &[aria-expanded="true"] {
+          .side-menu-chevron {
+            transform: rotate(90deg);
+          }
         }
 
-        &.active {
-          a {
-            &.active {
-              border-radius: 8px;
-              background-color: vars.$primary;
-              color: vars.$white;
+        .side-menu-label {
+          > div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            min-width: 0;
+            gap: .75rem;
+            flex-wrap: nowrap;
+
+            > span:first-child {
+              min-width: 0;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
             }
+
+            > .bi {
+              margin-left: auto;
+              flex-shrink: 0;
+            }
+          }
+        }
+      }
+
+      li.active {
+        > .side-menu-link,
+        > .side-menu-link.active {
+          border-radius: 14px;
+          background-color: vars.$primary;
+          box-shadow: 0 .35rem 1rem rgba(vars.$primary, .18);
+          color: vars.$white;
+        }
+
+        // Keep expanded parent subtle when a child is also active.
+        > .side-menu-toggle.active[aria-expanded="true"] {
+          background-color: rgba(vars.$primary, .08);
+          box-shadow: none;
+          color: vars.$primary;
+
+          .side-menu-icon,
+          .side-menu-chevron {
+            color: vars.$primary;
+          }
+        }
+      }
+
+      .side-menu-submenu {
+        margin-top: .25rem;
+        padding: .2rem 0 0 .8rem;
+        border-left: 1px solid rgba(vars.$gray-300, .65);
+
+        .side-menu-link {
+          min-height: 2.75rem;
+          padding: .625rem .875rem;
+          border-radius: 10px;
+        }
+
+        li.active {
+          > .side-menu-link,
+          > .side-menu-link.active {
+            background-color: vars.$primary;
+            box-shadow: none;
+            color: vars.$white;
           }
         }
       }
