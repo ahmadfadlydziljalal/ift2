@@ -13,7 +13,7 @@ use yii\web\View;
 
 AutocompleteAsset::register($this);
 $opts = Json::htmlEncode([
-    'menus' => Menu::getMenuSource(),
+    'menus'  => Menu::getMenuSource(),
     'routes' => Menu::getSavedRoutes(),
 ]);
 $this->registerJs("var _opts = $opts;");
@@ -28,7 +28,7 @@ $this->registerJs($this->render('_script.js'));
         <div class="row">
             <div class="col-sm-6">
                 <?= $form->field($model, 'name')->textInput(['maxlength' => 128,
-                    'autofocus' => 'autofocus'
+                                                             'autofocus' => 'autofocus'
                 ]) ?>
 
                 <?= $form->field($model, 'parent_name')->textInput(['id' => 'parent_name']) ?>
@@ -43,17 +43,17 @@ $this->registerJs($this->render('_script.js'));
 
                 <div class="d-flex flex-column flex-lg-row mt-3" style="gap: 1rem">
                     <?= Html::button(' Activate By Controller', [
-                        'class' => 'btn btn-outline-success',
+                        'class'   => 'btn btn-outline-success',
                         'onClick' => 'activate("controller")'
                     ]) ?>
                     <?= Html::button(' Activate By Module', [
-                        'class' => 'btn btn-outline-success',
+                        'class'   => 'btn btn-outline-success',
                         'onClick' => 'activate("module")'
                     ]) ?>
                 </div>
 
                 <?= $form->field($model, 'data')->textarea([
-                    'rows' => 6,
+                    'rows'  => 6,
                     'style' => [
                         'height' => '12rem'
                     ]
@@ -64,7 +64,7 @@ $this->registerJs($this->render('_script.js'));
         <div class="mt-3">
             <?=
             Html::submitButton($model->isNewRecord ? Yii::t('rbac-admin', 'Create') : Yii::t('rbac-admin', 'Update'), ['class' =>
-                $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'])
+                                                                                                                           $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'])
             ?>
         </div>
         <?php ActiveForm::end(); ?>
@@ -91,10 +91,10 @@ $js = <<<JS
         if(mode === 'module'){
             module = stringSplit[0];
             controller = stringSplit[1];
-            stringTemplate  = "return[" + "'module' => '" + module + "', 'controller' => '" + controller + "', 'icon' => 'play-circle'];";
+            stringTemplate  = "return[" + "'module' => '" + module + "', 'controller' => '" + controller + "', 'icon' => 'circle-half'];";
         }else{
             controller = stringSplit[0];
-            stringTemplate  = "return[" + "'controller' => '" + controller + "', 'icon' => 'play-circle'];";
+            stringTemplate  = "return[" + "'controller' => '" + controller + "', 'icon' => 'circle-half'];";
         }
         
         jQuery('#menu-data').val(stringTemplate);

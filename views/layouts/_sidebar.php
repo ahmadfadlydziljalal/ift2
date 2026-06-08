@@ -4,7 +4,10 @@
  * @var $leftItems array
  * */
 
+/* @var $this View */
+
 use app\widgets\SideMenu as Menu;
+use yii\web\View;
 
 
 ?>
@@ -15,11 +18,11 @@ use app\widgets\SideMenu as Menu;
     try {
         echo Menu::widget([
             'activateParents' => true,
-            'encodeLabels' => false,
-            'options' => [
+            'encodeLabels'    => false,
+            'options'         => [
                 'class' => 'sidebar-nav'
             ],
-            'items' => $leftItems,
+            'items'           => $leftItems,
         ]);
     } catch (Throwable $e) {
         echo $e->getMessage();
