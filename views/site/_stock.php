@@ -30,7 +30,7 @@ $warehouses = Card::find()->map(Card::GET_ONLY_WAREHOUSE);
         <div class="flex-shrink-0" style="width:115px">
             <?= Html::a(
                 '<i class="bi bi-body-text text-primary fs-2"></i>'
-                . '<span class="small lh-sm text-body">All Stock</span>',
+                . '<span class="small lh-sm ">All Stock</span>',
                 ['stock/index'],
                 [
                     'class' => 'card card-accent-primary border-0 shadow-sm h-100 p-3'
@@ -45,7 +45,7 @@ $warehouses = Card::find()->map(Card::GET_ONLY_WAREHOUSE);
             <div class="flex-shrink-0" style="width:115px">
                 <?= Html::a(
                     '<i class="bi bi-buildings text-info fs-2"></i>'
-                    . '<span class="small lh-sm text-body">' . Html::encode($nama) . '</span>',
+                    . '<span class="small lh-sm ">' . Html::encode($nama) . '</span>',
                     ['stock-per-gudang/view-per-card', 'id' => $id],
                     [
                         'class' => 'card card-accent-info border-0 shadow-sm h-100 p-3'

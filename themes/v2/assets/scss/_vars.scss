@@ -36,3 +36,12 @@ $page: #F4F9F9;
 //$h5-font-size: .50rem;
 //$h6-font-size: .25rem;
 
+
+// Typography scale (Bootstrap 5.2 overrides)
+// Keep rem base to browser default (16px)
+$font-size-root: null;
+
+// Make body text slightly smaller for desktop-centric app
+$font-size-base: 0.9375rem; // ≈ 15px
+$font-size-sm:   $font-size-base * .875;  // ≈ 13.125px
+$font-size-lg:   $font-size-base * 1.125; // ≈ 16.875px

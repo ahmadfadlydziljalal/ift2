@@ -60,7 +60,7 @@ $steps = [
                 $inner =
                     $numBadge
                     . '<i class="bi ' . $step['icon'] . ' text-' . $step['color'] . ' fs-2"></i>'
-                    . '<span class="small lh-sm text-body">'
+                    . '<span class="small lh-sm ">'
                     . Html::encode($step['label'])
                     . '</span>';
 

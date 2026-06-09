@@ -12,7 +12,7 @@ use yii\web\View;
 
 ?>
 
-<aside class="sidebar" id="side-nav">
+<div class="sidebar" id="side-nav">
 
     <div class="sidebar-shell">
         <div class="sidebar-header">
@@ -43,4 +43,4 @@ use yii\web\View;
         </div>
     </div>
 
-</aside>
+</div>

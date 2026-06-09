@@ -75,7 +75,7 @@ $brandLabel =
 if (!Yii::$app->user->isGuest) :
     try {
         echo Nav::widget([
-            'options'         => ['class' => 'navbar-nav flex-sm-grow-0 flex-md-grow-1 order-sm-0 order-md-1 order-lg-1'],
+            'options'         => ['class' => 'navbar-nav  order-sm-0 order-md-1 order-lg-1 ms-auto'], // flex-sm-grow-0 flex-md-grow-1
             'activateParents' => true,
             'dropdownClass'   => Dropdown::class,
             'items'           => $topItems
@@ -114,7 +114,7 @@ if (!Yii::$app->user->isGuest) :
 
         echo Nav::widget([
             'encodeLabels'    => false,
-            'options'         => ['class' => 'navbar-nav order-2 ms-auto'],
+            'options'         => ['class' => 'navbar-nav order-2 '], // ms-auto
             'activateParents' => true,
             'items'           => [
                 [

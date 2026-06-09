@@ -20,12 +20,12 @@ class SideMenu extends Menu {
 
     public string $icon = "circle-half";
 
-    public $linkTemplate = '<a href="' . self::PLACEHOLDER_URL . '" class="side-menu-link ' . self::PLACEHOLDER_CLASS . ' d-flex flex-row align-items-center m-0 px-3 py-2">
+    public $linkTemplate = '<a href="' . self::PLACEHOLDER_URL . '" class="side-menu-link ' . self::PLACEHOLDER_CLASS . ' d-flex flex-row align-items-center m-0 px-2 py-2">
         <span class="side-menu-icon">' . self::PLACEHOLDER_ICON . '</span>
         <div class="side-menu-label flex-grow-1">' . self::PLACEHOLDER_LABEL . '</div>
     </a>';
 
-    public string $linkWithDataTargetTemplate = '<a href="' . self::PLACEHOLDER_URL . '" class="side-menu-link side-menu-toggle ' . self::PLACEHOLDER_CLASS . ' d-flex flex-row align-items-center m-0 px-3 py-2" data-bs-toggle="' . self::PLACEHOLDER_DATA_BS_TOGGLE . '" data-bs-target="' . self::PLACEHOLDER_DATA_TARGET . '" aria-expanded="' . self::PLACEHOLDER_ARIA_EXPANDED . '">
+    public string $linkWithDataTargetTemplate = '<a href="' . self::PLACEHOLDER_URL . '" class="side-menu-link side-menu-toggle ' . self::PLACEHOLDER_CLASS . ' d-flex flex-row align-items-center m-0 px-2 py-2" data-bs-toggle="' . self::PLACEHOLDER_DATA_BS_TOGGLE . '" data-bs-target="' . self::PLACEHOLDER_DATA_TARGET . '" aria-expanded="' . self::PLACEHOLDER_ARIA_EXPANDED . '">
         <span class="side-menu-icon">' . self::PLACEHOLDER_ICON . '</span>
         <div class="side-menu-label flex-grow-1">' . self::PLACEHOLDER_LABEL . '</div>
     </a>';
