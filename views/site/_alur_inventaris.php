@@ -1,53 +1,85 @@
 <?php
 
-
 /* @var $this View */
 
 use yii\bootstrap5\Html;
 use yii\web\View;
 
+$steps = [
+    [
+        'num'   => 1,
+        'icon'  => 'bi-archive-fill',
+        'label' => 'List Inventaris',
+        'url'   => ['inventaris/index'],
+        'color' => 'primary',
+    ],
+    [
+        'num'   => 2,
+        'icon'  => 'bi-hammer',
+        'label' => 'Laporan Perbaikan',
+        'url'   => ['inventaris-laporan-perbaikan-master/index'],
+        'color' => 'warning',
+    ],
+];
 ?>
 
-<div class="alur-inventaris">
+<div class="alur-inventaris mb-2">
 
-    <h1>Alur Inventaris</h1>
-
-    <div class="row">
-
-        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
-            <div class="card h-100 bg-transparent rounded position-relative">
-                <div class="card-body">
-                    <div class="d-flex flex-column gap-1 align-items-center text-center">
-                       <?= Html::a('<i class="bi bi-archive-fill fs-1"></i>', ['inventaris/index'], [
-                          'class' => 'stretched-link'
-                       ]) ?>
-                        <span class="card-title">List Inventaris</span>
-                    </div>
-                </div>
-            </div>
+    <!-- Section heading -->
+    <div class="d-flex align-items-center gap-3 mb-3">
+        <span class="bg-danger bg-opacity-10 text-danger rounded-2 p-2 d-inline-flex lh-1">
+            <i class="bi bi-archive-fill fs-1"></i>
+        </span>
+        <div>
+            <p class="text-uppercase text-muted fw-bold mb-0" style="font-size:.65rem;letter-spacing:.08em">Alur
+                Kerja</p>
+            <h6 class="fw-bold mb-0">Inventaris</h6>
         </div>
+    </div>
 
-        <div class="col-sm-12 col-md-6 col-lg-2 mb-3">
-            <div class="card h-100 bg-transparent rounded position-relative">
-                <div class="card-body">
-                    <div class="d-flex flex-column gap-1 align-items-center text-center">
+    <!-- Steps row: horizontal scroll -->
+    <div class="d-flex overflow-auto pb-2 pt-1 gap-3 align-items-stretch">
 
-                       <?= Html::a('<i class="bi bi-hammer fs-1"></i>', ['inventaris-laporan-perbaikan-master/index'], [
-                          'class' => 'stretched-link'
-                       ]) ?>
-                        <span class="card-title">Laporan Perbaikan</span>
-                    </div>
+        <?php foreach ($steps as $i => $step): ?>
 
-                    <div class="position-absolute top-0 start-50 translate-middle badge rounded-circle shadow bg-info p-sm-1 p-md-2 p-lg-2 d-block d-md-none">
-                        <i class="bi bi-arrow-down-short text-dark p-0 m-0 fs-4"></i>
-                    </div>
-
-                    <div class="position-absolute top-50 start-0 translate-middle badge rounded-circle shadow bg-info p-sm-1 p-md-2 p-lg-2 d-none d-md-none d-lg-block">
-                        <i class="bi bi-arrow-right-short text-dark p-0 m-0 fs-4"></i>
-                    </div>
+            <?php if ($i > 0): ?>
+                <div class="d-flex align-items-center justify-content-center flex-shrink-0 text-muted opacity-50 px-1">
+                    <i class="bi bi-chevron-right small"></i>
                 </div>
+            <?php endif; ?>
+
+            <div class="flex-shrink-0" style="width:115px">
+                <?php
+                $numBadge =
+                    '<span class="badge bg-' . $step['color'] . ' rounded-circle'
+                    . ' d-inline-flex align-items-center justify-content-center fw-bold"'
+                    . ' style="width:1.5rem;height:1.5rem;font-size:.65rem">'
+                    . $step['num']
+                    . '</span>';
+
+                $inner =
+                    $numBadge
+                    . '<i class="bi ' . $step['icon'] . ' text-' . $step['color'] . ' fs-2"></i>'
+                    . '<span class="small lh-sm text-body">'
+                    . Html::encode($step['label'])
+                    . '</span>';
+
+                $cardClass = 'card card-accent-' . $step['color']
+                    . ' border-0 shadow-sm h-100 p-3'
+                    . ' d-flex flex-column align-items-center justify-content-center'
+                    . ' text-center gap-2 text-decoration-none';
+                ?>
+
+                <?php if ($step['url']): ?>
+                    <?= Html::a($inner, $step['url'], ['class' => $cardClass]) ?>
+                <?php else: ?>
+                    <div class="<?= $cardClass ?> opacity-75">
+                        <?= $inner ?>
+                    </div>
+                <?php endif; ?>
             </div>
-        </div>
+
+        <?php endforeach; ?>
 
     </div>
 

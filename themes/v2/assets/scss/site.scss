@@ -4,6 +4,9 @@
 @import "./../../../../vendor/bower-asset/bootstrap/scss/bootstrap.scss";
 //@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
+:root {
+  --sidebar-width: 258px;
+}
 
 body {
   overflow-x: hidden;
@@ -20,6 +23,7 @@ body {
 
 @include meta.load-css("responsive");
 @include meta.load-css("dark-mode");
+@include meta.load-css("card"); // project card definitions — after dark-mode so accent overrides win
 @include meta.load-css("print");
 
 .user-photo-32 {

@@ -5,10 +5,9 @@
     main {
       aside {
         &.left-navigation {
-          width: 224px;
+          width: var(--sidebar-width);
           min-height: 100vh;
           z-index: 1;
-          border-right: 1px solid vars.$gray-200;
         }
       }
     }

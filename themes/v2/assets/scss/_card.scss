@@ -1,0 +1,118 @@
+// themes/v2/assets/scss/_card.scss
+// ─────────────────────────────────────────────────────────────────────────────
+// Project-wide card component definitions.
+// Supersedes card overrides that were previously scattered in _content.scss.
+// Imported in site.scss at top-level, after Bootstrap + after dark-mode.
+// ─────────────────────────────────────────────────────────────────────────────
+
+@use "vars";
+
+
+// ── 1. Base card ──────────────────────────────────────────────────────────────
+//    Override Bootstrap's CSS custom properties to set project-wide defaults.
+//    Bootstrap's $enable-shadows is false, so we write box-shadow directly.
+
+.card {
+  // CSS custom property overrides (Bootstrap 5.2 reads these)
+  --bs-card-border-color:       #{vars.$gray-200};
+  --bs-card-border-radius:      0.5rem;
+  --bs-card-inner-border-radius: calc(0.5rem - 1px);
+  --bs-card-cap-bg:             transparent;
+
+  border-radius: var(--bs-card-border-radius); // re-assert after _content.scss override
+  box-shadow:    0 1px 4px rgba(0, 0, 0, 0.06);
+  transition:    transform 0.18s ease, box-shadow 0.18s ease;
+
+  // Kartik Grid: remove the panel-before separator
+  .kv-panel-before {
+    border-bottom: none;
+  }
+
+  .card-header {
+    border:      none;           // no bottom separator — header flows into body
+    font-weight: 600;
+    font-size:   0.875rem;
+    letter-spacing: 0.01em;
+    background:  transparent;
+  }
+
+  .card-footer {
+    border-top:  none;
+    background:  transparent;
+    padding:     0;
+  }
+
+  .card-title {
+    font-weight: 700;
+  }
+}
+
+
+// ── 2. Clickable card (rendered as <a>) ──────────────────────────────────────
+//    Bootstrap's default styles don't account for <a class="card">.
+
+a.card {
+  text-decoration: none;
+  color:           inherit;
+
+  &:hover,
+  &:focus {
+    transform:       translateY(-3px);
+    box-shadow:      0 0.5rem 1.25rem rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+    color:           inherit;
+  }
+}
+
+
+// ── 3. Accent top-border modifiers (.card-accent-*) ──────────────────────────
+//    Adds a 3 px colored stripe at the top of the card.
+//    Combine with .border-0 to drop the default card border:
+//      <div class="card border-0 shadow-sm card-accent-primary">
+//
+//    Uses !important so the accent survives Bootstrap's .border-0 utility
+//    and dark-mode's "border: 1px solid white !important" override on div.card.
+
+.card-accent-primary   { border-top: 3px solid vars.$primary   !important; }
+.card-accent-success   { border-top: 3px solid vars.$success   !important; }
+.card-accent-info      { border-top: 3px solid vars.$info      !important; }
+.card-accent-warning   { border-top: 3px solid vars.$warning   !important; }
+.card-accent-danger    { border-top: 3px solid vars.$danger    !important; }
+.card-accent-dark      { border-top: 3px solid vars.$dark      !important; }
+.card-accent-secondary { border-top: 3px solid vars.$gray-500  !important; }
+
+
+// ── 4. Dark mode ─────────────────────────────────────────────────────────────
+//    _dark-mode.scss covers `div.card` but misses `a.card` (anchor cards).
+//    We also restore accent colors that dark-mode's white-border rule overrides.
+//    Loaded after dark-mode in site.scss, so these rules win in the cascade.
+
+body.dark {
+
+  // Anchor cards missed by _dark-mode.scss
+  a.card {
+    background-color: vars.$dark  !important;
+    color:            vars.$white !important;
+    border-color:     vars.$white !important;
+
+    // Bootstrap icons inside anchor cards need explicit color reset
+    i.bi { color: vars.$white !important; }
+
+    &:hover,
+    &:focus {
+      color: vars.$white !important;
+    }
+  }
+
+  // Preserve accent top-border colors after dark-mode's
+  // `border: 1px solid white !important` clobbers them on div.card.
+  // (Since this file is loaded after dark-mode, these !important rules win.)
+  .card-accent-primary   { border-top-color: vars.$primary   !important; }
+  .card-accent-success   { border-top-color: vars.$success   !important; }
+  .card-accent-info      { border-top-color: vars.$info      !important; }
+  .card-accent-warning   { border-top-color: vars.$warning   !important; }
+  .card-accent-danger    { border-top-color: vars.$danger    !important; }
+  .card-accent-dark      { border-top-color: vars.$gray-400  !important; }
+  .card-accent-secondary { border-top-color: vars.$gray-500  !important; }
+}
+
