@@ -8,13 +8,8 @@ body.dark {
 
   main {
     aside {
-      &.left-navigation {
-        border-right: none;
-        background: #343a40;
-        box-shadow: -5px -5px 10px #2f343a,
-        5px 5px 10px #394046;
-
-      }
+      background-color: vars.$dark !important;
+      color: vars.$white !important;
     }
   }
 

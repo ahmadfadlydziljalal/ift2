@@ -2,27 +2,14 @@
 
 section.content {
   padding: 1rem 1rem 0 1rem;
-  margin-left: 224px;
+  margin-left: var(--sidebar-width);
   transition: all .1s;
 }
 
+// Card visual defaults (border-radius, header/footer, hover, accents) are
+// defined centrally in _card.scss — only layout-specific table overrides live here.
 .card {
 
-  border-radius: 0;
-
-  .kv-panel-before {
-    border-bottom: none;
-  }
-
-  .card-header {
-    border: none;
-  }
-
-  .card-footer {
-    border-top: none;
-    background: transparent;
-    padding: 0;
-  }
 
   table.inside-border {
     border-collapse: collapse;
