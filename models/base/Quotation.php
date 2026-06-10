@@ -6,6 +6,7 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use \app\models\active_queries\QuotationQuery;
 
 /**
  * This is the base-model class for table "quotation".
@@ -42,12 +43,10 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\QuotationTermAndCondition[] $quotationTermAndConditions
  * @property \app\models\Rekening $rekening
  * @property \app\models\Card $signatureOrangKantor
- * @property string $aliasModel
+ * @property \app\models\SuratPerintahKerjaSupportingDocument[] $suratPerintahKerjaSupportingDocuments
  */
 abstract class Quotation extends \yii\db\ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -62,7 +61,10 @@ abstract class Quotation extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return ArrayHelper::merge(parent::rules(), [
+        $parentRules = parent::rules();
+        return ArrayHelper::merge($parentRules, [
+            [['nomor', 'attendant_1', 'attendant_phone_1', 'attendant_email_1', 'attendant_2', 'attendant_phone_2', 'attendant_email_2', 'catatan_quotation_barang', 'catatan_quotation_service', 'delivery_fee', 'materai_fee'], 'default', 'value' => null],
+            [['vat_percentage'], 'default', 'value' => 0],
             [['mata_uang_id', 'tanggal', 'customer_id', 'tanggal_batas_valid', 'rekening_id', 'signature_orang_kantor_id'], 'required'],
             [['mata_uang_id', 'customer_id', 'vat_percentage', 'rekening_id', 'signature_orang_kantor_id'], 'integer'],
             [['tanggal', 'tanggal_batas_valid'], 'safe'],
@@ -82,7 +84,7 @@ abstract class Quotation extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
-        return [
+        return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'nomor' => 'Nomor',
             'mata_uang_id' => 'Mata Uang ID',
@@ -102,7 +104,7 @@ abstract class Quotation extends \yii\db\ActiveRecord
             'vat_percentage' => 'Vat Percentage',
             'rekening_id' => 'Rekening ID',
             'signature_orang_kantor_id' => 'Signature Orang Kantor ID',
-        ];
+        ]);
     }
 
     /**
@@ -110,7 +112,7 @@ abstract class Quotation extends \yii\db\ActiveRecord
      */
     public function attributeHints()
     {
-        return array_merge(parent::attributeHints(), [
+        return ArrayHelper::merge(parent::attributeHints(), [
             'mata_uang_id' => 'Mata uang yang akan digunakan',
         ]);
     }
@@ -211,7 +213,20 @@ abstract class Quotation extends \yii\db\ActiveRecord
         return $this->hasOne(\app\models\Card::class, ['id' => 'signature_orang_kantor_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSuratPerintahKerjaSupportingDocuments()
+    {
+        return $this->hasMany(\app\models\SuratPerintahKerjaSupportingDocument::class, ['quotation_id' => 'id']);
+    }
 
-
-
+    /**
+     * @inheritdoc
+     * @return QuotationQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new QuotationQuery(static::class);
+    }
 }
