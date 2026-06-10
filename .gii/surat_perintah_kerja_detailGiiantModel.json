@@ -1,6 +1,6 @@
 {
     "tablename": {
-        "value": "quotation",
+        "value": "surat_perintah_kerja_detail",
         "name": "tableName"
     },
     "tableprefix": {
@@ -8,7 +8,7 @@
         "name": "tablePrefix"
     },
     "modelclass": {
-        "value": "Quotation",
+        "value": "SuratPerintahKerjaDetail",
         "name": "modelClass"
     },
     "ns": {
