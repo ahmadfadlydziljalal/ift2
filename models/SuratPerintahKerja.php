@@ -58,6 +58,7 @@ class SuratPerintahKerja extends BaseSuratPerintahKerja {
      * @return bool true jika berhasil, false jika gagal
      */
     public function saveWithQuotation(): bool {
+
         if (!$this->validate()) {
             return false;
         }
@@ -65,6 +66,8 @@ class SuratPerintahKerja extends BaseSuratPerintahKerja {
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $isNew = $this->isNewRecord;
+
+
             if (!$this->save(false)) {
                 $transaction->rollBack();
                 return false;
@@ -74,20 +77,26 @@ class SuratPerintahKerja extends BaseSuratPerintahKerja {
 
             // Normalisasi input ids (boleh kosong)
             $newIds = (array)($this->quotationPendukung ?? []);
-            $newIds = array_values(array_unique(array_map('intval', $newIds)));
+            $newIds = array_filter(array_values(array_unique(array_map('intval', $newIds)))); // pastikan hanya integer unik dan tidak ada null
+
 
             if ($isNew) {
-                // Insert semua yang baru dipilih
-                foreach ($newIds as $quotationPendukungId) {
-                    $model = new SuratPerintahKerjaSupportingDocument([
-                        'surat_perintah_kerja_id' => $this->id,
-                        'quotation_id'            => $quotationPendukungId,
-                    ]);
-                    if (!$model->save()) {
-                        $flag = false;
-                        break;
+
+                if (!empty($newIds)) {
+                    // Insert semua yang baru dipilih
+                    foreach ($newIds as $quotationPendukungId) {
+                        $model = new SuratPerintahKerjaSupportingDocument([
+                            'surat_perintah_kerja_id' => $this->id,
+                            'quotation_id'            => $quotationPendukungId,
+                        ]);
+                        if (!$model->save()) {
+                            $flag = false;
+                            break;
+                        }
                     }
                 }
+
+
             } else {
 
 
