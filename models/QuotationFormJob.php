@@ -2,12 +2,10 @@
 
 namespace app\models;
 
-use app\enums\QuotationFormJobJobsTypeEnum;
 use app\models\base\QuotationFormJob as BaseQuotationFormJob;
 use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\db\ActiveQuery;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
@@ -140,20 +138,10 @@ class QuotationFormJob extends BaseQuotationFormJob {
     }
 
     public function getNomorSuratPerintahKerja(): ?string {
-        if ($this->suratPerintahKerja) {
-            return $this->suratPerintahKerja->nomor;
+        if ($this->quotation->suratPerintahKerjaSupportingDocument) {
+            return $this->quotation->suratPerintahKerjaSupportingDocument->suratPerintahKerja->nomor;
         }
         return $this->surat_perintah_kerja_dos ? $this->surat_perintah_kerja_dos : null;
-    }
-
-    public function getQuotationFormJobJobsType(): ActiveQuery {
-        return $this->hasMany(QuotationFormJobJobs::class, ['quotation_form_job_id' => 'id'])
-            ->where(['type' => QuotationFormJobJobsTypeEnum::JOB->value]);
-    }
-
-    public function getQuotationFormJobSparePartType(): ActiveQuery {
-        return $this->hasMany(QuotationFormJobJobs::class, ['quotation_form_job_id' => 'id'])
-            ->where(['type' => QuotationFormJobJobsTypeEnum::SPARE_PART->value]);
     }
 
     /**

@@ -6,21 +6,22 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-use \app\models\active_queries\QuotationFormJobJobsQuery;
+use \app\models\active_queries\QuotationFormJobSparePartQuery;
 
 /**
- * This is the base-model class for table "quotation_form_job_jobs".
+ * This is the base-model class for table "quotation_form_job_spare_part".
  *
  * @property integer $id
  * @property integer $quotation_form_job_id
- * @property string $nama
+ * @property integer $barang_id
  * @property string $quantity
  * @property integer $satuan_id
  *
+ * @property \app\models\Barang $barang
  * @property \app\models\QuotationFormJob $quotationFormJob
  * @property \app\models\Satuan $satuan
  */
-abstract class QuotationFormJobJobs extends \yii\db\ActiveRecord
+abstract class QuotationFormJobSparePart extends \yii\db\ActiveRecord
 {
 
     /**
@@ -28,7 +29,7 @@ abstract class QuotationFormJobJobs extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'quotation_form_job_jobs';
+        return 'quotation_form_job_spare_part';
     }
 
     /**
@@ -39,10 +40,10 @@ abstract class QuotationFormJobJobs extends \yii\db\ActiveRecord
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
             [['quotation_form_job_id'], 'default', 'value' => null],
-            [['quotation_form_job_id', 'satuan_id'], 'integer'],
-            [['nama', 'quantity', 'satuan_id'], 'required'],
+            [['quotation_form_job_id', 'barang_id', 'satuan_id'], 'integer'],
+            [['barang_id', 'quantity', 'satuan_id'], 'required'],
             [['quantity'], 'number'],
-            [['nama'], 'string', 'max' => 255],
+            [['barang_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Barang::class, 'targetAttribute' => ['barang_id' => 'id']],
             [['quotation_form_job_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\QuotationFormJob::class, 'targetAttribute' => ['quotation_form_job_id' => 'id']],
             [['satuan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Satuan::class, 'targetAttribute' => ['satuan_id' => 'id']]
         ]);
@@ -56,10 +57,28 @@ abstract class QuotationFormJobJobs extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'quotation_form_job_id' => 'Quotation Form Job ID',
-            'nama' => 'Nama',
+            'barang_id' => 'Barang ID',
             'quantity' => 'Quantity',
             'satuan_id' => 'Satuan ID',
         ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeHints()
+    {
+        return ArrayHelper::merge(parent::attributeHints(), [
+            'barang_id' => 'Dalam konteks ini, barang disebut sebagai Spare Part',
+        ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBarang()
+    {
+        return $this->hasOne(\app\models\Barang::class, ['id' => 'barang_id']);
     }
 
     /**
@@ -80,10 +99,10 @@ abstract class QuotationFormJobJobs extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     * @return QuotationFormJobJobsQuery the active query used by this AR class.
+     * @return QuotationFormJobSparePartQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new QuotationFormJobJobsQuery(static::class);
+        return new QuotationFormJobSparePartQuery(static::class);
     }
 }

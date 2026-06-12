@@ -14,7 +14,6 @@ use \app\models\active_queries\QuotationFormJobQuery;
  * @property integer $id
  * @property integer $quotation_id
  * @property string $nomor
- * @property integer $surat_perintah_kerja_id
  * @property string $surat_perintah_kerja_dos
  * @property string $tanggal
  * @property string $person_in_charge
@@ -29,7 +28,7 @@ use \app\models\active_queries\QuotationFormJobQuery;
  * @property \app\models\Quotation $quotation
  * @property \app\models\QuotationFormJobJobs[] $quotationFormJobJobs
  * @property \app\models\QuotationFormJobMekanik[] $quotationFormJobMekaniks
- * @property \app\models\SuratPerintahKerja $suratPerintahKerja
+ * @property \app\models\QuotationFormJobSparePart[] $quotationFormJobSpareParts
  */
 abstract class QuotationFormJob extends \yii\db\ActiveRecord
 {
@@ -49,8 +48,8 @@ abstract class QuotationFormJob extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['quotation_id', 'nomor', 'surat_perintah_kerja_id', 'surat_perintah_kerja_dos', 'person_in_charge', 'issue', 'card_own_equipment_id', 'hour_meter', 'mekanik_id', 'remarks'], 'default', 'value' => null],
-            [['quotation_id', 'surat_perintah_kerja_id', 'card_own_equipment_id', 'mekanik_id'], 'integer'],
+            [['quotation_id', 'nomor', 'surat_perintah_kerja_dos', 'person_in_charge', 'issue', 'card_own_equipment_id', 'hour_meter', 'mekanik_id', 'remarks'], 'default', 'value' => null],
+            [['quotation_id', 'card_own_equipment_id', 'mekanik_id'], 'integer'],
             [['tanggal'], 'required'],
             [['tanggal'], 'safe'],
             [['issue', 'remarks'], 'string'],
@@ -58,8 +57,7 @@ abstract class QuotationFormJob extends \yii\db\ActiveRecord
             [['quotation_id'], 'unique'],
             [['mekanik_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['mekanik_id' => 'id']],
             [['card_own_equipment_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\CardOwnEquipment::class, 'targetAttribute' => ['card_own_equipment_id' => 'id']],
-            [['quotation_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Quotation::class, 'targetAttribute' => ['quotation_id' => 'id']],
-            [['surat_perintah_kerja_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\SuratPerintahKerja::class, 'targetAttribute' => ['surat_perintah_kerja_id' => 'id']]
+            [['quotation_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Quotation::class, 'targetAttribute' => ['quotation_id' => 'id']]
         ]);
     }
 
@@ -72,7 +70,6 @@ abstract class QuotationFormJob extends \yii\db\ActiveRecord
             'id' => 'ID',
             'quotation_id' => 'Quotation ID',
             'nomor' => 'Nomor',
-            'surat_perintah_kerja_id' => 'Surat Perintah Kerja ID',
             'surat_perintah_kerja_dos' => 'Surat Perintah Kerja Dos',
             'tanggal' => 'Tanggal',
             'person_in_charge' => 'Person In Charge',
@@ -139,9 +136,9 @@ abstract class QuotationFormJob extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSuratPerintahKerja()
+    public function getQuotationFormJobSpareParts()
     {
-        return $this->hasOne(\app\models\SuratPerintahKerja::class, ['id' => 'surat_perintah_kerja_id']);
+        return $this->hasMany(\app\models\QuotationFormJobSparePart::class, ['quotation_form_job_id' => 'id']);
     }
 
     /**
