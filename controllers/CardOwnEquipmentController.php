@@ -98,7 +98,7 @@ class CardOwnEquipmentController extends Controller {
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('info', 'Card Equipment: ' . $model->nama . ' berhasil dirubah.');
-            return $this->redirect(['view', 'id' => $model->card_id]);
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
