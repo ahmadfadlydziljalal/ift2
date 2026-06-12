@@ -19,6 +19,7 @@ use yii\helpers\ArrayHelper;
  * @property array $namaMekaniks
  * @property QuotationFormJobJobs[] $quotationFormJobJobsType
  * @property QuotationFormJobJobs[] $quotationFormJobSparePartType
+ * @property string $nomorSuratPerintahKerja
  */
 class QuotationFormJob extends BaseQuotationFormJob {
 

@@ -2,7 +2,9 @@
 
 /* @var $this yii\web\View */
 
+use app\models\Card;
 use app\models\Quotation;
+use kartik\grid\GridView;
 use yii\helpers\Html;
 
 $renderItemTotal = function ($sign, $nama, $singkatanMataUang, $nominal, $classOptions = ''): string {
@@ -37,43 +39,91 @@ return [
         'attribute' => 'nomor',
         'value'     => function (Quotation $model) {
             $validity = $model->getValidityBasedOnDateLimit('html');
-            return $model->nomor . ' <br/>' .
-                Html::tag('div',
-                    Html::tag('small', 'Validity: ' .
-                        $validity['html'] . ' ' .
-                        $validity['howManyDaysAreLeftText']
-                    ) .
-                    Html::tag('div', $model->getValidityPeriod()),
-                    [
-                        'class' => 'ps-2 text-muted flex-column',
-                    ]
-                );
-        },
-        'format'    => 'raw',
-    ],
-//    [
-//        'class'     => '\yii\grid\DataColumn',
-//        'attribute' => 'mata_uang_id',
-//        'format'    => 'text',
-//    ],
+            $validityString = Html::tag('small', 'Validity: ' .
+                $validity['html'] . ' ' .
+                $validity['howManyDaysAreLeftText']
+            );
 
-    [
-        'class'     => '\yii\grid\DataColumn',
-        'attribute' => 'customer_id',
-//        'value'     => 'customer.nama',
-        'value'     => function (Quotation $model) {
-            return $model->customer->nama . '<br/>' . Html::tag('div',
-                    Html::tag('small', 'Attendance:') .
-                    Html::tag('div', $model->attendant_1, ['class' => 'ps-3']) .
-                    (!empty($model->attendant_2) ? Html::tag('div', $model->attendant_2, ['class' => 'ps-3']) : '')
+
+            $formJob = empty($model->quotationFormJob) ? '' :
+                Html::tag('div',
+                    Html::tag('small', 'Form Job:') .
+                    Html::tag('div',
+                        'Nomor: ' . $model->quotationFormJob->nomor . '<br/>' .
+                        'SPK: ' . ($model->quotationFormJob->nomorSuratPerintahKerja ?: '') . '<br/>' .
+                        'Date: ' . (Yii::$app->formatter->asDate($model->quotationFormJob->tanggal) ?: '')
+                        , [
+                            'class' => 'ps-3'
+                        ]
+                    )
                     ,
                     [
                         'class' => 'ps-2 text-muted flex-column',
                     ]
                 );
 
+            return $model->nomor . ' <br/>' .
+                $validityString . ' <br/>' .
+                $model->getValidityPeriod() .
+                $formJob;
+
         },
         'format'    => 'raw',
+    ],
+    [
+        'class'               => '\kartik\grid\DataColumn',
+        'attribute'           => 'customer_id',
+        'filterType'          => GridView::FILTER_SELECT2,
+        'filterWidgetOptions' => [
+            'data'          => Card::find()->map(),
+            'options'       => [
+                'placeholder' => '= Pilih Customer =',
+            ],
+            'pluginOptions' => [
+                'allowClear' => true,
+            ]
+        ],
+        'value'               => function (Quotation $model) {
+            $customerName = $model->customer->nama . '<br/>';
+            $attendance = Html::tag('div',
+                Html::tag('small', 'Attendance:') .
+                Html::tag('div', $model->attendant_1, ['class' => 'ps-3']) .
+                (!empty($model->attendant_2) ? Html::tag('div', $model->attendant_2, ['class' => 'ps-3']) : '')
+                ,
+                [
+                    'class' => 'ps-2 text-muted flex-column',
+                ]
+            );
+
+            $unit = '';
+            if ($model->quotationFormJob) {
+                $unit = Html::tag('div',
+                    Html::tag('small', 'Unit:') .
+                    Html::tag('div',
+                        'Nomor Unit: ' . $model->quotationFormJob?->cardOwnEquipment?->nomor_unit . '<br/>' .
+                        'Merk/Type: ' . $model->quotationFormJob?->cardOwnEquipment?->merk . '/' . $model->quotationFormJob?->cardOwnEquipment?->nama . '<br/>' .
+                        'H M: ' . $model->quotationFormJob?->hour_meter . '<br/>' .
+                        'Production No: ' . $model->quotationFormJob?->cardOwnEquipment?->serial_number . '<br/>' .
+                        'Mekanik: ' . (!empty($model->quotationFormJob?->namaMekaniks) ? implode(", ", $model->quotationFormJob->namaMekaniks) : '')
+                        , [
+                            'class' => 'ps-3'
+                        ]
+                    )
+                    ,
+                    [
+                        'class' => 'ps-2 text-muted flex-column',
+                    ]
+                );
+            }
+
+
+            return $customerName . $attendance . $unit;
+
+        },
+        'format'              => 'raw',
+        'contentOptions'      => [
+            'class' => 'text-wrap'
+        ]
     ],
     /* [
          'class'     => '\yii\grid\DataColumn',
