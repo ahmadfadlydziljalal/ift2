@@ -1,6 +1,6 @@
 {
     "tablename": {
-        "value": "quotation_form_job",
+        "value": "quotation_form_job_jobs",
         "name": "tableName"
     },
     "tableprefix": {
@@ -8,7 +8,7 @@
         "name": "tablePrefix"
     },
     "modelclass": {
-        "value": "QuotationFormJob",
+        "value": "QuotationFormJobJobs",
         "name": "modelClass"
     },
     "ns": {
