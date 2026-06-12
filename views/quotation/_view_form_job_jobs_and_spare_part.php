@@ -4,7 +4,6 @@
 
 /* @var $model app\models\Quotation|string|ActiveRecord */
 
-use app\enums\QuotationFormJobJobsTypeEnum;
 use kartik\grid\GridView;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
@@ -18,13 +17,13 @@ use yii\helpers\Html;
         <div class="d-flex flex-column gap-1 flex-wrap">
             <h5>Jobs</h5>
             <?php
-            $jobs = $model->quotationFormJob->getQuotationFormJobJobsType()->count();
+            $jobs = $model->quotationFormJob->getQuotationFormJobJobs()->count();
             if (empty($jobs)) {
-                echo Html::tag('div', Html::a('<i class="bi bi-plus-circle"></i> Definisikan!', ['quotation/create-form-job-type', 'id' => $model->quotationFormJob->id, 'type' => QuotationFormJobJobsTypeEnum::JOB->value], ['class' => 'btn btn-outline-success']));
+                echo Html::tag('div', Html::a('<i class="bi bi-plus-circle"></i> Definisikan!', ['quotation/create-form-job-type', 'id' => $model->quotationFormJob->id], ['class' => 'btn btn-outline-success']));
             } else {
                 echo Html::tag('div',
-                    Html::a('<i class="bi bi-pencil"></i> Update!', ['quotation/update-form-job-type', 'id' => $model->quotationFormJob->id, 'type' => QuotationFormJobJobsTypeEnum::JOB->value], ['class' => 'btn btn-outline-primary']) .
-                    Html::a('<i class="bi bi-trash"></i> Delete!', ['quotation/delete-form-job-type', 'id' => $model->quotationFormJob->id, 'type' => QuotationFormJobJobsTypeEnum::JOB->value], [
+                    Html::a('<i class="bi bi-pencil"></i> Update!', ['quotation/update-form-job-type', 'id' => $model->quotationFormJob->id], ['class' => 'btn btn-outline-primary']) .
+                    Html::a('<i class="bi bi-trash"></i> Delete!', ['quotation/delete-form-job-type', 'id' => $model->quotationFormJob->id], [
                         'class' => 'btn btn-outline-danger',
                         'data'  => [
                             'confirm' => 'Apakah anda yakin ingin menghapus data ini?',
@@ -37,10 +36,7 @@ use yii\helpers\Html;
                 );
                 echo GridView::widget([
                     'dataProvider' => new ActiveDataProvider([
-                        'query'      => $model->quotationFormJob->getQuotationFormJobJobsType()
-                            ->where([
-                                'quotation_form_job_jobs.type' => QuotationFormJobJobsTypeEnum::JOB->value
-                            ])
+                        'query'      => $model->quotationFormJob->getQuotationFormJobJobs()
                             ->joinWith(['satuan'])
                             ->orderBy(['id' => SORT_ASC]),
                         'pagination' => false
@@ -74,13 +70,13 @@ use yii\helpers\Html;
         <div class="d-flex flex-column gap-1 flex-wrap">
             <h5>Spare Part Estimation</h5>
             <?php
-            $spareParts = $model->quotationFormJob->getQuotationFormJobSparePartType()->count();
+            $spareParts = $model->quotationFormJob->getQuotationFormJobSpareParts()->count();
             if (empty($spareParts)) {
-                echo Html::tag('div', Html::a('<i class="bi bi-plus-circle"></i> Definisikan', ['quotation/create-form-job-type', 'id' => $model->quotationFormJob->id, 'type' => QuotationFormJobJobsTypeEnum::SPARE_PART->value], ['class' => 'btn btn-outline-success']));
+                echo Html::tag('div', Html::a('<i class="bi bi-plus-circle"></i> Definisikan!', ['quotation/create-form-job-service-part-type', 'id' => $model->quotationFormJob->id], ['class' => 'btn btn-outline-success']));
             } else {
                 echo Html::tag('div',
-                    Html::a('<i class="bi bi-pencil"></i> Update!', ['quotation/update-form-job-type', 'id' => $model->quotationFormJob->id, 'type' => QuotationFormJobJobsTypeEnum::SPARE_PART->value], ['class' => 'btn btn-outline-primary']) .
-                    Html::a('<i class="bi bi-trash"></i> Delete!', ['quotation/delete-form-job-type', 'id' => $model->quotationFormJob->id, 'type' => QuotationFormJobJobsTypeEnum::SPARE_PART->value], [
+                    Html::a('<i class="bi bi-pencil"></i> Update!', ['quotation/update-form-job-service-part-type', 'id' => $model->quotationFormJob->id], ['class' => 'btn btn-outline-primary']) .
+                    Html::a('<i class="bi bi-trash"></i> Delete!', ['quotation/delete-form-job-service-part-type', 'id' => $model->quotationFormJob->id], [
                         'class' => 'btn btn-outline-danger',
                         'data'  => [
                             'confirm' => 'Apakah anda yakin ingin menghapus data ini?',
@@ -93,18 +89,15 @@ use yii\helpers\Html;
                 );
                 echo GridView::widget([
                     'dataProvider' => new ActiveDataProvider([
-                        'query'      => $model->quotationFormJob->getQuotationFormJobSparePartType()
-                            ->where([
-                                'quotation_form_job_jobs.type' => QuotationFormJobJobsTypeEnum::SPARE_PART->value
-                            ])
-                            ->joinWith(['satuan'])
+                        'query'      => $model->quotationFormJob->getQuotationFormJobSpareParts()
+                            ->joinWith(['satuan', 'barang'])
                             ->orderBy(['id' => SORT_ASC]),
                         'pagination' => false
                     ]),
                     'layout'       => "{items}",
                     'responsive'   => true,
                     'columns'      => [
-                        'nama',
+                        'barang.nama',
                         [
                             'attribute'      => 'quantity',
                             'contentOptions' => [

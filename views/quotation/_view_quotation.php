@@ -21,6 +21,7 @@ use yii\widgets\DetailView;
             <h3>Master Quotation</h3>
 
             <div class="ms-auto">
+                <?php /** @see \app\controllers\QuotationController::actionPrintToPdf() */ ?>
                 <?= Html::a(TextLinkEnum::PRINT->value, ['quotation/print-to-pdf', 'id' => $model->id], [
                     'class'  => 'btn btn-outline-success',
                     'target' => '_blank',

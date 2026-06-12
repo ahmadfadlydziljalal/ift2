@@ -115,9 +115,9 @@ use yii\web\View;
                 </thead>
 
                 <tbody>
-                <?php foreach ($quotationFormJob->getQuotationFormJobJobsType()->joinWith(['satuan'])->each() as $keyService => $quotationService) : ?>
+                <?php foreach ($quotationFormJob->getQuotationFormJobJobs()->joinWith(['satuan'])->each() as $keyService => $quotationService) : ?>
                     <tr>
-                        <td class="text-end" style="width: 2em"><?= ($keyService + 1) ?></td>
+                        <td class="text-end" style="width: 2em"><?= ($keyService + 1) ?>.</td>
                         <td><?= $quotationService->nama ?></td>
                         <td class="text-end" style="width: 4em"> <?= $quotationService->quantity ?></td>
                         <td><?= $quotationService->satuan->nama ?></td>
@@ -141,12 +141,13 @@ use yii\web\View;
                 </thead>
 
                 <tbody>
-                <?php foreach ($quotationFormJob->getQuotationFormJobSparePartType()->joinWith(['satuan'])->each() as $keyBarang => $quotationBarang) : ?>
+                <?php /** @var app\models\QuotationFormJobSparePart $sparePart */
+                foreach ($quotationFormJob->getQuotationFormJobSpareParts()->joinWith(['satuan', 'barang'])->each() as $keySparePart => $sparePart) : ?>
                     <tr>
-                        <td class="text-end" style="width: 2em"><?= ($keyBarang + 1) ?></td>
-                        <td><?= $quotationBarang->nama ?></td>
-                        <td class="text-end" style="width: 4em"><?= $quotationBarang->quantity ?></td>
-                        <td><?= $quotationBarang->satuan->nama ?></td>
+                        <td class="text-end" style="width: 2em"><?= ($keySparePart + 1) ?>.</td>
+                        <td><?= $sparePart->barang->nama ?></td>
+                        <td class="text-end" style="width: 4em"><?= $sparePart->quantity ?></td>
+                        <td><?= $sparePart->satuan->nama ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

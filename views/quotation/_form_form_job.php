@@ -10,13 +10,11 @@ use app\models\Card;
 use app\models\CardOwnEquipment;
 use app\models\Quotation;
 use app\models\QuotationFormJob;
-use app\models\SuratPerintahKerja;
 use kartik\date\DatePicker;
 use kartik\form\ActiveForm;
 use kartik\select2\Select2;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\web\JsExpression;
 use yii\web\View;
 
 ?>
@@ -54,6 +52,7 @@ use yii\web\View;
                         <h3 class="text-light">
                             <?= $model->quotation->customer->nama ?>
                         </h3>
+                        <span><?= $model->quotation->suratPerintahKerjaSupportingDocument?->suratPerintahKerja?->nomor ?></span>
                     </div>
                 </div>
             </div>
@@ -64,103 +63,7 @@ use yii\web\View;
 
                 <!-- SPK / SPK DOS -->
                 <div class="col">
-                    <?php
-                    // Tentukan state awal berdasarkan nilai model yang sudah ada
-                    $hasWeb = !empty($model->surat_perintah_kerja_id);
-                    $hasDos = !empty($model->surat_perintah_kerja_dos);
-                    $initial = $hasWeb ? 'web' : ($hasDos ? 'dos' : 'web');
-
-                    // Ambil ID input untuk dipakai di JS
-                    $inputIdWeb = Html::getInputId($model, 'surat_perintah_kerja_id');
-                    $inputIdDos = Html::getInputId($model, 'surat_perintah_kerja_dos');
-                    ?>
-
-                    <div class="mb-3">
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-secondary dropdown-toggle"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                Pilih Sumber SPK: <span
-                                        id="spk-source-label"><?= $initial === 'web' ? 'From Web' : 'From DOS' ?></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item spk-source-choose" href="#" data-mode="web">From Web</a>
-                                </li>
-                                <li><a class="dropdown-item spk-source-choose" href="#" data-mode="dos">From DOS</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="d-block">
-                        <div id="spk-web-wrapper" class="me-3 <?= $initial === 'dos' ? 'd-none' : '' ?>">
-                            <?= $form->field($model, 'surat_perintah_kerja_id')
-                                ->hint('Silahkan pilih surat perintah kerja dengan benar')
-                                ->widget(Select2::class, [
-                                    'options'       => [
-                                        'multiple'    => false,
-                                        'placeholder' => 'Cari by nomor'
-                                    ],
-                                    'initValueText' => $model->isNewRecord ? null : (!empty($model->surat_perintah_kerja_id) ? SuratPerintahKerja::findOne($model->surat_perintah_kerja_id)->nomor : null),
-                                    'pluginOptions' => [
-                                        'allowClear'         => true,
-                                        'minimumInputLength' => 3,
-                                        'language'           => [
-                                            'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                                        ],
-                                        'ajax'               => [
-                                            'url'      => Url::to(['find-surat-perintah-kerja']), /* @see \app\controllers\QuotationController::actionFindSuratPerintahKerja() */
-                                            'dataType' => 'json',
-                                            'data'     => new JsExpression('function(params) { return {q:params.term}; }'),
-                                            'delay'    => 1000
-                                        ],
-                                        'escapeMarkup'       => new JsExpression('function (markup) { return markup; }'),
-                                        'templateResult'     => new JsExpression('function(result) { return result.text; }'),
-                                        'templateSelection'  => new JsExpression('function (result) { return result.text; }'),
-                                    ],
-                                ]);
-                            // ->textInput(['placeholder' => 'Pilih SPK dari Web']) // From Web
-                            ?>
-                        </div>
-                        <div id="spk-dos-wrapper" class="<?= $initial === 'web' ? 'd-none' : '' ?>">
-                            <?= $form->field($model, 'surat_perintah_kerja_dos')->textInput(['placeholder' => 'Isi nomor SPK dari DOS']) // From DOS                                                   ?>
-                        </div>
-                    </div>
-
-                    <?php
-                    $js = <<<JS
-                    (function(){
-                        var btns = document.querySelectorAll('.spk-source-choose');
-                        var webWrap = document.getElementById('spk-web-wrapper');
-                        var dosWrap = document.getElementById('spk-dos-wrapper');
-                        var label = document.getElementById('spk-source-label');
-                        var webInput = document.getElementById('$inputIdWeb');
-                        var dosInput = document.getElementById('$inputIdDos');
-
-                        function setMode(mode){
-                            if(mode === 'web'){
-                                if (dosWrap) dosWrap.classList.add('d-none');
-                                if (webWrap) webWrap.classList.remove('d-none');
-                                if (label) label.textContent = 'From Web';
-                                if (dosInput) { dosInput.value = ''; dosInput.dispatchEvent(new Event('change')); }
-                            } else {
-                                if (webWrap) webWrap.classList.add('d-none');
-                                if (dosWrap) dosWrap.classList.remove('d-none');
-                                if (label) label.textContent = 'From DOS';
-                                if (webInput) { webInput.value = ''; webInput.dispatchEvent(new Event('change')); }
-                            }
-                        }
-
-                        btns.forEach(function(a){
-                            a.addEventListener('click', function(e){
-                                e.preventDefault();
-                                var mode = this.getAttribute('data-mode');
-                                setMode(mode);
-                            });
-                        });
-                    })();
-                    JS;
-                    $this->registerJs($js);
-                    ?>
+                    <?= $form->field($model, 'surat_perintah_kerja_dos')->textInput(['placeholder' => 'Isi nomor SPK dari DOS']) // From DOS       ?>
                 </div>
 
                 <!-- No Unit -->

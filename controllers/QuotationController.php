@@ -9,7 +9,8 @@ use app\components\ProformaDebitNoteDetailServiceComponent;
 use app\components\ProformaInvoiceDetailBarangComponent;
 use app\components\ProformaInvoiceDetailServiceComponent;
 use app\components\ServiceQuotation;
-use app\components\services\QuotationFormJobDetailJobsOrSparePartService;
+use app\components\services\QuotationFormJobDetailJobsService;
+use app\components\services\QuotationFormJobDetailSparePartService;
 use app\components\services\QuotationFormJobService;
 use app\components\TermConditionQuotation;
 use app\models\CardOwnEquipment;
@@ -21,7 +22,6 @@ use app\models\Quotation;
 use app\models\QuotationBarang;
 use app\models\QuotationDeliveryReceipt;
 use app\models\search\QuotationSearch;
-use app\models\SuratPerintahKerja;
 use JetBrains\PhpStorm\ArrayShape;
 use kartik\mpdf\Pdf;
 use Mpdf\MpdfException;
@@ -88,7 +88,6 @@ class QuotationController extends Controller {
         ]);
     }
 
-
     /**
      * @return Response|string
      */
@@ -116,10 +115,7 @@ class QuotationController extends Controller {
     public function actionUpdate(int $id): Response|string {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost
-            && $model->load($this->request->post())
-            && $model->save()
-        ) {
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             Yii::$app->session->setFlash(
                 'info',
                 'Quotation: ' . $model->nomor . ' berhasil dirubah.'
@@ -153,7 +149,6 @@ class QuotationController extends Controller {
         );
         return $this->redirect(['index']);
     }
-
 
     /**
      * @param $id
@@ -437,13 +432,13 @@ class QuotationController extends Controller {
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public function actionCreateFormJobType(int $id, int $type): Response|string {
+    public function actionCreateFormJobType(int $id): Response|string {
 
-        /** @var QuotationFormJobDetailJobsOrSparePartService $service */
-        $service = Yii::createObject(QuotationFormJobDetailJobsOrSparePartService::class);
+        /** @var QuotationFormJobDetailJobsService $service */
+        $service = Yii::createObject(QuotationFormJobDetailJobsService::class);
 
         if ($this->request->isPost) {
-            $result = $service->create($id, $type, $this->request->post());
+            $result = $service->create($id, $this->request->post());
             if ($result['success'] ?? false) {
                 Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
                 return $this->redirect(['quotation/view', 'id' => $result['quotationId'], '#' => 'quotation-tab-tab4']);
@@ -455,7 +450,7 @@ class QuotationController extends Controller {
             ]);
         }
 
-        $context = $service->getCreateContext($id, $type);
+        $context = $service->getCreateContext($id);
         return $this->render('create_form_job_type', [
             'quotationFormJobModel' => $context['quotationFormJobModel'],
             'models'                => $context['models'],
@@ -467,13 +462,13 @@ class QuotationController extends Controller {
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public function actionUpdateFormJobType(int $id, int $type): Response|string {
+    public function actionUpdateFormJobType(int $id): Response|string {
 
-        /** @var QuotationFormJobDetailJobsOrSparePartService $service */
-        $service = Yii::createObject(QuotationFormJobDetailJobsOrSparePartService::class);
+        /** @var QuotationFormJobDetailJobsService $service */
+        $service = Yii::createObject(QuotationFormJobDetailJobsService::class);
 
         if ($this->request->isPost) {
-            $result = $service->update($id, $type, $this->request->post());
+            $result = $service->update($id, $this->request->post());
             if ($result['success'] ?? false) {
                 Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
                 return $this->redirect(['quotation/view', 'id' => $result['quotationId'], '#' => 'quotation-tab-tab4']);
@@ -485,7 +480,7 @@ class QuotationController extends Controller {
             ]);
         }
 
-        $context = $service->getUpdateContext($id, $type);
+        $context = $service->getUpdateContext($id);
         return $this->render('update_form_job_type', [
             'quotationFormJobModel' => $context['quotationFormJobModel'],
             'models'                => $context['models'],
@@ -495,10 +490,10 @@ class QuotationController extends Controller {
     /**
      * @throws InvalidConfigException
      */
-    public function actionDeleteFormJobType(int $id, int $type): Response {
-        /** @var QuotationFormJobDetailJobsOrSparePartService $service */
-        $service = Yii::createObject(QuotationFormJobDetailJobsOrSparePartService::class);
-        $result = $service->delete($id, $type);
+    public function actionDeleteFormJobType(int $id): Response {
+        /** @var QuotationFormJobDetailJobsService $service */
+        $service = Yii::createObject(QuotationFormJobDetailJobsService::class);
+        $result = $service->delete($id);
         if ($result['success'] ?? false) {
             Yii::$app->session->setFlash('success', 'Data berhasil dihapus');
         } else {
@@ -508,19 +503,74 @@ class QuotationController extends Controller {
     }
 
     /**
-     * @param string|null $q
-     * @param int|string|null $id
-     * @return array[]
+     * @throws Exception
+     * @throws InvalidConfigException
      */
-    public function actionFindSuratPerintahKerja(string $q = null, int|string $id = null): array {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $out = ['results' => ['id' => '', 'text' => '']];
-        if (!is_null($q)) {
-            $out['results'] = SuratPerintahKerja::find()->liveSearch($q)->limit(20)->asArray()->all();
-        } elseif ($id > 0) {
-            $out['results'] = ['id' => $id, 'text' => SuratPerintahKerja::findOne($id)->nomor];
+    public function actionCreateFormJobServicePartType(int $id): Response|string {
+        /** @var QuotationFormJobDetailSparePartService $service */
+        $service = Yii::createObject(QuotationFormJobDetailSparePartService::class);
+
+        if ($this->request->isPost) {
+            $result = $service->create($id, $this->request->post());
+            if ($result['success'] ?? false) {
+                Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
+                return $this->redirect(['quotation/view', 'id' => $result['quotationId'], '#' => 'quotation-tab-tab4']);
+            }
+            Yii::$app->session->setFlash('danger', 'Data gagal disimpan');
+            return $this->render('create_form_job_spare_part_type', [
+                'quotationFormJobModel' => $result['quotationFormJobModel'],
+                'models'                => $result['models'],
+            ]);
         }
-        return $out;
+
+        $context = $service->getCreateContext($id);
+        return $this->render('create_form_job_spare_part_type', [
+            'quotationFormJobModel' => $context['quotationFormJobModel'],
+            'models'                => $context['models'],
+        ]);
+
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionUpdateFormJobServicePartType(int $id): Response|string {
+        /** @var QuotationFormJobDetailSparePartService $service */
+        $service = Yii::createObject(QuotationFormJobDetailSparePartService::class);
+
+        if ($this->request->isPost) {
+            $result = $service->update($id, $this->request->post());
+            if ($result['success'] ?? false) {
+                Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
+                return $this->redirect(['quotation/view', 'id' => $result['quotationId'], '#' => 'quotation-tab-tab4']);
+            }
+            Yii::$app->session->setFlash('danger', 'Data gagal disimpan');
+            return $this->render('update_form_job_spare_part_type', [
+                'quotationFormJobModel' => $result['quotationFormJobModel'],
+                'models'                => $result['models'],
+            ]);
+        }
+
+        $context = $service->getUpdateContext($id);
+        return $this->render('update_form_job_spare_part_type', [
+            'quotationFormJobModel' => $context['quotationFormJobModel'],
+            'models'                => $context['models'],
+        ]);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionDeleteFormJobServicePartType(int $id): Response {
+        /** @var QuotationFormJobDetailSparePartService $service */
+        $service = Yii::createObject(QuotationFormJobDetailSparePartService::class);
+        $result = $service->delete($id);
+        if ($result['success'] ?? false) {
+            Yii::$app->session->setFlash('success', 'Data berhasil dihapus');
+        } else {
+            Yii::$app->session->setFlash('danger', 'Tidak ada data yang dihapus');
+        }
+        return $this->redirect(['quotation/view', 'id' => $result['quotationId'] ?? null, '#' => 'quotation-tab-tab4']);
     }
 
     /**
@@ -1250,7 +1300,6 @@ class QuotationController extends Controller {
         ]);
     }
 
-
     /**
      * Print proforma debit note dari HTMl ke built in browser
      * @param $id
@@ -1268,7 +1317,6 @@ class QuotationController extends Controller {
         ]);
         return $pdf->render();
     }
-
 
     /**
      * @return string|Response

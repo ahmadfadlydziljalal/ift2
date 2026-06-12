@@ -2,7 +2,6 @@
 
 namespace app\components\services;
 
-use app\enums\QuotationFormJobJobsTypeEnum;
 use app\models\QuotationFormJob;
 use app\models\QuotationFormJobJobs;
 use app\models\Tabular;
@@ -17,23 +16,20 @@ use yii\helpers\ArrayHelper;
  * (both Jobs and Spare Part types). Controllers should delegate to this service
  * to comply with Single Responsibility (no direct DB operations in controllers).
  */
-class QuotationFormJobDetailJobsOrSparePartService {
+class QuotationFormJobDetailJobsService {
 
     /**
      * Prepare context for Create page (GET).
      * @param int $formJobId QuotationFormJob ID
-     * @param int $type One of QuotationFormJobJobsTypeEnum values
      * @return array{quotationFormJobModel: QuotationFormJob, models: QuotationFormJobJobs[]}
      */
-    public function getCreateContext(int $formJobId, int $type): array
-    {
+    public function getCreateContext(int $formJobId): array {
         $quotationFormJobModel = QuotationFormJob::findOne($formJobId);
         if (!$quotationFormJobModel) {
             throw new InvalidArgumentException('Quotation Form Job not found');
         }
         $models = [new QuotationFormJobJobs([
             'quotation_form_job_id' => $formJobId,
-            'type'                  => $type,
         ])];
         return compact('quotationFormJobModel', 'models');
     }
@@ -48,8 +44,7 @@ class QuotationFormJobDetailJobsOrSparePartService {
      * @return array{success: bool, quotationFormJobModel: QuotationFormJob, models: QuotationFormJobJobs[], quotationId?: int}
      * @throws Exception
      */
-    public function create(int $formJobId, int $type, array $post): array
-    {
+    public function create(int $formJobId, array $post): array {
         $quotationFormJobModel = QuotationFormJob::findOne($formJobId);
         if (!$quotationFormJobModel) {
             throw new InvalidArgumentException('Quotation Form Job not found');
@@ -60,9 +55,9 @@ class QuotationFormJobDetailJobsOrSparePartService {
 
         if (!Tabular::validateMultiple($models)) {
             return [
-                'success' => false,
+                'success'               => false,
                 'quotationFormJobModel' => $quotationFormJobModel,
-                'models' => $models,
+                'models'                => $models,
             ];
         }
 
@@ -72,7 +67,6 @@ class QuotationFormJobDetailJobsOrSparePartService {
             /** @var QuotationFormJobJobs $model */
             foreach ($models as $model) {
                 $model->quotation_form_job_id = $formJobId;
-                $model->type = $type;
                 if (!($flag = $model->save(false))) {
                     break;
                 }
@@ -81,10 +75,10 @@ class QuotationFormJobDetailJobsOrSparePartService {
             if ($flag) {
                 $transaction->commit();
                 return [
-                    'success' => true,
+                    'success'               => true,
                     'quotationFormJobModel' => $quotationFormJobModel,
-                    'models' => $models,
-                    'quotationId' => $quotationFormJobModel->quotation_id,
+                    'models'                => $models,
+                    'quotationId'           => $quotationFormJobModel->quotation_id,
                 ];
             }
 
@@ -95,48 +89,40 @@ class QuotationFormJobDetailJobsOrSparePartService {
         }
 
         return [
-            'success' => false,
+            'success'               => false,
             'quotationFormJobModel' => $quotationFormJobModel,
-            'models' => $models,
+            'models'                => $models,
         ];
     }
 
     /**
      * Prepare context for Update page (GET): existing detail rows for a given type.
      * @param int $formJobId
-     * @param int $type
      * @return array{quotationFormJobModel: QuotationFormJob, models: QuotationFormJobJobs[]}
      */
-    public function getUpdateContext(int $formJobId, int $type): array
-    {
+    public function getUpdateContext(int $formJobId): array {
         $quotationFormJobModel = QuotationFormJob::findOne($formJobId);
         if (!$quotationFormJobModel) {
             throw new InvalidArgumentException('Quotation Form Job not found');
         }
-        $models = $type === QuotationFormJobJobsTypeEnum::JOB->value
-            ? $quotationFormJobModel->quotationFormJobJobsType
-            : $quotationFormJobModel->quotationFormJobSparePartType;
+
+        $models = $quotationFormJobModel->quotationFormJobJobs;
         return compact('quotationFormJobModel', 'models');
     }
 
     /**
      * Handle Update (POST) for tabular details with add/update/delete semantics.
      * @param int $formJobId
-     * @param int $type
      * @param array $post
      * @return array{success: bool, quotationFormJobModel: QuotationFormJob, models: QuotationFormJobJobs[], quotationId?: int}
-     * @throws Exception
      */
-    public function update(int $formJobId, int $type, array $post): array
-    {
+    public function update(int $formJobId, array $post): array {
         $quotationFormJobModel = QuotationFormJob::findOne($formJobId);
         if (!$quotationFormJobModel) {
             throw new InvalidArgumentException('Quotation Form Job not found');
         }
 
-        $existing = $type === QuotationFormJobJobsTypeEnum::JOB->value
-            ? $quotationFormJobModel->quotationFormJobJobsType
-            : $quotationFormJobModel->quotationFormJobSparePartType;
+        $existing = $quotationFormJobModel->quotationFormJobJobs;
 
         $oldDetailsID = ArrayHelper::map($existing, 'id', 'id');
         $models = Tabular::createMultiple(QuotationFormJobJobs::class, $existing);
@@ -145,9 +131,9 @@ class QuotationFormJobDetailJobsOrSparePartService {
 
         if (!Tabular::validateMultiple($models)) {
             return [
-                'success' => false,
+                'success'               => false,
                 'quotationFormJobModel' => $quotationFormJobModel,
-                'models' => $models,
+                'models'                => $models,
             ];
         }
 
@@ -156,7 +142,6 @@ class QuotationFormJobDetailJobsOrSparePartService {
             $flag = true;
             foreach ($models as $model) {
                 $model->quotation_form_job_id = $formJobId;
-                $model->type = $type;
                 if (!($flag = $model->save(false))) {
                     break;
                 }
@@ -165,16 +150,15 @@ class QuotationFormJobDetailJobsOrSparePartService {
             if ($flag) {
                 if (!empty($deletedDetailsID)) {
                     QuotationFormJobJobs::deleteAll([
-                        'id'   => $deletedDetailsID,
-                        'type' => $type,
+                        'id' => $deletedDetailsID,
                     ]);
                 }
                 $transaction->commit();
                 return [
-                    'success' => true,
+                    'success'               => true,
                     'quotationFormJobModel' => $quotationFormJobModel,
-                    'models' => $models,
-                    'quotationId' => $quotationFormJobModel->quotation_id,
+                    'models'                => $models,
+                    'quotationId'           => $quotationFormJobModel->quotation_id,
                 ];
             }
 
@@ -185,32 +169,29 @@ class QuotationFormJobDetailJobsOrSparePartService {
         }
 
         return [
-            'success' => false,
+            'success'               => false,
             'quotationFormJobModel' => $quotationFormJobModel,
-            'models' => $models,
+            'models'                => $models,
         ];
     }
 
     /**
      * Delete all details of a given type for a Form Job.
      * @param int $formJobId
-     * @param int $type
      * @return array{success: bool, quotationId?: int, affected: int}
      */
-    public function delete(int $formJobId, int $type): array
-    {
+    public function delete(int $formJobId): array {
         $quotationFormJobModel = QuotationFormJob::findOne($formJobId);
         if (!$quotationFormJobModel) {
             throw new InvalidArgumentException('Quotation Form Job not found');
         }
         $affected = QuotationFormJobJobs::deleteAll([
             'quotation_form_job_id' => $formJobId,
-            'type'                  => $type,
         ]);
         return [
-            'success' => $affected > 0,
+            'success'     => $affected > 0,
             'quotationId' => $quotationFormJobModel->quotation_id,
-            'affected' => $affected,
+            'affected'    => $affected,
         ];
     }
 }

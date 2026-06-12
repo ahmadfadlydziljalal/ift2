@@ -6,10 +6,9 @@
 
 /* @see \app\controllers\QuotationController::actionUpdateFormJobType() */
 
-use app\enums\QuotationFormJobJobsTypeEnum;
 use yii\helpers\Html;
 
-$this->title = 'Update - ' . QuotationFormJobJobsTypeEnum::labelOf(Yii::$app->request->get('type')) . ' - ' . $quotationFormJobModel->nomor;
+$this->title = 'Update - Job - ' . $quotationFormJobModel->nomor;
 $this->params['breadcrumbs'][] = ['label' => 'Quotation', 'url' => ['index']];
 $this->params['breadcrumbs'][] = [
     'label' => $quotationFormJobModel->quotation->nomor,

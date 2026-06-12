@@ -12,6 +12,7 @@ use yii\web\View;
 /* @see \app\controllers\QuotationController::actionUpdateFormJob() */
 /* @see \app\controllers\QuotationController::actionDeleteFormJob() */
 /* @see \app\controllers\QuotationController::actionDeleteFormJobType */
+/* @see \app\controllers\QuotationController::actionDeleteFormJobServicePartType */
 ?>
 
 <?php
