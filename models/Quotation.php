@@ -3,6 +3,10 @@
 namespace app\models;
 
 use app\models\base\Quotation as BaseQuotation;
+use DateInvalidTimeZoneException;
+use DateTime;
+use DateTimeZone;
+use Yii;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
@@ -29,456 +33,500 @@ use yii\helpers\ArrayHelper;
  * @property $quotationDeliveryReceiptDetails QuotationDeliveryReceiptDetail[]
  * @property $listDeliveryReceiptDetails QuotationDeliveryReceiptDetail[]
  */
-class Quotation extends BaseQuotation
-{
+class Quotation extends BaseQuotation {
 
-   use NomorSuratTrait;
-   use QuotationBarangTrait;
-   use QuotationServiceTrait;
-   use QuotationDeliveryReceiptTrait;
+    use NomorSuratTrait;
+    use QuotationBarangTrait;
+    use QuotationServiceTrait;
+    use QuotationDeliveryReceiptTrait;
 
-   const SCENARIO_CREATE_BARANG_QUOTATION = 'create-barang-quotation';
-   const SCENARIO_UPDATE_BARANG_QUOTATION = 'update-barang-quotation';
+    const SCENARIO_CREATE_BARANG_QUOTATION = 'create-barang-quotation';
+    const SCENARIO_UPDATE_BARANG_QUOTATION = 'update-barang-quotation';
 
-   const SCENARIO_CREATE_SERVICE_QUOTATION = 'create-service-quotation';
-   const SCENARIO_UPDATE_SERVICE_QUOTATION = 'update-service-quotation';
+    const SCENARIO_CREATE_SERVICE_QUOTATION = 'create-service-quotation';
+    const SCENARIO_UPDATE_SERVICE_QUOTATION = 'update-service-quotation';
 
-   const SCENARIO_CREATE_TERM_AND_CONDITION = 'create-term-and-condition';
-   const SCENARIO_UPDATE_TERM_AND_CONDITION = 'update-term-and-condition';
+    const SCENARIO_CREATE_TERM_AND_CONDITION = 'create-term-and-condition';
+    const SCENARIO_UPDATE_TERM_AND_CONDITION = 'update-term-and-condition';
 
-   const SCENARIO_CREATE_FORM_JOB = 'create-form-job';
-   const SCENARIO_UPDATE_FORM_JOB = 'update-form-job';
+    const SCENARIO_CREATE_FORM_JOB = 'create-form-job';
+    const SCENARIO_UPDATE_FORM_JOB = 'update-form-job';
 
-   /**
-    * @var QuotationBarang[]|null
-    */
-   public ?array $modelsQuotationBarang = null;
+    /**
+     * @var QuotationBarang[]|null
+     */
+    public ?array $modelsQuotationBarang = null;
 
-   /**
-    * @var array | null
-    * */
-   public ?array $deletedQuotationBarangsId = null;
+    /**
+     * @var array | null
+     * */
+    public ?array $deletedQuotationBarangsId = null;
 
-   /**
-    * @var QuotationService[] | null
-    * */
-   public ?array $modelsQuotationService = null;
+    /**
+     * @var QuotationService[] | null
+     * */
+    public ?array $modelsQuotationService = null;
 
-   /**
-    * @var array| null
-    */
-   public ?array $deletedQuotationServicesId = null;
+    /**
+     * @var array| null
+     */
+    public ?array $deletedQuotationServicesId = null;
 
-   /**
-    * @var QuotationTermAndCondition[] | null
-    * */
-   public ?array $modelsQuotationTermAndCondition = null;
+    /**
+     * @var QuotationTermAndCondition[] | null
+     * */
+    public ?array $modelsQuotationTermAndCondition = null;
 
-   /**
-    * @var array| null
-    */
-   public ?array $deletedQuotationTermAndCondition = null;
-
-
-   /**
-    * @var QuotationFormJob[] | null
-    * */
-   public ?array $modelFormJob = null;
+    /**
+     * @var array| null
+     */
+    public ?array $deletedQuotationTermAndCondition = null;
 
 
-   public function behaviors(): array
-   {
-      return ArrayHelper::merge(
-         parent::behaviors(),
-         [
-            # custom behaviors
+    /**
+     * @var QuotationFormJob[] | null
+     * */
+    public ?array $modelFormJob = null;
+
+
+    public function behaviors(): array {
+        return ArrayHelper::merge(
+            parent::behaviors(),
             [
-               'class' => 'mdm\autonumber\Behavior',
-               'attribute' => 'nomor', // required
-               'value' => '?' . '/IFTJKT/QUOT/' . date('m/Y'), // format auto number. '?' will be replaced with generated number
-               'digit' => 4,
-               'group' => '/IFTJKT/QUOT/' . date('Y')
-            ],
-         ]
-      );
-   }
+                # custom behaviors
+                [
+                    'class'     => 'mdm\autonumber\Behavior',
+                    'attribute' => 'nomor', // required
+                    'value'     => '?' . '/IFTJKT/QUOT/' . date('m/Y'), // format auto number. '?' will be replaced with generated number
+                    'digit'     => 4,
+                    'group'     => '/IFTJKT/QUOT/' . date('Y')
+                ],
+            ]
+        );
+    }
 
 
-   public function rules(): array
-   {
-      return ArrayHelper::merge(
-         parent::rules(),
-         [
-            # custom validation rules
-            [['modelsQuotationBarang'], 'required', 'on' => self::SCENARIO_CREATE_BARANG_QUOTATION],
-            [['delivery_fee', 'catatan_quotation_barang'], 'safe', 'on' => self::SCENARIO_CREATE_BARANG_QUOTATION],
+    public function rules(): array {
+        return ArrayHelper::merge(
+            parent::rules(),
+            [
+                # custom validation rules
+                [['modelsQuotationBarang'], 'required', 'on' => self::SCENARIO_CREATE_BARANG_QUOTATION],
+                [['delivery_fee', 'catatan_quotation_barang'], 'safe', 'on' => self::SCENARIO_CREATE_BARANG_QUOTATION],
 
-            [['modelsQuotationBarang'], 'required', 'on' => self::SCENARIO_UPDATE_BARANG_QUOTATION],
-            [['delivery_fee', 'catatan_quotation_barang', 'deletedQuotationBarangsId'], 'safe', 'on' => self::SCENARIO_UPDATE_BARANG_QUOTATION],
+                [['modelsQuotationBarang'], 'required', 'on' => self::SCENARIO_UPDATE_BARANG_QUOTATION],
+                [['delivery_fee', 'catatan_quotation_barang', 'deletedQuotationBarangsId'], 'safe', 'on' => self::SCENARIO_UPDATE_BARANG_QUOTATION],
 
-            [['modelsQuotationService'], 'required', 'on' => self::SCENARIO_CREATE_SERVICE_QUOTATION],
-            [['catatan_quotation_service'], 'safe', 'on' => self::SCENARIO_CREATE_SERVICE_QUOTATION],
+                [['modelsQuotationService'], 'required', 'on' => self::SCENARIO_CREATE_SERVICE_QUOTATION],
+                [['catatan_quotation_service'], 'safe', 'on' => self::SCENARIO_CREATE_SERVICE_QUOTATION],
 
-            [['modelsQuotationService'], 'required', 'on' => self::SCENARIO_UPDATE_SERVICE_QUOTATION],
-            [['catatan_quotation_service', 'deletedQuotationServicesId'], 'safe', 'on' => self::SCENARIO_UPDATE_SERVICE_QUOTATION],
+                [['modelsQuotationService'], 'required', 'on' => self::SCENARIO_UPDATE_SERVICE_QUOTATION],
+                [['catatan_quotation_service', 'deletedQuotationServicesId'], 'safe', 'on' => self::SCENARIO_UPDATE_SERVICE_QUOTATION],
 
-            [['modelsQuotationTermAndCondition'], 'required', 'on' => self::SCENARIO_CREATE_TERM_AND_CONDITION],
-            [['modelsQuotationTermAndCondition'], 'required', 'on' => self::SCENARIO_UPDATE_TERM_AND_CONDITION],
-            [['deletedQuotationTermAndCondition'], 'safe', 'on' => self::SCENARIO_UPDATE_TERM_AND_CONDITION],
+                [['modelsQuotationTermAndCondition'], 'required', 'on' => self::SCENARIO_CREATE_TERM_AND_CONDITION],
+                [['modelsQuotationTermAndCondition'], 'required', 'on' => self::SCENARIO_UPDATE_TERM_AND_CONDITION],
+                [['deletedQuotationTermAndCondition'], 'safe', 'on' => self::SCENARIO_UPDATE_TERM_AND_CONDITION],
 
-            [['modelFormJob'], 'required', 'on' => self::SCENARIO_CREATE_FORM_JOB]
-         ]
-      );
-   }
+                [['modelFormJob'], 'required', 'on' => self::SCENARIO_CREATE_FORM_JOB]
+            ]
+        );
+    }
 
-   /**
-    * @return array
-    */
-   public function scenarios(): array
-   {
-      $scenarios = parent::scenarios();
-      $scenarios[self::SCENARIO_CREATE_BARANG_QUOTATION] = [
-         'modelsQuotationBarang',
-         'delivery_fee',
-         'catatan_quotation_barang',
-      ];
-      $scenarios[self::SCENARIO_UPDATE_BARANG_QUOTATION] = [
-         'modelsQuotationBarang',
-         'deletedQuotationBarangsId',
-         'delivery_fee',
-         'catatan_quotation_barang',
-      ];
-      $scenarios[self::SCENARIO_CREATE_SERVICE_QUOTATION] = [
-         'modelsQuotationService',
-         'catatan_quotation_service'
-      ];
-      $scenarios[self::SCENARIO_UPDATE_SERVICE_QUOTATION] = [
-         'modelsQuotationService',
-         'deletedQuotationServicesId',
-         'catatan_quotation_service'
-      ];
+    /**
+     * @return array
+     */
+    public function scenarios(): array {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_CREATE_BARANG_QUOTATION] = [
+            'modelsQuotationBarang',
+            'delivery_fee',
+            'catatan_quotation_barang',
+        ];
+        $scenarios[self::SCENARIO_UPDATE_BARANG_QUOTATION] = [
+            'modelsQuotationBarang',
+            'deletedQuotationBarangsId',
+            'delivery_fee',
+            'catatan_quotation_barang',
+        ];
+        $scenarios[self::SCENARIO_CREATE_SERVICE_QUOTATION] = [
+            'modelsQuotationService',
+            'catatan_quotation_service'
+        ];
+        $scenarios[self::SCENARIO_UPDATE_SERVICE_QUOTATION] = [
+            'modelsQuotationService',
+            'deletedQuotationServicesId',
+            'catatan_quotation_service'
+        ];
 
-      $scenarios[self::SCENARIO_CREATE_TERM_AND_CONDITION] = [
-         'modelsQuotationTermAndCondition'
-      ];
+        $scenarios[self::SCENARIO_CREATE_TERM_AND_CONDITION] = [
+            'modelsQuotationTermAndCondition'
+        ];
 
-      $scenarios[self::SCENARIO_UPDATE_TERM_AND_CONDITION] = [
-         'modelsQuotationTermAndCondition',
-         'deletedQuotationTermAndCondition',
-      ];
+        $scenarios[self::SCENARIO_UPDATE_TERM_AND_CONDITION] = [
+            'modelsQuotationTermAndCondition',
+            'deletedQuotationTermAndCondition',
+        ];
 
-      $scenarios[self::SCENARIO_CREATE_FORM_JOB] = [
-         'modelFormJob'
-      ];
+        $scenarios[self::SCENARIO_CREATE_FORM_JOB] = [
+            'modelFormJob'
+        ];
 
 
-      return $scenarios;
-   }
+        return $scenarios;
+    }
 
-   /**
-    * @return array
-    */
-   public function attributeLabels(): array
-   {
-      return ArrayHelper::merge(parent::attributeLabels(), [
-         'id' => 'ID',
-         'nomor' => 'Nomor',
-         'mata_uang_id' => 'Mata Uang',
-         'tanggal' => 'Tanggal',
-         'customer_id' => 'Customer',
-         'tanggal_batas_valid' => 'Tanggal Batas Valid',
-         'attendant_1' => 'Attendant 1',
-         'attendant_phone_1' => 'Attendant Phone 1',
-         'attendant_email_1' => 'Attendant Email 1',
-         'attendant_2' => 'Attendant 2',
-         'attendant_phone_2' => 'Attendant Phone 2',
-         'attendant_email_2' => 'Attendant Email 2',
-         'catatan_quotation_barang' => 'Catatan Quotation Barang',
-         'catatan_quotation_service' => 'Catatan Quotation Service',
-         'delivery_fee' => 'Delivery Fee',
-         'materai_fee' => 'Materai Fee',
-         'vat_percentage' => '% Vat',
-         'rekening_id' => 'Rekening',
-         'signature_orang_kantor_id' => 'Signature Orang Kantor',
-      ]);
-   }
+    /**
+     * @return array
+     */
+    public function attributeLabels(): array {
+        return ArrayHelper::merge(parent::attributeLabels(), [
+            'id'                        => 'ID',
+            'nomor'                     => 'Nomor',
+            'mata_uang_id'              => 'Mata Uang',
+            'tanggal'                   => 'Tanggal',
+            'customer_id'               => 'Customer',
+            'tanggal_batas_valid'       => 'Tanggal Batas Valid',
+            'attendant_1'               => 'Attendant 1',
+            'attendant_phone_1'         => 'Attendant Phone 1',
+            'attendant_email_1'         => 'Attendant Email 1',
+            'attendant_2'               => 'Attendant 2',
+            'attendant_phone_2'         => 'Attendant Phone 2',
+            'attendant_email_2'         => 'Attendant Email 2',
+            'catatan_quotation_barang'  => 'Catatan Quotation Barang',
+            'catatan_quotation_service' => 'Catatan Quotation Service',
+            'delivery_fee'              => 'Delivery Fee',
+            'materai_fee'               => 'Materai Fee',
+            'vat_percentage'            => '% Vat',
+            'rekening_id'               => 'Rekening',
+            'signature_orang_kantor_id' => 'Signature Orang Kantor',
+        ]);
+    }
 
-   /**
-    * Membuat item-item quotation barang
-    * @return bool
-    */
-   public function createModelsQuotationBarang(): bool
-   {
-      $transaction = self::getDb()->beginTransaction();
-      try {
+    /**
+     * Membuat item-item quotation barang
+     * @return bool
+     */
+    public function createModelsQuotationBarang(): bool {
+        $transaction = self::getDb()->beginTransaction();
+        try {
 
-         if ($flag = $this->save(false)) {
-            /** @var QuotationBarang $qb */
-            foreach ($this->modelsQuotationBarang as $qb) {
+            if ($flag = $this->save(false)) {
+                /** @var QuotationBarang $qb */
+                foreach ($this->modelsQuotationBarang as $qb) {
 
-               $qb->quotation_id = $this->id;
-               $flag = $qb->save(false);
-               if (!$flag) {
-                  break;
-               }
+                    $qb->quotation_id = $this->id;
+                    $flag = $qb->save(false);
+                    if (!$flag) {
+                        break;
+                    }
 
+                }
             }
-         }
 
 
-         if ($flag) {
-            $transaction->commit();
-            return true;
-         } else {
+            if ($flag) {
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+            }
+
+        } catch (Exception $e) {
             $transaction->rollBack();
-         }
+        }
+        return false;
+    }
 
-      } catch (Exception $e) {
-         $transaction->rollBack();
-      }
-      return false;
-   }
-
-   /**
-    * Meng-update item-item quotation barang
-    * @return bool
-    */
-   public function updateModelsQuotationBarang(): bool
-   {
-      $transaction = self::getDb()->beginTransaction();
-      try {
+    /**
+     * Meng-update item-item quotation barang
+     * @return bool
+     */
+    public function updateModelsQuotationBarang(): bool {
+        $transaction = self::getDb()->beginTransaction();
+        try {
 
 
-         if ($flag = $this->save(false)) {
-            if (!empty($this->deletedQuotationBarangsId)) {
-               QuotationBarang::deleteAll(['id' => $this->deletedQuotationBarangsId]);
+            if ($flag = $this->save(false)) {
+                if (!empty($this->deletedQuotationBarangsId)) {
+                    QuotationBarang::deleteAll(['id' => $this->deletedQuotationBarangsId]);
+                }
+
+                /** @var QuotationBarang $qb */
+                foreach ($this->modelsQuotationBarang as $qb) {
+
+                    $qb->quotation_id = $this->id;
+                    $flag = $qb->save(false);
+
+                    if (!$flag) {
+                        break;
+                    }
+
+                }
             }
 
-            /** @var QuotationBarang $qb */
-            foreach ($this->modelsQuotationBarang as $qb) {
 
-               $qb->quotation_id = $this->id;
-               $flag = $qb->save(false);
-
-               if (!$flag) {
-                  break;
-               }
-
+            if ($flag) {
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
             }
-         }
 
-
-         if ($flag) {
-            $transaction->commit();
-            return true;
-         } else {
+        } catch (Exception $e) {
             $transaction->rollBack();
-         }
+        }
+        return false;
+    }
 
-      } catch (Exception $e) {
-         $transaction->rollBack();
-      }
-      return false;
-   }
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function createModelsQuotationService(): bool {
+        $transaction = self::getDb()->beginTransaction();
+        try {
 
-   /**
-    * @return bool
-    * @throws Exception
-    */
-   public function createModelsQuotationService(): bool
-   {
-      $transaction = self::getDb()->beginTransaction();
-      try {
+            if ($flag = $this->save(false)) {
 
-         if ($flag = $this->save(false)) {
-
-            /** @var QuotationService $qs */
-            foreach ($this->modelsQuotationService as $qs) {
-               $qs->quotation_id = $this->id;
-               $flag = $qs->save(false);
-               if (!$flag) {
-                  break;
-               }
-            }
-
-         }
-
-         if ($flag) {
-            $transaction->commit();
-            return true;
-         }
-
-         $transaction->rollBack();
-      } catch (Exception $e) {
-         $transaction->rollBack();
-         throw new Exception('Transaction gagal');
-      }
-      return false;
-   }
-
-   /**
-    * @return bool
-    * @throws Exception
-    */
-   public function updateModelsQuotationService(): bool
-   {
-      $transaction = self::getDb()->beginTransaction();
-      try {
-
-         if ($flag = $this->save(false)) {
-
-            if (!empty($this->deletedQuotationServicesId)) {
-               QuotationService::deleteAll(['id' => $this->deletedQuotationServicesId]);
-            }
-
-            /** @var QuotationService $quotationService */
-            foreach ($this->modelsQuotationService as $quotationService) {
-
-               $quotationService->quotation_id = $this->id;
-               $flag = $quotationService->save(false);
-
-               if (!$flag) {
-                  break;
-               }
+                /** @var QuotationService $qs */
+                foreach ($this->modelsQuotationService as $qs) {
+                    $qs->quotation_id = $this->id;
+                    $flag = $qs->save(false);
+                    if (!$flag) {
+                        break;
+                    }
+                }
 
             }
-         }
 
-         if ($flag) {
-            $transaction->commit();
-            return true;
-         } else {
+            if ($flag) {
+                $transaction->commit();
+                return true;
+            }
+
             $transaction->rollBack();
-         }
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            throw new Exception('Transaction gagal');
+        }
+        return false;
+    }
 
-      } catch (Exception $e) {
-         $transaction->rollBack();
-         throw new Exception($e->getMessage());
-      }
-      return false;
-   }
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function updateModelsQuotationService(): bool {
+        $transaction = self::getDb()->beginTransaction();
+        try {
 
-   /**
-    * @return bool
-    * @throws Exception
-    */
-   public function createModelsTermAndCondition(): bool
-   {
-      $transaction = self::getDb()->beginTransaction();
-      try {
+            if ($flag = $this->save(false)) {
 
-         $flag = true;
-         /** @var QuotationTermAndCondition $termAndCondition */
-         foreach ($this->modelsQuotationTermAndCondition as $termAndCondition) {
+                if (!empty($this->deletedQuotationServicesId)) {
+                    QuotationService::deleteAll(['id' => $this->deletedQuotationServicesId]);
+                }
 
-            $termAndCondition->quotation_id = $this->id;
-            $flag = $termAndCondition->save(false);
+                /** @var QuotationService $quotationService */
+                foreach ($this->modelsQuotationService as $quotationService) {
 
-            if (!$flag) {
-               break;
+                    $quotationService->quotation_id = $this->id;
+                    $flag = $quotationService->save(false);
+
+                    if (!$flag) {
+                        break;
+                    }
+
+                }
             }
 
-         }
-
-         if ($flag) {
-            $transaction->commit();
-            return true;
-         } else {
-            $transaction->rollBack();
-         }
-
-      } catch (Exception $e) {
-         $transaction->rollBack();
-         throw new Exception($e->getMessage());
-      }
-      return false;
-   }
-
-   /**
-    * @return bool
-    * @throws Exception
-    */
-   public function updateModelsTermAndCondition(): bool
-   {
-      $transaction = self::getDb()->beginTransaction();
-      try {
-
-         $flag = true;
-
-         if (!empty($this->deletedQuotationTermAndCondition)) {
-            QuotationTermAndCondition::deleteAll(['id' => $this->deletedQuotationTermAndCondition]);
-         }
-
-         /** @var QuotationTermAndCondition $termAndCondition */
-         foreach ($this->modelsQuotationTermAndCondition as $termAndCondition) {
-
-            $termAndCondition->quotation_id = $this->id;
-            $flag = $termAndCondition->save(false);
-
-            if (!$flag) {
-               break;
+            if ($flag) {
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
             }
 
-         }
-         if ($flag) {
-            $transaction->commit();
-            return true;
-         } else {
+        } catch (Exception $e) {
             $transaction->rollBack();
-         }
+            throw new Exception($e->getMessage());
+        }
+        return false;
+    }
 
-      } catch (Exception $e) {
-         $transaction->rollBack();
-         throw new Exception($e->getMessage());
-      }
-      return false;
-   }
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function createModelsTermAndCondition(): bool {
+        $transaction = self::getDb()->beginTransaction();
+        try {
 
-   /**
-    * @return float|int
-    */
-   public function getQuotationGrandTotal(): float|int
-   {
-      return $this->quotationServicesTotal + $this->materai_fee + $this->quotationBarangsTotal;
-   }
+            $flag = true;
+            /** @var QuotationTermAndCondition $termAndCondition */
+            foreach ($this->modelsQuotationTermAndCondition as $termAndCondition) {
 
-   /**
-    * @return mixed
-    */
-   public function getQuotationVatTotal(): mixed
-   {
-      return $this->quotationBarangsTotalVatNominal + $this->quotationServicesTotalVatNominal;
-   }
+                $termAndCondition->quotation_id = $this->id;
+                $flag = $termAndCondition->save(false);
 
-   /**
-    * @return mixed
-    */
-   public function getQuotationFeeTotal(): mixed
-   {
-      return
-         $this->delivery_fee +
-         $this->quotationBarangsBeforeDiscountSubtotal +
-         $this->quotationServicesBeforeDiscountDasarPengenaanPajak +
-         $this->materai_fee;
-   }
+                if (!$flag) {
+                    break;
+                }
 
-   /**
-    * @return mixed
-    */
-   public function getQuotationDiscountTotal(): mixed
-   {
-      return
-         $this->quotationBarangsDiscount +
-         $this->quotationServicesDiscount;
-   }
+            }
 
-   /**
-    * @return string
-    */
-   public function getVatPercentageLabel(): string
-   {
-      return $this->vat_percentage . ' %';
-   }
+            if ($flag) {
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+            }
+
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            throw new Exception($e->getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function updateModelsTermAndCondition(): bool {
+        $transaction = self::getDb()->beginTransaction();
+        try {
+
+            $flag = true;
+
+            if (!empty($this->deletedQuotationTermAndCondition)) {
+                QuotationTermAndCondition::deleteAll(['id' => $this->deletedQuotationTermAndCondition]);
+            }
+
+            /** @var QuotationTermAndCondition $termAndCondition */
+            foreach ($this->modelsQuotationTermAndCondition as $termAndCondition) {
+
+                $termAndCondition->quotation_id = $this->id;
+                $flag = $termAndCondition->save(false);
+
+                if (!$flag) {
+                    break;
+                }
+
+            }
+            if ($flag) {
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+            }
+
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            throw new Exception($e->getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getQuotationGrandTotal(): float|int {
+        return $this->quotationServicesTotal + $this->materai_fee + $this->quotationBarangsTotal;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuotationVatTotal(): mixed {
+        return $this->quotationBarangsTotalVatNominal + $this->quotationServicesTotalVatNominal;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuotationFeeTotal(): mixed {
+        return
+            $this->delivery_fee +
+            $this->quotationBarangsBeforeDiscountSubtotal +
+            $this->quotationServicesBeforeDiscountDasarPengenaanPajak +
+            $this->materai_fee;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuotationDiscountTotal(): mixed {
+        return
+            $this->quotationBarangsDiscount +
+            $this->quotationServicesDiscount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVatPercentageLabel(): string {
+        return $this->vat_percentage . ' %';
+    }
 
 
+    public function getValidityPeriod(): string {
+        return Yii::$app->formatter->asDate($this->tanggal) . ' s/d ' . Yii::$app->formatter->asDate($this->tanggal_batas_valid);
+    }
+
+    /**
+     * Check if today is within the validity period [tanggal .. tanggal_batas_valid] inclusively.
+     * Returns true when current date is between start and end (inclusive), otherwise false.
+     * @throws DateInvalidTimeZoneException
+     * @throws \Exception
+     */
+    public function getValidityBasedOnDateLimit(string $format = 'text'): bool|string|int|array {
+        // Guard: need both dates
+        if (empty($this->tanggal) || empty($this->tanggal_batas_valid)) {
+            return false;
+        }
+
+        // Normalize to date-only strings (Y-m-d) in app timezone to avoid time part issues
+        $tz = new DateTimeZone(Yii::$app->timeZone ?: 'UTC');
+        $today = new DateTime('now', $tz);
+        $endDate = new DateTime($this->tanggal_batas_valid, $tz);
+
+        $todayStr = $today->format('Y-m-d');
+        $startStr = Yii::$app->formatter->asDate($this->tanggal, 'php:Y-m-d');
+        $endStr = Yii::$app->formatter->asDate($this->tanggal_batas_valid, 'php:Y-m-d');
+
+        $status = ($todayStr >= $startStr) && ($todayStr <= $endStr);
+        // Hitung sisa berapa hari lagi dari hari ini sampai tanggal_batas_valid (hanya jika masih valid)
+        $diff = $today->diff($endDate);
+        // Jika already expired (today > end), $diff->invert === 1. Jika masih valid/equal, invert === 0.
+        $howManyDaysAreLeft = ($diff->invert === 0) ? $diff->days + 1 : 0;  // `+1` termasuk tanggal_batas_valid
+
+        // Teks hanya muncul jika masih valid. Jika expired, kosong.
+        $howManyDaysAreLeftText = '';
+        if ($status) {
+            $howManyDaysAreLeftText = ((int)$howManyDaysAreLeft === 0)
+                ? 'Hari terakhir'
+                : "{$howManyDaysAreLeft} hari lagi";
+        }
+
+        $data = [
+            'status'                 => $status,
+            'howManyDaysAreLeft'     => $howManyDaysAreLeft,
+            'howManyDaysAreLeftText' => $howManyDaysAreLeftText,
+        ];
+
+        if ($format == 'html') {
+            $data ['html'] = '<span class="badge bg-' . ($status ? 'success' : 'secondary') . '">' . ($status ? 'Valid' : 'Expired') . '</span>';
+        }
+
+        if ($format == 'text') {
+            return [
+                'text' => $status ? 'Valid' : 'Expired'
+            ];
+        }
+
+        return $data;
+    }
+
+    public function getValidityBasedOnDateLeft(string $string) {
+    }
 }

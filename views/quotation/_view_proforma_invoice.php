@@ -12,60 +12,59 @@ use yii\widgets\DetailView;
 /* @var $model Quotation|string|ActiveRecord */
 ?>
 
-<div class="card bg-transparent">
-    <div class="card-body d-flex flex-column gap-3">
+<div id="proformaInvoice">
+    <div class="d-flex flex-column gap-3">
+        <div class="d-flex flex-row gap-2">
+            <h3>Proforma Invoice</h3>
+            <div class="ms-auto">
+                <?php if (!$model->proformaInvoice) : ?>
 
-        <div class="d-flex flex-column gap-3">
-            <div class="d-flex flex-row gap-2">
-               <?php if (!$model->proformaInvoice) : ?>
+                    <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-proforma-invoice', 'id' => $model->id], [
+                        'class' => 'btn btn-outline-success'
+                    ]) ?>
 
-                  <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-proforma-invoice', 'id' => $model->id], [
-                     'class' => 'btn btn-success'
-                  ]) ?>
+                <?php else : ?>
 
-               <?php else : ?>
+                    <?= Html::a(TextLinkEnum::PRINT->value, ['quotation/print-proforma-invoice', 'id' => $model->id], [
+                        'class'  => 'btn btn-outline-success',
+                        'target' => '_blank',
+                        'rel'    => 'noopener noreferrer'
+                    ]) ?>
 
-                  <?= Html::a(TextLinkEnum::PRINT->value, ['quotation/print-proforma-invoice', 'id' => $model->id], [
-                     'class' => 'btn btn-success',
-                     'target' => '_blank',
-                     'rel' => 'noopener noreferrer'
-                  ]) ?>
+                    <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-proforma-invoice', 'id' => $model->id], [
+                        'class' => 'btn btn-outline-primary'
+                    ]) ?>
 
-                  <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-proforma-invoice', 'id' => $model->id], [
-                     'class' => 'btn btn-primary'
-                  ]) ?>
+                    <?php /* @see app\controllers\QuotationController::actionDeleteProformaInvoice() */ ?>
+                    <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-proforma-invoice', 'id' => $model->id], [
+                        'class'        => 'btn btn-outline-danger',
+                        'data-method'  => 'post',
+                        'data-confirm' => 'Apakah Anda akan menghapus detail proforma invoice ini ?'
+                    ]) ?>
 
-                  <?php /* @see app\controllers\QuotationController::actionDeleteProformaInvoice() */ ?>
-                  <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-proforma-invoice', 'id' => $model->id], [
-                     'class' => 'btn btn-danger',
-                     'data-method' => 'post',
-                     'data-confirm' => 'Apakah Anda akan menghapus detail proforma invoice ini ?'
-                  ]) ?>
-
-               <?php endif; ?>
+                <?php endif; ?>
             </div>
         </div>
 
-       <?php if ($model->proformaInvoice) : ?>
-           <div>
-              <?= DetailView::widget([
-                 'model' => $model->proformaInvoice,
-                 'attributes' => [
+        <?php if ($model->proformaInvoice) : ?>
+
+            <?= DetailView::widget([
+                'model'      => $model->proformaInvoice,
+                'attributes' => [
                     'nomor',
                     'tanggal:date',
                     [
-                       'attribute' => 'pph_23_percent',
-                       'value' => $model->proformaInvoice->getPph23Label()
+                        'attribute' => 'pph_23_percent',
+                        'value'     => $model->proformaInvoice->getPph23Label()
                     ]
-                 ]
-              ]) ?>
-           </div>
+                ]
+            ]) ?>
+        
+            <?= $this->render('_view_proforma_invoice_detail_barang', ['model' => $model]) ?>
+            <?= $this->render('_view_proforma_invoice_detail_service', ['model' => $model]) ?>
 
-           <div class="d-flex flex-column">
-              <?= $this->render('_view_proforma_invoice_detail_barang', ['model' => $model]) ?>
-              <?= $this->render('_view_proforma_invoice_detail_service', ['model' => $model]) ?>
-           </div>
-
-       <?php endif ?>
+        <?php endif ?>
     </div>
+
+
 </div>

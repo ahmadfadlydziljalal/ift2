@@ -4,6 +4,7 @@ namespace app\models\active_queries;
 
 use app\components\helpers\ArrayHelper;
 use app\enums\KategoriSatuanEnum;
+use app\enums\QuotationFormJobJobsTypeEnum;
 use app\models\Satuan;
 use yii\db\ActiveQuery;
 
@@ -12,58 +13,36 @@ use yii\db\ActiveQuery;
  *
  * @see Satuan
  */
-class SatuanQuery extends ActiveQuery
-{
-    /*public function active()
-    {
-        $this->andWhere('[[status]]=1');
-        return $this;
-    }*/
+class SatuanQuery extends ActiveQuery {
 
     /**
-     * @inheritdoc
-     * @return Satuan|array|null
+     * @param int $kategori
+     * @return array
      */
-    public function one($db = null)
-    {
-        return parent::one($db);
+    public function map(int $kategori = 1): array {
+        $data = parent::select('id,nama')
+            ->where(['kategori' => $kategori])
+            ->orderBy(['nama' => SORT_ASC]);
+        return ArrayHelper::map($data->all(), 'id', 'nama');
     }
 
-    public function map()
-    {
-
-        return ArrayHelper::map(parent::select('id,nama')->all(), 'id', 'nama');
-    }
-
-    /**
-     * @inheritdoc
-     * @return Satuan[]|array
-     */
-    public function all($db = null)
-    {
-        return parent::all($db);
-    }
-
-    public function mapIdName()
-    {
-        return parent::select([
-            'id' => 'id',
-            'name' => 'nama'
-        ])
+    public function mapIdName() {
+        return parent::select(['id' => 'id', 'name' => 'nama'])
             ->asArray()
             ->all();
     }
 
-    public function mapForKategoriJasa(): array
-    {
-        $data = parent::select([
-            'id' => 'id',
-            'nama' => 'nama'
-        ])
-            ->where(['kategori' => KategoriSatuanEnum::tryFrom(KategoriSatuanEnum::JASA->value)])
-            ->asArray()
-            ->all();
+    public function forFormJob(int $type): array {
+        if ($type == QuotationFormJobJobsTypeEnum::JOB->value) {
+            return static::map(KategoriSatuanEnum::JASA->value);
+        }
 
-        return ArrayHelper::map($data, 'id', 'nama');
+        if ($type == QuotationFormJobJobsTypeEnum::SPARE_PART->value) {
+            return static::map(KategoriSatuanEnum::BARANG->value);
+        }
+
+        return [];
+
     }
+
 }
