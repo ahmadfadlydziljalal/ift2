@@ -6,6 +6,7 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use \app\models\active_queries\QuotationFormJobQuery;
 
 /**
  * This is the base-model class for table "quotation_form_job".
@@ -13,6 +14,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $id
  * @property integer $quotation_id
  * @property string $nomor
+ * @property string $surat_perintah_kerja_dos
  * @property string $tanggal
  * @property string $person_in_charge
  * @property string $issue
@@ -24,13 +26,12 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\CardOwnEquipment $cardOwnEquipment
  * @property \app\models\Card $mekanik
  * @property \app\models\Quotation $quotation
+ * @property \app\models\QuotationFormJobJobs[] $quotationFormJobJobs
  * @property \app\models\QuotationFormJobMekanik[] $quotationFormJobMekaniks
- * @property string $aliasModel
+ * @property \app\models\QuotationFormJobSparePart[] $quotationFormJobSpareParts
  */
 abstract class QuotationFormJob extends \yii\db\ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -45,12 +46,14 @@ abstract class QuotationFormJob extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return ArrayHelper::merge(parent::rules(), [
+        $parentRules = parent::rules();
+        return ArrayHelper::merge($parentRules, [
+            [['quotation_id', 'nomor', 'surat_perintah_kerja_dos', 'person_in_charge', 'issue', 'card_own_equipment_id', 'hour_meter', 'mekanik_id', 'remarks'], 'default', 'value' => null],
             [['quotation_id', 'card_own_equipment_id', 'mekanik_id'], 'integer'],
             [['tanggal'], 'required'],
             [['tanggal'], 'safe'],
             [['issue', 'remarks'], 'string'],
-            [['nomor', 'person_in_charge', 'hour_meter'], 'string', 'max' => 255],
+            [['nomor', 'surat_perintah_kerja_dos', 'person_in_charge', 'hour_meter'], 'string', 'max' => 255],
             [['quotation_id'], 'unique'],
             [['mekanik_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['mekanik_id' => 'id']],
             [['card_own_equipment_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\CardOwnEquipment::class, 'targetAttribute' => ['card_own_equipment_id' => 'id']],
@@ -63,10 +66,11 @@ abstract class QuotationFormJob extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
-        return [
+        return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'quotation_id' => 'Quotation ID',
             'nomor' => 'Nomor',
+            'surat_perintah_kerja_dos' => 'Surat Perintah Kerja Dos',
             'tanggal' => 'Tanggal',
             'person_in_charge' => 'Person In Charge',
             'issue' => 'Issue',
@@ -74,7 +78,7 @@ abstract class QuotationFormJob extends \yii\db\ActiveRecord
             'hour_meter' => 'Hour Meter',
             'mekanik_id' => 'Mekanik ID',
             'remarks' => 'Remarks',
-        ];
+        ]);
     }
 
     /**
@@ -82,7 +86,8 @@ abstract class QuotationFormJob extends \yii\db\ActiveRecord
      */
     public function attributeHints()
     {
-        return array_merge(parent::attributeHints(), [
+        return ArrayHelper::merge(parent::attributeHints(), [
+            'surat_perintah_kerja_dos' => '(Optional) Surat Perintah Kerja yang dibuat di DOS jika dibuat di situ',
             'person_in_charge' => 'Perwakilan customer',
             'card_own_equipment_id' => 'Nomor Unit',
         ]);
@@ -115,21 +120,33 @@ abstract class QuotationFormJob extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getQuotationFormJobJobs()
+    {
+        return $this->hasMany(\app\models\QuotationFormJobJobs::class, ['quotation_form_job_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getQuotationFormJobMekaniks()
     {
         return $this->hasMany(\app\models\QuotationFormJobMekanik::class, ['quotation_form_job_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotationFormJobSpareParts()
+    {
+        return $this->hasMany(\app\models\QuotationFormJobSparePart::class, ['quotation_form_job_id' => 'id']);
+    }
 
-    
     /**
      * @inheritdoc
-     * @return \app\models\active_queries\QuotationFormJobQuery the active query used by this AR class.
+     * @return QuotationFormJobQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\models\active_queries\QuotationFormJobQuery(get_called_class());
+        return new QuotationFormJobQuery(static::class);
     }
-
-
 }

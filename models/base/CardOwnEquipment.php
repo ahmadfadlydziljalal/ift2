@@ -6,13 +6,16 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use \app\models\active_queries\CardOwnEquipmentQuery;
 
 /**
  * This is the base-model class for table "card_own_equipment".
  *
  * @property integer $id
  * @property integer $card_id
+ * @property string $merk
  * @property string $nama
+ * @property string $nomor_unit
  * @property string $lokasi
  * @property string $tanggal_produk
  * @property string $serial_number
@@ -20,12 +23,9 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\Card $card
  * @property \app\models\CardOwnEquipmentHistory[] $cardOwnEquipmentHistories
  * @property \app\models\QuotationFormJob[] $quotationFormJobs
- * @property string $aliasModel
  */
 abstract class CardOwnEquipment extends \yii\db\ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -40,12 +40,14 @@ abstract class CardOwnEquipment extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return ArrayHelper::merge(parent::rules(), [
+        $parentRules = parent::rules();
+        return ArrayHelper::merge($parentRules, [
+            [['merk', 'nomor_unit'], 'default', 'value' => null],
             [['card_id', 'nama', 'lokasi', 'tanggal_produk', 'serial_number'], 'required'],
             [['card_id'], 'integer'],
             [['lokasi'], 'string'],
             [['tanggal_produk'], 'safe'],
-            [['nama', 'serial_number'], 'string', 'max' => 255],
+            [['merk', 'nama', 'nomor_unit', 'serial_number'], 'string', 'max' => 255],
             [['card_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Card::class, 'targetAttribute' => ['card_id' => 'id']]
         ]);
     }
@@ -55,14 +57,16 @@ abstract class CardOwnEquipment extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
-        return [
+        return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'card_id' => 'Card ID',
+            'merk' => 'Merk',
             'nama' => 'Nama',
+            'nomor_unit' => 'Nomor Unit',
             'lokasi' => 'Lokasi',
             'tanggal_produk' => 'Tanggal Produk',
             'serial_number' => 'Serial Number',
-        ];
+        ]);
     }
 
     /**
@@ -70,11 +74,11 @@ abstract class CardOwnEquipment extends \yii\db\ActiveRecord
      */
     public function attributeHints()
     {
-        return array_merge(parent::attributeHints(), [
+        return ArrayHelper::merge(parent::attributeHints(), [
             'nama' => 'Equipment\'s name',
             'lokasi' => 'Equipment\'s location',
             'tanggal_produk' => 'Date of Product',
-            'serial_number' => 'SN',
+            'serial_number' => 'Nomor Produksi',
         ]);
     }
 
@@ -102,16 +106,12 @@ abstract class CardOwnEquipment extends \yii\db\ActiveRecord
         return $this->hasMany(\app\models\QuotationFormJob::class, ['card_own_equipment_id' => 'id']);
     }
 
-
-    
     /**
      * @inheritdoc
-     * @return \app\models\active_queries\CardOwnEquipmentQuery the active query used by this AR class.
+     * @return CardOwnEquipmentQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\models\active_queries\CardOwnEquipmentQuery(get_called_class());
+        return new CardOwnEquipmentQuery(static::class);
     }
-
-
 }

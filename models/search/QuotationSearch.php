@@ -9,24 +9,28 @@ use yii\data\ActiveDataProvider;
 /**
  * QuotationSearch represents the model behind the search form about `app\models\Quotation`.
  */
-class QuotationSearch extends Quotation
-{
+class QuotationSearch extends Quotation {
+
+    public ?string $validityPeriod = null;
+    public ?string $grandTotal = null;
+
     /**
      * @inheritdoc
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         return [
             [['id', 'mata_uang_id', 'customer_id'], 'integer'],
-            [['nomor', 'tanggal', 'tanggal_batas_valid', 'attendant_1', 'attendant_phone_1', 'attendant_email_1', 'attendant_2', 'attendant_phone_2', 'attendant_email_2', 'catatan_quotation_barang'], 'safe'],
+            [['nomor', 'tanggal', 'tanggal_batas_valid', 'attendant_1', 'attendant_phone_1', 'attendant_email_1', 'attendant_2', 'attendant_phone_2',
+                'attendant_email_2', 'catatan_quotation_barang',
+
+            ], 'safe'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios(): array
-    {
+    public function scenarios(): array {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -36,13 +40,12 @@ class QuotationSearch extends Quotation
      * @param array $params
      * @return ActiveDataProvider
      */
-    public function search(array $params): ActiveDataProvider
-    {
+    public function search(array $params): ActiveDataProvider {
         $query = Quotation::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
+            'sort'  => [
                 'defaultOrder' => [
                     'id' => SORT_DESC
                 ]
@@ -58,10 +61,10 @@ class QuotationSearch extends Quotation
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
-            'mata_uang_id' => $this->mata_uang_id,
-            'tanggal' => $this->tanggal,
-            'customer_id' => $this->customer_id,
+            'id'                  => $this->id,
+            'mata_uang_id'        => $this->mata_uang_id,
+            'tanggal'             => $this->tanggal,
+            'customer_id'         => $this->customer_id,
             'tanggal_batas_valid' => $this->tanggal_batas_valid,
         ]);
 

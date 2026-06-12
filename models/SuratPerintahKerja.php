@@ -22,7 +22,7 @@ class SuratPerintahKerja extends BaseSuratPerintahKerja {
             ->where(['surat_perintah_kerja_id' => $this->id])
             ->column();
     }
-
+    
     public function rules(): array {
         return array_merge(BaseSuratPerintahKerja::rules(), [
             ['quotationPendukung', 'safe'],

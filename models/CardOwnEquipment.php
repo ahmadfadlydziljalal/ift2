@@ -8,47 +8,50 @@ use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "card_own_equipment".
  */
-class CardOwnEquipment extends BaseCardOwnEquipment
-{
-   
-   public ?string $suggestionTanggalServiceSelanjutnya = null;
-   public ?string $potensiService = null;
+class CardOwnEquipment extends BaseCardOwnEquipment {
 
-   public function behaviors()
-   {
-      return ArrayHelper::merge(
-         parent::behaviors(),
-         [
-            # custom behaviors
-         ]
-      );
-   }
+    public ?string $suggestionTanggalServiceSelanjutnya = null;
+    public ?string $potensiService = null;
 
-   public function rules()
-   {
-      return ArrayHelper::merge(
-         parent::rules(),
-         [
-            # custom validation rules
-         ]
-      );
-   }
+    public function behaviors() {
+        return ArrayHelper::merge(
+            parent::behaviors(),
+            [
+                # custom behaviors
+            ]
+        );
+    }
 
-   /**
-    * @return array
-    */
-   public function attributeLabels(): array
-   {
-      return ArrayHelper::merge(parent::attributeLabels(), [
-         'id' => 'ID',
-         'card_id' => 'Card',
-         'nama' => 'Nama Unit',
-         'lokasi' => 'Lokasi',
-         'tanggal_produk' => 'Tgl. Produk',
-         'serial_number' => 'Serial Number',
-         'suggestionTanggalServiceSelanjutnya' => 'Tanggal Terakhir'
-      ]);
-   }
+    public function rules() {
+        return ArrayHelper::merge(
+            parent::rules(),
+            [
+                # custom validation rules
+            ]
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels(): array {
+        return ArrayHelper::merge(parent::attributeLabels(), [
+            'id'                                  => 'ID',
+            'card_id'                             => 'Card',
+            'nama'                                => 'Nama Unit',
+            'lokasi'                              => 'Lokasi',
+            'tanggal_produk'                      => 'Tgl. Produk',
+            'serial_number'                       => 'Serial Number / Production No.',
+            'suggestionTanggalServiceSelanjutnya' => 'Tanggal Terakhir',
+        ]);
+    }
+
+    public function attributeHints() {
+        return array_merge(parent::attributeHints(), [
+            'serial_number' => 'Juga Dikenal Sebagai Production Number',
+            'nama'          => 'Di form job, disebut sebagai Type'
+        ]);
+    }
 
 
 }

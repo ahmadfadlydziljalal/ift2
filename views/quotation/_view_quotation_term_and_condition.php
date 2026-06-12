@@ -21,54 +21,56 @@ use yii\web\View;
 ?>
 
 
-<div class="card bg-transparent" id="term-and-condition">
+<div id="term-and-condition">
 
-    <div class="card-body">
-        <div class="d-flex flex-column gap-3">
-            <div class="d-flex flex-row gap-2">
-               <?php if (!$model->quotationTermAndConditions) : ?>
-                  <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-term-and-condition', 'id' => $model->id], [
-                     'class' => 'btn btn-success'
-                  ]) ?>
+    <div class="d-flex flex-column gap-3">
+        <div class="d-flex flex-row gap-2">
 
-               <?php else : ?>
-                  <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-term-and-condition', 'id' => $model->id], [
-                     'class' => 'btn btn-primary'
-                  ]) ?>
+            <h3>Term & Condition</h3>
 
-                  <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-term-and-condition', 'id' => $model->id], [
-                     'class' => 'btn btn-danger',
-                     'data-method' => 'post',
-                     'data-confirm' => 'Apakah Anda akan menghapus detail term and condition ini ?'
-                  ]) ?>
+            <div class="ms-auto">
+                <?php if (!$model->quotationTermAndConditions) : ?>
+                    <?= Html::a(TextLinkEnum::TAMBAH->value, ['quotation/create-term-and-condition', 'id' => $model->id], [
+                        'class' => 'btn btn-outline-success'
+                    ]) ?>
 
-               <?php endif; ?>
-            </div>
-            <div class="table-responsive">
-               <?= GridView::widget([
-                  'dataProvider' => new ActiveDataProvider([
-                     'query' => $model->getQuotationTermAndConditions(),
-                     'pagination' => false,
-                     'sort' => false
-                  ]),
-                  'layout' => '{items}',
-                  'headerRowOptions' => [
-                     'class' => 'text-wrap text-center align-middle'
-                  ],
-                  'columns' => [
-                     [
-                        'class' => SerialColumn::class,
-                     ],
-                     [
-                        'class' => DataColumn::class,
-                        'attribute' => 'term_and_condition'
-                     ]
-                  ],
-                  'showFooter' => false,
-               ]) ?>
+                <?php else : ?>
+                    <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-term-and-condition', 'id' => $model->id], [
+                        'class' => 'btn btn-outline-primary'
+                    ]) ?>
+
+                    <?= Html::a(TextLinkEnum::DELETE->value, ['quotation/delete-term-and-condition', 'id' => $model->id], [
+                        'class'        => 'btn btn-outline-danger',
+                        'data-method'  => 'post',
+                        'data-confirm' => 'Apakah Anda akan menghapus detail term and condition ini ?'
+                    ]) ?>
+
+                <?php endif; ?>
             </div>
         </div>
-
+        <div class="table-responsive">
+            <?= GridView::widget([
+                'dataProvider'     => new ActiveDataProvider([
+                    'query'      => $model->getQuotationTermAndConditions(),
+                    'pagination' => false,
+                    'sort'       => false
+                ]),
+                'layout'           => '{items}',
+                'headerRowOptions' => [
+                    'class' => 'text-wrap text-center align-middle'
+                ],
+                'columns'          => [
+                    [
+                        'class' => SerialColumn::class,
+                    ],
+                    [
+                        'class'     => DataColumn::class,
+                        'attribute' => 'term_and_condition'
+                    ]
+                ],
+                'showFooter'       => false,
+            ]) ?>
+        </div>
     </div>
 
 </div>

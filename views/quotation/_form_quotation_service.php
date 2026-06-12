@@ -6,6 +6,7 @@
 
 /* @var $quotation Quotation */
 
+use app\enums\KategoriSatuanEnum;
 use app\enums\TextLinkEnum;
 use app\models\Quotation;
 use app\models\QuotationService;
@@ -47,15 +48,15 @@ use yii\web\View;
 
     <?php DynamicFormWidget::begin([
         'widgetContainer' => 'dynamicform_wrapper',
-        'widgetBody' => '.container-items',
-        'widgetItem' => '.item',
-        'limit' => 100,
-        'min' => 1,
-        'insertButton' => '.add-item',
-        'deleteButton' => '.remove-item',
-        'model' => $models[0],
-        'formId' => 'dynamic-form',
-        'formFields' => ['id', 'job_description', 'quantity', 'satuan_id', 'rate', 'discount'],
+        'widgetBody'      => '.container-items',
+        'widgetItem'      => '.item',
+        'limit'           => 100,
+        'min'             => 1,
+        'insertButton'    => '.add-item',
+        'deleteButton'    => '.remove-item',
+        'model'           => $models[0],
+        'formId'          => 'dynamic-form',
+        'formFields'      => ['id', 'job_description', 'quantity', 'satuan_id', 'rate', 'discount'],
     ]); ?>
 
     <div class="d-flex flex-column gap-3 container-items">
@@ -91,7 +92,7 @@ use yii\web\View;
                         </div>
 
                         <div class="col">
-                            <?= $form->field($model, "[$i]satuan_id")->dropDownList(Satuan::find()->mapForKategoriJasa()); ?>
+                            <?= $form->field($model, "[$i]satuan_id")->dropDownList(Satuan::find()->map(KategoriSatuanEnum::JASA->value)); ?>
                         </div>
 
                         <!-- Rate Per Hour -->
@@ -107,7 +108,7 @@ use yii\web\View;
                         <div class="col">
                             <?= $form->field($model, "[$i]discount")->textInput([
                                 'class' => 'form-control quantity',
-                                'type' => 'number'
+                                'type'  => 'number'
                             ]) ?>
                         </div>
 

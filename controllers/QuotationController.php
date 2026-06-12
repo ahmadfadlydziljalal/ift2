@@ -4,13 +4,16 @@ namespace app\controllers;
 
 use app\components\BarangQuotation;
 use app\components\DeliveryReceiptQuotation;
-use app\components\helpers\ArrayHelper;
 use app\components\ProformaDebitNoteDetailBarangComponent;
 use app\components\ProformaDebitNoteDetailServiceComponent;
 use app\components\ProformaInvoiceDetailBarangComponent;
 use app\components\ProformaInvoiceDetailServiceComponent;
 use app\components\ServiceQuotation;
+use app\components\services\QuotationFormJobDetailJobsService;
+use app\components\services\QuotationFormJobDetailSparePartService;
+use app\components\services\QuotationFormJobService;
 use app\components\TermConditionQuotation;
+use app\models\CardOwnEquipment;
 use app\models\form\LaporanOutgoingQuotation;
 use app\models\form\LaporanQuotationPerPeriodForm;
 use app\models\ProformaDebitNote;
@@ -18,7 +21,6 @@ use app\models\ProformaInvoice;
 use app\models\Quotation;
 use app\models\QuotationBarang;
 use app\models\QuotationDeliveryReceipt;
-use app\models\QuotationFormJob;
 use app\models\search\QuotationSearch;
 use JetBrains\PhpStorm\ArrayShape;
 use kartik\mpdf\Pdf;
@@ -29,6 +31,7 @@ use setasign\Fpdi\PdfParser\Type\PdfTypeException;
 use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidRouteException;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
@@ -40,21 +43,19 @@ use yii\web\ServerErrorHttpException;
 /**
  * QuotationController implements the CRUD actions for Quotation model.
  */
-class QuotationController extends Controller
-{
+class QuotationController extends Controller {
     /**
      * {@inheritdoc}
      */
     #[ArrayShape(['verbs' => "array"])]
-    public function behaviors(): array
-    {
+    public function behaviors(): array {
         return [
             'verbs' => [
-                'class' => VerbFilter::class,
+                'class'   => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST'],
-                    'delete-barang-quotation' => ['POST'],
-                    'delete-service-quotation' => ['POST'],
+                    'delete'                    => ['POST'],
+                    'delete-barang-quotation'   => ['POST'],
+                    'delete-service-quotation'  => ['POST'],
                     'delete-term-and-condition' => ['POST'],
                 ],
             ],
@@ -64,15 +65,14 @@ class QuotationController extends Controller
     /**
      * @return string
      */
-    public function actionIndex(): string
-    {
+    public function actionIndex(): string {
         $searchModel = new QuotationSearch();
         $dataProvider = $searchModel->search(
             Yii::$app->request->queryParams
         );
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -82,32 +82,16 @@ class QuotationController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView(int $id): string
-    {
+    public function actionView(int $id): string {
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * @throws NotFoundHttpException
-     */
-    protected function findModel(int $id): Quotation
-    {
-        if (($model = Quotation::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException(
-                'The requested page does not exist.'
-            );
-        }
-    }
-
-    /**
      * @return Response|string
      */
-    public function actionCreate(): Response|string
-    {
+    public function actionCreate(): Response|string {
         $model = new Quotation();
         if ($this->request->isPost) {
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -128,14 +112,10 @@ class QuotationController extends Controller
      * @return Response|string
      * @throws NotFoundHttpException
      */
-    public function actionUpdate(int $id): Response|string
-    {
+    public function actionUpdate(int $id): Response|string {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost
-            && $model->load($this->request->post())
-            && $model->save()
-        ) {
+        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             Yii::$app->session->setFlash(
                 'info',
                 'Quotation: ' . $model->nomor . ' berhasil dirubah.'
@@ -143,7 +123,7 @@ class QuotationController extends Controller
             return $this->redirect([
                 'quotation/view',
                 'id' => $id,
-                '#' => 'quotation-tab-tab0'
+                '#'  => 'quotation-tab-tab0'
             ]);
         }
 
@@ -159,8 +139,7 @@ class QuotationController extends Controller
      * @throws StaleObjectException
      * @throws Throwable
      */
-    public function actionDelete(int $id): Response
-    {
+    public function actionDelete(int $id): Response {
         $model = $this->findModel($id);
         $model->delete();
 
@@ -170,7 +149,6 @@ class QuotationController extends Controller
         );
         return $this->redirect(['index']);
     }
-
 
     /**
      * @param $id
@@ -182,8 +160,7 @@ class QuotationController extends Controller
      * @throws PdfParserException
      * @throws PdfTypeException
      */
-    public function actionPrintToPdf($id): string
-    {
+    public function actionPrintToPdf($id): string {
         /** @var Pdf $pdf */
         $pdf = Yii::$app->pdfWithLetterhead;
         $pdf->content = $this->renderPartial('preview_print', [
@@ -197,12 +174,11 @@ class QuotationController extends Controller
      * @return Response|string
      * @throws InvalidConfigException
      */
-    public function actionCreateBarangQuotation($id): Response|string
-    {
+    public function actionCreateBarangQuotation($id): Response|string {
         $component = Yii::createObject([
-            'class' => BarangQuotation::class,
+            'class'       => BarangQuotation::class,
             'quotationId' => $id,
-            'scenario' => Quotation::SCENARIO_CREATE_BARANG_QUOTATION,
+            'scenario'    => Quotation::SCENARIO_CREATE_BARANG_QUOTATION,
         ]);
 
         if ($this->request->isPost && $component->quotation->load($this->request->post())) {
@@ -213,7 +189,7 @@ class QuotationController extends Controller
 
         return $this->render('create_barang_quotation', [
             'quotation' => $component->quotation,
-            'models' => $component->quotationBarangs,
+            'models'    => $component->quotationBarangs,
         ]);
     }
 
@@ -222,12 +198,11 @@ class QuotationController extends Controller
      * @return Response|string
      * @throws InvalidConfigException
      */
-    public function actionUpdateBarangQuotation($id): Response|string
-    {
+    public function actionUpdateBarangQuotation($id): Response|string {
         $component = Yii::createObject([
-            'class' => BarangQuotation::class,
+            'class'       => BarangQuotation::class,
             'quotationId' => $id,
-            'scenario' => Quotation::SCENARIO_UPDATE_BARANG_QUOTATION,
+            'scenario'    => Quotation::SCENARIO_UPDATE_BARANG_QUOTATION,
         ]);
 
         if ($this->request->isPost
@@ -237,13 +212,13 @@ class QuotationController extends Controller
             return $this->redirect([
                     'quotation/view',
                     'id' => $id,
-                    '#' => 'quotation-tab-tab1']
+                    '#'  => 'quotation-tab-tab1']
             );
         }
 
         return $this->render('update_barang_quotation', [
             'quotation' => $component->quotation,
-            'models' => $component->quotationBarangs,
+            'models'    => $component->quotationBarangs,
         ]);
     }
 
@@ -252,17 +227,16 @@ class QuotationController extends Controller
      * @return Response
      * @throws InvalidConfigException
      */
-    public function actionDeleteBarangQuotation($id): Response
-    {
+    public function actionDeleteBarangQuotation($id): Response {
         $component = Yii::createObject([
-            'class' => BarangQuotation::class,
+            'class'       => BarangQuotation::class,
             'quotationId' => $id
         ]);
         $component->delete();
         return $this->redirect([
             'quotation/view',
             'id' => $id,
-            '#' => 'quotation-tab-tab0'
+            '#'  => 'quotation-tab-tab0'
         ]);
     }
 
@@ -272,25 +246,24 @@ class QuotationController extends Controller
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public function actionCreateServiceQuotation($id): Response|string
-    {
+    public function actionCreateServiceQuotation($id): Response|string {
         $component = Yii::createObject([
-            'class' => ServiceQuotation::class,
+            'class'       => ServiceQuotation::class,
             'quotationId' => $id,
-            'scenario' => Quotation::SCENARIO_CREATE_SERVICE_QUOTATION,
+            'scenario'    => Quotation::SCENARIO_CREATE_SERVICE_QUOTATION,
         ]);
         if ($component->quotation->load($this->request->post())) {
             if ($component->create()) {
                 return $this->redirect([
                     'quotation/view',
                     'id' => $component->quotation->id,
-                    '#' => 'quotation-tab-tab2'
+                    '#'  => 'quotation-tab-tab2'
                 ]);
             }
         }
         return $this->render('create_service_quotation', [
             'quotation' => $component->quotation,
-            'models' => $component->quotationServices,
+            'models'    => $component->quotationServices,
         ]);
     }
 
@@ -300,27 +273,20 @@ class QuotationController extends Controller
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public function actionUpdateServiceQuotation($id): Response|string
-    {
+    public function actionUpdateServiceQuotation($id): Response|string {
 
         $component = Yii::createObject([
-            'class' => ServiceQuotation::class,
+            'class'       => ServiceQuotation::class,
             'quotationId' => $id,
-            'scenario' => Quotation::SCENARIO_UPDATE_SERVICE_QUOTATION,
+            'scenario'    => Quotation::SCENARIO_UPDATE_SERVICE_QUOTATION,
         ]);
-        if ($this->request->isPost
-            && $component->quotation->load($this->request->post())
-            && $component->update()) {
-            return $this->redirect([
-                'quotation/view',
-                'id' => $id,
-                '#' => 'quotation-tab-tab2'
-            ]);
+        if ($this->request->isPost && $component->quotation->load($this->request->post()) && $component->update()) {
+            return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab2']);
         }
 
         return $this->render('update_service_quotation', [
             'quotation' => $component->quotation,
-            'models' => $component->quotationServices,
+            'models'    => $component->quotationServices,
         ]);
     }
 
@@ -329,18 +295,13 @@ class QuotationController extends Controller
      * @return Response
      * @throws InvalidConfigException
      */
-    public function actionDeleteServiceQuotation($id): Response
-    {
+    public function actionDeleteServiceQuotation($id): Response {
         $component = Yii::createObject([
-            'class' => ServiceQuotation::class,
+            'class'       => ServiceQuotation::class,
             'quotationId' => $id
         ]);
         $component->delete();
-        return $this->redirect([
-            'quotation/view',
-            'id' => $id,
-            '#' => 'quotation-tab-tab2'
-        ]);
+        return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab2']);
     }
 
     /**
@@ -349,27 +310,22 @@ class QuotationController extends Controller
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public function actionCreateTermAndCondition($id): Response|string
-    {
+    public function actionCreateTermAndCondition($id): Response|string {
         $component = Yii::createObject([
-            'class' => TermConditionQuotation::class,
+            'class'       => TermConditionQuotation::class,
             'quotationId' => $id,
-            'scenario' => Quotation::SCENARIO_CREATE_TERM_AND_CONDITION,
+            'scenario'    => Quotation::SCENARIO_CREATE_TERM_AND_CONDITION,
         ]);
 
         if ($this->request->isPost) {
             if ($component->create()) {
-                return $this->redirect([
-                    'quotation/view',
-                    'id' => $component->quotation->id,
-                    '#' => 'quotation-tab-tab3'
-                ]);
+                return $this->redirect(['quotation/view', 'id' => $component->quotation->id, '#' => 'quotation-tab-tab3']);
             }
         }
 
         return $this->render('create_term_and_condition', [
             'quotation' => $component->quotation,
-            'models' => $component->quotationTermAndConditions,
+            'models'    => $component->quotationTermAndConditions,
         ]);
     }
 
@@ -379,25 +335,20 @@ class QuotationController extends Controller
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public function actionUpdateTermAndCondition($id): Response|string
-    {
+    public function actionUpdateTermAndCondition($id): Response|string {
         $component = Yii::createObject([
-            'class' => TermConditionQuotation::class,
+            'class'       => TermConditionQuotation::class,
             'quotationId' => $id,
-            'scenario' => Quotation::SCENARIO_UPDATE_TERM_AND_CONDITION,
+            'scenario'    => Quotation::SCENARIO_UPDATE_TERM_AND_CONDITION,
         ]);
 
         if ($this->request->isPost && $component->update()) {
-            return $this->redirect([
-                'quotation/view',
-                'id' => $id,
-                '#' => 'quotation-tab-tab3'
-            ]);
+            return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab3']);
         }
 
         return $this->render('update_term_and_condition', [
             'quotation' => $component->quotation,
-            'models' => $component->quotationTermAndConditions,
+            'models'    => $component->quotationTermAndConditions,
         ]);
     }
 
@@ -406,52 +357,28 @@ class QuotationController extends Controller
      * @return Response
      * @throws InvalidConfigException
      */
-    public function actionDeleteTermAndCondition($id): Response
-    {
+    public function actionDeleteTermAndCondition($id): Response {
         $component = Yii::createObject(['class' => TermConditionQuotation::class, 'quotationId' => $id]);
         $component->delete();
-        return $this->redirect([
-            'quotation/view',
-            'id' => $id,
-            '#' => 'quotation-tab-tab3'
-        ]);
+        return $this->redirect(['quotation/view', 'id' => $id, '#' => 'quotation-tab-tab3']);
     }
 
     /**
      * @param $id
      * @return string|Response
+     * @throws InvalidConfigException
      * @throws NotFoundHttpException
+     * @throws InvalidRouteException
      */
-    public function actionCreateFormJob($id): Response|string
-    {
-        $quotation = $this->findModel($id);
-        $model = new QuotationFormJob(['quotation_id' => $id]);
-        $model->scenario = $model::SCENARIO_CREATE_UPDATE;
-
-        if ($model->load($this->request->post()) && $model->validate()) {
-
-            if ($model->createFormJob()) {
-                Yii::$app->session->setFlash(
-                    'success',
-                    'Data sesuai dengan validasi yang ditetapkan'
-                );
-                return $this->redirect([
-                    'quotation/view',
-                    'id' => $quotation->id,
-                    '#' => 'quotation-tab-tab4'
-                ]);
-            }
-
-            Yii::$app->session->setFlash(
-                'danger',
-                'Data tidak sesuai dengan validasi yang ditetapkan'
-            );
+    public function actionCreateFormJob($id): Response|string {
+        /** @var QuotationFormJobService $service */
+        $service = Yii::createObject(QuotationFormJobService::class);
+        $result = $service->create((int)$id);
+        if ($result instanceof Response) {
+            return $result;
         }
-
-        return $this->render('create_form_job', [
-            'quotation' => $quotation,
-            'model' => $model
-        ]);
+        /** @see /views/quotation/create_form_job.php */
+        return $this->render($result['view'], $result['params']);
     }
 
     /**
@@ -460,68 +387,29 @@ class QuotationController extends Controller
      * @throws NotFoundHttpException
      * @throws Throwable
      */
-    public function actionUpdateFormJob($id): Response|string
-    {
-        $quotation = $this->findModel($id);
-        if (!empty($quotation->quotationFormJob)) {
-            $model = $quotation->quotationFormJob;
-            $model->mekaniksId = ArrayHelper::getColumn($model->quotationFormJobMekaniks, 'mekanik_id');
-        } else {
-            $model = new QuotationFormJob(['quotation_id' => $quotation->id]);
+    public function actionUpdateFormJob($id): Response|string {
+        /** @var QuotationFormJobService $service */
+        $service = Yii::createObject(QuotationFormJobService::class);
+        $result = $service->update((int)$id);
+        if ($result instanceof Response) {
+            return $result;
         }
-        $model->scenario = $model::SCENARIO_CREATE_UPDATE;
-
-        if ($model->load($this->request->post()) && $model->validate()) {
-
-            if ($model->updateFormJob()) {
-                Yii::$app->session->setFlash(
-                    'success',
-                    'Data sesuai dengan validasi yang ditetapkan'
-                );
-                return $this->redirect([
-                    'quotation/view',
-                    'id' => $quotation->id,
-                    '#' => 'quotation-tab-tab4'
-                ]);
-            }
-
-            Yii::$app->session->setFlash(
-                'danger',
-                'Data tidak sesuai dengan validasi yang ditetapkan'
-            );
-        }
-
-        return $this->render('update_form_job', [
-            'quotation' => $quotation,
-            'model' => $model
-        ]);
+        /** @see /views/quotation/update_form_job.php */
+        return $this->render($result['view'], $result['params']);
     }
 
     /**
      * @param $id
      * @return Response
+     * @throws InvalidConfigException
+     * @throws InvalidRouteException
+     * @throws StaleObjectException
+     * @throws Throwable
      */
-    public function actionDeleteFormJob($id): Response
-    {
-
-        $models = QuotationFormJob::findAll([
-            'quotation_id' => $id
-        ]);
-
-        array_walk($models, function ($item) {
-            $item->delete();
-        });
-
-        Yii::$app->session->setFlash('success', [[
-            'title' => 'Pesan Sistem',
-            'message' => 'Sukses menghapus form job ' . Quotation::findOne($id)->nomor,
-        ]]);
-
-        return $this->redirect([
-            'quotation/view',
-            'id' => $id,
-            '#' => 'quotation-tab-tab4'
-        ]);
+    public function actionDeleteFormJob($id): Response {
+        /** @var QuotationFormJobService $service */
+        $service = Yii::createObject(QuotationFormJobService::class);
+        return $service->delete((int)$id);
     }
 
     /**
@@ -534,17 +422,166 @@ class QuotationController extends Controller
      * @throws PdfParserException
      * @throws PdfTypeException
      */
-    public function actionPrintFormJob($id): string
-    {
-        $quotation = $this->findModel($id);
-        /** @var Pdf $pdf */
-        $pdf = Yii::$app->pdfWithLetterhead;
-        $pdf->content = $this->renderPartial('preview_print_form_job', [
-            'quotation' => $quotation,
-            'quotationFormJob' => $quotation->quotationFormJob
-        ]);
-        return $pdf->render();
+    public function actionPrintFormJob($id): string {
+        /** @var QuotationFormJobService $service */
+        $service = Yii::createObject(QuotationFormJobService::class);
+        return $service->print((int)$id);
     }
+
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public function actionCreateFormJobType(int $id): Response|string {
+
+        /** @var QuotationFormJobDetailJobsService $service */
+        $service = Yii::createObject(QuotationFormJobDetailJobsService::class);
+
+        if ($this->request->isPost) {
+            $result = $service->create($id, $this->request->post());
+            if ($result['success'] ?? false) {
+                Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
+                return $this->redirect(['quotation/view', 'id' => $result['quotationId'], '#' => 'quotation-tab-tab4']);
+            }
+            Yii::$app->session->setFlash('danger', 'Data gagal disimpan');
+            return $this->render('create_form_job_type', [
+                'quotationFormJobModel' => $result['quotationFormJobModel'],
+                'models'                => $result['models'],
+            ]);
+        }
+
+        $context = $service->getCreateContext($id);
+        return $this->render('create_form_job_type', [
+            'quotationFormJobModel' => $context['quotationFormJobModel'],
+            'models'                => $context['models'],
+        ]);
+
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public function actionUpdateFormJobType(int $id): Response|string {
+
+        /** @var QuotationFormJobDetailJobsService $service */
+        $service = Yii::createObject(QuotationFormJobDetailJobsService::class);
+
+        if ($this->request->isPost) {
+            $result = $service->update($id, $this->request->post());
+            if ($result['success'] ?? false) {
+                Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
+                return $this->redirect(['quotation/view', 'id' => $result['quotationId'], '#' => 'quotation-tab-tab4']);
+            }
+            Yii::$app->session->setFlash('danger', 'Data gagal disimpan');
+            return $this->render('update_form_job_type', [
+                'quotationFormJobModel' => $result['quotationFormJobModel'],
+                'models'                => $result['models'],
+            ]);
+        }
+
+        $context = $service->getUpdateContext($id);
+        return $this->render('update_form_job_type', [
+            'quotationFormJobModel' => $context['quotationFormJobModel'],
+            'models'                => $context['models'],
+        ]);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionDeleteFormJobType(int $id): Response {
+        /** @var QuotationFormJobDetailJobsService $service */
+        $service = Yii::createObject(QuotationFormJobDetailJobsService::class);
+        $result = $service->delete($id);
+        if ($result['success'] ?? false) {
+            Yii::$app->session->setFlash('success', 'Data berhasil dihapus');
+        } else {
+            Yii::$app->session->setFlash('danger', 'Tidak ada data yang dihapus');
+        }
+        return $this->redirect(['quotation/view', 'id' => $result['quotationId'] ?? null, '#' => 'quotation-tab-tab4']);
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public function actionCreateFormJobServicePartType(int $id): Response|string {
+        /** @var QuotationFormJobDetailSparePartService $service */
+        $service = Yii::createObject(QuotationFormJobDetailSparePartService::class);
+
+        if ($this->request->isPost) {
+            $result = $service->create($id, $this->request->post());
+            if ($result['success'] ?? false) {
+                Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
+                return $this->redirect(['quotation/view', 'id' => $result['quotationId'], '#' => 'quotation-tab-tab4']);
+            }
+            Yii::$app->session->setFlash('danger', 'Data gagal disimpan');
+            return $this->render('create_form_job_spare_part_type', [
+                'quotationFormJobModel' => $result['quotationFormJobModel'],
+                'models'                => $result['models'],
+            ]);
+        }
+
+        $context = $service->getCreateContext($id);
+        return $this->render('create_form_job_spare_part_type', [
+            'quotationFormJobModel' => $context['quotationFormJobModel'],
+            'models'                => $context['models'],
+        ]);
+
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionUpdateFormJobServicePartType(int $id): Response|string {
+        /** @var QuotationFormJobDetailSparePartService $service */
+        $service = Yii::createObject(QuotationFormJobDetailSparePartService::class);
+
+        if ($this->request->isPost) {
+            $result = $service->update($id, $this->request->post());
+            if ($result['success'] ?? false) {
+                Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
+                return $this->redirect(['quotation/view', 'id' => $result['quotationId'], '#' => 'quotation-tab-tab4']);
+            }
+            Yii::$app->session->setFlash('danger', 'Data gagal disimpan');
+            return $this->render('update_form_job_spare_part_type', [
+                'quotationFormJobModel' => $result['quotationFormJobModel'],
+                'models'                => $result['models'],
+            ]);
+        }
+
+        $context = $service->getUpdateContext($id);
+        return $this->render('update_form_job_spare_part_type', [
+            'quotationFormJobModel' => $context['quotationFormJobModel'],
+            'models'                => $context['models'],
+        ]);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionDeleteFormJobServicePartType(int $id): Response {
+        /** @var QuotationFormJobDetailSparePartService $service */
+        $service = Yii::createObject(QuotationFormJobDetailSparePartService::class);
+        $result = $service->delete($id);
+        if ($result['success'] ?? false) {
+            Yii::$app->session->setFlash('success', 'Data berhasil dihapus');
+        } else {
+            Yii::$app->session->setFlash('danger', 'Tidak ada data yang dihapus');
+        }
+        return $this->redirect(['quotation/view', 'id' => $result['quotationId'] ?? null, '#' => 'quotation-tab-tab4']);
+    }
+
+    /**
+     * @param int|null $id
+     * @return array
+     */
+    public function actionFindCardOwnEquipmentDetail(int $id = null): array {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return !$id ? [] : CardOwnEquipment::find()->spec($id);
+    }
+
 
     /**
      * Create Delivery Receipt, dimana Delivery Receipt Detail by default dibentuk dari Quotation Barang
@@ -553,29 +590,28 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws ServerErrorHttpException
      */
-    public function actionCreateDeliveryReceipt($id): Response|string
-    {
+    public function actionCreateDeliveryReceipt($id): Response|string {
 
         $quotationBarangs = QuotationBarang::find()
             ->forCreateDeliveryReceipt($id);
 
         if (!$quotationBarangs) {
             Yii::$app->session->setFlash('danger', [[
-                'title' => 'Pesan Sistem',
+                'title'   => 'Pesan Sistem',
                 'message' => 'Tidak dapat membuat Delivery Receipt. Sistem mendeteksi masing-masing quantity barang sudah dikirim semua.'
             ]]);
             return $this->redirect([
                 'quotation/view',
                 'id' => $id,
-                '#' => 'quotation-tab-tab5'
+                '#'  => 'quotation-tab-tab5'
             ]);
         }
 
         $component = Yii::createObject([
-            'class' => DeliveryReceiptQuotation::class,
-            'quotationId' => $id,
+            'class'            => DeliveryReceiptQuotation::class,
+            'quotationId'      => $id,
             'quotationBarangs' => $quotationBarangs,
-            'scenario' => QuotationDeliveryReceipt::SCENARIO_CREATE
+            'scenario'         => QuotationDeliveryReceipt::SCENARIO_CREATE
         ]);
 
         if ($this->request->isPost
@@ -585,14 +621,14 @@ class QuotationController extends Controller
                 return $this->redirect([
                     'quotation/view',
                     'id' => $id,
-                    '#' => 'quotation-tab-tab5'
+                    '#'  => 'quotation-tab-tab5'
                 ]);
             }
         }
 
         return $this->render('create_delivery_receipt', [
-            'quotation' => $component->quotation,
-            'model' => $component->quotationDeliveryReceipt,
+            'quotation'    => $component->quotation,
+            'model'        => $component->quotationDeliveryReceipt,
             'modelsDetail' => $component->quotationDeliveryReceiptDetails,
         ]);
     }
@@ -604,12 +640,11 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws ServerErrorHttpException
      */
-    public function actionUpdateDeliveryReceipt($id): Response|string
-    {
+    public function actionUpdateDeliveryReceipt($id): Response|string {
         $component = Yii::createObject([
-            'class' => DeliveryReceiptQuotation::class,
+            'class'                      => DeliveryReceiptQuotation::class,
             'quotationDeliveryReceiptId' => $id,
-            'scenario' => QuotationDeliveryReceipt::SCENARIO_UPDATE
+            'scenario'                   => QuotationDeliveryReceipt::SCENARIO_UPDATE
         ]);
 
         if ($this->request->isPost
@@ -618,13 +653,13 @@ class QuotationController extends Controller
             return $this->redirect([
                 'quotation/view',
                 'id' => $component->quotation->id,
-                '#' => 'quotation-tab-tab5'
+                '#'  => 'quotation-tab-tab5'
             ]);
         }
 
         return $this->render('update_delivery_receipt', [
-            'quotation' => $component->quotation,
-            'model' => $component->quotationDeliveryReceipt,
+            'quotation'    => $component->quotation,
+            'model'        => $component->quotationDeliveryReceipt,
             'modelsDetail' => $component->quotationDeliveryReceiptDetails,
         ]);
     }
@@ -637,18 +672,13 @@ class QuotationController extends Controller
      * @throws StaleObjectException
      * @throws Throwable
      */
-    public function actionDeleteDeliveryReceipt($id): Response
-    {
+    public function actionDeleteDeliveryReceipt($id): Response {
         $component = Yii::createObject([
-            'class' => DeliveryReceiptQuotation::class,
+            'class'                      => DeliveryReceiptQuotation::class,
             'quotationDeliveryReceiptId' => $id
         ]);
         $component->delete();
-        return $this->redirect([
-            'quotation/view',
-            'id' => $component->quotationDeliveryReceipt->quotation_id,
-            '#' => 'quotation-tab-tab5'
-        ]);
+        return $this->redirect(['quotation/view', 'id' => $component->quotationDeliveryReceipt->quotation_id, '#' => 'quotation-tab-tab5']);
     }
 
     /**
@@ -657,17 +687,16 @@ class QuotationController extends Controller
      * @return Response
      * @throws Throwable
      */
-    public function actionDeleteAllDeliveryReceipt($id): Response
-    {
+    public function actionDeleteAllDeliveryReceipt($id): Response {
         $component = Yii::createObject([
-            'class' => DeliveryReceiptQuotation::class,
+            'class'       => DeliveryReceiptQuotation::class,
             'quotationId' => $id
         ]);
         $component->deleteAll();
         return $this->redirect([
             'quotation/view',
             'id' => $id,
-            '#' => 'quotation-tab-tab5'
+            '#'  => 'quotation-tab-tab5'
         ]);
     }
 
@@ -676,12 +705,11 @@ class QuotationController extends Controller
      * @return Response|string
      * @throws InvalidConfigException
      */
-    public function actionKonfirmasiDiterimaCustomer($id): Response|string
-    {
+    public function actionKonfirmasiDiterimaCustomer($id): Response|string {
         $component = Yii::createObject([
-            'class' => DeliveryReceiptQuotation::class,
+            'class'                      => DeliveryReceiptQuotation::class,
             'quotationDeliveryReceiptId' => $id,
-            'scenario' => QuotationDeliveryReceipt::SCENARIO_KONFIRMASI_DITERIMA_CUSTOMER
+            'scenario'                   => QuotationDeliveryReceipt::SCENARIO_KONFIRMASI_DITERIMA_CUSTOMER
         ]);
 
         if ($this->request->isPost
@@ -691,14 +719,14 @@ class QuotationController extends Controller
                 return $this->redirect([
                     'quotation/view',
                     'id' => $component->quotation->id,
-                    '#' => 'quotation-tab-tab5'
+                    '#'  => 'quotation-tab-tab5'
                 ]);
             }
         }
 
         return $this->render('konfirmasi_delivery_receipt_diterima_customer', [
             'quotation' => $component->quotation,
-            'model' => $component->quotationDeliveryReceipt,
+            'model'     => $component->quotationDeliveryReceipt,
         ]);
     }
 
@@ -707,15 +735,14 @@ class QuotationController extends Controller
      * @param $id
      * @return string
      */
-    public function actionPrintDeliveryReceipt($id): string
-    {
+    public function actionPrintDeliveryReceipt($id): string {
         $model = QuotationDeliveryReceipt::findOne($id);
         $quotation = $model->quotation;
 
         $pdf = Yii::$app->pdfWithLetterhead;
         $pdf->content = $this->renderPartial('preview_print_delivery_receipt', [
             'quotation' => $quotation,
-            'model' => $model
+            'model'     => $model
         ]);
         return $pdf->render();
     }
@@ -723,8 +750,7 @@ class QuotationController extends Controller
     /**
      * @return Response|string
      */
-    public function actionLaporanOutgoing(): Response|string
-    {
+    public function actionLaporanOutgoing(): Response|string {
         $model = new LaporanOutgoingQuotation();
 
         if ($model->load($this->request->post()) && $model->validate()) {
@@ -741,8 +767,7 @@ class QuotationController extends Controller
         ]);
     }
 
-    public function actionPreviewLaporanOutgoing($tanggal): string
-    {
+    public function actionPreviewLaporanOutgoing($tanggal): string {
         $model = new LaporanOutgoingQuotation([
             'tanggal' => $tanggal
         ]);
@@ -756,8 +781,7 @@ class QuotationController extends Controller
      * @return string|Response
      * @throws NotFoundHttpException
      */
-    public function actionCreateProformaInvoice($id): Response|string
-    {
+    public function actionCreateProformaInvoice($id): Response|string {
         $quotation = $this->findModel($id);
         $model = new ProformaInvoice();
         $model->quotation_id = $id;
@@ -767,7 +791,7 @@ class QuotationController extends Controller
                 return $this->redirect([
                     'quotation/view',
                     'id' => $id,
-                    '#' => 'quotation-tab-tab7'
+                    '#'  => 'quotation-tab-tab7'
                 ]);
             } else {
                 $model->loadDefaultValues();
@@ -775,7 +799,7 @@ class QuotationController extends Controller
         }
 
         return $this->render('create_proforma_invoice', [
-            'model' => $model,
+            'model'     => $model,
             'quotation' => $quotation,
         ]);
     }
@@ -785,8 +809,7 @@ class QuotationController extends Controller
      * @return Response|string
      * @throws NotFoundHttpException
      */
-    public function actionUpdateProformaInvoice($id): Response|string
-    {
+    public function actionUpdateProformaInvoice($id): Response|string {
         $quotation = $this->findModel($id);
         $model = $quotation->proformaInvoice;
 
@@ -795,7 +818,7 @@ class QuotationController extends Controller
                 return $this->redirect([
                     'quotation/view',
                     'id' => $id,
-                    '#' => 'quotation-tab-tab7'
+                    '#'  => 'quotation-tab-tab7'
                 ]);
             } else {
                 $model->loadDefaultValues();
@@ -803,7 +826,7 @@ class QuotationController extends Controller
         }
 
         return $this->render('update_proforma_invoice', [
-            'model' => $model,
+            'model'     => $model,
             'quotation' => $quotation,
         ]);
     }
@@ -815,14 +838,13 @@ class QuotationController extends Controller
      * @throws StaleObjectException
      * @throws Throwable
      */
-    public function actionDeleteProformaInvoice($id): Response
-    {
+    public function actionDeleteProformaInvoice($id): Response {
         $quotation = $this->findModel($id);
         $quotation->proformaInvoice->delete();
         return $this->redirect([
             'quotation/view',
             'id' => $id,
-            '#' => 'quotation-tab-tab7'
+            '#'  => 'quotation-tab-tab7'
         ]);
     }
 
@@ -834,31 +856,30 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws ServerErrorHttpException
      */
-    public function actionCreateProformaInvoiceDetailBarang($id): Response|string
-    {
+    public function actionCreateProformaInvoiceDetailBarang($id): Response|string {
         $component = Yii::createObject([
-            'class' => ProformaInvoiceDetailBarangComponent::class,
+            'class'             => ProformaInvoiceDetailBarangComponent::class,
             'proformaInvoiceId' => $id,
-            'scenario' => ProformaInvoice::SCENARIO_CREATE_PROFORMA_INVOICE_DETAIL_BARANG
+            'scenario'          => ProformaInvoice::SCENARIO_CREATE_PROFORMA_INVOICE_DETAIL_BARANG
         ]);
 
         if ($component->checkThatProformaInvoiceHasNotExist()) {
             return $this->redirect([
                 'quotation/view',
                 'id' => $component->proformaInvoice->quotation->id,
-                '#' => 'quotation-tab-tab7'
+                '#'  => 'quotation-tab-tab7'
             ]);
         }
 
         if ($this->request->isPost && $component->create()) return $this->redirect([
             'quotation/view',
             'id' => $component->proformaInvoice->quotation->id,
-            '#' => 'quotation-tab-tab7'
+            '#'  => 'quotation-tab-tab7'
         ]);
 
         return $this->render('create_proforma_invoice_barang', [
-            'quotation' => $component->proformaInvoice->quotation,
-            'model' => $component->proformaInvoice,
+            'quotation'    => $component->proformaInvoice->quotation,
+            'model'        => $component->proformaInvoice,
             'modelsDetail' => $component->proformaInvoiceDetailBarangs
         ]);
     }
@@ -870,24 +891,23 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws ServerErrorHttpException
      */
-    public function actionUpdateProformaInvoiceDetailBarang($id): Response|string
-    {
+    public function actionUpdateProformaInvoiceDetailBarang($id): Response|string {
         $component = Yii::createObject([
-            'class' => ProformaInvoiceDetailBarangComponent::class,
+            'class'             => ProformaInvoiceDetailBarangComponent::class,
             'proformaInvoiceId' => $id,
-            'scenario' => ProformaInvoice::SCENARIO_UPDATE_PROFORMA_INVOICE_DETAIL_BARANG
+            'scenario'          => ProformaInvoice::SCENARIO_UPDATE_PROFORMA_INVOICE_DETAIL_BARANG
         ]);
 
         if ($this->request->isPost && $component->update())
             return $this->redirect([
                 'quotation/view',
                 'id' => $component->proformaInvoice->quotation->id,
-                '#' => 'quotation-tab-tab7'
+                '#'  => 'quotation-tab-tab7'
             ]);
 
         return $this->render('update_proforma_invoice_detail_barang', [
-            'quotation' => $component->proformaInvoice->quotation,
-            'model' => $component->proformaInvoice,
+            'quotation'    => $component->proformaInvoice->quotation,
+            'model'        => $component->proformaInvoice,
             'modelsDetail' => $component->proformaInvoiceDetailBarangs
         ]);
     }
@@ -900,10 +920,9 @@ class QuotationController extends Controller
      * @throws StaleObjectException
      * @throws Throwable
      */
-    public function actionDeleteProformaInvoiceDetailBarang($id): Response
-    {
+    public function actionDeleteProformaInvoiceDetailBarang($id): Response {
         $component = Yii::createObject([
-            'class' => ProformaInvoiceDetailBarangComponent::class,
+            'class'             => ProformaInvoiceDetailBarangComponent::class,
             'proformaInvoiceId' => $id,
         ]);
 
@@ -912,7 +931,7 @@ class QuotationController extends Controller
         return $this->redirect([
             'quotation/view',
             'id' => $component->proformaInvoice->quotation->id,
-            '#' => 'quotation-tab-tab7'
+            '#'  => 'quotation-tab-tab7'
         ]);
     }
 
@@ -924,12 +943,11 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws ServerErrorHttpException
      */
-    public function actionCreateProformaInvoiceDetailService($id): Response|string
-    {
+    public function actionCreateProformaInvoiceDetailService($id): Response|string {
         $component = Yii::createObject([
-            'class' => ProformaInvoiceDetailServiceComponent::class,
+            'class'             => ProformaInvoiceDetailServiceComponent::class,
             'proformaInvoiceId' => $id,
-            'scenario' => ProformaInvoice::SCENARIO_CREATE_PROFORMA_INVOICE_DETAIL_SERVICE
+            'scenario'          => ProformaInvoice::SCENARIO_CREATE_PROFORMA_INVOICE_DETAIL_SERVICE
         ]);
 
         if ($component->checkThatProformaInvoiceHasNotExist()) {
@@ -943,12 +961,12 @@ class QuotationController extends Controller
             return $this->redirect([
                 'quotation/view',
                 'id' => $component->proformaInvoice->quotation->id,
-                '#' => 'quotation-tab-tab7'
+                '#'  => 'quotation-tab-tab7'
             ]);
 
         return $this->render('create_proforma_invoice_service', [
-            'quotation' => $component->proformaInvoice->quotation,
-            'model' => $component->proformaInvoice,
+            'quotation'    => $component->proformaInvoice->quotation,
+            'model'        => $component->proformaInvoice,
             'modelsDetail' => $component->proformaInvoiceDetailServices
         ]);
     }
@@ -960,24 +978,23 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws ServerErrorHttpException
      */
-    public function actionUpdateProformaInvoiceDetailService($id): Response|string
-    {
+    public function actionUpdateProformaInvoiceDetailService($id): Response|string {
         $component = Yii::createObject([
-            'class' => ProformaInvoiceDetailServiceComponent::class,
+            'class'             => ProformaInvoiceDetailServiceComponent::class,
             'proformaInvoiceId' => $id,
-            'scenario' => ProformaInvoice::SCENARIO_UPDATE_PROFORMA_INVOICE_DETAIL_SERVICE
+            'scenario'          => ProformaInvoice::SCENARIO_UPDATE_PROFORMA_INVOICE_DETAIL_SERVICE
         ]);
 
         if ($this->request->isPost && $component->update())
             return $this->redirect([
                 'quotation/view',
                 'id' => $component->proformaInvoice->quotation->id,
-                '#' => 'quotation-tab-tab7'
+                '#'  => 'quotation-tab-tab7'
             ]);
 
         return $this->render('update_proforma_invoice_detail_service', [
-            'quotation' => $component->proformaInvoice->quotation,
-            'model' => $component->proformaInvoice,
+            'quotation'    => $component->proformaInvoice->quotation,
+            'model'        => $component->proformaInvoice,
             'modelsDetail' => $component->proformaInvoiceDetailServices
         ]);
     }
@@ -989,10 +1006,9 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws StaleObjectException
      */
-    public function actionDeleteProformaInvoiceDetailService($id): Response
-    {
+    public function actionDeleteProformaInvoiceDetailService($id): Response {
         $component = Yii::createObject([
-            'class' => ProformaInvoiceDetailServiceComponent::class,
+            'class'             => ProformaInvoiceDetailServiceComponent::class,
             'proformaInvoiceId' => $id,
         ]);
 
@@ -1001,7 +1017,7 @@ class QuotationController extends Controller
         return $this->redirect([
             'quotation/view',
             'id' => $component->proformaInvoice->quotation->id,
-            '#' => 'quotation-tab-tab7'
+            '#'  => 'quotation-tab-tab7'
         ]);
     }
 
@@ -1011,15 +1027,14 @@ class QuotationController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionPrintProformaInvoice($id): string
-    {
+    public function actionPrintProformaInvoice($id): string {
         $quotation = $this->findModel($id);
         $model = $quotation->proformaInvoice;
 
         $pdf = Yii::$app->pdfWithLetterhead;
         $pdf->content = $this->renderPartial('preview_print_proforma_invoice', [
             'quotation' => $quotation,
-            'model' => $model
+            'model'     => $model
         ]);
         return $pdf->render();
     }
@@ -1030,8 +1045,7 @@ class QuotationController extends Controller
      * @return Response|string
      * @throws NotFoundHttpException
      */
-    public function actionCreateProformaDebitNote($id): Response|string
-    {
+    public function actionCreateProformaDebitNote($id): Response|string {
         $quotation = $this->findModel($id);
         $model = new ProformaDebitNote();
         $model->quotation_id = $id;
@@ -1039,13 +1053,13 @@ class QuotationController extends Controller
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 Yii::$app->session->setFlash('success', [[
-                    'title' => 'Pesan Sukses',
+                    'title'   => 'Pesan Sukses',
                     'message' => 'Proforma Debit Note berhasil dibuat dengan nomor ' . $model->nomor . '.'
                 ]]);
                 return $this->redirect([
                     'quotation/view',
                     'id' => $id,
-                    '#' => 'quotation-tab-tab8'
+                    '#'  => 'quotation-tab-tab8'
                 ]);
             } else {
                 $model->loadDefaultValues();
@@ -1053,7 +1067,7 @@ class QuotationController extends Controller
         }
 
         return $this->render('create_proforma_debit_note', [
-            'model' => $model,
+            'model'     => $model,
             'quotation' => $quotation,
         ]);
     }
@@ -1064,21 +1078,20 @@ class QuotationController extends Controller
      * @return Response|string
      * @throws NotFoundHttpException
      */
-    public function actionUpdateProformaDebitNote($id): Response|string
-    {
+    public function actionUpdateProformaDebitNote($id): Response|string {
         $quotation = $this->findModel($id);
         $model = $quotation->proformaDebitNote;
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 Yii::$app->session->setFlash('success', [[
-                    'title' => 'Pesan Sukses',
+                    'title'   => 'Pesan Sukses',
                     'message' => 'Proforma Debit Note dengan nomor ' . $model->nomor . ' berhasil di update.'
                 ]]);
                 return $this->redirect([
                     'quotation/view',
                     'id' => $id,
-                    '#' => 'quotation-tab-tab8'
+                    '#'  => 'quotation-tab-tab8'
                 ]);
             } else {
                 $model->loadDefaultValues();
@@ -1086,7 +1099,7 @@ class QuotationController extends Controller
         }
 
         return $this->render('update_proforma_debit_note', [
-            'model' => $model,
+            'model'     => $model,
             'quotation' => $quotation,
         ]);
     }
@@ -1099,18 +1112,17 @@ class QuotationController extends Controller
      * @throws StaleObjectException
      * @throws Throwable
      */
-    public function actionDeleteProformaDebitNote($id): Response
-    {
+    public function actionDeleteProformaDebitNote($id): Response {
         $quotation = $this->findModel($id);
         $quotation->proformaDebitNote->delete();
         Yii::$app->session->setFlash('success', [[
-            'title' => 'Pesan Sukses',
+            'title'   => 'Pesan Sukses',
             'message' => 'Proforma Debit Note dengan nomor ' . $quotation->proformaDebitNote->nomor . ' berhasil di delete.'
         ]]);
         return $this->redirect([
             'quotation/view',
             'id' => $id,
-            '#' => 'quotation-tab-tab8'
+            '#'  => 'quotation-tab-tab8'
         ]);
     }
 
@@ -1122,31 +1134,30 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws ServerErrorHttpException
      */
-    public function actionCreateProformaDebitNoteDetailBarang($id): Response|string
-    {
+    public function actionCreateProformaDebitNoteDetailBarang($id): Response|string {
         $component = Yii::createObject([
-            'class' => ProformaDebitNoteDetailBarangComponent::class,
+            'class'               => ProformaDebitNoteDetailBarangComponent::class,
             'proformaDebitNoteId' => $id,
-            'scenario' => ProformaDebitNote::SCENARIO_CREATE_PROFORMA_DEBIT_NOTE_DETAIL_BARANG
+            'scenario'            => ProformaDebitNote::SCENARIO_CREATE_PROFORMA_DEBIT_NOTE_DETAIL_BARANG
         ]);
 
         if ($component->checkThatProformaDebitNoteHasNotExist()) {
             return $this->redirect([
                 'quotation/view',
                 'id' => $component->proformaDebitNote->quotation->id,
-                '#' => 'quotation-tab-tab8'
+                '#'  => 'quotation-tab-tab8'
             ]);
         }
 
         if ($this->request->isPost && $component->create()) return $this->redirect([
             'quotation/view',
             'id' => $component->proformaDebitNote->quotation->id,
-            '#' => 'quotation-tab-tab8'
+            '#'  => 'quotation-tab-tab8'
         ]);
 
         return $this->render('create_proforma_debit_note_barang', [
-            'quotation' => $component->proformaDebitNote->quotation,
-            'model' => $component->proformaDebitNote,
+            'quotation'    => $component->proformaDebitNote->quotation,
+            'model'        => $component->proformaDebitNote,
             'modelsDetail' => $component->proformaDebitNoteDetailBarangs
         ]);
 
@@ -1159,24 +1170,23 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws ServerErrorHttpException
      */
-    public function actionUpdateProformaDebitNoteDetailBarang($id): Response|string
-    {
+    public function actionUpdateProformaDebitNoteDetailBarang($id): Response|string {
         $component = Yii::createObject([
-            'class' => ProformaDebitNoteDetailBarangComponent::class,
+            'class'               => ProformaDebitNoteDetailBarangComponent::class,
             'proformaDebitNoteId' => $id,
-            'scenario' => ProformaDebitNote::SCENARIO_UPDATE_PROFORMA_DEBIT_NOTE_DETAIL_BARANG
+            'scenario'            => ProformaDebitNote::SCENARIO_UPDATE_PROFORMA_DEBIT_NOTE_DETAIL_BARANG
         ]);
 
         if ($this->request->isPost && $component->update())
             return $this->redirect([
                 'quotation/view',
                 'id' => $component->proformaDebitNote->quotation->id,
-                '#' => 'quotation-tab-tab8'
+                '#'  => 'quotation-tab-tab8'
             ]);
 
         return $this->render('update_proforma_debit_note_detail_barang', [
-            'quotation' => $component->proformaDebitNote->quotation,
-            'model' => $component->proformaDebitNote,
+            'quotation'    => $component->proformaDebitNote->quotation,
+            'model'        => $component->proformaDebitNote,
             'modelsDetail' => $component->proformaDebitNoteDetailBarangs
         ]);
     }
@@ -1189,10 +1199,9 @@ class QuotationController extends Controller
      * @throws StaleObjectException
      * @throws Throwable
      */
-    public function actionDeleteProformaDebitNoteDetailBarang($id): Response
-    {
+    public function actionDeleteProformaDebitNoteDetailBarang($id): Response {
         $component = Yii::createObject([
-            'class' => ProformaDebitNoteDetailBarangComponent::class,
+            'class'               => ProformaDebitNoteDetailBarangComponent::class,
             'proformaDebitNoteId' => $id,
         ]);
 
@@ -1201,7 +1210,7 @@ class QuotationController extends Controller
         return $this->redirect([
             'quotation/view',
             'id' => $component->proformaDebitNote->quotation->id,
-            '#' => 'quotation-tab-tab8'
+            '#'  => 'quotation-tab-tab8'
         ]);
     }
 
@@ -1213,12 +1222,11 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws ServerErrorHttpException
      */
-    public function actionCreateProformaDebitNoteDetailService($id): Response|string
-    {
+    public function actionCreateProformaDebitNoteDetailService($id): Response|string {
         $component = Yii::createObject([
-            'class' => ProformaDebitNoteDetailServiceComponent::class,
+            'class'               => ProformaDebitNoteDetailServiceComponent::class,
             'proformaDebitNoteId' => $id,
-            'scenario' => ProformaDebitNote::SCENARIO_CREATE_PROFORMA_DEBIT_NOTE_DETAIL_SERVICE
+            'scenario'            => ProformaDebitNote::SCENARIO_CREATE_PROFORMA_DEBIT_NOTE_DETAIL_SERVICE
         ]);
 
         if ($component->checkThatProformaDebitNoteHasNotExist()) {
@@ -1232,12 +1240,12 @@ class QuotationController extends Controller
             return $this->redirect([
                 'quotation/view',
                 'id' => $component->proformaDebitNote->quotation->id,
-                '#' => 'quotation-tab-tab8'
+                '#'  => 'quotation-tab-tab8'
             ]);
 
         return $this->render('create_proforma_debit_note_service', [
-            'quotation' => $component->proformaDebitNote->quotation,
-            'model' => $component->proformaDebitNote,
+            'quotation'    => $component->proformaDebitNote->quotation,
+            'model'        => $component->proformaDebitNote,
             'modelsDetail' => $component->proformaDebitNoteDetailServices
         ]);
     }
@@ -1249,24 +1257,23 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws ServerErrorHttpException
      */
-    public function actionUpdateProformaDebitNoteDetailService($id): Response|string
-    {
+    public function actionUpdateProformaDebitNoteDetailService($id): Response|string {
         $component = Yii::createObject([
-            'class' => ProformaDebitNoteDetailServiceComponent::class,
+            'class'               => ProformaDebitNoteDetailServiceComponent::class,
             'proformaDebitNoteId' => $id,
-            'scenario' => ProformaDebitNote::SCENARIO_UPDATE_PROFORMA_DEBIT_NOTE_DETAIL_SERVICE
+            'scenario'            => ProformaDebitNote::SCENARIO_UPDATE_PROFORMA_DEBIT_NOTE_DETAIL_SERVICE
         ]);
 
         if ($this->request->isPost && $component->update())
             return $this->redirect([
                 'quotation/view',
                 'id' => $component->proformaDebitNote->quotation->id,
-                '#' => 'quotation-tab-tab8'
+                '#'  => 'quotation-tab-tab8'
             ]);
 
         return $this->render('update_proforma_debit_note_detail_service', [
-            'quotation' => $component->proformaDebitNote->quotation,
-            'model' => $component->proformaDebitNote,
+            'quotation'    => $component->proformaDebitNote->quotation,
+            'model'        => $component->proformaDebitNote,
             'modelsDetail' => $component->proformaDebitNoteDetailServices
         ]);
     }
@@ -1278,10 +1285,9 @@ class QuotationController extends Controller
      * @throws InvalidConfigException
      * @throws StaleObjectException
      */
-    public function actionDeleteProformaDebitNoteDetailService($id): Response
-    {
+    public function actionDeleteProformaDebitNoteDetailService($id): Response {
         $component = Yii::createObject([
-            'class' => ProformaDebitNoteDetailServiceComponent::class,
+            'class'               => ProformaDebitNoteDetailServiceComponent::class,
             'proformaDebitNoteId' => $id,
         ]);
 
@@ -1290,10 +1296,9 @@ class QuotationController extends Controller
         return $this->redirect([
             'quotation/view',
             'id' => $component->proformaDebitNote->quotation->id,
-            '#' => 'quotation-tab-tab8'
+            '#'  => 'quotation-tab-tab8'
         ]);
     }
-
 
     /**
      * Print proforma debit note dari HTMl ke built in browser
@@ -1301,25 +1306,22 @@ class QuotationController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionPrintProformaDebitNote($id): string
-    {
+    public function actionPrintProformaDebitNote($id): string {
         $quotation = $this->findModel($id);
         $model = $quotation->proformaDebitNote;
 
         $pdf = Yii::$app->pdfWithLetterhead;
         $pdf->content = $this->renderPartial('preview_print_proforma_debit_note', [
             'quotation' => $quotation,
-            'model' => $model
+            'model'     => $model
         ]);
         return $pdf->render();
     }
 
-
     /**
      * @return string|Response
      */
-    public function actionLaporanPerPeriode(): Response|string
-    {
+    public function actionLaporanPerPeriode(): Response|string {
         $model = new LaporanQuotationPerPeriodForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             Yii::$app->session->setFlash('laporanQuotationPerPeriodFormHasGenerated', 'Dataset berhasil di generate.');
@@ -1333,14 +1335,26 @@ class QuotationController extends Controller
     /**
      * @return string|Response
      */
-    public function actionLaporanPerPeriodeResult(): string|Response
-    {
+    public function actionLaporanPerPeriodeResult(): string|Response {
         $model = new LaporanQuotationPerPeriodForm();
         $model->attributes = Yii::$app->request->get('attributes');
 
         return $this->render('laporan_per_periode_result', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    protected function findModel(int $id): Quotation {
+        if (($model = Quotation::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(
+                'The requested page does not exist.'
+            );
+        }
     }
 
 

@@ -19,6 +19,7 @@ use \app\models\active_queries\SuratPerintahKerjaQuery;
  * @property string $keterangan
  * @property string $data_pendukung_lainnya
  *
+ * @property \app\models\QuotationFormJob[] $quotationFormJobs
  * @property \app\models\SuratPerintahKerjaDetail[] $suratPerintahKerjaDetails
  * @property \app\models\SuratPerintahKerjaSupportingDocument[] $suratPerintahKerjaSupportingDocuments
  */
@@ -73,6 +74,14 @@ abstract class SuratPerintahKerja extends \yii\db\ActiveRecord
             'keterangan' => 'Deksripsi Pekerjaan Secara Umum',
             'data_pendukung_lainnya' => 'Data Pendukung Lainnya, Contoh: Customer P.O, Email Direksi, dll',
         ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuotationFormJobs()
+    {
+        return $this->hasMany(\app\models\QuotationFormJob::class, ['surat_perintah_kerja_id' => 'id']);
     }
 
     /**

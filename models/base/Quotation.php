@@ -43,7 +43,7 @@ use \app\models\active_queries\QuotationQuery;
  * @property \app\models\QuotationTermAndCondition[] $quotationTermAndConditions
  * @property \app\models\Rekening $rekening
  * @property \app\models\Card $signatureOrangKantor
- * @property \app\models\SuratPerintahKerjaSupportingDocument[] $suratPerintahKerjaSupportingDocuments
+ * @property \app\models\SuratPerintahKerjaSupportingDocument $suratPerintahKerjaSupportingDocument
  */
 abstract class Quotation extends \yii\db\ActiveRecord
 {
@@ -216,9 +216,9 @@ abstract class Quotation extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSuratPerintahKerjaSupportingDocuments()
+    public function getSuratPerintahKerjaSupportingDocument()
     {
-        return $this->hasMany(\app\models\SuratPerintahKerjaSupportingDocument::class, ['quotation_id' => 'id']);
+        return $this->hasOne(\app\models\SuratPerintahKerjaSupportingDocument::class, ['quotation_id' => 'id']);
     }
 
     /**
