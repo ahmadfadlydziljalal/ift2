@@ -97,7 +97,7 @@ use yii\web\View;
                                 ->hint('Silahkan pilih surat perintah kerja dengan benar')
                                 ->widget(Select2::class, [
                                     'options'       => [
-                                        'multiple'    => true,
+                                        'multiple'    => false,
                                         'placeholder' => 'Cari by nomor'
                                     ],
                                     'initValueText' => $model->isNewRecord ? null : (!empty($model->surat_perintah_kerja_id) ? SuratPerintahKerja::findOne($model->surat_perintah_kerja_id)->nomor : null),
@@ -122,7 +122,7 @@ use yii\web\View;
                             ?>
                         </div>
                         <div id="spk-dos-wrapper" class="<?= $initial === 'web' ? 'd-none' : '' ?>">
-                            <?= $form->field($model, 'surat_perintah_kerja_dos')->textInput(['placeholder' => 'Isi nomor SPK dari DOS']) // From DOS                                               ?>
+                            <?= $form->field($model, 'surat_perintah_kerja_dos')->textInput(['placeholder' => 'Isi nomor SPK dari DOS']) // From DOS                                                   ?>
                         </div>
                     </div>
 

@@ -9,9 +9,9 @@ use app\components\ProformaDebitNoteDetailServiceComponent;
 use app\components\ProformaInvoiceDetailBarangComponent;
 use app\components\ProformaInvoiceDetailServiceComponent;
 use app\components\ServiceQuotation;
+use app\components\services\QuotationFormJobDetailJobsOrSparePartService;
 use app\components\services\QuotationFormJobService;
 use app\components\TermConditionQuotation;
-use app\enums\QuotationFormJobJobsTypeEnum;
 use app\models\CardOwnEquipment;
 use app\models\form\LaporanOutgoingQuotation;
 use app\models\form\LaporanQuotationPerPeriodForm;
@@ -20,11 +20,8 @@ use app\models\ProformaInvoice;
 use app\models\Quotation;
 use app\models\QuotationBarang;
 use app\models\QuotationDeliveryReceipt;
-use app\models\QuotationFormJob;
-use app\models\QuotationFormJobJobs;
 use app\models\search\QuotationSearch;
 use app\models\SuratPerintahKerja;
-use app\models\Tabular;
 use JetBrains\PhpStorm\ArrayShape;
 use kartik\mpdf\Pdf;
 use Mpdf\MpdfException;
@@ -38,7 +35,6 @@ use yii\base\InvalidRouteException;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -403,6 +399,7 @@ class QuotationController extends Controller {
         if ($result instanceof Response) {
             return $result;
         }
+        /** @see /views/quotation/update_form_job.php */
         return $this->render($result['view'], $result['params']);
     }
 
@@ -436,114 +433,78 @@ class QuotationController extends Controller {
         return $service->print((int)$id);
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
     public function actionCreateFormJobType(int $id, int $type): Response|string {
 
-        $quotationFormJobModel = QuotationFormJob::findOne($id);
-        $models = [new QuotationFormJobJobs([
-            'quotation_form_job_id' => $id,
-            'type'                  => $type,
-        ])];
+        /** @var QuotationFormJobDetailJobsOrSparePartService $service */
+        $service = Yii::createObject(QuotationFormJobDetailJobsOrSparePartService::class);
 
         if ($this->request->isPost) {
-            $models = Tabular::createMultiple(QuotationFormJobJobs::class);
-            Tabular::loadMultiple($models, $this->request->post());
-
-            if (Tabular::validateMultiple($models)) {
-                $transaction = Yii::$app->db->beginTransaction();
-                try {
-
-                    $flag = true;
-                    /** @var $model QuotationFormJobJobs */
-                    foreach ($models as $model) {
-                        $model->quotation_form_job_id = $id;
-                        $model->type = $type;
-                        if (!($flag = $model->save(false))) break;
-                    }
-
-                    if ($flag) {
-                        $transaction->commit();
-                        Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
-                        return $this->redirect(['quotation/view', 'id' => $quotationFormJobModel->quotation_id, '#' => 'quotation-tab-tab4']);
-                    } else {
-                        $transaction->rollBack();
-                        Yii::$app->session->setFlash('danger', 'Data gagal disimpan');
-                    }
-
-                } catch (Exception $e) {
-                    Yii::error($e->getMessage());
-                    $transaction->rollBack();
-                }
+            $result = $service->create($id, $type, $this->request->post());
+            if ($result['success'] ?? false) {
+                Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
+                return $this->redirect(['quotation/view', 'id' => $result['quotationId'], '#' => 'quotation-tab-tab4']);
             }
+            Yii::$app->session->setFlash('danger', 'Data gagal disimpan');
+            return $this->render('create_form_job_type', [
+                'quotationFormJobModel' => $result['quotationFormJobModel'],
+                'models'                => $result['models'],
+            ]);
         }
 
+        $context = $service->getCreateContext($id, $type);
         return $this->render('create_form_job_type', [
-            'quotationFormJobModel' => $quotationFormJobModel,
-            'models'                => $models,
+            'quotationFormJobModel' => $context['quotationFormJobModel'],
+            'models'                => $context['models'],
         ]);
 
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
     public function actionUpdateFormJobType(int $id, int $type): Response|string {
 
-        $quotationFormJobModel = QuotationFormJob::findOne($id);
-        $models = $type === QuotationFormJobJobsTypeEnum::JOB->value
-            ? $quotationFormJobModel->quotationFormJobJobsType
-            : $quotationFormJobModel->quotationFormJobSparePartType;
+        /** @var QuotationFormJobDetailJobsOrSparePartService $service */
+        $service = Yii::createObject(QuotationFormJobDetailJobsOrSparePartService::class);
 
         if ($this->request->isPost) {
-            $oldDetailsID = ArrayHelper::map($models, 'id', 'id');
-            $models = Tabular::createMultiple(QuotationFormJobJobs::class, $models);
-
-            Tabular::loadMultiple($models, $this->request->post());
-            $deletedDetailsID = array_diff($oldDetailsID, array_filter(ArrayHelper::map($models, 'id', 'id')));
-
-            if (Tabular::validateMultiple($models)) {
-                $transaction = Yii::$app->db->beginTransaction();
-                try {
-
-                    $flag = true;
-                    foreach ($models as $model) {
-                        $model->quotation_form_job_id = $id;
-                        $model->type = $type;
-                        if (!($flag = $model->save(false))) break;
-                    }
-
-                    if ($flag) {
-                        if (!empty($deletedDetailsID)) {
-                            QuotationFormJobJobs::deleteAll([
-                                'id'   => $deletedDetailsID,
-                                'type' => $type,
-                            ]);
-                        }
-                        $transaction->commit();
-                        Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
-                        return $this->redirect(['quotation/view', 'id' => $quotationFormJobModel->quotation_id, '#' => 'quotation-tab-tab4']);
-                    } else {
-                        $transaction->rollBack();
-                        Yii::$app->session->setFlash('danger', 'Data gagal disimpan');
-                    }
-
-                } catch (Exception $e) {
-                    Yii::error($e->getMessage());
-                    $transaction->rollBack();
-                }
+            $result = $service->update($id, $type, $this->request->post());
+            if ($result['success'] ?? false) {
+                Yii::$app->session->setFlash('success', 'Data berhasil disimpan');
+                return $this->redirect(['quotation/view', 'id' => $result['quotationId'], '#' => 'quotation-tab-tab4']);
             }
+            Yii::$app->session->setFlash('danger', 'Data gagal disimpan');
+            return $this->render('update_form_job_type', [
+                'quotationFormJobModel' => $result['quotationFormJobModel'],
+                'models'                => $result['models'],
+            ]);
         }
 
+        $context = $service->getUpdateContext($id, $type);
         return $this->render('update_form_job_type', [
-            'quotationFormJobModel' => $quotationFormJobModel,
-            'models'                => $models,
+            'quotationFormJobModel' => $context['quotationFormJobModel'],
+            'models'                => $context['models'],
         ]);
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function actionDeleteFormJobType(int $id, int $type): Response {
-        $quotationFormJobModel = QuotationFormJob::findOne($id);
-        $models = QuotationFormJobJobs::deleteAll([
-            'quotation_form_job_id' => $id,
-            'type'                  => $type,
-        ]);
-        if ($models > 0) Yii::$app->session->setFlash('success', 'Data berhasil dihapus');
-        return $this->redirect(['quotation/view', 'id' => $quotationFormJobModel->quotation_id, '#' => 'quotation-tab-tab4']);
+        /** @var QuotationFormJobDetailJobsOrSparePartService $service */
+        $service = Yii::createObject(QuotationFormJobDetailJobsOrSparePartService::class);
+        $result = $service->delete($id, $type);
+        if ($result['success'] ?? false) {
+            Yii::$app->session->setFlash('success', 'Data berhasil dihapus');
+        } else {
+            Yii::$app->session->setFlash('danger', 'Tidak ada data yang dihapus');
+        }
+        return $this->redirect(['quotation/view', 'id' => $result['quotationId'] ?? null, '#' => 'quotation-tab-tab4']);
     }
 
     /**
@@ -562,6 +523,10 @@ class QuotationController extends Controller {
         return $out;
     }
 
+    /**
+     * @param int|null $id
+     * @return array
+     */
     public function actionFindCardOwnEquipmentDetail(int $id = null): array {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return !$id ? [] : CardOwnEquipment::find()->spec($id);
