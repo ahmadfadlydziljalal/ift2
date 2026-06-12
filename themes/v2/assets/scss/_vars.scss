@@ -1,8 +1,9 @@
-$primary: #540375;
-$success: #FFBF00;
-$info: #10A19D;
-$warning: #FF7000;
-$danger: #CF0A0A;
+$primary: #214a4b;
+$secondary: #ae4536;
+$info: #db9600;
+$success: #00a347;
+$warning: #ecc700;
+$danger: #f30030;
 
 $pastel-100: #FFF5E1;
 $pastel-200: #DEB6AB;
@@ -15,7 +16,7 @@ $teal-300: #6D9886;
 $teal-400: #0E5E6F;
 
 
-$dark: #252525;
+$dark: #0e0d0a;
 $white: #fff;
 $gray-100: #f8f9fa;
 $gray-200: #e9ecef;
@@ -43,5 +44,5 @@ $font-size-root: null;
 
 // Make body text slightly smaller for desktop-centric app
 $font-size-base: 0.9375rem; // ≈ 15px
-$font-size-sm:   $font-size-base * .875;  // ≈ 13.125px
-$font-size-lg:   $font-size-base * 1.125; // ≈ 16.875px
+$font-size-sm: $font-size-base * .875; // ≈ 13.125px
+$font-size-lg: $font-size-base * 1.125; // ≈ 16.875px
