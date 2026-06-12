@@ -5,6 +5,7 @@
 
 /* @var $this yii\web\View */
 
+use app\enums\QuotationFormJobJobsTypeEnum;
 use app\models\QuotationFormJobJobs;
 use app\models\Satuan;
 use kartik\form\ActiveForm;
@@ -37,7 +38,8 @@ use yii\helpers\Html;
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Nama Job</th>
+                    <th scope="col">
+                        Nama <?= QuotationFormJobJobsTypeEnum::labelOf(Yii::$app->request->get('type')) ?></th>
                     <th scope="col" style="width: 16px">Quantity</th>
                     <th scope="col" style="width: 30%">Satuan</th>
                     <th scope="col" style="width: 2px"></th>
