@@ -15,7 +15,7 @@ class m260611_111436_CreateQuotationFormJobJobsTable extends Migration {
             'quotation_form_job_id' => $this->integer(),
             'type'                  => $this->tinyInteger()->defaultValue(1)->notNull(),
             'nama'                  => $this->string()->notNull(),
-            'quantity'              => $this->integer()->notNull(),
+            'quantity'              => $this->decimal(10, 2)->notNull(),
             'satuan_id'             => $this->integer()->notNull(),
         ]);
 

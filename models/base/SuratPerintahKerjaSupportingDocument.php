@@ -38,6 +38,7 @@ abstract class SuratPerintahKerjaSupportingDocument extends \yii\db\ActiveRecord
         return ArrayHelper::merge($parentRules, [
             [['surat_perintah_kerja_id', 'quotation_id'], 'default', 'value' => null],
             [['surat_perintah_kerja_id', 'quotation_id'], 'integer'],
+            [['quotation_id'], 'unique'],
             [['quotation_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Quotation::class, 'targetAttribute' => ['quotation_id' => 'id']],
             [['surat_perintah_kerja_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\SuratPerintahKerja::class, 'targetAttribute' => ['surat_perintah_kerja_id' => 'id']]
         ]);
