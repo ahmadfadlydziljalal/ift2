@@ -75,7 +75,7 @@ use yii\helpers\Html;
                             <?= $form->field($modelDetail, "[$i]satuan_id", [
                                 'template' => '{input}{error}{hint}',
                                 'options'  => ['class' => null]
-                            ])->dropDownList(Satuan::find()->map(KategoriSatuanEnum::JASA->value)); ?>
+                            ])->dropDownList(Satuan::find()->map(KategoriSatuanEnum::KEDUANYA->value)); ?>
                         </td>
 
                         <td>
