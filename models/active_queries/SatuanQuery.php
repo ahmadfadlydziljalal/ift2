@@ -3,6 +3,7 @@
 namespace app\models\active_queries;
 
 use app\components\helpers\ArrayHelper;
+use app\enums\KategoriSatuanEnum;
 use app\models\Satuan;
 use yii\db\ActiveQuery;
 
@@ -18,9 +19,13 @@ class SatuanQuery extends ActiveQuery {
      * @return array
      */
     public function map(int $kategori = 1): array {
-        $data = parent::select('id,nama')
-            ->where(['kategori' => $kategori])
-            ->orderBy(['nama' => SORT_ASC]);
+        $data = parent::select('id,nama');
+
+        if ($kategori != KategoriSatuanEnum::KEDUANYA) {
+            $data->where(['kategori' => $kategori])
+                ->orderBy(['nama' => SORT_ASC]);
+        }
+
         return ArrayHelper::map($data->all(), 'id', 'nama');
     }
 
