@@ -34,39 +34,39 @@ use yii\web\View;
                     <td class="border-end-0">Attn</td>
                     <td class="border-start-0 border-end-0">:</td>
                     <td class="border-start-0">
-                       <?php
-                       array_filter($quotation->customer->cardPersonInCharges, function ($element) {
-                          echo !empty($element->nama)
-                             ? $element->nama . '; '
-                             : '';
-                       })
-                       ?>
+                        <?php
+                        array_filter($quotation->customer->cardPersonInCharges, function ($element) {
+                            echo !empty($element->nama)
+                                ? $element->nama . '; '
+                                : '';
+                        })
+                        ?>
                     </td>
                 </tr>
                 <tr>
                     <td class="border-end-0">Phone</td>
                     <td class="border-start-0 border-end-0">:</td>
                     <td class="border-start-0">
-                       <?php
-                       array_filter($quotation->customer->cardPersonInCharges, function ($element) {
-                          echo !empty($element->telepon)
-                             ? $element->telepon . '; '
-                             : '';
-                       })
-                       ?>
+                        <?php
+                        array_filter($quotation->customer->cardPersonInCharges, function ($element) {
+                            echo !empty($element->telepon)
+                                ? $element->telepon . '; '
+                                : '';
+                        })
+                        ?>
                     </td>
                 </tr>
                 <tr>
                     <td class="border-end-0">Email</td>
                     <td class="border-start-0 border-end-0">:</td>
                     <td class="border-start-0">
-                       <?php
-                       array_filter($quotation->customer->cardPersonInCharges, function ($element) {
-                          echo !empty($element->email)
-                             ? $element->email . '; '
-                             : '';
-                       })
-                       ?>
+                        <?php
+                        array_filter($quotation->customer->cardPersonInCharges, function ($element) {
+                            echo !empty($element->email)
+                                ? $element->email . '; '
+                                : '';
+                        })
+                        ?>
                     </td>
                 </tr>
                 </tbody>
@@ -107,9 +107,9 @@ use yii\web\View;
                 </tr>
                 </tbody>
             </table>
-            <p class="font-weight-bold">
-                Quotation Status: <?= $quotation->getGlobalStatusDeliveryReceiptInHtmlFormat() ?>
-            </p>
+            <!--            <p class="font-weight-bold">-->
+            <!--                Quotation Status: --><?php //// $quotation->getGlobalStatusDeliveryReceiptInHtmlFormat() ?>
+            <!--            </p>-->
         </div>
     </div>
 
@@ -135,20 +135,20 @@ use yii\web\View;
                     | <?= $detail->quotationBarang->barang->part_number ?>
                 </td>
                 <td>
-                   <?= $detail->quotationBarang->barang->nama ?>
-                   <?= !empty($detail->quotationBarang->barang->keterangan)
-                      ? (' - ' . $detail->quotationBarang->barang->keterangan)
-                      : ''
-                   ?>
+                    <?= $detail->quotationBarang->barang->nama ?>
+                    <?= !empty($detail->quotationBarang->barang->keterangan)
+                        ? (' - ' . $detail->quotationBarang->barang->keterangan)
+                        : ''
+                    ?>
                 </td>
                 <td class="text-end">
-                   <?= $detail->quotationBarang->quantity ?>
+                    <?= $detail->quotationBarang->quantity ?>
                 </td>
                 <td class="text-end">
-                   <?= $detail->quantity ?>
+                    <?= $detail->quantity ?>
                 </td>
                 <td class="text-end">
-                   <?= $detail->quotationBarang->satuan->nama ?>
+                    <?= $detail->quotationBarang->satuan->nama ?>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -159,24 +159,24 @@ use yii\web\View;
         Remarks:
     </p>
 
-   <?php
-   $quotationDeliveryReceipts = $quotation->quotationDeliveryReceipts;
-   if (count($quotationDeliveryReceipts) > 1) : ?>
+    <?php
+    $quotationDeliveryReceipts = $quotation->quotationDeliveryReceipts;
+    if (count($quotationDeliveryReceipts) > 1) : ?>
     <p>By Sistem: Delivery Receipt diangsur beberapa kali:<br/>
-       <?php
-       /** @var QuotationDeliveryReceipt $quotationDeliveryReceipt */
-       foreach ($quotationDeliveryReceipts as $quotationDeliveryReceipt) {
-          $string = $quotationDeliveryReceipt->nomor;
+        <?php
+        /** @var QuotationDeliveryReceipt $quotationDeliveryReceipt */
+        foreach ($quotationDeliveryReceipts as $quotationDeliveryReceipt) {
+            $string = $quotationDeliveryReceipt->nomor;
 
-          if ($quotationDeliveryReceipt->id == $model->id) {
-             $string .= '<strong class="font-weight-bold"> (Dokumen Ini)</strong>';
-          }
+            if ($quotationDeliveryReceipt->id == $model->id) {
+                $string .= '<strong class="font-weight-bold"> (Dokumen Ini)</strong>';
+            }
 
-          echo $string . '<br/>';
-       }
-       ?>
-       <?php endif ?>
-       <?= $model->remarks ?>
+            echo $string . '<br/>';
+        }
+        ?>
+        <?php endif ?>
+        <?= $model->remarks ?>
     </p>
 
     <div style="width: 100%; position:fixed; bottom: 0; left: 0">
