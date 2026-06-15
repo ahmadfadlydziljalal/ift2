@@ -18,15 +18,14 @@ class SatuanQuery extends ActiveQuery {
      * @param int $kategori
      * @return array
      */
-    public function map(int $kategori = 1): array {
-        $data = parent::select('id,nama');
+    public function map(int $kategori = 1, $from = 'id', $to = 'nama'): array {
+        $data = parent::select([$from, $to]);
 
-        if ($kategori != KategoriSatuanEnum::KEDUANYA) {
-            $data->where(['kategori' => $kategori])
-                ->orderBy(['nama' => SORT_ASC]);
+        if ($kategori != KategoriSatuanEnum::KEDUANYA->value) {
+            $data->where(['kategori' => $kategori]);
         }
 
-        return ArrayHelper::map($data->all(), 'id', 'nama');
+        return ArrayHelper::map($data->orderBy($to)->all(), $from, $to);
     }
 
     public function mapIdName() {
