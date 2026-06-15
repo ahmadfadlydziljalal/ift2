@@ -744,6 +744,9 @@ class QuotationController extends Controller {
             'quotation' => $quotation,
             'model'     => $model
         ]);
+        $pdf->marginHeader = 20;
+        $pdf->marginTop = 41.5;
+
         return $pdf->render();
     }
 
