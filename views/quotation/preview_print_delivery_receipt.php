@@ -131,8 +131,7 @@ use yii\web\View;
         <?php foreach ($model->quotationDeliveryReceiptDetails as $key => $detail) : ?>
             <tr>
                 <td><?= $key + 1 ?></td>
-                <td><?= $detail->quotationBarang->barang->merk_part_number ?>
-                    | <?= $detail->quotationBarang->barang->part_number ?>
+                <td><?= $detail->quotationBarang->barang->part_number ?>
                 </td>
                 <td>
                     <?= $detail->quotationBarang->barang->nama ?>
