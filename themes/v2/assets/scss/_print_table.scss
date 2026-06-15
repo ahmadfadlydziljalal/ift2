@@ -96,6 +96,12 @@ table {
 
     }
 
+    &.table-dot-matrix {
+      th, td {
+        padding: 2pt 3pt;
+      }
+    }
+
     &.table-detail-view {
       width: 50%;
     }

@@ -115,15 +115,15 @@ use yii\web\View;
 
     <div style="clear: both"></div>
 
-    <table class="table table-grid-view table-bordered mt-1">
+    <table class="table table-grid-view table-bordered table-dot-matrix mt-1">
         <thead>
         <tr>
             <td style="width: 2px">NO</td>
-            <td>Mark | Part Number</td>
+            <td>Part Number</td>
             <td>Description</td>
-            <td>Quotation</td>
-            <td>Quantity</td>
-            <td>UOM</td>
+            <!--            <td>Quotation</td>-->
+            <td style="text-align: right">Quantity</td>
+            <!--            <td>UOM</td>-->
         </tr>
         </thead>
 
@@ -141,23 +141,27 @@ use yii\web\View;
                         : ''
                     ?>
                 </td>
+                <!--  <td class="text-end">
+                    <?php /*$detail->quotationBarang->quantity */ ?>
+                </td>-->
                 <td class="text-end">
-                    <?= $detail->quotationBarang->quantity ?>
+                    <?= $detail->quantity ?>  <?= $detail->quotationBarang->satuan->nama ?>
                 </td>
-                <td class="text-end">
-                    <?= $detail->quantity ?>
-                </td>
-                <td class="text-end">
-                    <?= $detail->quotationBarang->satuan->nama ?>
-                </td>
+                <!--<td class="text-end">
+
+                </td>-->
             </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
 
-    <p>
-        Remarks:
-    </p>
+    <div style="clear: both"></div>
+    <div style="height: 100px;">
+        <p>
+            Remarks:
+        </p>
+    </div>
+
 
     <?php
     $quotationDeliveryReceipts = $quotation->quotationDeliveryReceipts;
