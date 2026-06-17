@@ -6,12 +6,14 @@ use app\components\SihrdAuthClient;
 use app\models\ContactForm;
 use app\models\form\ChangePassword;
 use app\models\LoginForm;
+use app\models\Stock;
 use JetBrains\PhpStorm\ArrayShape;
 use Yii;
 use yii\authclient\ClientErrorResponseException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class SiteController extends Controller {
@@ -213,6 +215,26 @@ class SiteController extends Controller {
         return $this->render('change-password', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    public function actionScan($object = 'stock', $params = []): string {
+        $this->layout = 'scan';
+        if ($object == 'stock') {
+
+            $data = (new Stock());
+            $data->setAttributes((new Stock())->getData()->where([
+                'id' => $params['id'],
+            ])->one());
+
+            /** @var array $data */
+            return $this->render('scan_barang', [
+                'data' => $data,
+            ]);
+        }
+        throw new NotFoundHttpException('Halaman tidak ditemukan');
     }
 
 }

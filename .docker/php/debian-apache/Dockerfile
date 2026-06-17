@@ -11,6 +11,7 @@ RUN sed -i 's|deb.debian.org/debian|archive.debian.org/debian|g' /etc/apt/source
     libpng-dev \
     libzip-dev \
     libssl-dev \
+    libmagickwand-dev \
  && docker-php-ext-configure gd --with-freetype --with-jpeg \
  && docker-php-ext-configure intl \
  && docker-php-ext-install -j$(nproc) gd
@@ -23,6 +24,11 @@ RUN docker-php-ext-install \
     pcntl \
     intl \
     opcache
+
+# Install & enable extension Imagick lewat PECL
+# <-- 2. Tambahkan block ini untuk mengunduh dan mengaktifkan extension imagick
+RUN pecl install imagick \
+ && docker-php-ext-enable imagick
 
 # Clear cache
 RUN apt-get clean && \
