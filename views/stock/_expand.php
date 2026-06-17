@@ -18,9 +18,12 @@ use yii\helpers\Url;
 
     <div>
         <?php
-        $qrCode = (new QrCode(Url::to(['/scan', 'object' => 'barang', 'params' => ['id' => $model->id]], true)))
+        /** @see \app\controllers\SiteController::actionScan() */
+        $qrCode = (new QrCode(Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $model->id]], true)))
             ->setSize(125)
             ->setMargin(5);
+
+
         ?>
 
         <?= StockItem::widget([
