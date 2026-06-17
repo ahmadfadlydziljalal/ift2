@@ -29,7 +29,7 @@ class SiteController extends Controller {
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['login', 'error', 'contact', 'captcha'],
+                        'actions' => ['login', 'error', 'contact', 'captcha', 'scan'],
                     ],
                     [
                         'allow' => true,
