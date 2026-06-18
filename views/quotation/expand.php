@@ -16,7 +16,7 @@ use yii\widgets\ListView;
     <?php
     echo Tabs::widget([
         'options'           => [
-            'id'   => 'quotation-tab',
+            'id'   => 'quotation-tab-' . $model->id,
             'role' => 'tablist'
         ],
         'tabContentOptions' => [
