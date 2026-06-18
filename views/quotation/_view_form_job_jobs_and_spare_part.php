@@ -4,8 +4,7 @@
 
 /* @var $model app\models\Quotation|string|ActiveRecord */
 
-use kartik\grid\GridView;
-use yii\data\ActiveDataProvider;
+
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 
@@ -34,35 +33,10 @@ use yii\helpers\Html;
                         'class' => 'd-inline-flex gap-1 mb-2'
                     ]
                 );
-                echo GridView::widget([
-                    'dataProvider' => new ActiveDataProvider([
-                        'query'      => $model->quotationFormJob->getQuotationFormJobJobs()
-                            ->joinWith(['satuan'])
-                            ->orderBy(['id' => SORT_ASC]),
-                        'pagination' => false
-                    ]),
-                    'layout'       => "{items}",
-                    'responsive'   => true,
-                    'columns'      => [
-                        'nama',
-                        [
-                            'attribute'      => 'quantity',
-                            'contentOptions' => [
-                                'class' => 'text-wrap text-end'
-                            ],
-                            'headerOptions'  => [
-                                'class' => 'text-nowrap text-end'
-                            ]
-                        ],
-                        [
-                            'attribute'      => 'satuan_id',
-                            'value'          => 'satuan.nama',
-                            'contentOptions' => [
-                                'class' => 'text-wrap'
-                            ]
-                        ]
-                    ]
+                echo $this->render('_view_form_job_jobs_table', [
+                    'model' => $model
                 ]);
+
             } ?>
         </div>
     </div>
@@ -87,35 +61,11 @@ use yii\helpers\Html;
                         'class' => 'd-inline-flex gap-1 mb-2'
                     ]
                 );
-                echo GridView::widget([
-                    'dataProvider' => new ActiveDataProvider([
-                        'query'      => $model->quotationFormJob->getQuotationFormJobSpareParts()
-                            ->joinWith(['satuan', 'barang'])
-                            ->orderBy(['id' => SORT_ASC]),
-                        'pagination' => false
-                    ]),
-                    'layout'       => "{items}",
-                    'responsive'   => true,
-                    'columns'      => [
-                        'barang.nama',
-                        [
-                            'attribute'      => 'quantity',
-                            'contentOptions' => [
-                                'class' => 'text-wrap text-end'
-                            ],
-                            'headerOptions'  => [
-                                'class' => 'text-nowrap text-end'
-                            ]
-                        ],
-                        [
-                            'attribute'      => 'satuan_id',
-                            'value'          => 'satuan.nama',
-                            'contentOptions' => [
-                                'class' => 'text-wrap'
-                            ]
-                        ]
-                    ]
+
+                echo $this->render('_view_form_job_spare_part_table', [
+                    'model' => $model
                 ]);
+
             } ?>
         </div>
     </div>

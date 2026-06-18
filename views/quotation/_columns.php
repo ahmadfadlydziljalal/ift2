@@ -4,6 +4,7 @@
 
 use app\models\Card;
 use app\models\Quotation;
+use kartik\grid\ExpandRowColumn;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 
@@ -35,6 +36,12 @@ return [
 //     'format'=>'text',
 //     ],
     [
+        'class'         => ExpandRowColumn::class,
+        'detailUrl'     => ['expand'], /** @see \app\controllers\QuotationController::actionExpand() */
+        'vAlign'        => 'top',
+        'expandOneOnly' => true,
+    ],
+    [
         'class'     => '\yii\grid\DataColumn',
         'attribute' => 'nomor',
         'value'     => function (Quotation $model) {
@@ -43,8 +50,7 @@ return [
                 $validity['html'] . ' ' .
                 $validity['howManyDaysAreLeftText']
             );
-
-
+            
             $formJob = empty($model->quotationFormJob) ? '' :
                 Html::tag('div',
                     Html::tag('small', 'Form Job:') .

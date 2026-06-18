@@ -7,6 +7,8 @@ use app\widgets\stock\StockItem;
 /* @var $this yii\web\View */
 /* @see \app\controllers\SiteController::actionScan() */
 
+$this->title = $data->namaBarang;
+
 ?>
 
 <div class="stock-scan-view">

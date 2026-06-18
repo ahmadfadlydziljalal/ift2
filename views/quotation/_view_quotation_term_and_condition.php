@@ -10,10 +10,6 @@
 
 use app\enums\TextLinkEnum;
 use app\models\Quotation;
-use kartik\grid\DataColumn;
-use kartik\grid\GridView;
-use kartik\grid\SerialColumn;
-use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\helpers\Html;
 use yii\web\View;
@@ -48,29 +44,11 @@ use yii\web\View;
                 <?php endif; ?>
             </div>
         </div>
-        <div class="table-responsive">
-            <?= GridView::widget([
-                'dataProvider'     => new ActiveDataProvider([
-                    'query'      => $model->getQuotationTermAndConditions(),
-                    'pagination' => false,
-                    'sort'       => false
-                ]),
-                'layout'           => '{items}',
-                'headerRowOptions' => [
-                    'class' => 'text-wrap text-center align-middle'
-                ],
-                'columns'          => [
-                    [
-                        'class' => SerialColumn::class,
-                    ],
-                    [
-                        'class'     => DataColumn::class,
-                        'attribute' => 'term_and_condition'
-                    ]
-                ],
-                'showFooter'       => false,
-            ]) ?>
-        </div>
+
+
+        <?= $this->render('_view_quotation_term_and_condition_table', [
+            'model' => $model
+        ]) ?> ?>
     </div>
 
 </div>
