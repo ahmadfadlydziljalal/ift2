@@ -12,10 +12,8 @@
 
 use app\enums\TextLinkEnum;
 use app\models\Quotation;
-use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\web\View;
-use yii\widgets\ListView;
 
 ?>
 
@@ -38,34 +36,10 @@ use yii\widgets\ListView;
             </div>
         </div>
 
+        <?= $this->render('_view_delivery_receipt_table', [
+            'model' => $model
+        ]) ?>
 
-        <div class="row">
-            <div class="col-12 mb-3">
-                <div class="table-responsive">
-                    <?php
-                    if ($model->quotationDeliveryReceipts) {
-                        echo ListView::widget([
-                            'dataProvider' => new ActiveDataProvider([
-                                'query'      => $model->getQuotationDeliveryReceipts(),
-                                'pagination' => false,
-                                'sort'       => false
-                            ]),
-                            'itemView'     => '_item_quotation_deliver_receipt',
-                            'layout'       => '{items}',
-                            'options'      => [
-                                'class' => 'd-flex flex-column gap-3'
-                            ]
-                        ]);
-                    } else {
-                        echo Html::tag('p', 'Belum ada delivery receipt', [
-                            'class' => 'text-danger font-weight-bold'
-                        ]);
-                    }
-                    ?>
-                </div>
-            </div>
-
-        </div>
     </div>
 
 

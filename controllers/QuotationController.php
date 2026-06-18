@@ -77,6 +77,12 @@ class QuotationController extends Controller {
         ]);
     }
 
+    public function actionExpand(): string {
+        return isset($_POST['expandRowKey']) ? $this->renderPartial('expand', [
+            'model' => $this->findModel(($_POST['expandRowKey'])),
+        ]) : '<div class="alert alert-danger">No data found</div>';
+    }
+
     /**
      * @param int $id
      * @return string
