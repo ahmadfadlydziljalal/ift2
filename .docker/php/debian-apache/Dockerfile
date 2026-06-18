@@ -9,10 +9,11 @@ RUN sed -i 's|deb.debian.org/debian|archive.debian.org/debian|g' /etc/apt/source
     libicu-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
+    libwebp-dev \
     libzip-dev \
     libssl-dev \
     libmagickwand-dev \
- && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp  \
  && docker-php-ext-configure intl \
  && docker-php-ext-install -j$(nproc) gd
 

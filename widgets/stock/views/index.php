@@ -39,14 +39,15 @@ $quotationUrl = static function ($quotationId) {
 ?>
 
 
-<div class="container">
+<div class="container-fluid">
     <div class="stock-scan-view d-flex d-sm-flex-column gap-3 flex-wrap">
         <!-- Image / Preview -->
-        <div class="w-25 my-3 my-md-0" style="min-width: 200px;">
-            <div class="card scan-card ">
-                <div class="card-body">
-                    <div class="img-frame ratio ratio-4x3 position-relative">
-                        <?php if (empty($model->photoThumbnail)): ?>
+        <div class="w-25 align-items-center my-3 my-md-0" style="min-width: 200px;">
+
+            <?php if (empty($model->photoThumbnail)): ?>
+                <div class="card scan-card ">
+                    <div class="card-body">
+                        <div class="img-frame ratio ratio-4x3 position-relative">
                             <div class="d-flex align-items-center justify-content-center w-100 h-100 text-muted">
                                 <div class="text-center">
                                     <div class="mb-2">
@@ -55,16 +56,18 @@ $quotationUrl = static function ($quotationId) {
                                     <div>No image available</div>
                                 </div>
                             </div>
-                        <?php else: ?>
-                            <a href="<?= Html::encode($model->photoThumbnail) ?>" target="_blank" title="Buka gambar">
-                                <img src="<?= Html::encode($model->photoThumbnail) ?>"
-                                     alt="<?= Html::encode($model->namaBarang ?? 'Barang image') ?>" loading="lazy"
-                                     class="img-fluid"/>
-                            </a>
-                        <?php endif; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php else: ?>
+                <a href="<?= Html::encode($model->photoThumbnail) ?>" target="_blank" title="Buka gambar">
+                    <img src="<?= Html::encode($model->photoThumbnail) ?>"
+                         alt="<?= Html::encode($model->namaBarang ?? 'Barang image') ?>" loading="lazy"
+                         class="img-fluid"
+                    />
+                </a>
+            <?php endif; ?>
+
 
             <?php if ($additionalView): ?>
                 <div class="mt-3">

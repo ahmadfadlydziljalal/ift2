@@ -15,22 +15,14 @@ use yii\helpers\Url;
 ?>
 
 <div class="stock-expand">
-
-    <div>
-        <?php
-        /** @see \app\controllers\SiteController::actionScan() */
-        $qrCode = (new QrCode(Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $model->id]], true)))
-            ->setSize(125)
-            ->setMargin(5);
-
-
-        ?>
-
-        <?= StockItem::widget([
-            'model'          => $stock,
-            'additionalView' => Html::img($qrCode->writeDataUri())
-        ]) ?>
-    </div>
-
-
+    <?php
+    /** @see \app\controllers\SiteController::actionScan() */
+    $qrCode = (new QrCode(Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $model->id]], true)))
+        ->setSize(125)
+        ->setMargin(5);
+    ?>
+    <?= StockItem::widget([
+        'model'          => $stock,
+        'additionalView' => Html::tag('div', Html::img($qrCode->writeDataUri(), ['class' => 'img-fluid']), ['class' => 'text-center']),
+    ]) ?>
 </div>

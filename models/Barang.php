@@ -169,7 +169,7 @@ class Barang extends BaseBarang {
 
         $directory = self::SPACES_PATH_DIRECTORY . $iftNumber . '/';
         $pathFile = $directory . 'photo.' . $extension;
-        $pathThumbnail = $directory . '_thumb.' . $extension;
+        $pathThumbnail = $directory . '_thumb.webp';
 
         /* Upload to spaces  */
         $storage = Yii::$app->spaces;
@@ -223,16 +223,25 @@ class Barang extends BaseBarang {
     /**
      * Return path directory dari thumb image
      * @param $files
-     * @param int $width
-     * @param int $height
      * @param int $quality
      * @return string
      */
-    protected function createThumbnailImage($files, int $width = 128, int $height = 128, int $quality = 100): string {
+    protected function createThumbnailImage($files, int $quality = 80): string {
+        Yii::error(Vardumper::dumpAsString($files));
         $thumbnailFile = '/tmp/' . $files['name'];
-        Image::thumbnail($files['tmp_name'], $width, $height)
-            ->save($thumbnailFile, ['quality' => $quality]);
+
+        $imagine = Image::getImagine()->open($files['tmp_name']);
+        $imagine->save($thumbnailFile, [
+            'webp_quality'  => $quality, // Range 0-100
+            'webp_lossless' => false // Set to true for lossless compression
+        ]);
+
+
+        /*Image::thumbnail($files['tmp_name'], $width, $height) // int $width = 128, int $height = 128,
+            ->save($thumbnailFile, ['quality' => $quality]);*/
         return $thumbnailFile;
+
+
     }
 
     /**
