@@ -22,7 +22,6 @@ $renderItemTotal = function ($sign, $nama, $singkatanMataUang, $nominal, $classO
         [
             'class' => 'd-flex justify-content-between ' . $classOptions,
         ]
-
     );
 };
 
@@ -45,33 +44,75 @@ return [
         'class'     => '\yii\grid\DataColumn',
         'attribute' => 'nomor',
         'value'     => function (Quotation $model) {
+
+            $createdAt = !empty($model->created_at) ?
+                Html::tag('span', '<i class="bi bi-clock-history"></i>' . ' Created At: ' . Yii::$app->formatter->asDatetime($model->created_at)) : '';
+
             $validity = $model->getValidityBasedOnDateLimit('html');
-            $validityString = Html::tag('small', 'Validity: ' .
-                $validity['html'] . ' ' .
-                $validity['howManyDaysAreLeftText']
-            );
-            
+            $validityString = Html::tag('div',
+                Html::tag('span', '<i class="bi bi-clock-history"></i>' . ' Validity: ' . $validity['html']) .
+                Html::tag('div',
+                    Html::tag('span', $validity['howManyDaysAreLeftText']) .
+                    Html::tag('span', $model->getValidityPeriod()), ['class' => 'ps-3 d-flex flex-column']
+                )
+                , [
+                    'class' => 'd-flex flex-column'
+                ]);
+
+
             $formJob = empty($model->quotationFormJob) ? '' :
                 Html::tag('div',
-                    Html::tag('small', 'Form Job:') .
+                    Html::tag('div', '<div><i class="bi bi-wrench"></i> Form Job:</div>' .
+                        Html::a('<i class="bi bi-printer"></i> Print', ['quotation/print-form-job', 'id' => $model->id], [
+                            'class'  => 'btn btn-link',
+                            'target' => '_blank',
+                            'rel'    => 'noopener noreferrer'
+                        ])
+                        , ['class' => 'd-flex justify-content-between align-items-center']) .
                     Html::tag('div',
-                        'Nomor: ' . $model->quotationFormJob->nomor . '<br/>' .
-                        'SPK: ' . ($model->quotationFormJob->nomorSuratPerintahKerja ?: '') . '<br/>' .
-                        'Date: ' . (Yii::$app->formatter->asDate($model->quotationFormJob->tanggal) ?: '')
+                        Html::tag('span', 'Nomor: ' . $model->quotationFormJob->nomor) .
+                        Html::tag('span', 'Date: ' . (Yii::$app->formatter->asDate($model->quotationFormJob->tanggal))) .
+                        Html::tag('span', 'SPK: ' . ($model->quotationFormJob->nomorSuratPerintahKerja ?: ''))
+
                         , [
-                            'class' => 'ps-3'
+                            'class' => 'ps-3 d-flex flex-column'
                         ]
                     )
-                    ,
-                    [
-                        'class' => 'ps-2 text-muted flex-column',
+                    , [
+                        'class' => 'd-flex flex-column',
                     ]
                 );
 
-            return $model->nomor . ' <br/>' .
-                $validityString . ' <br/>' .
-                $model->getValidityPeriod() .
-                $formJob;
+            $deliveryReceipt = '';
+            if (!empty($model->quotationDeliveryReceipts)) {
+                $mapDeliveryReceipt = array_map(function ($deliveryReceipt) use (&$model) {
+                    return Html::tag('div',
+                        Html::tag('span', $deliveryReceipt->nomor) .
+                        Html::a('<i class="bi bi-printer"></i> Print', ['quotation/print-delivery-receipt', 'id' => $deliveryReceipt->id], [
+                            'class'  => 'btn btn-link',
+                            'target' => '_blank',
+                            'rel'    => 'noopener noreferrer'
+                        ])
+                        , ['class' => 'd-flex justify-content-between align-items-center']);
+                }, $model->quotationDeliveryReceipts);
+
+                $deliveryReceipt = Html::tag('div',
+                    Html::tag('span', '<i class="bi bi-truck"></i> Delivery Receipt:') .
+                    Html::tag('span', implode($mapDeliveryReceipt), ['class' => 'ps-3']), [
+                        'class' => 'd-flex flex-column text-warning fw-bold'
+                    ]);
+            }
+            return
+                Html::tag('div',
+                    $model->nomor .
+                    $createdAt .
+                    $validityString .
+                    $formJob .
+                    $deliveryReceipt
+                    , [
+                        'class' => 'd-flex flex-column gap-3',
+                    ]);
+
 
         },
         'format'    => 'raw',
@@ -92,19 +133,19 @@ return [
         'value'               => function (Quotation $model) {
             $customerName = $model->customer->nama . '<br/>';
             $attendance = Html::tag('div',
-                Html::tag('small', 'Attendance:') .
+                Html::tag('span', '<i class="bi bi-person-rolodex"></i> Attendance:') .
                 Html::tag('div', $model->attendant_1, ['class' => 'ps-3']) .
                 (!empty($model->attendant_2) ? Html::tag('div', $model->attendant_2, ['class' => 'ps-3']) : '')
                 ,
                 [
-                    'class' => 'ps-2 text-muted flex-column',
+                    'class' => 'd-flex flex-column',
                 ]
             );
 
             $unit = '';
             if ($model->quotationFormJob) {
                 $unit = Html::tag('div',
-                    Html::tag('small', 'Unit:') .
+                    Html::tag('span', '<i class="bi bi-folder-check"></i> Unit:') .
                     Html::tag('div',
                         'Nomor Unit: ' . $model->quotationFormJob?->cardOwnEquipment?->nomor_unit . '<br/>' .
                         'Merk/Type: ' . $model->quotationFormJob?->cardOwnEquipment?->merk . '/' . $model->quotationFormJob?->cardOwnEquipment?->nama . '<br/>' .
@@ -117,13 +158,17 @@ return [
                     )
                     ,
                     [
-                        'class' => 'ps-2 text-muted flex-column',
+                        'class' => 'd-flex flex-column',
                     ]
                 );
             }
 
-
-            return $customerName . $attendance . $unit;
+            return
+                Html::tag('div',
+                    $customerName . $attendance . $unit
+                    , [
+                        'class' => 'd-flex flex-column gap-3',
+                    ]);
 
         },
         'format'              => 'raw',

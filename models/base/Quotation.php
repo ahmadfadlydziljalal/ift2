@@ -6,6 +6,8 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 use \app\models\active_queries\QuotationQuery;
 
 /**
@@ -30,6 +32,10 @@ use \app\models\active_queries\QuotationQuery;
  * @property integer $vat_percentage
  * @property integer $rekening_id
  * @property integer $signature_orang_kantor_id
+ * @property integer $created_at
+ * @property integer $updated_at
+ * @property integer $created_by
+ * @property integer $updated_by
  *
  * @property \app\models\Card $customer
  * @property \app\models\MataUang $mataUang
@@ -54,6 +60,22 @@ abstract class Quotation extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'quotation';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['blameable'] = [
+            'class' => BlameableBehavior::class,
+        ];
+        $behaviors['timestamp'] = [
+            'class' => TimestampBehavior::class,
+                        ];
+        
+    return $behaviors;
     }
 
     /**
@@ -104,6 +126,10 @@ abstract class Quotation extends \yii\db\ActiveRecord
             'vat_percentage' => 'Vat Percentage',
             'rekening_id' => 'Rekening ID',
             'signature_orang_kantor_id' => 'Signature Orang Kantor ID',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+            'created_by' => 'Created By',
+            'updated_by' => 'Updated By',
         ]);
     }
 

@@ -127,6 +127,7 @@ return [
             'expandIcon'              => '<span class="bi bi-chevron-down"></span>',
             'collapseIcon'            => '<span class="bi bi-chevron-up"></span>',
             //'detailRowCssClass' => '',
+            'detailRowCssClass'       => 'bg-light',
             'expandOneOnly'           => true,
             'enableCache'             => false,
             'vAlign'                  => 'middle',
