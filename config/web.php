@@ -44,6 +44,7 @@ $config = [
         'view'                 => require __DIR__ . '/view.php',
         'pdf'                  => require __DIR__ . '/pdf.php',
         'pdfWithLetterhead'    => require __DIR__ . '/pdf_with_letterhead.php',
+        'pdfStickerStock'      => require __DIR__ . '/pdf_sticker_stock.php',
     ],
     'container'  => require __DIR__ . '/container.php',
     'id'         => 'basic',

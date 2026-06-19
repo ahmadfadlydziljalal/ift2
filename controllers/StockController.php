@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 
+use app\components\QrCodeStockGenerator;
 use app\models\Barang;
 use app\models\form\SetLokasiBarangInForm;
 use app\models\form\SetLokasiBarangMovementForm;
@@ -16,6 +17,7 @@ use app\models\Tabular;
 use app\models\TandaTerimaBarangDetail;
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -74,6 +76,26 @@ class StockController extends Controller {
         } else {
             return '<div class="alert alert-danger">No data found</div>';
         }
+    }
+
+    public function actionPrintSticker($id) {
+        $model = Barang::findOne($id);
+        /*$this->layout = 'print';
+        return $this->render('preview_print_sticker_pdf', [
+            'model' => $model,
+        ]);*/
+
+        $pdf = Yii::$app->pdfStickerStock;
+        $pdf->content = $this->renderPartial('preview_print_sticker', [
+            'model' => $model,
+            'path'  => (new QrCodeStockGenerator([
+                'text'     => Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $model->id]], true),
+                'filename' => 'qr-code-stock-' . $model->id . '.png',
+                'size'     => 125,
+                'margin'   => 0,
+            ]))->toFile(),
+        ]);
+        return $pdf->render();
     }
 
     /**
