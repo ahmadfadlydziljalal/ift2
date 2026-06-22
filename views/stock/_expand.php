@@ -46,7 +46,7 @@ use yii\helpers\Url;
         ])
         ,
         [
-            'class' => 'd-flex flex-column justify-content-center align-items-center gap-2'
+            'class' => 'd-flex flex-column  gap-2'
         ]
     );
     Html::img($qrCode->writeDataUri(), ['class' => 'img-fluid']);
