@@ -1,6 +1,7 @@
 <?php
 
 /* @see \app\controllers\MaterialRequisitionController::actionPrintPenawaran() */
+/* @see \app\controllers\MaterialRequisitionController::actionPrintPenawaranToPdf() */
 /* @var $this View */
 
 /* @var $model MaterialRequisition */
@@ -21,7 +22,7 @@ $settings = Yii::$app->settings;
         <div class="" style=" float: left; width: 49%;">
             <div class="border-1" style="min-height: 1.6cm; max-height: 1.6cm; padding: .5em">
                 To: <?= $model->vendor->nama ?><br/>
-               <?= nl2br($model->vendor->alamat) ?>
+                <?= nl2br($model->vendor->alamat) ?>
             </div>
         </div>
 
@@ -48,7 +49,7 @@ $settings = Yii::$app->settings;
 
     <div class="" style="width: 100%">
         <p>Silahkan centang barang yang di approve</p>
-       <?= $this->render('_item_penawaran_harga', ['model' => $model]) ?>
+        <?= $this->render('_item_penawaran_harga', ['model' => $model]) ?>
     </div>
 
     <div style="clear: both"></div>
@@ -67,9 +68,9 @@ $settings = Yii::$app->settings;
                 <td class="text-nowrap text-center"><?= $model->approvedBy->nama ?></td>
                 <td class="text-nowrap text-center"><?= $model->acknowledgeBy->nama ?></td>
                 <td class="text-nowrap text-center"><?= isset($model->userKaryawan) ?
-                      $model->userKaryawan['nama'] :
-                      User::findOne($model->created_by)->username
-                   ?>
+                        $model->userKaryawan['nama'] :
+                        User::findOne($model->created_by)->username
+                    ?>
                 </td>
             </tr>
             <tr>

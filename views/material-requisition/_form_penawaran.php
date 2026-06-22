@@ -27,39 +27,39 @@ use yii\widgets\MaskedInput;
     <div class="mt-3">
         <?php $form = ActiveForm::begin([
             'id' => 'dynamic-form',
-            'enableClientValidation' => false,
-            'enableAjaxValidation' => false,
-            'errorSummaryCssClass' => 'alert alert-danger'
+            /*'enableClientValidation' => false,
+            'enableAjaxValidation'   => false,
+            'errorSummaryCssClass'   => 'alert alert-danger'*/
         ]) ?>
 
         <?php
         DynamicFormWidget::begin([
             'widgetContainer' => 'dynamicform_wrapper',
-            'widgetBody' => '.container-items',
-            'widgetItem' => '.item',
-            'limit' => 100,
-            'min' => 1,
-            'insertButton' => '.add-item',
-            'deleteButton' => '.remove-item',
-            'model' => $modelsDetail[0],
-            'formId' => 'dynamic-form',
-            'formFields' => ['id', 'material_requisition_detail_id', 'vendor_id', 'harga_penawaran', 'status_id'],
+            'widgetBody'      => '.container-items',
+            'widgetItem'      => '.item',
+            'limit'           => 100,
+            'min'             => 1,
+            'insertButton'    => '.add-item',
+            'deleteButton'    => '.remove-item',
+            'model'           => $modelsDetail[0],
+            'formId'          => 'dynamic-form',
+            'formFields'      => ['id', 'material_requisition_detail_id', 'vendor_id', 'harga_penawaran', 'status_id'],
         ]);
         ?>
 
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
-                <tr>
-                    <th colspan="8">Penawaran - penawaran dari vendor
-                        <?php
-                        if (!empty($modelMaterialRequisitionDetail->getErrors())) {
-                            echo "<br/>";
-                            echo $form->errorSummary($modelMaterialRequisitionDetail);
-                        }
-                        ?>
-                    </th>
-                </tr>
+                <!--                <tr>-->
+                <!--                    <th colspan="8">Penawaran - penawaran dari vendor-->
+                <?php
+                /*  if (!empty($modelMaterialRequisitionDetail->getErrors())) {
+                      echo "<br/>";
+                      echo $form->errorSummary($modelMaterialRequisitionDetail);
+                  }*/
+                ?>
+                <!--                    </th>-->
+                <!--                </tr>-->
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Vendor</th>
@@ -86,10 +86,10 @@ use yii\widgets\MaskedInput;
                         <td>
                             <?= $form->field($modelDetail, "[$i]vendor_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                                 ->widget(Select2::class, [
-                                    'data' => Card::find()->map(Card::GET_ONLY_VENDOR),
+                                    'data'    => Card::find()->map(Card::GET_ONLY_VENDOR),
                                     'options' => [
                                         'placeholder' => '= Pilih vendor =',
-                                        'class' => 'form-control vendor'
+                                        'class'       => 'form-control vendor'
                                     ]
                                 ])
                             ?>
@@ -114,14 +114,14 @@ use yii\widgets\MaskedInput;
 
                             <?= $form->field($modelDetail, "[$i]mata_uang_id", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                                 ->widget(DepDrop::class, [
-                                    'data' => $data,
-                                    'options' => [
+                                    'data'          => $data,
+                                    'options'       => [
                                         'placeholder' => ' - ',
-                                        'class' => 'form-control mata-uang'
+                                        'class'       => 'form-control mata-uang'
                                     ],
                                     'pluginOptions' => [
                                         'depends' => ['materialrequisitiondetailpenawaran-' . $i . '-vendor_id'],
-                                        'url' => Url::to(['card/depdrop-find-mata-uang-by-card-id'])
+                                        'url'     => Url::to(['card/depdrop-find-mata-uang-by-card-id'])
                                     ]
                                 ]);
                             ?>
@@ -131,7 +131,7 @@ use yii\widgets\MaskedInput;
                             <?= $form->field($modelDetail, "[$i]quantity_pesan", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                                 ->textInput([
                                     'class' => 'form-control quantity-pesan text-end',
-                                    'type' => 'number'
+                                    'type'  => 'number'
                                 ])
                             ?>
                         </td>
@@ -140,15 +140,15 @@ use yii\widgets\MaskedInput;
                             <?= $form->field($modelDetail, "[$i]harga_penawaran", ['template' => '{input}{error}{hint}', 'options' => ['class' => null]])
                                 ->widget(MaskedInput::class, [
                                     'clientOptions' => [
-                                        'alias' => 'numeric',
-                                        'digits' => 2,
-                                        'groupSeparator' => ',',
-                                        'radixPoint' => '.',
-                                        'autoGroup' => true,
-                                        'autoUnmask' => true,
+                                        'alias'              => 'numeric',
+                                        'digits'             => 2,
+                                        'groupSeparator'     => ',',
+                                        'radixPoint'         => '.',
+                                        'autoGroup'          => true,
+                                        'autoUnmask'         => true,
                                         'removeMaskOnSubmit' => true
                                     ],
-                                    'options' => [
+                                    'options'       => [
                                         'class' => 'form-control harga-penawaran'
                                     ]
                                 ]);
@@ -187,10 +187,13 @@ use yii\widgets\MaskedInput;
         </div>
         <?php DynamicFormWidget::end(); ?>
 
-        <div class="d-flex justify-content-between">
-            <?= Html::a(' Tutup', ['material-requisition/view', 'id' => $modelMaterialRequisition->id], ['class' => 'btn btn-secondary']) ?>
-            <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
-        </div>
+        <?php if (!Yii::$app->request->isAjax) : ?>
+            <div class="d-flex justify-content-between">
+                <?= Html::a(' Tutup', ['material-requisition/view', 'id' => $modelMaterialRequisition->id, '#' => 'material-requisition-tab-tab1'], ['class' => 'btn btn-secondary']) ?>
+                <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
+            </div>
+        <?php endif; ?>
+
         <?php ActiveForm::end() ?>
     </div>
 
