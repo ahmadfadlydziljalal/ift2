@@ -20,10 +20,10 @@ $fieldConfig = [
 <div class="material-requisition-form">
 
     <?php $form = ActiveForm::begin([
-        'id' => 'dynamic-form',
+        'id'                     => 'dynamic-form',
         'enableClientValidation' => false,
-        'enableAjaxValidation' => false,
-        'errorSummaryCssClass' => 'alert alert-danger'
+        'enableAjaxValidation'   => false,
+        'errorSummaryCssClass'   => 'alert alert-danger'
 
         /*'layout' => ActiveForm::LAYOUT_FLOATING,
         'fieldConfig' => [
@@ -40,22 +40,22 @@ $fieldConfig = [
                 <div class="col-12 col-lg-7">
 
                     <?= $form->field($model, 'vendor_id', $fieldConfig)->widget(Select2::class, [
-                        'data' => Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR),
+                        'data'          => Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR),
                         'pluginOptions' => [
                             'placeholder' => '= Pilih orang kantor =',
-                            'autofocus' => 'autofocus'
+                            'autofocus'   => 'autofocus'
                         ]
                     ])->hint(false) ?>
                     <?= $form->field($model, 'tanggal', $fieldConfig)->widget(DateControl::class, ['type' => DateControl::FORMAT_DATE,]) ?>
                     <?= $form->field($model, 'remarks', $fieldConfig)->textarea(['rows' => 6]) ?>
                     <?= $form->field($model, 'approved_by_id', $fieldConfig)->widget(Select2::class, [
-                        'data' => Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR),
+                        'data'    => Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR),
                         'options' => [
                             'placeholder' => '= Pilih orang kantor ='
                         ]
                     ]) ?>
                     <?= $form->field($model, 'acknowledge_by_id', $fieldConfig)->widget(Select2::class, [
-                        'data' => Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR),
+                        'data'    => Card::find()->map(Card::GET_ONLY_PEJABAT_KANTOR),
                         'options' => [
                             'placeholder' => '= Pilih orang kantor ='
                         ]
@@ -65,13 +65,16 @@ $fieldConfig = [
         </div>
 
         <?= $this->render('_form_detail', [
-            'form' => $form,
+            'form'         => $form,
             'modelsDetail' => $modelsDetail
         ]) ?>
 
         <div class="d-flex justify-content-between">
             <?= Html::a(' Tutup', ['index'], ['class' => 'btn btn-secondary']) ?>
-            <?= Html::submitButton(' Simpan', ['class' => 'btn btn-success']) ?>
+            <?= $model->isNewRecord ?
+                Html::submitButton(' Simpan MR', ['class' => 'btn btn-success']) :
+                Html::submitButton(' Update MR', ['class' => 'btn btn-primary'])
+            ?>
         </div>
     </div>
 

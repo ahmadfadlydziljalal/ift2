@@ -21,19 +21,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 <div class="material-requisition-update">
-    <h1><?= $this->title ?></h1>
-    <div>
-        <?= Html::tag('span', $modelMaterialRequisition->nomor, ['class' => 'badge bg-success']) ?>
-        <?= Html::tag('span', $modelMaterialRequisitionDetail->barang->nama, ['class' => 'badge bg-info']) ?>
-        <?= Html::tag('span', $modelMaterialRequisitionDetail->quantity, ['class' => 'badge bg-warning']) ?>
-        <?= Html::tag('span', $modelMaterialRequisitionDetail->satuan->nama, ['class' => 'badge bg-dark']) ?>
-
-    </div>
-
-
+    <?php if (!Yii::$app->request->isAjax): ?>
+        <h1><?= $this->title ?></h1>
+        <div>
+            <?= Html::tag('span', $modelMaterialRequisition->nomor, ['class' => 'badge bg-success']) ?>
+            <?= Html::tag('span', $modelMaterialRequisitionDetail->barang->nama, ['class' => 'badge bg-info']) ?>
+            <?= Html::tag('span', $modelMaterialRequisitionDetail->quantity, ['class' => 'badge bg-warning']) ?>
+            <?= Html::tag('span', $modelMaterialRequisitionDetail->satuan->nama, ['class' => 'badge bg-dark']) ?>
+        </div>
+    <?php endif; ?>
+    
     <?= $this->render('_form_penawaran', [
-        'modelsDetail' => $modelsDetail,
-        'modelMaterialRequisition' => $modelMaterialRequisition,
+        'modelsDetail'                   => $modelsDetail,
+        'modelMaterialRequisition'       => $modelMaterialRequisition,
         'modelMaterialRequisitionDetail' => $modelMaterialRequisitionDetail,
     ]) ?>
 

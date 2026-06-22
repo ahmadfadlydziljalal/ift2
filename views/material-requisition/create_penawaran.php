@@ -16,24 +16,24 @@ use yii\web\View;
 
 $this->title = 'Tambah Penawaran';
 $this->params['breadcrumbs'][] = ['label' => 'Material Requisition', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $modelMaterialRequisition->nomor, 'url' => ['view', 'id' => $modelMaterialRequisition->id]];
+$this->params['breadcrumbs'][] = ['label' => $modelMaterialRequisition->nomor, 'url' => ['view', 'id' => $modelMaterialRequisition->id, '#' => 'material-requisition-tab-tab1']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 
 <div class="material-requisition-create">
-    <h1><?= $this->title ?></h1>
-
-    <div>
-        <?= Html::tag('span', $modelMaterialRequisition->nomor, ['class' => 'badge bg-success']) ?>
-        <?= Html::tag('span', $modelMaterialRequisitionDetail->barang->nama, ['class' => 'badge bg-info']) ?>
-        <?= Html::tag('span', $modelMaterialRequisitionDetail->quantity, ['class' => 'badge bg-warning']) ?>
-        <?= Html::tag('span', $modelMaterialRequisitionDetail->satuan->nama, ['class' => 'badge bg-dark']) ?>
-    </div>
-
+    <?php if (!Yii::$app->request->isAjax): ?>
+        <h1><?= $this->title ?></h1>
+        <div>
+            <?= Html::tag('span', $modelMaterialRequisition->nomor, ['class' => 'badge bg-success']) ?>
+            <?= Html::tag('span', $modelMaterialRequisitionDetail->barang->nama, ['class' => 'badge bg-info']) ?>
+            <?= Html::tag('span', $modelMaterialRequisitionDetail->quantity, ['class' => 'badge bg-warning']) ?>
+            <?= Html::tag('span', $modelMaterialRequisitionDetail->satuan->nama, ['class' => 'badge bg-dark']) ?>
+        </div>
+    <?php endif; ?>
     <?= $this->render('_form_penawaran', [
-        'modelsDetail' => $modelsDetail,
-        'modelMaterialRequisition' => $modelMaterialRequisition,
+        'modelsDetail'                   => $modelsDetail,
+        'modelMaterialRequisition'       => $modelMaterialRequisition,
         'modelMaterialRequisitionDetail' => $modelMaterialRequisitionDetail
     ]) ?>
 
