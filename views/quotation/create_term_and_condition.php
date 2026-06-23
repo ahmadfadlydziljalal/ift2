@@ -13,7 +13,7 @@ use yii\web\View;
 
 $this->title = 'Create Term & Condition: ' . $quotation->nomor;
 $this->params['breadcrumbs'][] = ['label' => 'Quotation', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $quotation->nomor, 'url' => ['view', 'id' => $quotation->id]];
+$this->params['breadcrumbs'][] = ['label' => $quotation->nomor, 'url' => ['view', 'id' => $quotation->id, '#' => 'quotation-tab-tab3']];
 $this->params['breadcrumbs'][] = 'Create';
 ?>
 
@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = 'Create';
 
     <?= Html::tag('h1', Html::encode($this->title)) ?>
     <?= $this->render('_form_term_and_condition', [
-        'models' => $models,
+        'models'    => $models,
         'quotation' => $quotation,
     ]) ?>
 

@@ -1,39 +1,44 @@
 <?php
 
+/* @var $this View */
+?>
+<?php
+
 use app\models\HistoryLokasiBarang;
 use kartik\grid\SerialColumn;
+use yii\web\View;
 
 return [
-   [
-      'class' => SerialColumn::class,
-      'contentOptions' => [
-         'class' => 'align-middle text-end'
-      ],
-   ],
-   // [
-   // 'class'=>'\yii\grid\DataColumn',
-   // 'attribute'=>'id',
-   // 'format'=>'text',
-   // ],
-   [
-      'class' => '\yii\grid\DataColumn',
-      'attribute' => 'nomor',
-   ],
-   [
-      'class' => '\yii\grid\DataColumn',
-      'attribute' => 'card_id',
-      'format' => 'text',
-      'value' => 'card.kode'
-   ],
-   [
-      'class' => '\yii\grid\DataColumn',
-      'attribute' => 'dokumenPendukung',
-      'format' => 'raw',
-      'value' => function ($model) {
-         /** @var HistoryLokasiBarang $model */
-         return $model->nomorDokumenPendukung;
-      }
-   ],
+    [
+        'class'          => SerialColumn::class,
+        'contentOptions' => [
+            'class' => 'align-middle text-end'
+        ],
+    ],
+    // [
+    // 'class'=>'\yii\grid\DataColumn',
+    // 'attribute'=>'id',
+    // 'format'=>'text',
+    // ],
+    [
+        'class'     => '\yii\grid\DataColumn',
+        'attribute' => 'nomor',
+    ],
+    [
+        'class'     => '\yii\grid\DataColumn',
+        'attribute' => 'card_id',
+        'format'    => 'text',
+        'value'     => 'card.kode'
+    ],
+    [
+        'class'     => '\yii\grid\DataColumn',
+        'attribute' => 'dokumenPendukung',
+        'format'    => 'raw',
+        'value'     => function (HistoryLokasiBarang $model) {
+            /** @var HistoryLokasiBarang $model */
+            return $model->nomorDokumenPendukung;
+        }
+    ],
 //   [
 //      'class' => '\yii\grid\DataColumn',
 //      'attribute' => 'tanda_terima_barang_detail_id',
@@ -52,55 +57,55 @@ return [
 //      'format' => 'text',
 //      'value' => 'quotationDeliveryReceiptDetail.quotationDeliveryReceipt.nomor'
 //   ],
-   // [
-   // 'class'=>'\yii\grid\DataColumn',
-   // 'attribute'=>'tipe_pergerakan_id',
-   // 'format'=>'text',
-   // ],
-   // [
-   // 'class'=>'\yii\grid\DataColumn',
-   // 'attribute'=>'step',
-   // 'format'=>'text',
-   // ],
-   [
-      'class' => '\yii\grid\DataColumn',
-      'attribute' => 'quantity',
-      'format' => 'text',
-   ],
-   [
-      'class' => '\yii\grid\DataColumn',
-      'attribute' => 'block',
-      'format' => 'text',
-   ],
-   [
-      'class' => '\yii\grid\DataColumn',
-      'attribute' => 'rak',
-      'format' => 'text',
-   ],
-   [
-      'class' => '\yii\grid\DataColumn',
-      'attribute' => 'tier',
-      'format' => 'text',
-   ],
-   [
-      'class' => '\yii\grid\DataColumn',
-      'attribute' => 'row',
-      'format' => 'text',
-   ],
-   // [
-   // 'class'=>'\yii\grid\DataColumn',
-   // 'attribute'=>'catatan',
-   // 'format'=>'ntext',
-   // ],
+    // [
+    // 'class'=>'\yii\grid\DataColumn',
+    // 'attribute'=>'tipe_pergerakan_id',
+    // 'format'=>'text',
+    // ],
+    // [
+    // 'class'=>'\yii\grid\DataColumn',
+    // 'attribute'=>'step',
+    // 'format'=>'text',
+    // ],
+    [
+        'class'     => '\yii\grid\DataColumn',
+        'attribute' => 'quantity',
+        'format'    => 'text',
+    ],
+    [
+        'class'     => '\yii\grid\DataColumn',
+        'attribute' => 'block',
+        'format'    => 'text',
+    ],
+    [
+        'class'     => '\yii\grid\DataColumn',
+        'attribute' => 'rak',
+        'format'    => 'text',
+    ],
+    [
+        'class'     => '\yii\grid\DataColumn',
+        'attribute' => 'tier',
+        'format'    => 'text',
+    ],
+    [
+        'class'     => '\yii\grid\DataColumn',
+        'attribute' => 'row',
+        'format'    => 'text',
+    ],
+    // [
+    // 'class'=>'\yii\grid\DataColumn',
+    // 'attribute'=>'catatan',
+    // 'format'=>'ntext',
+    // ],
 //   [
 //      'class' => '\yii\grid\DataColumn',
 //      'attribute' => 'depend_id',
 //      'format' => 'text',
 //   ],
-   [
-      'class' => 'yii\grid\ActionColumn',
-      'contentOptions' => [
-         'class' => 'text-nowrap'
-      ]
-   ],
+    [
+        'class'          => 'yii\grid\ActionColumn',
+        'contentOptions' => [
+            'class' => 'text-nowrap'
+        ]
+    ],
 ];   

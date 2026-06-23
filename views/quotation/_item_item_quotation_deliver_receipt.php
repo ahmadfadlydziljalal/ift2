@@ -14,34 +14,41 @@ use yii\web\View;
 
 ?>
 
-<div>
-    <div class="row rows-col-sm-12 rows-col-md-2">
+<div class="d-flex flex-column gap-2">
+    <div class="row rows-col-sm-12 rows-col-md-2 row-cols-lg-4">
         <div class="col">
-            <div class="d-flex flex-column gap-3">
-                <div>
-                    <i class="bi bi-calendar"></i> <?= Yii::$app->formatter->asDate($model->tanggal) ?>
-                </div>
-                <div>
-                    <i class="bi bi-basket3"></i> <?= $model->purchase_order_number ?>
-                </div>
+            <div class="d-inline-flex flex-column gap-2">
+                <div><i class="bi bi-calendar"></i> Tanggal</div>
+                <span><?= Yii::$app->formatter->asDate($model->tanggal) ?></span>
             </div>
-
         </div>
         <div class="col">
-            <div class="d-flex flex-column gap-3">
-                <div>
-                    <i class="bi bi-check-circle"></i> <?= $model->checker ?>
-                </div>
-                <div>
-                    <i class="bi bi-truck"></i> <?= $model->vehicle ?>
-                </div>
+            <div class="d-inline-flex flex-column gap-2">
+                <div class="fw-bold"><i class="bi bi-basket3"></i> P.O Number</div>
+                <span><?= $model->purchase_order_number ?: 'Not available' ?></span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="d-inline-flex flex-column gap-2">
+                <div class="fw-bold"><i class="bi bi-check-circle"></i> Checker</div>
+                <span><?= $model->checker ?></span>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="d-inline-flex flex-column gap-2">
+                <div class="fw-bold"><i class="bi bi-truck"></i> Vehicle</div>
+                <span><?= empty($model->vehicle) ? 'Not Available' : $model->vehicle ?></span>
             </div>
         </div>
     </div>
-    <p class="mt-3">
-        <i class="bi bi-hand-thumbs-up-fill"></i>
-        <?= empty($model->remarks) ? "" : nl2br($model->remarks) ?>
-    </p>
+
+    <div class="d-inline-flex flex-column gap-2 mt-3">
+        <div class="fw-bold"><i class="bi bi-hand-thumbs-up"></i> Remarks</div>
+        <span><?= empty($model->remarks) ? "No Remarks" : nl2br($model->remarks) ?></span>
+    </div>
+
+    <div class="my-2"></div>
     <?= GridView::widget([
         'dataProvider' => new ActiveDataProvider([
             'query'      => $model->getQuotationDeliveryReceiptDetails(),
