@@ -73,7 +73,7 @@ $settings = Yii::$app->settings;
                 <td class="text-center text-nowrap"><?= $model->acknowledgeBy->nama ?></td>
                 <td class="text-center text-nowrap"><?= isset($model->userKaryawan) ?
                         $model->userKaryawan['nama'] :
-                        User::findOne($model->created_by)->username
+                        User::findOne($model->created_by)->email
                     ?>
                 </td>
             </tr>

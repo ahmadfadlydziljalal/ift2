@@ -14,7 +14,7 @@ use yii\web\View;
 
 $this->title = 'Update Quotation: ' . $quotation->nomor;
 $this->params['breadcrumbs'][] = ['label' => 'Quotation', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $quotation->nomor, 'url' => ['view', 'id' => $quotation->id]];
+$this->params['breadcrumbs'][] = ['label' => $quotation->nomor, 'url' => ['view', 'id' => $quotation->id, '#' => 'quotation-tab-tab1']];
 $this->params['breadcrumbs'][] = 'Update';
 
 ?>
@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = 'Update';
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form_quotation_barang', [
-        'models' => $models,
+        'models'    => $models,
         'quotation' => $quotation,
     ]) ?>
 </div>

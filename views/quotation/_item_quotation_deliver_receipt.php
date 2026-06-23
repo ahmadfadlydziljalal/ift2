@@ -10,65 +10,44 @@ use yii\web\View;
 
 ?>
 
-<div class="card bg-transparent">
-    <div class="card-body border-bottom fw-bold">
-        <div class="d-flex justify-content-between">
-
-            <div>
+<div class="card border shadow-lg">
+    <div class="card-header border-bottom fw-bold">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="card-text">
                 <i class="bi bi-file-pdf"></i> <?= $model->nomor ?>
             </div>
-
-            <?= Html::a(
-                TextLinkEnum::DELETE->value,
-                ['quotation/delete-delivery-receipt', 'id' => $model->id],
-                [
+            <div>
+                <?php if (!$model->tanggal_konfirmasi_diterima_customer) :
+                    echo Html::a("Konfirmasi", ['quotation/konfirmasi-diterima-customer', 'id' => $model->id], [
+                        'class' => 'btn btn-outline-primary',
+                        'title' => 'Konfirmasi diterima customer'
+                    ]);
+                else :
+                    echo Html::tag('span', 'Ter-konfirmasi; ' . Yii::$app->formatter->asDate($model->tanggal_konfirmasi_diterima_customer), [
+                        'class' => 'badge bg-success'
+                    ]);
+                endif ?>
+                <?= Html::a(TextLinkEnum::PRINT->value, ['quotation/print-delivery-receipt', 'id' => $model->id], [
+                    'class'  => 'btn btn-outline-success',
+                    'target' => '_blank',
+                    'rel'    => 'noopener noreferrer'
+                ]) ?>
+                <?= Html::a(TextLinkEnum::UPDATE->value, ['quotation/update-delivery-receipt', 'id' => $model->id], [
+                    'class' => 'btn btn-outline-primary'
+                ]) ?>
+                <?= Html::a(TextLinkEnum::HAPUS->value, ['quotation/delete-delivery-receipt', 'id' => $model->id], [
                     'data'  => [
                         'confirm' => 'Hapus delivery receipt ini ?',
                         'method'  => 'post'
                     ],
                     'class' => 'btn btn-danger'
-                ]
-            ) ?>
-
+                ]) ?>
+            </div>
         </div>
     </div>
     <div class="card-body">
         <?= $this->render('_item_item_quotation_deliver_receipt', [
             'model' => $model
         ]) ?>
-    </div>
-    <div class="card-footer border-top p-3">
-        <div class="d-flex justify-content-between flex-wrap gap-3">
-            <div>
-                <?= Html::a(
-                    TextLinkEnum::UPDATE->value,
-                    ['quotation/update-delivery-receipt', 'id' => $model->id],
-                    [
-                        'class' => 'btn btn-primary'
-                    ]
-                ) ?>
-                <?= Html::a(TextLinkEnum::PRINT->value, ['quotation/print-delivery-receipt', 'id' => $model->id], [
-                    'class'  => 'btn btn-success',
-                    'target' => '_blank',
-                    'rel'    => 'noopener noreferrer'
-                ]) ?>
-            </div>
-            <div>
-
-                <?php if (!$model->tanggal_konfirmasi_diterima_customer) : ?>
-                    <?= Html::a(
-                        "Konfirmasi Terima Customer",
-                        ['quotation/konfirmasi-diterima-customer', 'id' => $model->id],
-                        [
-                            'class' => 'btn btn-primary'
-                        ]
-                    ) ?>
-                <?php else : ?>
-                    <?= Html::tag('span', 'Terkonfirmasi; ' . Yii::$app->formatter->asDate($model->tanggal_konfirmasi_diterima_customer), [
-                        'class' => 'badge bg-success'
-                    ]) ?>
-                <?php endif ?>
-            </div>
-        </div>
     </div>
 </div>
