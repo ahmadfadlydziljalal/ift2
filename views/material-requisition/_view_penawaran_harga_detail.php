@@ -71,7 +71,7 @@ use yii\helpers\Html;
         </div>
 
         <?php if (!empty($model->description)): ?>
-            <p class="card-text text-muted">Penawaran Harga: <?= $model->description ?></p>
+            <p class="card-text text-muted"><?= $model->description ?></p>
         <?php endif; ?>
 
 

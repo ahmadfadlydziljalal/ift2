@@ -3,6 +3,9 @@
 namespace app\controllers;
 
 use app\enums\TextLinkEnum;
+use app\models\Barang;
+use app\models\form\ImportMaterialRequestExcelFormRecord;
+use app\models\form\ImportMaterialRequestForm;
 use app\models\MaterialRequisition;
 use app\models\MaterialRequisitionDetail;
 use app\models\search\MaterialRequisitionSearch;
@@ -24,6 +27,7 @@ use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
+use yii\web\UploadedFile;
 
 /**
  * MaterialRequisitionController implements the CRUD actions for MaterialRequisition model.
@@ -104,6 +108,55 @@ class MaterialRequisitionController extends Controller {
     }
 
     /**
+     * @param int $step
+     * @param $key
+     * @return Response|string
+     * @throws NotFoundHttpException
+     */
+    public function actionImport(int $step = 1, $key = null): Response|string {
+
+        $model = new ImportMaterialRequestForm();
+
+        if ($step == 2) {
+            $model->scenario = ImportMaterialRequestForm::SCENARIO_STEP_2;
+            $model->setImportMaterialRequestExcelRecord($key);
+
+            if ($model->load(Yii::$app->request->post())) {
+
+                $model->importMaterialRequestExcelRecord = Tabular::createMultiple(ImportMaterialRequestExcelFormRecord::class);
+                Tabular::loadMultiple($model->importMaterialRequestExcelRecord, $this->request->post());
+
+                if ($model->validate() && Tabular::validateMultiple($model->importMaterialRequestExcelRecord)) {
+                    if ($model->save()) {
+                        Yii::$app->session->setFlash('success', 'Material Request has been created successfully.');
+                        return $this->redirect(['index']);
+                    }
+                    Yii::$app->session->setFlash('error', 'Failed to create material request.');
+                }
+            }
+
+            return $this->render('import_step_2', [
+                'model'        => $model,
+                'modelsDetail' => $model->getImportMaterialRequestExcelRecord()
+            ]);
+        }
+
+        // Default step 1
+        $model->scenario = ImportMaterialRequestForm::SCENARIO_STEP_1;
+        if ($model->load(Yii::$app->request->post())) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->import()) {
+                Yii::$app->session->setFlash('success', 'File imported successfully. Please review it!');
+                return $this->redirect(['import', 'step' => 2, 'key' => $model->getCacheKey()]);
+            }
+        }
+
+        return $this->render('import', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
      * Creates a new MaterialRequisition model.
      * @return string|Response
      * @throws ServerErrorHttpException
@@ -146,9 +199,7 @@ class MaterialRequisitionController extends Controller {
     public function actionUpdate(int $id): Response|string {
         $request = Yii::$app->request;
         $model = $this->findModel($id);
-        $modelsDetail = !empty($model->materialRequisitionDetails)
-            ? $model->materialRequisitionDetails
-            : [new MaterialRequisitionDetail()];
+        $modelsDetail = !empty($model->materialRequisitionDetails) ? $model->materialRequisitionDetails : [new MaterialRequisitionDetail()];
 
         if ($model->load($request->post())) {
 
@@ -232,7 +283,6 @@ class MaterialRequisitionController extends Controller {
         ]);
     }
 
-
     /**
      * @param $id
      * @return string
@@ -264,6 +314,21 @@ class MaterialRequisitionController extends Controller {
         return $pdf->render();
     }
 
+    /**
+     * @param string|null $q
+     * @param int|string|null $id
+     * @return array[]
+     */
+    public function actionFindBarang(string $q = null, int|string $id = null): array {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $out = ['results' => ['id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            $out['results'] = Barang::find()->liveSearch($q)->limit(20)->asArray()->all();
+        } elseif ($id > 0) {
+            $out['results'] = ['id' => $id, 'text' => Barang::findOne($id)->part_number];
+        }
+        return $out;
+    }
 
     /**
      * Finds the MaterialRequisition model based on its primary key value.
@@ -273,24 +338,8 @@ class MaterialRequisitionController extends Controller {
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel(int $id): MaterialRequisition {
-        if (($model = MaterialRequisition::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-
-    /**
-     * @param $materialRequisitionDetailId
-     * @return MaterialRequisitionDetail|null
-     * @throws NotFoundHttpException
-     */
-    protected function findModelDetail($materialRequisitionDetailId): ?MaterialRequisitionDetail {
-        if (($model = MaterialRequisitionDetail::findOne($materialRequisitionDetailId)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
+        return ($model = MaterialRequisition::findOne($id)) !== null ?
+            $model : throw new NotFoundHttpException('The requested page does not exist.');
     }
 
 }

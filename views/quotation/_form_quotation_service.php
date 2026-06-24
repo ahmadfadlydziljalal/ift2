@@ -25,7 +25,7 @@ use yii\web\View;
         'id' => 'dynamic-form'
     ]) ?>
 
-    <div class="card bg-transparent mb-3">
+    <div class="card shadow mb-3">
 
         <div class="card-header d-flex justify-content-between fw-bold">Master Quotation</div>
 
@@ -41,10 +41,8 @@ use yii\web\View;
                     ?>
                 </div>
             </div>
-
         </div>
     </div>
-
 
     <?php DynamicFormWidget::begin([
         'widgetContainer' => 'dynamicform_wrapper',
@@ -63,16 +61,16 @@ use yii\web\View;
 
         <?php foreach ($models as $i => $model) : ?>
 
-            <div class="card bg-transparent item">
+            <div class="card shadow item">
 
-                <div class="card-header d-flex justify-content-between">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <?php if (!$model->isNewRecord) {
                         echo Html::activeHiddenInput($model, "[$i]id");
                     } ?>
 
                     <?= Html::tag('span', 'Quotation Service', ['class' => 'fw-bold']) ?>
                     <?= Html::button('<i class="bi bi-x-lg"> </i>', [
-                        'class' => 'remove-item btn btn-danger btn-sm rounded-circle'
+                        'class' => 'remove-item btn btn-outline-danger btn-sm rounded-circle'
                     ]) ?>
                 </div>
 
