@@ -16,9 +16,7 @@ use yii\web\View;
 
 ?>
 
-
 <div id="term-and-condition">
-
     <div class="d-flex flex-column gap-3">
         <div class="d-flex flex-row gap-2">
 
@@ -44,11 +42,8 @@ use yii\web\View;
                 <?php endif; ?>
             </div>
         </div>
-
-
         <?= $this->render('_view_quotation_term_and_condition_table', [
             'model' => $model
-        ]) ?> ?>
+        ]) ?>
     </div>
-
 </div>

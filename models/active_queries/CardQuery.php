@@ -5,6 +5,7 @@ namespace app\models\active_queries;
 use app\components\helpers\ArrayHelper;
 use app\models\Card;
 use yii\db\ActiveQuery;
+use yii\db\Expression;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -12,116 +13,108 @@ use yii\web\NotFoundHttpException;
  *
  * @see Card
  */
-class CardQuery extends ActiveQuery
-{
-   /*public function active()
-   {
-       $this->andWhere('[[status]]=1');
-       return $this;
-   }*/
+class CardQuery extends ActiveQuery {
+    /*public function active()
+    {
+        $this->andWhere('[[status]]=1');
+        return $this;
+    }*/
 
-   /**
-    * @inheritdoc
-    * @return Card|array|null
-    */
-   public function one($db = null)
-   {
-      return parent::one($db);
-   }
+    /**
+     * @inheritdoc
+     * @return Card|array|null
+     */
+    public function one($db = null) {
+        return parent::one($db);
+    }
 
-   /**
-    * @param string $mode
-    * @return array
-    * @throws NotFoundHttpException
-    */
-   public function map(string $mode = Card::GET_ALL): array
-   {
+    /**
+     * @param string $mode
+     * @param string $from
+     * @param string $to
+     * @return array
+     * @throws NotFoundHttpException
+     */
+    public function map(string $mode = Card::GET_ALL, string $from = 'id', string $to = 'nama'): array {
 
-      $q = parent::select('card.id as id, TRIM(card.nama) as nama')
-         ->joinWith(['cardBelongsTypes' => function ($cbt) {
-            $cbt->joinWith('cardType', false);
-         }], false);
+        $q = parent::select([
+            'id'   => 'card.id',
+            'nama' => new Expression("TRIM(card.nama)"),
+            'kode' => new Expression("TRIM(card.kode)"),
+        ])->joinWith(['cardBelongsTypes' => function ($cbt) {
+            $cbt->joinWith('cardType');
+        }]);
 
-      switch ($mode):
+        switch ($mode):
+            case Card::GET_ALL:
+                $q->groupBy('card.id');
+                break;
+            case Card::GET_ONLY_VENDOR:
+                $q->where([
+                    'card_type.kode' => 'vendor'
+                ])->groupBy('card.id');
+                break;
+            case Card::GET_ONLY_TOKO_SAYA:
+                $q->where([
+                    'card_type.kode' => 'toko-saya'
+                ])->groupBy('card.id');
+                break;
+            case Card::GET_ONLY_PEJABAT_KANTOR:
+                $q->where([
+                    'card_type.kode' => 'pejabat-kantor'
+                ])->groupBy('card.id');
+                break;
+            case Card::GET_ONLY_MEKANIK:
+                $q->where([
+                    'card_type.kode' => 'mekanik'
+                ])->groupBy('card.id');
+                break;
+            case Card::GET_APART_FROM_TOKO_SAYA:
+                $q->where([
+                    '!=', 'card_type.kode', 'toko-saya'
+                ])->groupBy('card.id');
+                break;
+            case Card::GET_ONLY_WAREHOUSE:
+                $q->where([
+                    '=', 'card_type.kode', Card::GET_ONLY_WAREHOUSE
+                ])->groupBy('card.id');
+                break;
+            case Card::GET_ONLY_CUSTOMER:
+                $q->where([
+                    'card_type.kode' => 'customer'
+                ])->groupBy('card.id');
+                break;
+            default:
+                throw new NotFoundHttpException('Mode Anda tidak didukung');
+        endswitch;
 
-         case Card::GET_ALL:
-            $q->groupBy('card.id');
-            break;
+        return ArrayHelper::map($q->orderBy($to)->asArray()->all(), $from, $to);
+    }
 
-         case Card::GET_ONLY_VENDOR:
-            $q->where([
-               'card_type.kode' => 'vendor'
-            ])->groupBy('card.id');
-            break;
+    /**
+     * @inheritdoc
+     * @return Card[]|array
+     */
+    public function all($db = null) {
+        return parent::all($db);
+    }
 
-         case Card::GET_ONLY_TOKO_SAYA:
-            $q->where([
-               'card_type.kode' => 'toko-saya'
-            ])->groupBy('card.id');
-            break;
-
-         case Card::GET_ONLY_PEJABAT_KANTOR:
-            $q->where([
-               'card_type.kode' => 'pejabat-kantor'
-            ])->groupBy('card.id');
-            break;
-
-         case Card::GET_ONLY_MEKANIK:
-            $q->where([
-               'card_type.kode' => 'mekanik'
-            ])->groupBy('card.id');
-            break;
-
-         case Card::GET_APART_FROM_TOKO_SAYA:
-            $q->where([
-               '!=', 'card_type.kode', 'toko-saya'
-            ])->groupBy('card.id');
-            break;
-
-         case Card::GET_ONLY_WAREHOUSE:
-            $q->where([
-               '=', 'card_type.kode', Card::GET_ONLY_WAREHOUSE
-            ])->groupBy('card.id');
-            break;
-
-         case Card::GET_ONLY_CUSTOMER:
-            $q->where([
-               'card_type.kode' => 'customer'
-            ])->groupBy('card.id');
-            break;
-
-         default:
-            throw new NotFoundHttpException('Mode Anda tidak didukung');
-      endswitch;
-      return ArrayHelper::map($q->orderBy('nama')->all(), 'id', 'nama');
-   }
-
-   /**
-    * @inheritdoc
-    * @return Card[]|array
-    */
-   public function all($db = null)
-   {
-      return parent::all($db);
-   }
-
-   /**
-    * @param mixed $id
-    * @return Card[] | array
-    */
-   public function mataUang(mixed $id): array
-   {
-      return parent::select([
-         'id' => 'mata_uang.id',
-         'name' => 'mata_uang.singkatan'
-      ])
-         ->where([
-            'card.id' => $id
-         ])
-         ->joinWith('mataUang')
-         ->asArray()
-         ->all();
-   }
+    /**
+     * @param mixed $id
+     * @return Card[] | array
+     */
+    public function mataUang(mixed $id): array {
+        return parent::select([
+            'id'   => 'mata_uang.id',
+            'name' => 'mata_uang.singkatan'
+        ])
+            ->where([
+                'card.id' => $id
+            ])
+            ->joinWith('mataUang')
+            ->asArray()
+            ->all();
+    }
 
 
 }

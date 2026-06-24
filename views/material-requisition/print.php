@@ -17,15 +17,14 @@ $settings = Yii::$app->settings;
 
     <h1 class="text-center">Material Requisition</h1>
 
+    <!-- Header -->
     <div style="width: 100%; white-space: nowrap">
-
         <div class="mb-1" style=" float: left; width: 49%;">
             <div class="border-1" style="min-height: 1.6cm; max-height: 1.6cm; padding: .5em">
                 To: <?= $model->vendor->nama ?><br/>
                 <?= nl2br($model->vendor->alamat) ?>
             </div>
         </div>
-
         <div class="mb-1" style=" float: right; width: 49%">
             <table class="table">
                 <tbody>
@@ -47,7 +46,6 @@ $settings = Yii::$app->settings;
                 </tbody>
             </table>
         </div>
-
     </div>
 
     <div style="clear: both"></div>
