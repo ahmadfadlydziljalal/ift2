@@ -108,9 +108,22 @@ jQuery(document).ready(function () {
         return false;
     });
 
-    // Animation On Submit
+    // Animation On Submit (global)
+    // Allow opt-out per form by adding either:
+    //  - class="no-submit-disable"
+    //  - data-no-submit-disable="1"
     jQuery(document).on('beforeSubmit', 'form', function () {
-        let buttonSubmit = jQuery(this).find('button[type=submit]');
+        const $form = jQuery(this);
+        // Opt-out checks
+        if (
+            $form.hasClass('no-submit-disable') ||
+            $form.attr('data-no-submit-disable') === '1' ||
+            $form.data('noSubmitDisable') === 1
+        ) {
+            return true; // skip disabling for this form
+        }
+
+        let buttonSubmit = $form.find('button[type=submit]');
         buttonSubmit.html('<i class="bi bi-arrow-repeat"></i> Memproses...');
         buttonSubmit.attr('disabled', true).addClass('disabled');
     });

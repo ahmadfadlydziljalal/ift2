@@ -5,6 +5,7 @@ namespace app\controllers;
 
 use app\components\QrCodeStockGenerator;
 use app\models\Barang;
+use app\models\form\PrintStockMultipleStickerForm;
 use app\models\form\SetLokasiBarangInForm;
 use app\models\form\SetLokasiBarangMovementForm;
 use app\models\form\SetLokasiBarangMovementFromForm;
@@ -91,11 +92,58 @@ class StockController extends Controller {
             'path'  => (new QrCodeStockGenerator([
                 'text'     => Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $model->id]], true),
                 'filename' => 'qr-code-stock-' . $model->id . '.png',
-                'size'     => 125,
+                'size'     => 100,
                 'margin'   => 0,
             ]))->toFile(),
         ]);
         return $pdf->render();
+    }
+
+    public function actionPrintMultipleSticker() {
+        $model = new PrintStockMultipleStickerForm();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+
+
+            $pdf = Yii::$app->pdfStickerStock;
+            $barangs = $model->generateBarangsModel();
+
+            $content = '';
+            $countBarangs = count($barangs);
+            foreach ($barangs as $key => $item) {
+                $content .= $this->renderPartial('preview_print_sticker', [
+                    'model' => $item,
+                    'path'  => (new QrCodeStockGenerator([
+                        'text'     => Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $item->id]], true),
+                        'filename' => 'qr-code-stock-' . $item->id . '.png',
+                        'size'     => 125,
+                        'margin'   => 0,
+                    ]))->toFile(),
+                ]);
+
+                // if last page, do not add pagebreak;
+                if (($key + 1) < $countBarangs) {
+                    $content .= '<pagebreak />';
+                }
+
+            }
+            $pdf->content = $content;
+            return $pdf->render();
+        }
+
+        return $this->render('form_print_multiple_sticker', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionFindBarang(string $q = null, int|string $id = null): array {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $out = ['results' => ['id' => '', 'text' => '']];
+        if (!is_null($q)) {
+            $out['results'] = Barang::find()->liveSearch($q)->limit(20)->asArray()->all();
+        } elseif ($id > 0) {
+            $out['results'] = ['id' => $id, 'text' => Barang::findOne($id)->part_number];
+        }
+        return $out;
     }
 
     /**
