@@ -5,13 +5,11 @@ use yii\db\Migration;
 /**
  * Class m221114_190834_AlterMaterialRequistionDetailPenawaranTable
  */
-class m221114_190834_AlterMaterialRequistionDetailPenawaranTable extends Migration
-{
+class m221114_190834_AlterMaterialRequistionDetailPenawaranTable extends Migration {
     /**
      * {@inheritdoc}
      */
-    public function safeUp()
-    {
+    public function safeUp() {
 
         $this->dropForeignKey(
             'fk_material_requisition_detail_di_penawaran',
@@ -35,7 +33,7 @@ class m221114_190834_AlterMaterialRequistionDetailPenawaranTable extends Migrati
             'material_requisition_detail_id',
             'material_requisition_detail',
             'id',
-            'RESTRICT',
+            'CASCADE',
             'CASCADE',
         );
     }
@@ -43,8 +41,7 @@ class m221114_190834_AlterMaterialRequistionDetailPenawaranTable extends Migrati
     /**
      * {@inheritdoc}
      */
-    public function safeDown()
-    {
+    public function safeDown() {
         $this->dropForeignKey(
             'fk_material_requisition_detail_di_penawaran',
             'material_requisition_detail_penawaran'
