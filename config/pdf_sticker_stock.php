@@ -12,10 +12,10 @@ return [
         'SetDisplayMode'        => 'fullpage',
         'SetDisplayPreferences' => '/HideMenubar/HideToolbar/DisplayDocTitle/FitWindow',
     ],
-    'marginTop'    => '1.5',
+    'marginTop'    => '3',
     'marginRight'  => '3',
     'marginBottom' => '1',
-    'marginLeft'   => '0',
+    'marginLeft'   => '3',
     'marginHeader' => '0',
     'marginFooter' => '0',
     'options'      => [

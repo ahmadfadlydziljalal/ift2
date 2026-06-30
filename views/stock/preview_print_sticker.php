@@ -27,9 +27,9 @@ use yii\web\View;
             <div style="margin-bottom: 1em">
                 <?php echo Html::img(Yii::getAlias('@webroot/images/logo.png'), ['width' => '1.5cm']) ?>
             </div>
-            <span style="font-size: .60em;"><?= $barang->part_number ?> | <?= $barang->ift_number ?> | <?= $barang->id ?> </span><br/>
-            <span style="font-size: .65em;"><?= StringHelper::truncate($barang->nama, 36) ?></span><br/>
-            <span style="font-size: .5em;"><?= Yii::$app->formatter->asDatetime(date('Y-m-d H:i:s')) ?> <?= $orientation ?></span>
+            <span style="font-size: .75em;"><?= $barang->part_number ?> | <?= $barang->ift_number ?> | <?= $barang->id ?> </span><br/>
+            <span style="font-size: .75em;"><?= StringHelper::truncate($barang->nama, 48) ?></span><br/>
+            <span style="font-size: .75em;"><?= Yii::$app->formatter->asDatetime(date('Y-m-d H:i:s')) ?> <?= $orientation ?></span>
         </div>
         <div style="clear: both"></div>
     </div>
