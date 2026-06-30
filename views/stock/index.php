@@ -2,19 +2,16 @@
 
 
 /* @var $today string */
-/* @var $this View */
-/* @var $searchModel StockSearch */
+/* @var $this yii\web\View */
+/* @var $searchModel app\models\search\StockSearch */
 
 /* @var $dataProvider ActiveDataProvider */
+/* @var $dataProviderForExportMenu yii\data\ActiveDataProvider */
 
-/* @var $dataProviderForExportMenu ActiveDataProvider */
-
-use app\models\search\StockSearch;
+use kartik\bs5dropdown\ButtonDropdown;
 use kartik\export\ExportMenu;
 use kartik\grid\GridView;
 use yii\bootstrap5\Html;
-use yii\data\ActiveDataProvider;
-use yii\web\View;
 
 $this->title = 'Stock';
 $this->params['breadcrumbs'][] = $this->title;
@@ -24,12 +21,21 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="stock-index">
     <div class="d-flex flex-column gap-3">
         <div class="d-flex justify-content-between flex-wrap align-items-center">
+            <h1><?= Html::encode($this->title) ?></h1>
             <div>
-                <h1><?= Html::encode($this->title) ?></h1>
-            </div>
+                <?= ButtonDropdown::widget([
+                    'label' => 'Print Sticker',
+                    'dropdown' => [
+                        'items' => [
+                            ['label' => 'Multiple Sticker', 'url' => ['stock/print-multiple-sticker']],
 
-            <div>
-                <?= Html::a('<i class="bi bi-printer"></i> Print Multiple Sticker', ['stock/print-multiple-sticker'], ['class' => 'btn btn-primary']) ?>
+                        ],
+                    ],
+                    'buttonOptions' => [
+                        'class' => 'btn btn-primary'
+                    ]
+                ])  ?>
+
                 <?= ExportMenu::widget([
                     'dataProvider' => $dataProviderForExportMenu,
                     'columns'      => require(__DIR__ . DIRECTORY_SEPARATOR . '_columns.php'),

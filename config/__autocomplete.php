@@ -1,6 +1,7 @@
 <?php
 
 use kartik\mpdf\Pdf;
+use pheme\settings\components\Settings;
 use vendor\package\Rollbar;
 use yii\console\Application;
 use yii\web\User;
@@ -31,6 +32,8 @@ class Yii {
 class __Application {
 
     public Pdf $pdfStickerStock;
+
+    public Settings $settings;
 }
 
 /**

@@ -25,6 +25,7 @@ use yii\web\Response;
 use yii\web\ServerErrorHttpException;
 
 class StockController extends Controller {
+
     /**
      * @return string
      * @throws InvalidConfigException
@@ -88,13 +89,16 @@ class StockController extends Controller {
 
         $pdf = Yii::$app->pdfStickerStock;
         $pdf->content = $this->renderPartial('preview_print_sticker', [
-            'model' => $model,
-            'path'  => (new QrCodeStockGenerator([
+            'path'        => (new QrCodeStockGenerator([
                 'text'     => Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $model->id]], true),
                 'filename' => 'qr-code-stock-' . $model->id . '.png',
                 'size'     => 100,
                 'margin'   => 0,
             ]))->toFile(),
+            'barang'      => $model,
+            'width'       => $pdf->format[0],
+            'height'      => $pdf->format[1],
+            'orientation' => 'L',
         ]);
         return $pdf->render();
     }
@@ -103,21 +107,33 @@ class StockController extends Controller {
         $model = new PrintStockMultipleStickerForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
-
             $pdf = Yii::$app->pdfStickerStock;
+
+
+            // 1. Pecah ukuran format kertas
+            $dimensions = explode('*', $model->format);
+            $width = $model->orientation == 'L' ? (int)$dimensions[1] : (int)$dimensions[0];
+            $height = $model->orientation == 'L' ? (int)$dimensions[0] : (int)$dimensions[1];
+
+            // 2. Set format
+            $pdf->format = [$width, $height];
+
             $barangs = $model->generateBarangsModel();
 
             $content = '';
             $countBarangs = count($barangs);
-            foreach ($barangs as $key => $item) {
+            foreach ($barangs as $key => $barang) {
                 $content .= $this->renderPartial('preview_print_sticker', [
-                    'model' => $item,
-                    'path'  => (new QrCodeStockGenerator([
-                        'text'     => Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $item->id]], true),
-                        'filename' => 'qr-code-stock-' . $item->id . '.png',
+                    'barang'      => $barang,
+                    'path'        => (new QrCodeStockGenerator([
+                        'text'     => Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $barang->id]], true),
+                        'filename' => 'qr-code-stock-' . $barang->id . '.png',
                         'size'     => 125,
                         'margin'   => 0,
                     ]))->toFile(),
+                    'width'       => $width,
+                    'height'      => $height,
+                    'orientation' => $model->orientation,
                 ]);
 
                 // if last page, do not add pagebreak;
@@ -126,6 +142,7 @@ class StockController extends Controller {
                 }
 
             }
+
             $pdf->content = $content;
             return $pdf->render();
         }

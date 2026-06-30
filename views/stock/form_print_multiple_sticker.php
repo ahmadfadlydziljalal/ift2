@@ -14,6 +14,10 @@ use yii\helpers\Url;
 use yii\web\JsExpression;
 use yii\web\View;
 
+$this->title = "Print Multiple Sticker";
+$this->params['breadcrumbs'][] = ['label' => 'Stock', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <div class="">
@@ -22,12 +26,15 @@ use yii\web\View;
         'method'  => 'post',
     ]); ?>
 
+    <?= $form->field($model, 'format')->dropDownList($model->getFormatOptions()) ?>
+    <?= $form->field($model, 'orientation')->dropDownList($model->getOrientationOptions()) ?>
+
     <?= $form->field($model, "partNumbers")
         ->widget(Select2::class, [
             'options'       => [
                 'placeholder' => '...'
             ],
-            'theme'         => Select2::THEME_KRAJEE_BS4,
+            'theme'         => Select2::THEME_CLASSIC,
             'pluginOptions' => [
                 'multiple'           => true,
                 'allowClear'         => true,
@@ -44,13 +51,14 @@ use yii\web\View;
                 'escapeMarkup'       => new JsExpression('function (markup) { return markup; }'),
                 'templateResult'     => new JsExpression('function(result) { return result.text; }'),
                 'templateSelection'  => new JsExpression('function (result) { return result.text; }'),
+                'width'              => '100%',
             ],
         ]); ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Cetak', ['class' => 'btn btn-primary', 'formtarget' => '_blank']) ?>
+        <?= Html::submitButton('Cetak', ['class' => 'btn btn-primary', 'formtarget' => '_blank', 'name' => 'print-multiple-sticker-form-button']) ?>
     </div>
-    
+
     <?php ActiveForm::end(); ?>
 
 </div>
