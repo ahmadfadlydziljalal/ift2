@@ -5,8 +5,8 @@ $params = require __DIR__ . '/params.php';
 return [
     'class'        => kartik\mpdf\Pdf::class,
     // custom paper size in mm, width * height (lebar * tinggi) => (60mm x 80mm)
-    'format'       => [60, 80],
-    'orientation'  => kartik\mpdf\Pdf::ORIENT_PORTRAIT,
+    'format'       => [50, 70],
+    'orientation'  => kartik\mpdf\Pdf::ORIENT_LANDSCAPE,
     'destination'  => kartik\mpdf\Pdf::DEST_BROWSER,
     'methods'      => [
         'SetDisplayMode'        => 'fullpage',
@@ -15,7 +15,7 @@ return [
     'marginTop'    => '3',
     'marginRight'  => '3',
     'marginBottom' => '1',
-    'marginLeft'   => '3',
+    'marginLeft'   => '1',
     'marginHeader' => '0',
     'marginFooter' => '0',
     'options'      => [

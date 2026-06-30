@@ -12,11 +12,13 @@ use yii\web\View;
 /* @var $width int */
 /* @var $height int */
 /* @var $orientation null|string */
+
+$fontSize = $width >= 50 ? '.75' : '.5'
 ?>
 
 <?php if ($orientation == 'P') : ?>
     <!-- Height dan weight nya harus ditukar -->
-<div style="position: absolute; left: 0; bottom: 0; rotate: -90; width: <?= $height - 2 ?>mm; height: <?= $width - 2 ?>mm; ">
+<div style="position: absolute; left: 2mm;top: 2mm; right:2mm; bottom: 0; rotate: -90; width: <?= $width - 6 ?>mm; height: <?= $height - 6 ?>mm; ">
     <?php endif; ?>
     <!-- Content -->
     <div style="width: 100%; margin:0">
@@ -27,9 +29,11 @@ use yii\web\View;
             <div style="margin-bottom: 1em">
                 <?php echo Html::img(Yii::getAlias('@webroot/images/logo.png'), ['width' => '1.5cm']) ?>
             </div>
-            <span style="font-size: .75em;"><?= $barang->part_number ?> | <?= $barang->ift_number ?> | <?= $barang->id ?> </span><br/>
-            <span style="font-size: .75em;"><?= StringHelper::truncate($barang->nama, 48) ?></span><br/>
-            <span style="font-size: .75em;"><?= Yii::$app->formatter->asDatetime(date('Y-m-d H:i:s')) ?> <?= $orientation ?></span>
+            <span style="font-size: <?= $fontSize; ?>em;">
+                <?= $barang->part_number ?> | <?= $barang->ift_number ?> | <?= $barang->id ?>
+            </span><br/>
+            <span style="font-size: <?= $fontSize; ?>em;"><?= StringHelper::truncate($barang->nama, 48) ?></span><br/>
+            <span style="font-size: <?= $fontSize; ?>em;"><?= Yii::$app->formatter->asDatetime(date('Y-m-d H:i:s')) ?> <?= $orientation ?></span>
         </div>
         <div style="clear: both"></div>
     </div>

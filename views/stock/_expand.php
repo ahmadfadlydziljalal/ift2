@@ -39,7 +39,12 @@ use yii\helpers\Url;
                 ]
             )
         ) .
-        Html::a('Print', ['print-sticker', 'id' => $model->id], [
+        Html::a('Print (50 * 70)', ['print-sticker', 'id' => $model->id, 'width' => 50, 'height' => 70], [
+            'class'  => 'btn btn-success',
+            'target' => '_blank',
+            'rel'    => 'noopener noreferrer'
+        ]) . ' ' .
+        Html::a('Print (40 * 60)', ['print-sticker', 'id' => $model->id, 'width' => 40, 'height' => 60], [
             'class'  => 'btn btn-success',
             'target' => '_blank',
             'rel'    => 'noopener noreferrer'

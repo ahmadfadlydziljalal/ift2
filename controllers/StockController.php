@@ -80,25 +80,21 @@ class StockController extends Controller {
         }
     }
 
-    public function actionPrintSticker($id) {
+    public function actionPrintSticker($id, $width = 50, $height = 70) {
         $model = Barang::findOne($id);
-        /*$this->layout = 'print';
-        return $this->render('preview_print_sticker_pdf', [
-            'model' => $model,
-        ]);*/
-
         $pdf = Yii::$app->pdfStickerStock;
+        $pdf->format = [$width, $height];
         $pdf->content = $this->renderPartial('preview_print_sticker', [
             'path'        => (new QrCodeStockGenerator([
                 'text'     => Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $model->id]], true),
                 'filename' => 'qr-code-stock-' . $model->id . '.png',
-                'size'     => 100,
+                'size'     => 125,
                 'margin'   => 0,
             ]))->toFile(),
             'barang'      => $model,
-            'width'       => $pdf->format[0],
-            'height'      => $pdf->format[1],
-            'orientation' => 'L',
+            'width'       => $width,
+            'height'      => $height,
+            'orientation' => $pdf->orientation,
         ]);
         return $pdf->render();
     }
@@ -109,11 +105,10 @@ class StockController extends Controller {
 
             $pdf = Yii::$app->pdfStickerStock;
 
-
             // 1. Pecah ukuran format kertas
             $dimensions = explode('*', $model->format);
-            $width = $model->orientation == 'L' ? (int)$dimensions[1] : (int)$dimensions[0];
-            $height = $model->orientation == 'L' ? (int)$dimensions[0] : (int)$dimensions[1];
+            $height = $model->orientation == 'L' ? (int)$dimensions[1] : (int)$dimensions[0];
+            $width = $model->orientation == 'L' ? (int)$dimensions[0] : (int)$dimensions[1];
 
             // 2. Set format
             $pdf->format = [$width, $height];

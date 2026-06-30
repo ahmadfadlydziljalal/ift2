@@ -20,7 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<div class="">
+<div class=" d-flex flex-column gap-2">
+
+    <h1><?= Html::encode($this->title) ?></h1>
     <?php $form = ActiveForm::begin([
         'options' => ['class' => 'no-submit-disable'],
         'method'  => 'post',
@@ -28,7 +30,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $form->field($model, 'format')->dropDownList($model->getFormatOptions()) ?>
     <?= $form->field($model, 'orientation')->dropDownList($model->getOrientationOptions()) ?>
-
     <?= $form->field($model, "partNumbers")
         ->widget(Select2::class, [
             'options'       => [
