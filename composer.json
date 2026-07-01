@@ -43,7 +43,9 @@
     "kartik-v/yii2-date-range": "dev-master",
     "ahmadfadlydziljalal/yii2-dynamicform-v2": "~2.0.5",
     "yiisoft/yii2-authclient": "*",
-    "2amigos/qrcode-library": "^3.1.0"
+    "2amigos/qrcode-library": "^3.1.0",
+    "lcobucci/jwt": "^5.3",
+    "lcobucci/clock": "3.0.0"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

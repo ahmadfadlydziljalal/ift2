@@ -5,7 +5,7 @@ use app\widgets\stock\StockItem;
 
 /* @var $data app\models\Stock */
 /* @var $this yii\web\View */
-/* @see \app\controllers\SiteController::actionScan() */
+/* @see \app\controllers\ScanController::actionIndex() */
 
 $this->title = $data->namaBarang;
 
