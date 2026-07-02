@@ -7,9 +7,9 @@
 /* @var $stock Stock */
 
 use app\components\QrCodeStockGenerator;
+use app\models\form\PrintStockMultipleStickerForm;
 use app\models\Stock;
 use app\widgets\stock\StockItem;
-use Da\QrCode\QrCode;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -17,47 +17,30 @@ use yii\helpers\Url;
 
 <div class="stock-expand">
     <?php
-    /** @see \app\controllers\SiteController::actionScan() */
+    
+    $additionalView = '';
+    foreach (PrintStockMultipleStickerForm::getFormatOptions(false) as $label => $options) {
+        $additionalView .= Html::a('Print ' . $label, ['print-sticker', 'id' => $model->id, 'width' => $options['width'], 'height' => $options['height']], [
+            'class'  => 'btn btn-success mb-2 me-2 mr-2',
+            'target' => '_blank',
+            'rel'    => 'noopener noreferrer'
+        ]);
+    }
 
-    $url = Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $model->id]], true);
-    $qrCode = (new QrCode($url))
-        ->setSize(125)
-        ->setMargin(5);
-    ?>
-    <?php
-    $qrCodeImage = Html::tag(
-        'div',
-        Html::tag(
-            'div',
-            Html::img(
-                (new QrCodeStockGenerator([
-                    'text' => Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $model->id]], true),
-                ]))->toWriteDataUri()
-                ,
-                [
-                    'class' => 'img-fluid'
-                ]
-            )
-        ) .
-        Html::a('Print (50 * 70)', ['print-sticker', 'id' => $model->id, 'width' => 50, 'height' => 70], [
-            'class'  => 'btn btn-success',
-            'target' => '_blank',
-            'rel'    => 'noopener noreferrer'
-        ]) . ' ' .
-        Html::a('Print (40 * 60)', ['print-sticker', 'id' => $model->id, 'width' => 40, 'height' => 60], [
-            'class'  => 'btn btn-success',
-            'target' => '_blank',
-            'rel'    => 'noopener noreferrer'
-        ])
-        ,
-        [
-            'class' => 'd-flex flex-column  gap-2'
-        ]
-    );
-    Html::img($qrCode->writeDataUri(), ['class' => 'img-fluid']);
-    ?>
-    <?= StockItem::widget([
+    echo StockItem::widget([
         'model'          => $stock,
-        'additionalView' => $qrCodeImage,
+        'additionalView' => Html::tag('div',
+                Html::img(
+                    (new QrCodeStockGenerator([
+                        'text' => Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $model->id]], true),
+                    ]))->toWriteDataUri()
+                    ,
+                    [
+                        'class' => 'img-fluid'
+                    ]
+                ), [
+                    'class' => 'd-flex w-100 mb-4'
+                ]
+            ) . ' ' . $additionalView,
     ]) ?>
 </div>

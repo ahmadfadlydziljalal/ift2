@@ -12,17 +12,19 @@ use yii\web\View;
 /* @var $width int */
 /* @var $height int */
 /* @var $orientation null|string */
+/* @see \app\controllers\StockController::actionPrintSticker() */
+/* @see \app\controllers\StockController::actionPrintMultipleSticker() */
 
 $fontSize = $width >= 50 ? '.75' : '.5'
 ?>
 
 <?php if ($orientation == 'P') : ?>
     <!-- Height dan weight nya harus ditukar -->
-<div style="position: absolute; left: 2mm;top: 2mm; right:2mm; bottom: 0; rotate: -90; width: <?= $width - 6 ?>mm; height: <?= $height - 6 ?>mm; ">
+<div style="position: absolute; left: 6mm;top: 0; right:2mm; bottom: 0; rotate: -90; width: <?= $width - 6 ?>mm; height: <?= $height - 6 ?>mm; ">
     <?php endif; ?>
     <!-- Content -->
     <div style="width: 100%; margin:0">
-        <div style=" float: left; width: 48%">
+        <div style=" float: left; width: 38%">
             <?= Html::img($path) ?>
         </div>
         <div style="float: right; text-align: right;  width: 50%">

@@ -16,6 +16,10 @@ use app\models\Status;
 use app\models\Stock;
 use app\models\Tabular;
 use app\models\TandaTerimaBarangDetail;
+use Mpdf\MpdfException;
+use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
+use setasign\Fpdi\PdfParser\PdfParserException;
+use setasign\Fpdi\PdfParser\Type\PdfTypeException;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Url;
@@ -64,6 +68,9 @@ class StockController extends Controller {
         ]);
     }
 
+    /**
+     * @return string
+     */
     public function actionExpand(): string {
         if (isset($_POST['expandRowKey'])) {
             $model = Barang::findOne(($_POST['expandRowKey']));
@@ -80,41 +87,52 @@ class StockController extends Controller {
         }
     }
 
+    /**
+     * @throws CrossReferenceException
+     * @throws MpdfException
+     * @throws InvalidConfigException
+     * @throws PdfParserException
+     * @throws PdfTypeException
+     */
     public function actionPrintSticker($id, $width = 50, $height = 70) {
-        $model = Barang::findOne($id);
+
+        $model = new PrintStockMultipleStickerForm();
+        $model->format = "{$width}*{$height}";
+        $model->setPageAttributes($model->format);
+
+        $barang = Barang::findOne($id);
+
         $pdf = Yii::$app->pdfStickerStock;
-        $pdf->format = [$width, $height];
+        $pdf->format = [$model->getWidth(), $model->getHeight()];
         $pdf->content = $this->renderPartial('preview_print_sticker', [
             'path'        => (new QrCodeStockGenerator([
-                'text'     => Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $model->id]], true),
-                'filename' => 'qr-code-stock-' . $model->id . '.png',
+                'text'     => Url::to(['/scan', 'object' => 'stock', 'params' => ['id' => $barang->id]], true),
+                'filename' => 'qr-code-stock-' . $barang->id . '.png',
                 'size'     => 125,
                 'margin'   => 0,
             ]))->toFile(),
-            'barang'      => $model,
-            'width'       => $width,
-            'height'      => $height,
-            'orientation' => $pdf->orientation,
+            'barang'      => $barang,
+            'width'       => $model->getWidth(),
+            'height'      => $model->getHeight(),
+            'orientation' => $model->getOrientation(),
         ]);
         return $pdf->render();
     }
 
+    /**
+     * @throws CrossReferenceException
+     * @throws MpdfException
+     * @throws InvalidConfigException
+     * @throws PdfParserException
+     * @throws PdfTypeException
+     */
     public function actionPrintMultipleSticker() {
         $model = new PrintStockMultipleStickerForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-
-            $pdf = Yii::$app->pdfStickerStock;
-
-            // 1. Pecah ukuran format kertas
-            $dimensions = explode('*', $model->format);
-            $height = $model->orientation == 'L' ? (int)$dimensions[1] : (int)$dimensions[0];
-            $width = $model->orientation == 'L' ? (int)$dimensions[0] : (int)$dimensions[1];
-
-            // 2. Set format
-            $pdf->format = [$width, $height];
-
+            $model->setPageAttributes($model->format);
             $barangs = $model->generateBarangsModel();
-
+            
             $content = '';
             $countBarangs = count($barangs);
             foreach ($barangs as $key => $barang) {
@@ -126,18 +144,18 @@ class StockController extends Controller {
                         'size'     => 125,
                         'margin'   => 0,
                     ]))->toFile(),
-                    'width'       => $width,
-                    'height'      => $height,
-                    'orientation' => $model->orientation,
+                    'width'       => $model->getWidth(),
+                    'height'      => $model->getHeight(),
+                    'orientation' => $model->getOrientation(),
                 ]);
 
                 // if last page, do not add pagebreak;
-                if (($key + 1) < $countBarangs) {
-                    $content .= '<pagebreak />';
-                }
+                if (($key + 1) < $countBarangs) $content .= '<pagebreak />';
 
             }
 
+            $pdf = Yii::$app->pdfStickerStock;
+            $pdf->format = [$model->getWidth(), $model->getHeight()];
             $pdf->content = $content;
             return $pdf->render();
         }
@@ -147,6 +165,11 @@ class StockController extends Controller {
         ]);
     }
 
+    /**
+     * @param string|null $q
+     * @param int|string|null $id
+     * @return array[]
+     */
     public function actionFindBarang(string $q = null, int|string $id = null): array {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $out = ['results' => ['id' => '', 'text' => '']];

@@ -28,8 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'method'  => 'post',
     ]); ?>
 
-    <?= $form->field($model, 'format')->dropDownList($model->getFormatOptions()) ?>
-    <?= $form->field($model, 'orientation')->dropDownList($model->getOrientationOptions()) ?>
+    <?= $form->field($model, 'format')->dropDownList(PrintStockMultipleStickerForm::getFormatOptions()) ?>
+    <!--    --><?php //= $form->field($model, 'orientation')->dropDownList($model->getOrientationOptions()) ?>
     <?= $form->field($model, "partNumbers")
         ->widget(Select2::class, [
             'options'       => [
