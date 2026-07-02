@@ -151,6 +151,11 @@ class LoginForm extends Model {
                 $authManager->assign($sa, $user->id);
             }
 
+            if (ArrayHelper::getValue($attributes, 'roles.ift')) {
+                $sa = $authManager->getRole('ift');
+                $authManager->assign($sa, $user->id);
+            }
+
             # Set flash ke UI untuk informasi ke user
             Yii::$app->session->setFlash('success', 'Anda sudah bergabung via ' . ucfirst($client->getId()) . ', dan Selamat Datang...! ');
 
