@@ -12,6 +12,7 @@ use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Validation\Constraint\IssuedBy;
 use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Lcobucci\JWT\Validation\RequiredConstraintsViolated;
 use Throwable;
 use Yii;
 use yii\filters\auth\AuthMethod;
@@ -136,14 +137,26 @@ class SihrdAuthenticator extends AuthMethod {
      */
     private function validateToken(Configuration $config, $token, array $constraints): void {
         try {
-            $validator = $config->validator();
-            if (!$validator->validate($token, ...$constraints)) {
-                throw new UnauthorizedHttpException('Token validation failed.');
-            }
+            $config->validator()->assert($token, ...$constraints);
+        } catch (RequiredConstraintsViolated $e) {
+            $message = $this->formatValidationFailure($e);
+            Yii::error($message, __METHOD__);
+            throw new UnauthorizedHttpException($message);
         } catch (Throwable $e) {
-            Yii::error($e->getMessage());
-            throw new UnauthorizedHttpException('Token validation error.');
+            Yii::error($e->getMessage(), __METHOD__);
+            throw new UnauthorizedHttpException('Token validation error: ' . $e->getMessage());
         }
+    }
+
+    private function formatValidationFailure(RequiredConstraintsViolated $e): string {
+        $details = array_map(static function ($violation): string {
+            $constraint = $violation->constraint ?? 'unknown-constraint';
+            $constraintName = $constraint ? basename(str_replace('\\', '/', $constraint)) : 'unknown-constraint';
+
+            return $constraintName . ': ' . $violation->getMessage();
+        }, $e->violations());
+
+        return 'Token validation failed: ' . implode('; ', $details);
     }
 
     /**
@@ -216,4 +229,3 @@ class SihrdAuthenticator extends AuthMethod {
         throw new UnauthorizedHttpException('Your request was made with invalid credentials.');
     }
 }
-
