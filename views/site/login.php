@@ -107,8 +107,7 @@ CSS
                 </div>
 
                 <h1 class="display-2 fw-semibold mb-2"><?= Yii::$app->settings->get('site.slogan') ?></h1>
-                <p class="mb-4 fw-bold text-white">Kelola kebutuhan bisnis Anda dalam satu dashboard yang cepat dan
-                    modern.</p>
+                <p class="mb-4 fw-bold text-white"><?= Yii::$app->settings->get('sub-slogan', 'site', 'Kelola kebutuhan bisnis Anda dalam satu dashboard yang cepat & modern.') ?> </p>
 
                 <div class="d-flex align-items-center gap-2">
                     <span class="site-login-dot is-active"></span>
