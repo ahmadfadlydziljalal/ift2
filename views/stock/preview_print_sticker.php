@@ -46,7 +46,8 @@ $fontSize = $width >= 50 ? '.75' : '.5'
 
         </div>
         <div style="float: right; text-align: right;  width: 80%">
-            <barcode code=" <?= $barang->id ?>" type="C128B" height="0.5" text="1"></barcode>
+            <!--            <barcode code=" -->
+            <?php //= $barang->id ?><!--" type="C128B" height="0.5" text="1"></barcode>-->
         </div>
         <div style="clear: both"></div>
     </div>
