@@ -15,7 +15,7 @@ return [
     'marginTop'    => '3',
     'marginRight'  => '3',
     'marginBottom' => '1',
-    'marginLeft'   => '1',
+    'marginLeft'   => '4',
     'marginHeader' => '0',
     'marginFooter' => '0',
     'options'      => [
