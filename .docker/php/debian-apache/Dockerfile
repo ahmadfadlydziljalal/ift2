@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 php:8.1.5-apache-buster AS development
+FROM --platform=linux/amd64 php:8.2.35-apache-trixie as development
 
 # Install dependencies & extensions
 RUN sed -i 's|deb.debian.org/debian|archive.debian.org/debian|g' /etc/apt/sources.list \
