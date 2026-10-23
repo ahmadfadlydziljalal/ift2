@@ -1,10 +1,7 @@
 FROM --platform=linux/amd64 php:8.2.35-apache-trixie as development
 
 # Install dependencies & extensions
-RUN sed -i 's|deb.debian.org/debian|archive.debian.org/debian|g' /etc/apt/sources.list \
- && sed -i '/security.debian.org/d' /etc/apt/sources.list \
- && apt-get -o Acquire::Check-Valid-Until=false update \
- && apt-get install -y \
+RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libicu-dev \
     libjpeg62-turbo-dev \
