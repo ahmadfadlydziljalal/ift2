@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 php:8.2.35-apache-trixie as development
+FROM --platform=linux/amd64 php:8.2.36-apache-trixie as development
 
 # Install dependencies & extensions
 RUN apt-get update && apt-get install -y \
