@@ -51,6 +51,7 @@ All web config is assembled in `config/web.php` from split files in `config/`. K
 ## Developer Workflows
 
 ### Local Development (Docker)
+**Always use the Docker `php` service, never the PHP installed on this machine.** Run every PHP command (`php yii ...`, `composer`, `vendor/bin/codecept`, etc.) via `docker-compose exec php ...`. See `docker-compose.yml` for service definitions (`php` working dir: `/var/www/html`).
 ```bash
 # Start all services (MySQL, PHP/Apache, Gulp/Node, Chrome, Adminer)
 docker-compose up -d
