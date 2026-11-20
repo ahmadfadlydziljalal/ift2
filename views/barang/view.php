@@ -108,6 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
    <?= $this->render('_view_detail', ['model' => $model]) ?>
+   <?= $this->render('_view_start', ['model' => $model]) ?>
 
 
 </div>

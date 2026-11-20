@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\enums\TipePembelianEnum;
 use app\models\Barang;
+use app\models\form\BarangStart;
 use app\models\BarangSatuan;
 use app\models\Satuan;
 use app\models\search\BarangSearch;
@@ -38,6 +39,10 @@ class BarangController extends Controller {
         ];
     }
 
+    /**
+     * Lists all Barang models.
+     * @return string
+     */
     public function actionIndex(): string {
         $searchModel = new BarangSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -75,6 +80,79 @@ class BarangController extends Controller {
             'modelsDetail' => empty($modelsDetail) ? [new BarangSatuan()] : $modelsDetail,
         ]);
 
+    }
+
+    /**
+     * Start stock awal barang yang tersebar di banyak lokasi.
+     * @param int|null $id
+     * @return Response|string
+     * @throws NotFoundHttpException
+     */
+    public function actionStart(?int $id = null): Response|string {
+        $request = Yii::$app->request;
+        $model = new BarangStart(['barangId' => $id]);
+
+        if ($id !== null) {
+            $barang = $this->findModel($id);
+            if ($model->isStarted($barang->id)) {
+                Yii::$app->session->setFlash('warning', [[
+                    'title'   => 'Barang sudah di-start.',
+                    'message' => 'Gunakan Restart untuk mengubah data start.',
+                ]]);
+                return $this->redirect(['restart', 'id' => $barang->id]);
+            }
+        }
+
+        if ($request->isPost && $model->loadAll($request->post()) && $model->validateAll() && $model->save()) {
+            $this->flashStartSuccess('Start barang berhasil.');
+            return $this->redirect(['view', 'id' => $model->barangId]);
+        }
+
+        return $this->render('start', ['model' => $model]);
+    }
+
+    /**
+     * Ubah data start yang sudah ada.
+     * @param int $id
+     * @return Response|string
+     * @throws NotFoundHttpException
+     */
+    public function actionRestart(int $id): Response|string {
+        $request = Yii::$app->request;
+        $barang = $this->findModel($id);
+        $model = new BarangStart();
+
+        if (!$model->isStarted($barang->id)) {
+            return $this->redirect(['start', 'id' => $barang->id]);
+        }
+
+        $model->loadExisting($barang);
+
+        if ($request->isPost && $model->loadAll($request->post())) {
+            $model->barangId = $barang->id; // barang tidak boleh diganti
+            if ($model->validateAll() && $model->save()) {
+                $this->flashStartSuccess('Restart barang berhasil.');
+                return $this->redirect(['view', 'id' => $barang->id]);
+            }
+        }
+
+        return $this->render('start', ['model' => $model]);
+    }
+
+    private function flashStartSuccess(string $title): void {
+        Yii::$app->session->setFlash('success', [[
+            'title'   => $title,
+            'message' => 'Stock awal dan lokasi barang berhasil disimpan.',
+        ]]);
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    public function actionDefaultSatuan(int $id): array {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return ['satuan' => Barang::findOne($id)?->defaultSatuan?->nama];
     }
 
     /**

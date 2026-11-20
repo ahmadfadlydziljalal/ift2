@@ -19,7 +19,7 @@ class BarangSearch extends Barang {
     public function rules(): array {
         return [
             [['id', 'originalitas_id', 'tipe_pembelian_id'], 'integer'],
-            [['nama', 'part_number', 'merk_part_number', 'ift_number'], 'safe'],
+            [['nama', 'part_number', 'merk_part_number', 'ift_number', 'initialize_stock_quantity'], 'safe'],
         ];
     }
 
@@ -39,17 +39,17 @@ class BarangSearch extends Barang {
     public function search(array $params): ActiveDataProvider {
         $query = Barang::find()
             ->select([
-                'id'                => 'b.id',
-                'nama'              => 'b.nama',
-                'part_number'       => 'b.part_number',
-                'merk_part_number'  => 'b.merk_part_number',
-                'ift_number'        => 'b.ift_number',
-                'originalitasNama'  => 'originalitas.nama',
-                'tipePembelianNama' => 'tipe_pembelian.nama',
-                'tipe_pembelian_id' => 'tipe_pembelian_id',
-                'originalitas_id'   => 'b.originalitas_id',
-                'keterangan'        => 'b.keterangan',
-                'satuanHarga'       => new Expression("
+                'id'                        => 'b.id',
+                'nama'                      => 'b.nama',
+                'part_number'               => 'b.part_number',
+                'merk_part_number'          => 'b.merk_part_number',
+                'ift_number'                => 'b.ift_number',
+                'originalitasNama'          => 'originalitas.nama',
+                'tipePembelianNama'         => 'tipe_pembelian.nama',
+                'tipe_pembelian_id'         => 'tipe_pembelian_id',
+                'originalitas_id'           => 'b.originalitas_id',
+                'keterangan'                => 'b.keterangan',
+                'satuanHarga'               => new Expression("
                      JSON_ARRAYAGG(
                         JSON_OBJECT(
                             'vendor', card.nama,
@@ -59,8 +59,9 @@ class BarangSearch extends Barang {
                         )
                     )
                 "),
-                'photo'             => 'b.photo',
-                'photo_thumbnail'   => 'b.photo_thumbnail',
+                'photo'                     => 'b.photo',
+                'photo_thumbnail'           => 'b.photo_thumbnail',
+                'initialize_stock_quantity' => 'b.initialize_stock_quantity'
             ])
             ->alias('b')
             ->joinWith(['barangSatuans' => function ($model) {

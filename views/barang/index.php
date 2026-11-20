@@ -19,11 +19,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h1 class="my-0"><?= Html::encode($this->title) ?></h1>
         <div class="ms-md-auto ms-lg-auto">
-            <?= Html::a('<i class="bi bi-repeat"></i>' . ' Reset Filter', ['index'], ['class' => 'btn btn-primary']) ?>
-            <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= Html::a('<i class="bi bi-list"></i> ' . 'Index', ['index'], ['class' => 'btn btn-primary']) ?>
             <?= ExportMenu::widget([
-                'dataProvider' => $dataProvider,
+                    'dataProvider' => $dataProvider,
             ]) ?>
+            <?= Html::a('<i class="bi bi-plus-circle-dotted"></i>' . ' Tambah', ['create'], ['class' => 'btn btn-success']) ?>
         </div>
     </div>
 
@@ -42,24 +42,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
     ?>
 
-    <?php try {
-        echo GridView::widget([
+    <?= GridView::widget([
             'tableOptions' => [
-                'class' => 'table table-bordered table-grid-view table-fixes-last-column'
+                    'class' => 'table table-bordered table-grid-view table-fixes-last-column'
             ],
             'pjax'         => true,
             'dataProvider' => $dataProvider,
             'filterModel'  => $searchModel,
             'rowOptions'   => [
-                'class' => 'align-middle'
+                    'class' => 'align-middle'
             ],
             'columns'      => require(__DIR__ . '/_columns.php'),
-        ]);
-    } catch (Exception $e) {
-        echo $e->getMessage();
-    } catch (Throwable $e) {
-        echo $e->getMessage();
-    }
+    ]);
     ?>
 
 </div>
