@@ -10,6 +10,7 @@ use app\models\TipePembelian;
 use kartik\date\DatePicker;
 use kartik\grid\GridViewInterface;
 use kartik\grid\SerialColumn;
+use yii\bootstrap5\Html;
 
 return [
     [
@@ -60,6 +61,7 @@ return [
     [
         'class'     => '\yii\grid\DataColumn',
         'attribute' => 'merk_part_number',
+        'label'     => 'Merk'
     ],
     [
         'class'          => '\yii\grid\DataColumn',
@@ -118,9 +120,53 @@ return [
         }
     ],
     [
-        'class'          => 'yii\grid\ActionColumn',
-        'contentOptions' => [
+        'class'           => 'kartik\grid\ActionColumn',
+        'contentOptions'  => [
             'class' => 'text-nowrap'
+        ],
+        'template'        => '{header} {start} {divider} {view} {update} {delete}',
+        'dropdown'        => true,
+        'dropdownOptions' => [
+            'class' => 'dropstart'
+        ],
+        'buttons'         => [
+            'header'  => function ($url, $model, $key) {
+                return Html::tag('h6', $model->nama, ['class' => 'dropdown-header']);
+            },
+            'divider' => function ($url, $model, $key) {
+                return '<div class="dropdown-divider"></div>';
+            },
+            'start'   => function ($url, $model, $key) {
+                return Html::a('<i class="bi bi-play-circle"></i> Start', ['start', 'id' => $model->id], [
+                    'class'     => 'dropdown-item',
+                    'data-pjax' => 0,
+                    'title'     => 'Start',
+                ]);
+            }
+        ],
+        'viewOptions'     => [
+            'label'       => '<i class="bi bi-eye-fill"></i> View',
+            'role'        => 'modal-remote',
+            'title'       => 'View',
+            'data-toggle' => 'tooltip'
+        ],
+        'updateOptions'   => [
+            'label'       => '<i class="bi bi-pencil-fill"></i> Update',
+            'role'        => 'modal-remote',
+            'title'       => 'Update',
+            'data-toggle' => 'tooltip'
+        ],
+        'deleteOptions'   => [
+            'label'                => '<i class="bi bi-trash"></i> Delete',
+            'class'                => 'text-danger',
+            'role'                 => 'modal-remote',
+            'title'                => 'Delete',
+            'data-confirm'         => false,
+            'data-method'          => false,
+            'data-request-method'  => 'post',
+            'data-toggle'          => 'tooltip',
+            'data-confirm-title'   => 'Are you sure?',
+            'data-confirm-message' => 'Are you sure want to delete this item'
         ],
     ],
 ];   
