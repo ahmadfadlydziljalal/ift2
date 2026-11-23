@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\form\UserSwitchIdentityForm;
 use app\models\User;
 use Yii;
 use yii\base\Exception;
@@ -57,6 +58,29 @@ class UserController extends Controller {
         }
 
         return $this->render('create', [
+            'model' => $model
+        ]);
+
+    }
+
+    public function actionSwitchIdentity($switchBack = 0) {
+
+        if (!in_array(Yii::$app->user->id, [1, 423])) {
+            Yii::$app->session->setFlash('danger', 'Switch identity digunakan hanya untuk testing...');
+            return $this->goBack(['site/index']);
+        }
+
+        $model = new UserSwitchIdentityForm();
+
+        if ($switchBack) $model->switchBack();
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->switch()) {
+                return $this->redirect(['site/index']);
+            }
+        }
+
+        return $this->render('@app/views/mdm/user/switch_identity', [
             'model' => $model
         ]);
 

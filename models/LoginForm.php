@@ -133,7 +133,7 @@ class LoginForm extends Model {
         ]);
         $user->generateAuthKey();
         $user->generatePasswordResetToken();
-
+        $user->data = $attributes;
         if ($user->save()) {
 
             # Save sebagai AuthUser baru
@@ -178,6 +178,7 @@ class LoginForm extends Model {
         $user->id = ArrayHelper::getValue($attributes, 'user.id');
         $user->email = ArrayHelper::getValue($attributes, 'user.email');
         $user->username = ArrayHelper::getValue($attributes, 'user.username');
+        $user->data = $attributes;
         /*  $user->nama_karyawan = ArrayHelper::getValue($attributes, 'karyawan.nama');
           $user->nama_panggilan = ArrayHelper::getValue($attributes, 'karyawan.nama_panggilan');
           $user->jenis_kelamin = ArrayHelper::getValue($attributes, 'karyawan.jenis_kelamin');
