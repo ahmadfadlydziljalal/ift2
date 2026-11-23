@@ -19,7 +19,7 @@ class BarangSearch extends Barang {
     public function rules(): array {
         return [
             [['id', 'originalitas_id', 'tipe_pembelian_id'], 'integer'],
-            [['nama', 'part_number', 'merk_part_number', 'ift_number', 'initialize_stock_quantity'], 'safe'],
+            [['nama', 'part_number', 'merk_part_number', 'ift_number', 'initialize_start', 'initialize_stock_quantity'], 'safe'],
         ];
     }
 
@@ -61,7 +61,9 @@ class BarangSearch extends Barang {
                 "),
                 'photo'                     => 'b.photo',
                 'photo_thumbnail'           => 'b.photo_thumbnail',
-                'initialize_stock_quantity' => 'b.initialize_stock_quantity'
+                'initialize_start'          => 'b.initialize_start',
+                'initialize_stock_quantity' => 'b.initialize_stock_quantity',
+
             ])
             ->alias('b')
             ->joinWith(['barangSatuans' => function ($model) {
@@ -109,6 +111,10 @@ class BarangSearch extends Barang {
             ->andFilterWhere(['like', 'b.part_number', $this->part_number])
             ->andFilterWhere(['like', 'b.merk_part_number', $this->merk_part_number])
             ->andFilterWhere(['like', 'b.ift_number', $this->ift_number]);
+
+        if ($this->initialize_start) {
+            $query->andFilterWhere(['=', 'b.initialize_start', $this->initialize_start]);
+        }
 
         return $dataProvider;
     }

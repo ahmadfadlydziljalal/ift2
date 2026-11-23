@@ -39,7 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
      } catch (Throwable $e) {
          echo $e->getMessage();
      }*/
-
     ?>
 
     <?= GridView::widget([

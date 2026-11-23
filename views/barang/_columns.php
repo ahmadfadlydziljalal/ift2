@@ -7,6 +7,8 @@ use app\enums\TipePembelianEnum;
 use app\models\Barang;
 use app\models\Originalitas;
 use app\models\TipePembelian;
+use kartik\date\DatePicker;
+use kartik\grid\GridViewInterface;
 use kartik\grid\SerialColumn;
 
 return [
@@ -49,16 +51,22 @@ return [
     ],
 
     [
-        'class'     => '\yii\grid\DataColumn',
-        'attribute' => 'part_number'
+        'class'          => '\yii\grid\DataColumn',
+        'attribute'      => 'part_number',
+        'contentOptions' => [
+            'class' => 'font-monospace'
+        ]
     ],
     [
         'class'     => '\yii\grid\DataColumn',
         'attribute' => 'merk_part_number',
     ],
     [
-        'class'     => '\yii\grid\DataColumn',
-        'attribute' => 'ift_number',
+        'class'          => '\yii\grid\DataColumn',
+        'attribute'      => 'ift_number',
+        'contentOptions' => [
+            'class' => 'font-monospace'
+        ],
     ],
     [
         'class'          => '\yii\grid\DataColumn',
@@ -72,8 +80,30 @@ return [
         ]
     ],
     [
-        'class'     => '\yii\grid\DataColumn',
-        'attribute' => 'initialize_stock_quantity'
+        'class'               => '\kartik\grid\DataColumn',
+        'filterType'          => GridViewInterface::FILTER_DATE,
+        'filterWidgetOptions' => [
+            'pluginOptions' => [
+                'autoclose' => true,
+                'format'    => 'yyyy-mm-dd'
+            ],
+            'type'          => DatePicker::TYPE_INPUT,
+        ],
+        'attribute'           => 'initialize_start',
+        'contentOptions'      => [
+            'class' => 'text-end font-monospace'
+        ],
+        'format'              => 'date',
+    ],
+    [
+        'class'          => '\yii\grid\DataColumn',
+        'attribute'      => 'initialize_stock_quantity',
+        'label'          => 'Initial Stock',
+        'contentOptions' => [
+            'class' => 'text-end font-monospace'
+        ],
+        'format'         => ['decimal', 2],
+        'value'          => fn(Barang $model) => empty($model->initialize_stock_quantity) ? 0 : $model->initialize_stock_quantity,
     ],
     [
         'class'          => '\yii\grid\DataColumn',

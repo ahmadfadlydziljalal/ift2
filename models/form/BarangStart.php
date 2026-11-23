@@ -19,6 +19,9 @@ class BarangStart extends Model
     public $barangId;
     public $initializeStockQuantity;
 
+    /** Tanggal awal stock, format d-m-Y */
+    public $initializeStart;
+
     /** @var BarangStartLokasi[] */
     public array $lokasi = [];
 
@@ -38,7 +41,8 @@ class BarangStart extends Model
     public function rules(): array
     {
         return [
-            [['barangId', 'initializeStockQuantity'], 'required'],
+            [['barangId', 'initializeStockQuantity', 'initializeStart'], 'required'],
+            ['initializeStart', 'date', 'format' => 'php:d-m-Y'],
             ['barangId', 'integer'],
             ['barangId', 'validateBarang'],
             ['initializeStockQuantity', 'number', 'min' => 0.01],
@@ -50,6 +54,7 @@ class BarangStart extends Model
         return [
             'barangId'                => 'Barang',
             'initializeStockQuantity' => 'Initialize Stock Quantity',
+            'initializeStart'         => 'Tanggal Start',
         ];
     }
 
@@ -75,6 +80,9 @@ class BarangStart extends Model
         $this->isRestart = true;
         $this->barangId = $barang->id;
         $this->initializeStockQuantity = (float)$barang->initialize_stock_quantity ?: null;
+        $this->initializeStart = $barang->initialize_start
+            ? Yii::$app->formatter->asDate($barang->initialize_start, 'php:d-m-Y')
+            : null;
         $this->lokasi = [];
         foreach ($this->getStartHistories($barang->id) as $history) {
             $this->lokasi[] = new BarangStartLokasi([
@@ -141,7 +149,10 @@ class BarangStart extends Model
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $barang = Barang::findOne($this->barangId);
-            $barang->updateAttributes(['initialize_stock_quantity' => $this->initializeStockQuantity]);
+            $barang->updateAttributes([
+                'initialize_stock_quantity' => $this->initializeStockQuantity,
+                'initialize_start'          => \DateTime::createFromFormat('d-m-Y', $this->initializeStart)->format('Y-m-d'),
+            ]);
 
             $statusId = $this->getStartStatusId();
             $this->savedHistories = [];

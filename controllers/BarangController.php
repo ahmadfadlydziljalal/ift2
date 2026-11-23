@@ -4,8 +4,8 @@ namespace app\controllers;
 
 use app\enums\TipePembelianEnum;
 use app\models\Barang;
-use app\models\form\BarangStart;
 use app\models\BarangSatuan;
+use app\models\form\BarangStart;
 use app\models\Satuan;
 use app\models\search\BarangSearch;
 use app\models\Tabular;
@@ -87,6 +87,7 @@ class BarangController extends Controller {
      * @param int|null $id
      * @return Response|string
      * @throws NotFoundHttpException
+     * @throws Throwable
      */
     public function actionStart(?int $id = null): Response|string {
         $request = Yii::$app->request;
@@ -108,7 +109,7 @@ class BarangController extends Controller {
             return $this->redirect(['view', 'id' => $model->barangId]);
         }
 
-        return $this->render('start', ['model' => $model]);
+        return $this->render('start', ['model' => $model, 'form' => null]);
     }
 
     /**

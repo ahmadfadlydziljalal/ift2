@@ -3,6 +3,7 @@
 use app\enums\CaraPenulisanLokasiEnum;
 use app\models\Barang;
 use app\models\form\BarangStart;
+use kartik\date\DatePicker;
 use kartik\form\ActiveForm;
 use kartik\select2\Select2;
 use wbraganca\dynamicform\DynamicFormWidget;
@@ -13,6 +14,7 @@ use yii\web\View;
 
 /* @var $this View */
 /* @var $model BarangStart */
+/* @var $form ActiveForm */
 /* @see \app\controllers\BarangController::actionStart() */
 
 $this->title = $model->isRestart ? 'Restart Barang' : 'Start Barang';
@@ -29,7 +31,8 @@ $('#barangstart-barangid').on('change', function () {
     if (!id) return;
     $.getJSON('$urlSatuan', {id: id}, function (r) { info.text(r.satuan ? 'Satuan: ' + r.satuan : ''); });
 });
-JS);
+JS
+);
 
 $plainField = static function ($model, $attribute) use (&$form) {
     $field = $form->field($model, $attribute, ['template' => '{input}{error}', 'options' => ['class' => null]]);
@@ -70,8 +73,11 @@ $dropdown = static fn(CaraPenulisanLokasiEnum $type) => [
             ])->hint('<span id="info-default-satuan" class="fw-bold">' .
                     ($barang?->defaultSatuan ? 'Satuan: ' . Html::encode($barang->defaultSatuan->nama) : '') . '</span>') ?>
         </div>
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-3">
             <?= $form->field($model, 'initializeStockQuantity')->textInput(['type' => 'number', 'step' => 'any']) ?>
+        </div>
+        <div class="col-12 col-lg-3">
+            <?= $form->field($model, 'initializeStart')->widget(DatePicker::class) ?>
         </div>
     </div>
 

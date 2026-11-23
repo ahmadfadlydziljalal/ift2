@@ -32,6 +32,7 @@ $dataProvider = new ActiveDataProvider([
     <p>
         Initialize Stock Quantity: <strong><?= (float)$model->initialize_stock_quantity ?></strong>
         <?= $model->defaultSatuan ? ' ' . Html::encode($model->defaultSatuan->nama) : '' ?>
+        <?= $model->initialize_start ? ' | Tanggal Start: <strong>' . Yii::$app->formatter->asDate($model->initialize_start, 'php:d-m-Y') . '</strong>' : '' ?>
     </p>
     <?= GridView::widget([
             'dataProvider' => $dataProvider,

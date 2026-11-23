@@ -6,6 +6,7 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use \app\models\active_queries\BarangQuery;
 
 /**
  * This is the base-model class for table "barang".
@@ -18,6 +19,7 @@ use yii\helpers\ArrayHelper;
  * @property string $ift_number
  * @property string $merk_part_number
  * @property integer $originalitas_id
+ * @property string $initialize_start
  * @property string $initialize_stock_quantity
  * @property integer $default_satuan_id
  * @property string $photo
@@ -35,13 +37,11 @@ use yii\helpers\ArrayHelper;
  * @property \app\models\ProformaDebitNoteDetailBarang[] $proformaDebitNoteDetailBarangs
  * @property \app\models\ProformaInvoiceDetailBarang[] $proformaInvoiceDetailBarangs
  * @property \app\models\QuotationBarang[] $quotationBarangs
+ * @property \app\models\QuotationFormJobSparePart[] $quotationFormJobSpareParts
  * @property \app\models\TipePembelian $tipePembelian
- * @property string $aliasModel
  */
 abstract class Barang extends \yii\db\ActiveRecord
 {
-
-
 
     /**
      * @inheritdoc
@@ -56,10 +56,15 @@ abstract class Barang extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return ArrayHelper::merge(parent::rules(), [
+        $parentRules = parent::rules();
+        return ArrayHelper::merge($parentRules, [
+            [['part_number', 'keterangan', 'ift_number', 'merk_part_number', 'initialize_start', 'photo', 'photo_thumbnail'], 'default', 'value' => null],
+            [['price_per_item_in_idr'], 'default', 'value' => 0.00],
+            [['default_satuan_id'], 'default', 'value' => 1],
             [['tipe_pembelian_id', 'nama', 'originalitas_id'], 'required'],
             [['tipe_pembelian_id', 'originalitas_id', 'default_satuan_id'], 'integer'],
             [['keterangan', 'photo', 'photo_thumbnail'], 'string'],
+            [['initialize_start'], 'safe'],
             [['initialize_stock_quantity', 'price_per_item_in_usd', 'price_per_item_in_idr'], 'number'],
             [['nama', 'merk_part_number'], 'string', 'max' => 255],
             [['part_number'], 'string', 'max' => 32],
@@ -75,7 +80,7 @@ abstract class Barang extends \yii\db\ActiveRecord
      */
     public function attributeLabels()
     {
-        return [
+        return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'tipe_pembelian_id' => 'Tipe Pembelian ID',
             'nama' => 'Nama',
@@ -84,13 +89,14 @@ abstract class Barang extends \yii\db\ActiveRecord
             'ift_number' => 'Ift Number',
             'merk_part_number' => 'Merk Part Number',
             'originalitas_id' => 'Originalitas ID',
+            'initialize_start' => 'Initialize Start',
             'initialize_stock_quantity' => 'Initialize Stock Quantity',
             'default_satuan_id' => 'Default Satuan ID',
             'photo' => 'Photo',
             'photo_thumbnail' => 'Photo Thumbnail',
             'price_per_item_in_usd' => 'Price Per Item In Usd',
             'price_per_item_in_idr' => 'Price Per Item In Idr',
-        ];
+        ]);
     }
 
     /**
@@ -98,7 +104,8 @@ abstract class Barang extends \yii\db\ActiveRecord
      */
     public function attributeHints()
     {
-        return array_merge(parent::attributeHints(), [
+        return ArrayHelper::merge(parent::attributeHints(), [
+            'initialize_start' => 'Tanggal awal stock barang',
             'default_satuan_id' => 'Satuan utama yang dipakai dalam stock',
             'price_per_item_in_usd' => 'Pertama kali penggunaan sistem. Karena based on time, nilai ini akan selalu berubah, contohnya melalui pembelian',
             'price_per_item_in_idr' => 'Pertama kali penggunaan sistem. Karena based on time, nilai ini akan selalu berubah, contohnya melalui pembelian',
@@ -188,21 +195,25 @@ abstract class Barang extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getQuotationFormJobSpareParts()
+    {
+        return $this->hasMany(\app\models\QuotationFormJobSparePart::class, ['barang_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getTipePembelian()
     {
         return $this->hasOne(\app\models\TipePembelian::class, ['id' => 'tipe_pembelian_id']);
     }
 
-
-    
     /**
      * @inheritdoc
-     * @return \app\models\active_queries\BarangQuery the active query used by this AR class.
+     * @return BarangQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new \app\models\active_queries\BarangQuery(get_called_class());
+        return new BarangQuery(static::class);
     }
-
-
 }
