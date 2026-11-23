@@ -6,7 +6,6 @@ use app\models\active_queries\UserQuery;
 use mdm\admin\models\User as MdmUser;
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\NotSupportedException;
 use yii\bootstrap5\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -15,9 +14,9 @@ use yii\httpclient\Exception;
 
 /**
  * @property int $karyawan_id
+ * @property array $data
  * */
-class User extends MdmUser
-{
+class User extends MdmUser {
 
     const SCENARIO_CREATE = 'create';
     const SCENARIO_WITH_SIHRD_INTEGRATION = 'with-sihrd-integration';
@@ -29,9 +28,11 @@ class User extends MdmUser
     /**
      * @return array
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         return ArrayHelper::merge(parent::rules(), [
+            [
+                ['data',], 'safe'
+            ],
             [['username', 'email', 'new_password'], 'required', 'on' => self::SCENARIO_CREATE],
             [['id', 'karyawan_id'], 'unique', 'on' => self::SCENARIO_WITH_SIHRD_INTEGRATION],
             [['id', 'username', 'auth_key', 'password_hash', 'email', 'status',
@@ -40,7 +41,7 @@ class User extends MdmUser
             [['repeat_password'], 'compare', 'compareAttribute' => 'new_password'],
             [['new_password', 'repeat_password'], 'required', 'when' => function ($model) {
                 return (!empty($model->new_password));
-            }, 'whenClient' => "function (attribute, value) {
+            }, 'whenClient'                                          => "function (attribute, value) {
                 return ($('#user-new_password').val().length>0);
             }"],
             [['karyawan_id', 'nama_karyawan'], 'safe'],
@@ -51,8 +52,7 @@ class User extends MdmUser
     /**
      * @return array
      */
-    public function scenarios(): array
-    {
+    public function scenarios(): array {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_WITH_SIHRD_INTEGRATION] = [
             'id',
@@ -74,8 +74,7 @@ class User extends MdmUser
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public function getSihrdUser()
-    {
+    public function getSihrdUser() {
         $request = (new Client())
             ->createRequest()
             ->setMethod('GET')
@@ -90,8 +89,7 @@ class User extends MdmUser
         return $response->data;
     }
 
-    public function getSihrdKaryawan()
-    {
+    public function getSihrdKaryawan() {
 
         $request = (new Client())
             ->createRequest()
@@ -108,8 +106,7 @@ class User extends MdmUser
         return $response->data;
     }
 
-    public function afterSave($insert, $changedAttributes)
-    {
+    public function afterSave($insert, $changedAttributes) {
         parent::afterSave($insert, $changedAttributes);
         $this->saveCacheForImage();
     }
@@ -117,8 +114,7 @@ class User extends MdmUser
     /**
      * @return void
      */
-    public function saveCacheForImage()
-    {
+    public function saveCacheForImage() {
         $key = 'sihrd-user-image' . $this->id;
         $cache = Yii::$app->cache;
         $data = $cache->get($key);
@@ -137,9 +133,9 @@ class User extends MdmUser
                 if (!is_null($sihrdUser['photo_karyawan'])) {
 
                     $data = Html::img($sihrdUser['photo_karyawan'], [
-                            'alt' => '',
+                            'alt'     => '',
                             'loading' => 'lazy',
-                            'class' => 'user-photo-32'
+                            'class'   => 'user-photo-32'
                         ]) . ' ' .
                         Html::tag('span', $sihrdUser['nama_karyawan'], ['class' => 'text-center']);
 
@@ -149,9 +145,9 @@ class User extends MdmUser
                     $data = Html::img($sihrdUser['jenis_kelamin_karyawan'] != 'Perempuan' ?
                             Url::to('@web/images/avatar-male.png') :
                             Url::to('@web/images/avatar-female.png'), [
-                            'alt' => '',
+                            'alt'     => '',
                             'loading' => 'lazy',
-                            'class' => 'user-photo-32'
+                            'class'   => 'user-photo-32'
                         ]) . ' ' .
                         Html::tag('span', $sihrdUser['nama_karyawan'], ['class' => 'text-center']);
                 }
@@ -170,8 +166,7 @@ class User extends MdmUser
      * @param $sihrdUser
      * @return void
      */
-    public function saveCacheForStatusAsSameWithSiHrd($sihrdUser)
-    {
+    public function saveCacheForStatusAsSameWithSiHrd($sihrdUser) {
         $key = 'sihrd-user-same-as' . $this->id;
         $cache = Yii::$app->cache;
         $data = $cache->get($key);
@@ -193,8 +188,7 @@ class User extends MdmUser
         $cache->set($key, $data, 60 * 60);
     }
 
-    public function saveCacheForDataKaryawan()
-    {
+    public function saveCacheForDataKaryawan() {
         $key = 'sihrd-karyawan' . $this->id;
 
         $cache = Yii::$app->cache;
@@ -208,8 +202,7 @@ class User extends MdmUser
         $cache->set($key, $data, 60 * 60);
     }
 
-    public function afterDelete()
-    {
+    public function afterDelete() {
         Yii::$app->cache->delete('sihrd-user-image' . $this->id);
         Yii::$app->cache->delete('sihrd-user-same-as' . $this->id);
         Yii::$app->cache->delete('sihrd-karyawan' . $this->id);
@@ -220,8 +213,7 @@ class User extends MdmUser
     /**
      * @inheritdoc
      */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
+    public static function findIdentityByAccessToken($token, $type = null) {
         return static::findOne(['auth_key' => $token]);
     }
 
@@ -229,8 +221,7 @@ class User extends MdmUser
      * @inheritdoc
      * @return UserQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new UserQuery(get_called_class());
     }
 
