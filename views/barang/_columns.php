@@ -146,27 +146,21 @@ return [
         ],
         'viewOptions'     => [
             'label'       => '<i class="bi bi-eye-fill"></i> View',
-            'role'        => 'modal-remote',
             'title'       => 'View',
             'data-toggle' => 'tooltip'
         ],
         'updateOptions'   => [
             'label'       => '<i class="bi bi-pencil-fill"></i> Update',
-            'role'        => 'modal-remote',
             'title'       => 'Update',
             'data-toggle' => 'tooltip'
         ],
         'deleteOptions'   => [
-            'label'                => '<i class="bi bi-trash"></i> Delete',
-            'class'                => 'text-danger',
-            'role'                 => 'modal-remote',
-            'title'                => 'Delete',
-            'data-confirm'         => false,
-            'data-method'          => false,
-            'data-request-method'  => 'post',
-            'data-toggle'          => 'tooltip',
-            'data-confirm-title'   => 'Are you sure?',
-            'data-confirm-message' => 'Are you sure want to delete this item'
+            'label'        => '<i class="bi bi-trash"></i> Delete',
+            'class'        => 'text-danger',
+            'title'        => 'Delete',
+            'data-pjax'    => 0,
+            'data-confirm' => 'Are you sure you want to delete this item?',
+            'data-method'  => 'post',
         ],
     ],
 ];   
